@@ -1,17 +1,17 @@
 spwbgrid<-function(y, SpParams, meteo, dates = NULL,
-                  summaryFreq = "years", trackSpecies = numeric(), 
+                  summaryFreq = "years", trackSpecies = numeric(),
                   control = defaultControl()) {
 
   #check input
   if(!inherits(y, "SpatialGridLandscape"))
     stop("'y' has to be of class 'SpatialGridLandscape'.")
-  if(!inherits(meteo,"SpatialGridMeteorology") && 
-     !inherits(meteo,"data.frame")) 
+  if(!inherits(meteo,"SpatialGridMeteorology") &&
+     !inherits(meteo,"data.frame"))
     stop("'meteo' has to be of class 'SpatialGridMeteorology' or 'data.frame'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
-  
+
   elevation = y@data$elevation
-  
+
   if(inherits(meteo,"data.frame")) {
     oneMeteoCell = ("MeanTemperature" %in% names(meteo))
     datesMeteo = as.Date(row.names(meteo))
@@ -21,21 +21,21 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   if(is.null(dates)) {
     dates = datesMeteo
   } else {
-    if(sum(dates %in% datesMeteo)<length(dates)) 
+    if(sum(dates %in% datesMeteo)<length(dates))
       stop("Dates in 'dates' is nnot a subset of dates in 'meteo'.")
   }
   date.factor = cut(dates, breaks=summaryFreq)
   df.int = as.numeric(date.factor)
   nDays = length(dates)
-  nCells = length(y@forestlist) 
+  nCells = length(y@forestlist)
   nSummary = sum(table(date.factor)>0)
-  
+
   #Print information area
   cat("\n------------  spwbgrid ------------\n")
   cat(paste("Grid cells: ", nCells,", area: ", areaSpatialGrid(y)/10000," ha\n", sep=""))
   cat(paste("Number of days to simulate: ",nDays,"\n", sep=""))
   cat(paste("Number of summaries: ", nSummary,"\n\n", sep=""))
-  
+
   #Set control drainage to false
   control$drainage = FALSE
 
@@ -46,7 +46,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     yid = y@forestlist[[i]]
     patchsize = yid$patchsize
     soil = y@soillist[[i]]
-    if((!is.na(yid)) && (!is.na(soil))) {             
+    if((!is.na(yid)) && (!is.na(soil))) {
       xi = forest2spwbInput(yid, soil, SpParams, control)
       spwbInputList[[i]] = xi
     }  else {
@@ -54,7 +54,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     }
   }
   cat(paste(" - number of cells with spwbInput == NA: ", sum(is.na(spwbInputList)),"\n\n", sep=""))
-  
+
 
   #Output matrices
   Runon = matrix(0,nrow=nCells, ncol=nSummary)
@@ -74,8 +74,8 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
                                 Eplant = rep(0, nSummary),
                                 Runoff = rep(0, nSummary),
                                 DeepDrainage= rep(0, nSummary))
-                                
-  
+
+
   nTrackSpecies = length(trackSpecies)
   if(nTrackSpecies>0) {
     DI = array(0.0,dim=c(nCells, nSummary, nTrackSpecies))
@@ -84,7 +84,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     DI = NULL
     Transpiration = NULL
   }
-  
+
   for(day in 1:nDays) {
     cat(paste("Day #", day))
     i = which(datesMeteo == dates[day]) #date index in meteo data
@@ -111,12 +111,12 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
         gridRadiation = rep(meteo[i, "Radiation"], nCells)
       }
     }
-    gridER = rep(.er(doy),nCells) #ER
-    df = .spwbgridDay(y@lct, spwbInputList, y@soillist, 
+    gridER = rep(medfate::er(doy),nCells) #ER
+    df = .spwbgridDay(y@lct, spwbInputList, y@soillist,
                      y@waterOrder, y@queenNeigh, y@waterQ,
                      gridMeanTemperature, gridPET, gridPrecipitation, gridER,
                      gridRadiation, elevation,
-                     trackSpecies, patchsize)      
+                     trackSpecies, patchsize)
     ifactor = df.int[day]
     Runon[,ifactor] = Runon[,ifactor] + df$WaterBalance$Runon
     Runoff[,ifactor] = Runoff[,ifactor] + df$WaterBalance$Runoff
@@ -142,11 +142,11 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   #Average summaries
   for(i in 1:length(levels(date.factor))) DI[,i,] = DI[,i,]/sum(df.int==i)
   cat("\n------------  spwbgrid ------------\n")
-    
-  l <- list(grid = y@grid, LandscapeBalance = LandscapeBalance, 
-            Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff, 
-            Infiltration=Infiltration, DeepDrainage = DeepDrainage, 
-            Esoil = Esoil, Eplant = Eplant, 
+
+  l <- list(grid = y@grid, LandscapeBalance = LandscapeBalance,
+            Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
+            Infiltration=Infiltration, DeepDrainage = DeepDrainage,
+            Esoil = Esoil, Eplant = Eplant,
             DI = DI, Transpiration = Transpiration)
   class(l)<-c("spwbgrid","list")
   return(l)

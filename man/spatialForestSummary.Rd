@@ -34,10 +34,10 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}
 }
 \examples{
-#Load plot data
-data(exampleSPL)
+library(medfate)
 
-#Load species parameters
+#Load plot data and species parameters from medfate
+data(exampleSPL)
 data(SpParamsMED)
 
 #Apply summary function

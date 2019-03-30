@@ -9,8 +9,8 @@
 Function \code{spwbgrid} conducts daily soil and plant water balance over a grid of cells while incorporating water runoff from upperslope cells into the current cell.
 }
 \usage{
-spwbgrid(y, SpParams, meteo, dates, 
-           summaryFreq = "years", trackSpecies = numeric(), 
+spwbgrid(y, SpParams, meteo, dates,
+           summaryFreq = "years", trackSpecies = numeric(),
            control = defaultControl())
 \method{plot}{spwbgrid}(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...)
 }
@@ -29,7 +29,7 @@ spwbgrid(y, SpParams, meteo, dates,
   \item{...}{Additional parameters to function \code{\link{spplot}}.}
 }
 \details{
-Function \code{spwbgrid} requires daily meteorological data over a grid. The user may supply: 
+Function \code{spwbgrid} requires daily meteorological data over a grid. The user may supply:
 \enumerate{
 \item{an object of class \code{\link{SpatialGridMeteorology}}.}
 \item{a data frame with information regarding where to read meteorological data.}
@@ -67,7 +67,9 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{SpatialGridLandscape-class}}
 }
 \examples{
-\dontrun{
+# Load medfate
+library(medfate)
+
 # Load spatial grid landscape object
 data("exampleSGL")
 
@@ -83,7 +85,6 @@ control$verbose = FALSE
 
 # Run water balance simulation over the grid for five days
 # (you can test longer periods)
-res <- spwbgrid(exampleSGL, SpParamsMED, examplemeteo[1:5,], 
+res <- spwbgrid(exampleSGL, SpParamsMED, examplemeteo[1:5,],
                 control = control, summaryFreq = "months")
-}
 }
