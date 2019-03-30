@@ -1,1 +1,13 @@
 exportPattern("^[[:alpha:]]+")
+
+import(sp)
+import(spdep)
+import(methods)
+import(meteoland)
+import(medfate)
+importFrom(Rcpp, evalCpp)
+
+exportMethods("[", show, head, tail)
+exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape)
+
+S3method(plot,spwbgrid)

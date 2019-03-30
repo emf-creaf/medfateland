@@ -1,11 +1,18 @@
 Package: medfateland
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Mediterranean Landscape Forest Simulation
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Date: 2019-03-19
+Authors@R: c(
+	person('Miquel', 'De Cáceres', role=c('aut','cre'),
+	email='miquelcaceres@gmail.com'))
+Description: Functions to simulate landscape hydrology and forest dynamics.
+License: GPL (>= 2)
+LazyLoad: yes
+Depends: R (>= 3.4.0), sp
+Imports: medfate, spdep, methods, meteoland (>= 0.7.1), Rcpp (>= 0.12.12)
+Suggests: knitr, rmarkdown, rjson
+LinkingTo: Rcpp, meteoland, medfate
 Encoding: UTF-8
-LazyData: true
+NeedsCompilation: yes
+VignetteBuilder: utils, knitr
