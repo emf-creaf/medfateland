@@ -111,7 +111,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
         gridRadiation = rep(meteo[i, "Radiation"], nCells)
       }
     }
-    gridER = rep(medfate::er(doy),nCells) #ER
+    gridER = rep(medfate::hydrology.er(doy),nCells) #ER
     df = .spwbgridDay(y@lct, spwbInputList, y@soillist,
                      y@waterOrder, y@queenNeigh, y@waterQ,
                      gridMeanTemperature, gridPET, gridPrecipitation, gridER,
