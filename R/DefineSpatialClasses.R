@@ -1,15 +1,15 @@
-setClass("SpatialPointsLandscape", 
-         slots=list(forestlist="list", soillist = "list"), 
+setClass("SpatialPointsLandscape",
+         slots=list(forestlist="list", soillist = "list"),
          contains="SpatialPointsTopography")
-setClass("SpatialGridLandscape", 
+setClass("SpatialGridLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list",
-                    waterOrder = "numeric", waterQ = "list", 
-                    queenNeigh = "list"), 
+                    waterOrder = "numeric", waterQ = "list",
+                    queenNeigh = "list"),
          contains="SpatialGridTopography")
-setClass("SpatialPixelsLandscape", 
+setClass("SpatialPixelsLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list",
-                    waterOrder = "numeric", waterQ = "list", 
-                    queenNeigh = "list"), 
+                    waterOrder = "numeric", waterQ = "list",
+                    queenNeigh = "list"),
          contains="SpatialPixelsTopography")
 
 setGeneric("spatialSoilSummary", valueClass ="Spatial", function(object, summaryFunction, ...){
@@ -28,15 +28,15 @@ setMethod("spatialSoilSummary", signature("SpatialGridLandscape"), function(obje
   }
   rownames(sm) = rownames(coordinates(object))
   s = sm
-  return(SpatialGridDataFrame(grid = object@grid, data = s, 
+  return(SpatialGridDataFrame(grid = object@grid, data = s,
                               proj4string=object@proj4string))
 })
-setGeneric("spatialForestSummary", valueClass ="Spatial", 
+setGeneric("spatialForestSummary", valueClass ="Spatial",
            function(object, summaryFunction, ...){
              standardGeneric("spatialForestSummary")
 })
 
-setMethod("spatialForestSummary", 
+setMethod("spatialForestSummary",
           signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
   l = object@forestlist
   if(length(l)==0) return(NULL)
@@ -49,7 +49,7 @@ setMethod("spatialForestSummary",
   }
   rownames(sm) = rownames(coordinates(object))
   s = sm
-  return(SpatialGridDataFrame(grid = object@grid, data = s, 
+  return(SpatialGridDataFrame(grid = object@grid, data = s,
                                 proj4string=object@proj4string))
 })
 
@@ -71,13 +71,13 @@ setMethod("spatialForestSummary",
 # setGeneric("getLCTs", valueClass ="SpatialGridDataFrame", function(object){
 #   standardGeneric("getLCTs")
 # })
-# setMethod("getLCTs", signature("SpatialGridForest"), function(object) {  
-#   return(SpatialGridDataFrame(grid=object@grid, 
-#                               data=data.frame(LCT=object@lct), 
+# setMethod("getLCTs", signature("SpatialGridForest"), function(object) {
+#   return(SpatialGridDataFrame(grid=object@grid,
+#                               data=data.frame(LCT=object@lct),
 #                               proj4string=object@proj4string))
 # })
-setMethod("spplot", signature("SpatialGridLandscape"), 
-          function(obj, type = "lct", ...) {  
+setMethod("spplot", signature("SpatialGridLandscape"),
+          function(obj, type = "lct", ...) {
             if(type=="lct") {
               spplot(SpatialGridDataFrame(obj@grid, data.frame(lct = obj@lct)),...)
             }
@@ -110,7 +110,7 @@ setMethod("spplot", signature("SpatialGridLandscape"),
             else if(type=="WTD") {
               n = length(obj@soillist)
               WTD = rep(NA, n)
-              for(i in 1:n) if(!(obj@lct[i] %in% c("Rock","Static"))) WTD[i] = soil.waterTableDepth(obj@soillist[[i]])
+              for(i in 1:n) if(!(obj@lct[i] %in% c("Rock","Static"))) WTD[i] = medfate::soil_waterTableDepth(obj@soillist[[i]])
               spplot(SpatialGridDataFrame(obj@grid, data.frame(WTD = WTD)), ...)
             }
           })

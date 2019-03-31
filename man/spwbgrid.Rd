@@ -67,9 +67,6 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{SpatialGridLandscape-class}}
 }
 \examples{
-# Load medfate
-library(medfate)
-
 # Load spatial grid landscape object
 data("exampleSGL")
 

@@ -41,9 +41,6 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 \code{\link{spwb}}, \code{\link{growth}}, \code{\link{SpatialPointsLandscape-class}}
 }
 \examples{
-# Load medfate
-library(medfate)
-
 # Load spatial points forest object
 data("exampleSPL")
 
