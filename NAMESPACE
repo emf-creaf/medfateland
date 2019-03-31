@@ -6,6 +6,7 @@ import(methods)
 import(meteoland)
 import(medfate)
 importFrom(Rcpp, evalCpp)
+useDynLib(medfateland, .registration = TRUE)
 
 exportMethods("[", show, head, tail)
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape)

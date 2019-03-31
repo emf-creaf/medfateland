@@ -4,12 +4,54 @@
 #include <medfate.h>
 using namespace Rcpp;
 
+
+// [[Rcpp::export(".getTrackSpeciesTranspiration")]]
+NumericVector getTrackSpeciesTranspiration( NumericVector trackSpecies, NumericVector Eplant, DataFrame x) {
+  int nTrackSpecies = trackSpecies.size();
+  NumericVector Eplantsp(nTrackSpecies, 0.0);
+  NumericVector SP = x["SP"];
+  int nCoh = SP.size();
+  int ts;
+  for(int its =0;its<nTrackSpecies;its++) {
+    ts = trackSpecies[its];
+    for(int i=0;i<nCoh;i++) {
+      if(SP[i]==ts) {
+        Eplantsp[its] += Eplant[i];
+      }
+    }
+  }
+  return(Eplantsp);
+}
+
+// [[Rcpp::export(".getTrackSpeciesDDS")]]
+NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, DataFrame x) {
+  int nTrackSpecies = trackSpecies.size();
+  NumericVector DDSsp(nTrackSpecies, 0.0);
+  NumericVector LAI = x["LAI"];
+  NumericVector SP = x["SP"];
+  int nCoh = LAI.size();
+  int ts;
+  double laiSum;
+  for(int its =0;its<nTrackSpecies;its++) {
+    ts = trackSpecies[its];
+    laiSum = 0.0;
+    for(int i=0;i<nCoh;i++) {
+      if(SP[i]==ts) {
+        DDSsp[its] += DDS[i]*LAI[i];
+        laiSum +=LAI[i];
+      }
+    }
+    DDSsp = DDSsp/laiSum;
+  }
+  return(DDSsp);
+}
+
 // [[Rcpp::export(".spwbgridDay")]]
 List spwbgridDay(CharacterVector lct, List xList, List soilList,
-                IntegerVector waterO, List queenNeigh, List waterQ,
-                NumericVector tdayVec, NumericVector petVec, NumericVector rainVec,
-                NumericVector erVec, NumericVector radVec, NumericVector elevation,
-                NumericVector trackSpecies, double patchsize) {
+                 IntegerVector waterO, List queenNeigh, List waterQ,
+                 NumericVector tdayVec, NumericVector petVec, NumericVector rainVec,
+                 NumericVector erVec, NumericVector radVec, NumericVector elevation,
+                 NumericVector trackSpecies, double patchsize) {
   int nX = xList.size();
   int nTrackSpecies = trackSpecies.size();
   NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL), NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
@@ -100,8 +142,8 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = Rcpp::as<Rcpp::List>(soilList[iCell]);
       //Run daily soil water balance for the current cell
-      List res = medfate::_spwbDay1(x, soil, tdayVec[iCell], petVec[iCell], rainVec[iCell], erVec[iCell],
-                          Runon[iCell], radVec[iCell], elevation[iCell]);
+      List res = medfate::spwb_daySimple(x, soil, tdayVec[iCell], petVec[iCell], rainVec[iCell], erVec[iCell],
+                                         Runon[iCell], radVec[iCell], elevation[iCell]);
       List DB = res["WaterBalance"];
       List SB = res["Soil"];
       List PL = res["Plants"];
@@ -117,8 +159,8 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       NumericVector DDScell = PL["DDS"];
       Eplant[iCell] = sum(EplantCoh);
       if(nTrackSpecies>0) {
-        Transpiration(iCell,_) = medfate::_getTrackSpeciesTranspiration(trackSpecies, EplantCoh, x);
-        DDS(iCell,_) = medfate::_getTrackSpeciesDDS(trackSpecies, DDScell, x);
+        Transpiration(iCell,_) = getTrackSpeciesTranspiration(trackSpecies, EplantCoh, x);
+        DDS(iCell,_) = getTrackSpeciesDDS(trackSpecies, DDScell, x);
       }
 
       //Assign runoff to runon of neighbours
@@ -155,13 +197,12 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
 
 
   DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow, _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
-                                   _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,
-                                   _["Esoil"] = Esoil, _["Eplant"] = Eplant);
+                                             _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,
+                                             _["Esoil"] = Esoil, _["Eplant"] = Eplant);
   return(List::create(_["WaterBalance"] = waterBalance,
                       _["RunoffExport"] = runoffExport,
                       _["Transpiration"] = Transpiration,
                       _["DDS"] = DDS));
 }
-
 
 

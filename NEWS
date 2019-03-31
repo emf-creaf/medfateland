@@ -5,4 +5,5 @@
 __Version history__
 
 _Version 0.1.0, April 2019.
-1. Package creation from files previously in package 'medfate'
+1. Package creation from files previously in package 'medfate'.
+2. Linking to package 'medfate'
