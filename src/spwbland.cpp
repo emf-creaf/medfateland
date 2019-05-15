@@ -142,8 +142,9 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = Rcpp::as<Rcpp::List>(soilList[iCell]);
       //Run daily soil water balance for the current cell
-      List res = medfate::spwb_daySimple(x, soil, tdayVec[iCell], petVec[iCell], rainVec[iCell], erVec[iCell],
-                                         Runon[iCell], radVec[iCell], elevation[iCell]);
+      List res;
+        // medfate::spwb_daySimple(x, soil, tdayVec[iCell], petVec[iCell], rainVec[iCell], erVec[iCell],
+        //                                  Runon[iCell], radVec[iCell], elevation[iCell]);
       List DB = res["WaterBalance"];
       List SB = res["Soil"];
       List PL = res["Plants"];
