@@ -10,8 +10,8 @@ SFI2SPL<-function(SFItreeData, SFIshrubData, SFIherbData=NULL, SpatialPointsIDs,
   x = SFItreeData[SFItreeData$ID %in% IDs, ]
   y = SFIshrubData[SFIshrubData$ID %in% IDs, ]
   if(!is.null(SFIcodes)) {
-    x$Species = translateSpeciesCodes(x, SFIcodes)
-    y$Species = translateSpeciesCodes(y, SFIcodes)
+    x$Species = forest_translateSpeciesCodes(x, SFIcodes)
+    y$Species = forest_translateSpeciesCodes(y, SFIcodes)
   } 
 
   if(control$verbose) cat("Extracting SFI data")  
