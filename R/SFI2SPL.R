@@ -10,15 +10,15 @@ SFI2SPL<-function(SFItreeData, SFIshrubData, SFIherbData=NULL, SpatialPointsIDs,
   x = SFItreeData[SFItreeData$ID %in% IDs, ]
   y = SFIshrubData[SFIshrubData$ID %in% IDs, ]
   if(!is.null(SFIcodes)) {
-    x$Species = forest_translateSpeciesCodes(x, SFIcodes)
-    y$Species = forest_translateSpeciesCodes(y, SFIcodes)
+    x$Species = forest_translateSFISpeciesCodes(x, SFIcodes)
+    y$Species = forest_translateSFISpeciesCodes(y, SFIcodes)
   } 
 
   if(control$verbose) cat("Extracting SFI data")  
   lx = split(x, factor(x$ID, levels=IDs))
   ly = split(y, factor(y$ID, levels=IDs))
   forestlist = Map(function(x,y, id) {
-    extractSFIforest(x,y, id, SFIherbData = SFIherbData, SpParams=SpParams,setDefaults = TRUE)
+    forest_extractSFIData(x,y, id, SFIherbData = SFIherbData, SpParams=SpParams,setDefaults = TRUE)
   }, lx, ly, IDs)  
 
   if(control$verbose) cat(" - Initializing soils")
