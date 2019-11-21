@@ -14,10 +14,10 @@ forest_extractSFIData<-function(SFItreeData, SFIshrubData, ID, SpParams,
   
   f$ID = ID
   f$patchsize = patchsize
-  f$treeData = data.frame(Species = xid$Species, N = round(xid$N), DBH = xid$DBH, Height = xid$H)
+  f$treeData = data.frame(Species = xid$Species, N = round(xid$N), DBH = xid$DBH, Height = xid$H*100)
   f$treeData$Z50 = rep(NA, nrow(f$treeData))
   f$treeData$Z95 = rep(NA, nrow(f$treeData))
-  f$shrubData = data.frame(Species = yid$Species, Cover = as.numeric(yid$FCC), Height = yid$H)
+  f$shrubData = data.frame(Species = yid$Species, Cover = as.numeric(yid$FCC), Height = yid$H*100)
   f$shrubData$Z50 =rep(NA, nrow(f$shrubData))
   f$shrubData$Z95 =rep(NA, nrow(f$shrubData))
   if(setDefaults) {
