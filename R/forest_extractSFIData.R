@@ -29,14 +29,16 @@ forest_extractSFIData<-function(SFItreeData, SFIshrubData, ID, SpParams,
     f$shrubData$Z50 = f$shrubData$Z95/4
   }
   
+  f$herbCover = NA
+  f$herbHeight = NA
   if(!is.null(SFIherbData)) {
-    f$herbCover = SFIherbData$Cover[SFIherbData$ID==ID]
-    f$herbHeight = SFIherbData$Height[SFIherbData$ID==ID]
-    if(length(f$herbCover)>1) f$herbCover = mean(f$herbCover, na.rm=TRUE)
-    if(length(f$herbHeight)>1) f$herbHeight = mean(f$herbHeight, na.rm=TRUE)
+    if(ID %in% SFIherbData$ID) {
+      f$herbCover = SFIherbData$Cover[SFIherbData$ID==ID]
+      f$herbHeight = SFIherbData$Height[SFIherbData$ID==ID]
+      if(length(f$herbCover)>1) f$herbCover = mean(f$herbCover, na.rm=TRUE)
+      if(length(f$herbHeight)>1) f$herbHeight = mean(f$herbHeight, na.rm=TRUE)
+    }
   } else {
-    f$herbCover = NA
-    f$herbHeight = NA
   }
   
   if(setDefaults) {
