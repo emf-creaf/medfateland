@@ -23,9 +23,26 @@ SFI2forestlist<-function(SFItreeData, SFIshrubData, SpParams, SFIherbData=NULL, 
   
   
   SFIcodes = SpParams$IFNcodes
-  x$Species = forest_translateSFISpeciesCodes(x$Species, SFIcodes)
-  y$Species = forest_translateSFISpeciesCodes(y$Species, SFIcodes)
-
+  x$SpeciesMF = forest_translateSFISpeciesCodes(x$Species, SFIcodes)
+  y$SpeciesMF = forest_translateSFISpeciesCodes(y$Species, SFIcodes)
+  #Remove NA species
+  if(sum(is.na(x$SpeciesMF))>0) {
+    cat(paste0("Tree data records with unrecognized SFI codes: ",sum(is.na(x$SpeciesMF)),"/", length(x$SpeciesMF),"\n"))
+    if(control$verbose) {
+      print(table(x$Species[is.na(x$SpeciesMF)]))
+    }
+    x = x[!is.na(x$SpeciesMF),]
+  }
+  if(sum(is.na(y$SpeciesMF))>0) {
+    cat(paste0("Shrub data records with unrecognized SFI codes:",sum(is.na(y$SpeciesMF)),"/", length(y$SpeciesMF),"\n"))
+    if(control$verbose) {
+      print(table(y$Species[is.na(y$SpeciesMF)]))
+    }
+    y = y[!is.na(y$SpeciesMF),]
+  }
+  x$Species =x$SpeciesMF
+  y$Species =y$SpeciesMF
+  
   if(control$verbose) cat("Extracting SFI data...\n")  
   lx = split(x, factor(x$ID, levels=IDs))
   ly = split(y, factor(y$ID, levels=IDs))

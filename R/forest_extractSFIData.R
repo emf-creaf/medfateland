@@ -5,13 +5,23 @@ forest_extractSFIData<-function(SFItreeData, SFIshrubData, ID, SpParams,
   xid = SFItreeData[SFItreeData$ID==ID,]
   yid = SFIshrubData[SFIshrubData$ID==ID,]
   if(!is.null(SFIcodes)) {
-    xid$Species = forest_translateSFISpeciesCodes(xid, SFIcodes)
-    yid$Species = forest_translateSFISpeciesCodes(yid, SFIcodes)
-  } 
-  #Remove NA species
-  xid = xid[!is.na(xid$Species),]
-  yid = yid[!is.na(yid$Species),]
-  
+    xid$SpeciesMF = forest_translateSFISpeciesCodes(xid, SFIcodes)
+    yid$SpeciesMF = forest_translateSFISpeciesCodes(yid, SFIcodes)
+    #Remove NA species
+    if(sum(is.na(xid$SpeciesMF))>0) {
+      cat(paste0("Tree data records with unrecognized SFI codes: ",sum(is.na(xid$SpeciesMF)),"/", length(xid$SpeciesMF),"\n"))
+      print(table(xid$Species[is.na(xid$SpeciesMF)]))
+      xid = xid[!is.na(xid$SpeciesMF),]
+    }
+    if(sum(is.na(yid$SpeciesMF))>0) {
+      cat(paste0("Shrub data records with unrecognized SFI codes:",sum(is.na(yid$SpeciesMF)),"/", length(yid$SpeciesMF),"\n"))
+      print(table(yid$Species[is.na(yid$SpeciesMF)]))
+      yid = yid[!is.na(yid$SpeciesMF),]
+    }
+    xid$Species =xid$SpeciesMF
+    yid$Species =yid$SpeciesMF
+  }
+    
   f$ID = ID
   f$patchsize = patchsize
   f$treeData = data.frame(Species = xid$Species, N = round(xid$N), DBH = xid$DBH, Height = xid$H*100)
