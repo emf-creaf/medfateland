@@ -49,8 +49,10 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 // [[Rcpp::export(".spwbgridDay")]]
 List spwbgridDay(CharacterVector lct, List xList, List soilList,
                  IntegerVector waterO, List queenNeigh, List waterQ,
-                 NumericVector tdayVec, NumericVector petVec, NumericVector rainVec,
-                 NumericVector erVec, NumericVector radVec, NumericVector elevation,
+                 CharacterVector date,
+                 NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec,
+                 NumericVector precVec, NumericVector radVec, NumericVector wsVec,
+                 NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                  NumericVector trackSpecies, double patchsize) {
   int nX = xList.size();
   int nTrackSpecies = trackSpecies.size();
@@ -143,8 +145,11 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       List soil = Rcpp::as<Rcpp::List>(soilList[iCell]);
       //Run daily soil water balance for the current cell
       List res;
-        // medfate::spwb_daySimple(x, soil, tdayVec[iCell], petVec[iCell], rainVec[iCell], erVec[iCell],
-        //                                  Runon[iCell], radVec[iCell], elevation[iCell]);
+      medfate::spwb_day(x, soil, date,
+                        tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
+                        radVec[iCell], wsVec[iCell],
+                        latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
+                        precVec[iCell], Runon[iCell]);
       List DB = res["WaterBalance"];
       List SB = res["Soil"];
       List PL = res["Plants"];
@@ -176,7 +181,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
         }
       }
     } else if(lct[iCell]=="rock") {//all Precipitation becomes surface runoff if cell is rock outcrop
-      Runoff[iCell] =  Runon[iCell]+rainVec[iCell];
+      Runoff[iCell] =  Runon[iCell]+precVec[iCell];
       double ri = Runoff[iCell];
       if(ri>0.0) {
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
@@ -192,7 +197,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       // but do not export to the atmosphere contribute nor to other cells.
       // Hence, water balance over the landscape is achieved by
       // adding this water to the landscape export via landscape runoff.
-      runoffExport += Runon[iCell] + rainVec[iCell];
+      runoffExport += Runon[iCell] + precVec[iCell];
     }
   }
 

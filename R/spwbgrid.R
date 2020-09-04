@@ -11,7 +11,9 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
   elevation = y@data$elevation
-
+  slope = y@data$slope
+  aspect = y@data$aspect
+  
   if(inherits(meteo,"data.frame")) {
     oneMeteoCell = ("MeanTemperature" %in% names(meteo))
     datesMeteo = as.Date(row.names(meteo))
@@ -89,33 +91,44 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     cat(paste("Day #", day))
     i = which(datesMeteo == dates[day]) #date index in meteo data
     doy = as.numeric(format(dates[day],"%j"))
+    datechar = as.character(dates[day])
     if(inherits(meteo,"SpatialGridMeteorology")) {
       ml = meteo@data[[i]]
-      gridMeanTemperature = as.numeric(ml["MeanTemperature"])
-      gridPET = as.numeric(ml["PET"])
+      gridMinTemperature = as.numeric(ml["MinTemperature"])
+      gridMaxTemperature = as.numeric(ml["MaxTemperature"])
+      gridMinRelativeHumidity = as.numeric(ml["MinRelativeHumidity"])
+      gridMaxRelativeHumidity = as.numeric(ml["MaxRelativeHumidity"])
       gridPrecipitation = as.numeric(ml["Precipitation"])
       gridRadiation = as.numeric(ml["Radiation"])
+      gridWindSpeed = as.numeric(ml["WindSpeed"])
     } else {
       if(!oneMeteoCell) { # Read meteo grid from file
         f = paste(meteo$dir[i], meteo$filename[i],sep="/")
         if(!file.exists(f)) stop(paste("Meteorology file '", f,"' does not exist!", sep=""))
         ml = readmeteorologygrid(f)
-        gridMeanTemperature = as.numeric(ml["MeanTemperature"])
-        gridPET = as.numeric(ml["PET"])
+        gridMinTemperature = as.numeric(ml["MinTemperature"])
+        gridMaxTemperature = as.numeric(ml["MaxTemperature"])
+        gridMinRelativeHumidity = as.numeric(ml["MinRelativeHumidity"])
+        gridMaxRelativeHumidity = as.numeric(ml["MaxRelativeHumidity"])
         gridPrecipitation = as.numeric(ml["Precipitation"])
         gridRadiation = as.numeric(ml["Radiation"])
+        gridWindSpeed = as.numeric(ml["WindSpeed"])
       } else { # repeat values for all cells
-        gridMeanTemperature = rep(meteo[i,"MeanTemperature"], nCells)
-        gridPET = rep(meteo[i, "PET"], nCells)
+        gridMinTemperature = rep(meteo[i,"MeanTemperature"], nCells)
+        gridMaxTemperature = rep(meteo[i,"MaxTemperature"], nCells)
+        gridMinRelativeHumidity = rep(meteo[i,"MinRelativeHumidity"], nCells)
+        gridMaxRelativeHumidity = rep(meteo[i,"MaxRelativeHumidity"], nCells)
         gridPrecipitation = rep(meteo[i,"Precipitation"], nCells)
         gridRadiation = rep(meteo[i, "Radiation"], nCells)
+        gridWindSpeed = rep(meteo[i, "WindSpeed"], nCells)
       }
     }
-    gridER = rep(medfate::hydrology_er(doy),nCells) #ER
     df = .spwbgridDay(y@lct, spwbInputList, y@soillist,
                      y@waterOrder, y@queenNeigh, y@waterQ,
-                     gridMeanTemperature, gridPET, gridPrecipitation, gridER,
-                     gridRadiation, elevation,
+                     datechar,
+                     gridMinTemperature, gridMaxTemperature, gridMinRelativeHumidity, gridMaxRelativeHumidity,
+                     gridPrecipitation, gridRadiation, gridWindSpeed,
+                     latitude, elevation, slope, aspect,
                      trackSpecies, patchsize)
     ifactor = df.int[day]
     Runon[,ifactor] = Runon[,ifactor] + df$WaterBalance$Runon

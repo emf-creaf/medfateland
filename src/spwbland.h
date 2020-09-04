@@ -7,6 +7,8 @@ using namespace Rcpp;
 
 List spwbgridDay(CharacterVector lct, List xList, List soilList,
                  IntegerVector waterO, List queenNeigh, List waterQ,
-                 NumericVector tdayVec, NumericVector petVec, NumericVector rainVec,
-                 NumericVector erVec, NumericVector radVec, NumericVector elevation,
+                 CharacterVector date,
+                 NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec,
+                 NumericVector precVec, NumericVector radVec, NumericVector wsVec,
+                 NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                  NumericVector trackSpecies, double patchsize);
