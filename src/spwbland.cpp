@@ -168,11 +168,13 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
         NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
         if(ni.size()>0) {
-          for(int j=0;j<ni.size();j++) Runon[ni[j]-1] += qi[j]*ri; //decrease index
-        } else {
-          runoffExport += ri; //If no suitable neighbours add ri to landscape export via runoff
-        }
+          for(int j=0;j<ni.size();j++)  {
+            Runon[ni[j]-1] += qi[j]*ri; //decrease index 
+            ri -= qi[j]*ri;
+          }
+        } 
       }
+      runoffExport += ri; //Add remaining
     } else if(lct[iCell]=="rock") {//all Precipitation becomes surface runoff if cell is rock outcrop
       Runoff[iCell] =  Runon[iCell]+precVec[iCell];
       double ri = Runoff[iCell];

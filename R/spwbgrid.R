@@ -71,7 +71,8 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   DeepDrainage = Runon
   SoilEvaporation = Runon
   Transpiration = Runon
-  LandscapeBalance = data.frame(Snow = rep(0, nSummary),
+  LandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
+                                Snow = rep(0, nSummary),
                                 Rain = rep(0, nSummary),
                                 Interception = rep(0, nSummary),
                                 SoilEvaporation = rep(0,nSummary),
@@ -144,22 +145,24 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     Transpiration[,ifactor] = Transpiration[,ifactor] + df$WaterBalance$Transpiration
     
     #Landscape balance
-    LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain, na.rm=T)
-    LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow, na.rm=T)
-    LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(df$WaterBalance$Rain, na.rm=T)-sum(df$WaterBalance$NetRain, na.rm=T))
-    LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + df$RunoffExport
-    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(df$WaterBalance$DeepDrainage, na.rm=T)
-    LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)
-    LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)
+    LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain, na.rm=T)/nCells
+    LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow, na.rm=T)/nCells
+    LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(df$WaterBalance$Rain, na.rm=T)-sum(df$WaterBalance$NetRain, na.rm=T))/nCells
+    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(df$WaterBalance$DeepDrainage, na.rm=T)/nCells
+    LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)/nCells
+    LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)/nCells
+    LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + df$RunoffExport/nCells
     if(control$verbose) cat("\n")
   }
   #Average summaries
   cat("\n------------  spwbgrid ------------\n")
 
+  LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
+  CellBalance<-list(Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
+                    Infiltration=Infiltration, DeepDrainage = DeepDrainage,
+                    SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
   l <- list(grid = y@grid, LandscapeBalance = LandscapeBalance,
-            Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
-            Infiltration=Infiltration, DeepDrainage = DeepDrainage,
-            SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
+            CellBalance = CellBalance)
   class(l)<-c("spwbgrid","list")
   return(l)
 }

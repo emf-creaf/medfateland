@@ -4,6 +4,7 @@
 
 # Version 0.2.1
 - Update for medfate version 0.2.1
+- Revision of runoff
 
 # Version 0.2.0
 - SFI extract functions moved from 'medfate'
