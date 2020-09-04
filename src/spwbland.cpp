@@ -53,13 +53,11 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
                  NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec,
                  NumericVector precVec, NumericVector radVec, NumericVector wsVec,
                  NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                 NumericVector trackSpecies, double patchsize) {
+                 double patchsize) {
   int nX = xList.size();
-  int nTrackSpecies = trackSpecies.size();
   NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL), NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
   NumericVector Runoff(nX,NA_REAL), DeepDrainage(nX,NA_REAL);
-  NumericVector Esoil(nX,NA_REAL), Eplant(nX,NA_REAL);
-  NumericMatrix Transpiration(nX, nTrackSpecies), DDS(nX, nTrackSpecies);
+  NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
   double runoffExport = 0.0;
 
   //A. Subsurface fluxes
@@ -160,14 +158,9 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       Infiltration[iCell] = DB["Infiltration"];
       Runoff[iCell] = DB["Runoff"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
-      Esoil[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
+      SoilEvaporation[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
       NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
-      NumericVector DDScell = PL["DDS"];
-      Eplant[iCell] = sum(EplantCoh);
-      // if(nTrackSpecies>0) {
-      //   Transpiration(iCell,_) = getTrackSpeciesTranspiration(trackSpecies, EplantCoh, x);
-      //   DDS(iCell,_) = getTrackSpeciesDDS(trackSpecies, DDScell, x);
-      // }
+      Transpiration[iCell] = sum(EplantCoh);
 
       //Assign runoff to runon of neighbours
       double ri =  Runoff[iCell];
@@ -204,11 +197,9 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
 
   DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow, _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
                                              _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,
-                                             _["Esoil"] = Esoil, _["Eplant"] = Eplant);
+                                             _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
   return(List::create(_["WaterBalance"] = waterBalance,
-                      _["RunoffExport"] = runoffExport,
-                      _["Transpiration"] = Transpiration,
-                      _["DDS"] = DDS));
+                      _["RunoffExport"] = runoffExport));
 }
 
 

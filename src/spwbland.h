@@ -11,4 +11,4 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
                  NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec,
                  NumericVector precVec, NumericVector radVec, NumericVector wsVec,
                  NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                 NumericVector trackSpecies, double patchsize);
+                 double patchsize);
