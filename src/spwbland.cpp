@@ -145,14 +145,14 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       List soil = Rcpp::as<Rcpp::List>(soilList[iCell]);
       //Run daily soil water balance for the current cell
       List res;
-      medfate::spwb_day(x, soil, date,
+      res = medfate::spwb_day(x, soil, date,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         precVec[iCell], Runon[iCell]);
-      List DB = res["WaterBalance"];
-      List SB = res["Soil"];
-      List PL = res["Plants"];
+      NumericVector DB = res["WaterBalance"];
+      DataFrame SB = res["Soil"];
+      DataFrame PL = res["Plants"];
       Snow[iCell] = DB["Snow"];
       Rain[iCell] = DB["Rain"];
       NetRain[iCell] = DB["NetRain"];
@@ -164,10 +164,10 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
       NumericVector DDScell = PL["DDS"];
       Eplant[iCell] = sum(EplantCoh);
-      if(nTrackSpecies>0) {
-        Transpiration(iCell,_) = getTrackSpeciesTranspiration(trackSpecies, EplantCoh, x);
-        DDS(iCell,_) = getTrackSpeciesDDS(trackSpecies, DDScell, x);
-      }
+      // if(nTrackSpecies>0) {
+      //   Transpiration(iCell,_) = getTrackSpeciesTranspiration(trackSpecies, EplantCoh, x);
+      //   DDS(iCell,_) = getTrackSpeciesDDS(trackSpecies, DDScell, x);
+      // }
 
       //Assign runoff to runon of neighbours
       double ri =  Runoff[iCell];
