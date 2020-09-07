@@ -6,8 +6,9 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   if(!inherits(y, "SpatialGridLandscape"))
     stop("'y' has to be of class 'SpatialGridLandscape'.")
   if(!inherits(meteo,"SpatialGridMeteorology") &&
-     !inherits(meteo,"data.frame"))
-    stop("'meteo' has to be of class 'SpatialGridMeteorology' or 'data.frame'.")
+     !inherits(meteo,"data.frame") &&
+     !inherits(meteo, "MeteorologyInterpolationData"))
+    stop("'meteo' has to be of class 'SpatialGridMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
   sp = spTransform(as(y, "SpatialPoints"), CRS("+proj=longlat"))
@@ -15,18 +16,20 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   elevation = y@data$elevation
   slope = y@data$slope
   aspect = y@data$aspect
-  
+
   if(inherits(meteo,"data.frame")) {
     oneMeteoCell = ("MeanTemperature" %in% names(meteo))
     datesMeteo = as.Date(row.names(meteo))
-  } else {
+  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    datesMeteo = meteo@dates
+  } else if(inherits(meteo, "SpatialGridMeteorology")) {
     datesMeteo = meteo@dates
   }
   if(is.null(dates)) {
     dates = datesMeteo
   } else {
     if(sum(dates %in% datesMeteo)<length(dates))
-      stop("Dates in 'dates' is nnot a subset of dates in 'meteo'.")
+      stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
   date.factor = cut(dates, breaks=summaryFreq)
   df.int = as.numeric(date.factor)
@@ -37,13 +40,14 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   #Print information area
   cat("\n------------  spwbgrid ------------\n")
   cat(paste("Grid cells: ", nCells,", area: ", areaSpatialGrid(y)/10000," ha\n", sep=""))
+  cat(paste("Meteorological input class: ", class(meteo),"\n", sep=""))
   cat(paste("Number of days to simulate: ",nDays,"\n", sep=""))
   cat(paste("Number of summaries: ", nSummary,"\n\n", sep=""))
 
   #Set control drainage to false
   control$drainage = FALSE
 
-  if(control$verbose) cat(paste("Preparing spwb input"))
+  cat(paste("Preparing spwb input"))
   spwbInputList = vector("list", nCells)
   patchsize = NA
   for(i in 1:nCells) {
@@ -81,21 +85,26 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
                                 DeepDrainage= rep(0, nSummary))
 
 
-  nTrackSpecies = length(trackSpecies)
-  if(nTrackSpecies>0) {
-    DI = array(0.0,dim=c(nCells, nSummary, nTrackSpecies))
-    Transpiration = array(0.0,dim=c(nCells, nSummary, nTrackSpecies))
-  } else {
-    DI = NULL
-    Transpiration = NULL
-  }
-
+  cat(paste("Running simulations:"))
   for(day in 1:nDays) {
-    cat(paste("Day #", day))
+    # cat(paste("Day #", day))
+    cat(".")
     i = which(datesMeteo == dates[day]) #date index in meteo data
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
-    if(inherits(meteo,"SpatialGridMeteorology")) {
+    if(inherits(meteo,"MeteorologyInterpolationData")) {
+      ml = interpolationgrid(meteo, y, dates[day], verbose = TRUE)
+      ml = ml@data
+      # print(class(ml))
+      # stop("kk")
+      gridMinTemperature = ml$MinTemperature
+      gridMaxTemperature = ml$MaxTemperature
+      gridMinRelativeHumidity = ml$MinRelativeHumidity
+      gridMaxRelativeHumidity = ml$MaxRelativeHumidity
+      gridPrecipitation = ml$Precipitation
+      gridRadiation = ml$Radiation
+      gridWindSpeed = ml$WindSpeed
+    } else if(inherits(meteo,"SpatialGridMeteorology")) {
       ml = meteo@data[[i]]
       gridMinTemperature = as.numeric(ml["MinTemperature"])
       gridMaxTemperature = as.numeric(ml["MaxTemperature"])
@@ -143,7 +152,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + df$WaterBalance$DeepDrainage
     SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + df$WaterBalance$SoilEvaporation
     Transpiration[,ifactor] = Transpiration[,ifactor] + df$WaterBalance$Transpiration
-    
+
     #Landscape balance
     LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain, na.rm=T)/nCells
     LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow, na.rm=T)/nCells
@@ -152,8 +161,9 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)/nCells
     LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)/nCells
     LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + df$RunoffExport/nCells
-    if(control$verbose) cat("\n")
+    # if(control$verbose) cat("\n")
   }
+  cat("done\n\n")
   #Average summaries
   cat("\n------------  spwbgrid ------------\n")
 

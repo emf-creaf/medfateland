@@ -132,7 +132,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       }
     }
   }
-  Rcout<<"\n";
+  // Rcout<<"\n";
 
   //B. Vertical and surface fluxes
   for(int i=0;i<nX;i++) {
@@ -169,10 +169,10 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
         NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
         if(ni.size()>0) {
           for(int j=0;j<ni.size();j++)  {
-            Runon[ni[j]-1] += qi[j]*ri; //decrease index 
+            Runon[ni[j]-1] += qi[j]*ri; //decrease index
             ri -= qi[j]*ri;
           }
-        } 
+        }
       }
       runoffExport += ri; //Add remaining
     } else if(lct[iCell]=="rock") {//all Precipitation becomes surface runoff if cell is rock outcrop
