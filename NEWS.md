@@ -6,6 +6,8 @@
 - Update for medfate version 0.2.1
 - Revision of runoff
 - Grid simulations with MeteorologyInterpolationData as input
+- Cell state output
+- Outlet cell daily runoff
 
 # Version 0.2.0
 - SFI extract functions moved from 'medfate'

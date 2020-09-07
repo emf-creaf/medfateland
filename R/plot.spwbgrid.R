@@ -1,7 +1,8 @@
 plot.spwbgrid<-function(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...) {
-  
+
   grid = x$grid
-  y = x$CellBalance[[type]]
+  if(type %in% names(x$CellBalance)) y = x$CellBalance[[type]]
+  else if(type %in% names(x$CellState)) y = x$CellState[[type]]
   # if(type %in% c("DI","Transpiration")) {
   #   y = y[, summaryIndex, spIndex]
   # } else {
