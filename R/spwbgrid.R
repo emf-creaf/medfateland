@@ -85,6 +85,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   DeepDrainage = Runon
   SoilEvaporation = Runon
   Transpiration = Runon
+  SWE = Runon
   Psi1 = Runon
   WTD = Runon
   Volume = Runon
@@ -99,7 +100,8 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
 
 
   summary_function = function(object, model="SX") {
-    list(Psi1 = soil_psi(object)[1],
+    list(SWE = object$SWE,
+         Psi1 = soil_psi(object)[1],
          Volume = sum(soil_water(object, model)),
          WTD = soil_waterTableDepth(object))
     }
@@ -174,6 +176,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + df$WaterBalance$DeepDrainage
     SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + df$WaterBalance$SoilEvaporation
     Transpiration[,ifactor] = Transpiration[,ifactor] + df$WaterBalance$Transpiration
+    SWE[,ifactor] = SWE[,ifactor] + summary_df$SWE/t.df[ifactor]
     Psi1[,ifactor] = Psi1[,ifactor] + summary_df$Psi1/t.df[ifactor]
     Volume[,ifactor] = Volume[,ifactor] + summary_df$Volume/t.df[ifactor]
     WTD[,ifactor] = WTD[,ifactor] + summary_df$WTD/t.df[ifactor]
@@ -198,7 +201,7 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   CellBalance<-list(Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
                     Infiltration=Infiltration, DeepDrainage = DeepDrainage,
                     SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
-  CellState<-list(Psi1 = Psi1, Volume = Volume, WTD = WTD)
+  CellState<-list(SWE = SWE, Psi1 = Psi1, Volume = Volume, WTD = WTD)
   l <- list(grid = y@grid, LandscapeBalance = LandscapeBalance,
             CellBalance = CellBalance,
             CellState = CellState,

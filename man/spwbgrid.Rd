@@ -55,6 +55,7 @@ A list of class 'spwbgrid' with the following elements:
  }
  \item{\code{CellState}: A list of matrices (each with as many rows as cells and as many columns as summary points) representing the average soil state for each cell:
    \itemize{
+     \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
      \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
      \item{\code{Volume}: Soil water volume integrated across vertical layers (in mm).}
      \item{\code{WTD}: Water table depth (in mm from surface).}
