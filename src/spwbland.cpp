@@ -64,7 +64,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
   double cellArea = patchsize; //cell size in m2
   double cellWidth = sqrt(patchsize); //cell width in m
   double n = 3.0;
-  double K = 7.2; //7.2 m/day
+  double Kfactor = 100.0;
   //1. Calculate water table depth
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector WaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
@@ -84,6 +84,11 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       List soil = Rcpp::as<Rcpp::List>(soilList[i]);
       double D = soil["SoilDepth"]; //Soil depth in mm
+      NumericVector clay = soil["clay"];
+      NumericVector sand = soil["sand"];
+      NumericVector om = soil["om"];
+      double Ks1 = 0.01*medfate::soil_saturatedConductivitySX(clay[1], sand[1], om[1], false); //cm/day to m/day
+      double K = Kfactor*Ks1;
       if(WTD[i]<D) {
         double T = ((K*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
