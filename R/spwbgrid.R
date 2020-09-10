@@ -52,7 +52,6 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   cat(paste("Number of outlet cells: ", length(outlets),"\n\n"))
 
   #Set control drainage to false
-  control$drainage = FALSE
 
   cat(paste("Preparing spwb input"))
   spwbInputList = vector("list", nCells)
@@ -62,6 +61,8 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     patchsize = yid$patchsize
     soil = y@soillist[[i]]
     if((!is.na(yid)) && (!is.na(soil))) {
+      soil$Vperc = 0.1
+      y@soillist[[i]] = soil
       xi = forest2spwbInput(yid, soil, SpParams, control)
       spwbInputList[[i]] = xi
     }  else {
