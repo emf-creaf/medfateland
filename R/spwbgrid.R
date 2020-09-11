@@ -1,6 +1,7 @@
 spwbgrid<-function(y, SpParams, meteo, dates = NULL,
-                  summaryFreq = "years",
-                  control = defaultControl()) {
+                    summaryFreq = "years",
+                    spwbcontrol = medfate::defaultControl(),
+                    correctionFactors = defaultCorrectionFactors()) {
 
   #check input
   if(!inherits(y, "SpatialGridLandscape"))
@@ -51,8 +52,6 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
   cat(paste("Number of landscape summaries: ", nSummary,"\n", sep=""))
   cat(paste("Number of outlet cells: ", length(outlets),"\n\n"))
 
-  #Set control drainage to false
-
   cat(paste("Preparing spwb input"))
   spwbInputList = vector("list", nCells)
   patchsize = NA
@@ -61,9 +60,9 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     patchsize = yid$patchsize
     soil = y@soillist[[i]]
     if((!is.na(yid)) && (!is.na(soil))) {
-      soil$Vperc = 0.1
+      soil$Kdrain = 0.5
       y@soillist[[i]] = soil
-      xi = forest2spwbInput(yid, soil, SpParams, control)
+      xi = forest2spwbInput(yid, soil, SpParams, spwbcontrol)
       spwbInputList[[i]] = xi
     }  else {
       spwbInputList[[i]] = NA
@@ -159,13 +158,14 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     }
     df = .spwbgridDay(y@lct, spwbInputList, y@soillist,
                      y@waterOrder, y@queenNeigh, y@waterQ,
+                     correctionFactors,
                      datechar,
                      gridMinTemperature, gridMaxTemperature, gridMinRelativeHumidity, gridMaxRelativeHumidity,
                      gridPrecipitation, gridRadiation, gridWindSpeed,
                      latitude, elevation, slope, aspect,
                      patchsize)
 
-    summary_day = spatialSoilSummary(y, summary_function, control$soilFunctions)
+    summary_day = spatialSoilSummary(y, summary_function, spwbcontrol$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
     Runon[,ifactor] = Runon[,ifactor] + df$WaterBalance$Runon
@@ -192,7 +192,6 @@ spwbgrid<-function(y, SpParams, meteo, dates = NULL,
     LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)/nCells
     LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)/nCells
     LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + df$RunoffExport/nCells
-    # if(control$verbose) cat("\n")
   }
   cat("done\n\n")
   #Average summaries

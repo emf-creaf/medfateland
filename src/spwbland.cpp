@@ -49,6 +49,7 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 // [[Rcpp::export(".spwbgridDay")]]
 List spwbgridDay(CharacterVector lct, List xList, List soilList,
                  IntegerVector waterO, List queenNeigh, List waterQ,
+                 List correctionFactors,
                  CharacterVector date,
                  NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec,
                  NumericVector precVec, NumericVector radVec, NumericVector wsVec,
@@ -60,11 +61,14 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
   NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
   double runoffExport = 0.0;
 
+  double Rdrain = correctionFactors["Rdrain"];
+  double Rinterflow = correctionFactors["Rinterflow"];
+  double Rbaseflow = correctionFactors["Rbaseflow"];
+
   //A. Subsurface fluxes
   double cellArea = patchsize; //cell size in m2
   double cellWidth = sqrt(patchsize); //cell width in m
   double n = 3.0;
-  double Kfactor = 100.0;
   //1. Calculate water table depth
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector WaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
@@ -88,9 +92,9 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       NumericVector sand = soil["sand"];
       NumericVector om = soil["om"];
       double Ks1 = 0.01*medfate::soil_saturatedConductivitySX(clay[1], sand[1], om[1], false); //cm/day to m/day
-      double K = Kfactor*Ks1;
+      double Kinterflow = Rinterflow*Ks1;
       if(WTD[i]<D) {
-        double T = ((K*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
+        double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
         //water table slope between target and neighbours
         for(int j=0;j<ni.size();j++) {
@@ -145,7 +149,10 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
     int iCell = waterO[i]-1; //Decrease index!!!!
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
-      List soil = Rcpp::as<Rcpp::List>(soilList[iCell]);
+      List soil = clone(Rcpp::as<Rcpp::List>(soilList[iCell])); //clone soil (we modify Kdrain)
+      double Kdrain = soil["Kdrain"];
+      soil["Kdrain"] = Kdrain*Rdrain;
+
       //Run daily soil water balance for the current cell
       List res;
       res = medfate::spwb_day(x, soil, date,

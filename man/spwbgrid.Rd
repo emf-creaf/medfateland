@@ -80,12 +80,15 @@ data("examplemeteo")
 #Load species parameters
 data("SpParamsMED")
 
-# Deactivate extra console output
+# Default control for local soil plant water balance
 control = defaultControl()
-control$verbose = FALSE
+
+# Default modifiers of hydraulic parameters
+correctionFactors = defaultHydraulicCorrectionFactors()
 
 # Run water balance simulation over the grid for five days
 # (you can test longer periods)
 res <- spwbgrid(exampleSGL, SpParamsMED, examplemeteo[1:5,],
-                control = control, summaryFreq = "months")
+                summaryFreq = "months",
+                spwbcontrol = control, correctionFactors = correctionFactors)
 }
