@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.2.2
+- New function buildSpatialPixelsTopography
+
 # Version 0.2.1
 - Update for medfate version 0.2.1
 - Revision of runoff
