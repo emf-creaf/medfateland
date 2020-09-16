@@ -3,6 +3,7 @@
 ----------------------------------
 
 # Version 0.2.2
+- New spatial object definitions
 - New function buildSpatialPixelsTopography
 
 # Version 0.2.1
