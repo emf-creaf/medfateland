@@ -109,7 +109,9 @@ setMethod("spplot", signature("DistributedWatershed"),
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
               } else if(variable=="waterOrder") {
-                varplot = rank(-obj@data$elevation, ties.method="first")
+                wo = dw@waterOrder
+                varplot = 1:length(wo)
+                varplot[wo] = 1:length(wo)
               }
               spplot(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
                                             data.frame(var = varplot), 
