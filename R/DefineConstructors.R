@@ -1,4 +1,4 @@
-SpatialPointsLandscape<-function(spt, lct, forestlist, soillist, verbose=TRUE) {
+SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spt,"SpatialPointsTopography")) 
     stop("'sgt' has to be of class 'SpatialPointsTopography'.")
@@ -6,11 +6,24 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist, verbose=TRUE) {
     stop("'forestlist' has to be a list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a list of 'soil' objects.")
+  npoints = length(soillist)
+  for(i in 1:npoints) {
+    s = soillist[[i]]
+    if(class(s) == "data.frame") {
+      s = soil(s)
+    } else if(class(s)=="soil") {
+      soillist[[i]] = s
+    } else {
+      stop(paste0("Wrong input soil class for",i,"\n"))
+    }
+  }
+  xlist = vector("list", ncells)
   
   spl = new("SpatialPointsLandscape",
             lct = lct,
             forestlist = forestlist, 
             soillist = soillist,
+            xlist = xlist,
             data = spt@data,
             coords.nrs = spt@coords.nrs,
             coords = spt@coords,
@@ -38,7 +51,7 @@ SpatialGridLandscape<-function(sgt, lct, forestlist, soillist) {
       stop(paste0("Wrong input soil class for",i,"\n"))
     }
   }
-  xList = vector("list", ncells)
+  xlist = vector("list", ncells)
   sgl = new("SpatialGridLandscape",
             lct = lct,
             forestlist = forestlist, 
@@ -51,7 +64,7 @@ SpatialGridLandscape<-function(sgt, lct, forestlist, soillist) {
   return(sgl)
 }
 
-SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist, verbose=TRUE) {
+SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spxt,"SpatialPixelsTopography")) 
     stop("'spxt' has to be of class 'SpatialPixelsTopography'.")
@@ -63,7 +76,7 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist, verbose=TRUE) 
   for(i in 1:ncells) {
     s = soillist[[i]]
     if(class(s) == "data.frame") {
-      s = soil(s)
+      soillist[[i]] = soil(s)
     } else if(class(s)=="soil") {
       soillist[[i]] = s
     } else {
@@ -86,7 +99,7 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist, verbose=TRUE) 
   return(spxl)
 }
 
-DistributedWatershed<-function(spxt, lct, forestlist, soillist, verbose=TRUE) {
+DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spxt,"SpatialPixelsTopography")) 
     stop("'spxt' has to be of class 'SpatialPixelsTopography'.")
@@ -95,16 +108,31 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, verbose=TRUE) {
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a list of 'soil' objects.")
   
+  ncells = length(soillist)
+  for(i in 1:ncells) {
+    s = soillist[[i]]
+    if(class(s) == "data.frame") {
+      s = soil(s)
+    } else if(class(s)=="soil") {
+      soillist[[i]] = s
+    } else {
+      stop(paste0("Wrong input soil class for",i,"\n"))
+    }
+  }
+  xlist = vector("list", ncells)
+  aquifer = vector("list", ncells)
+  
   #Take grid
   grid = spxt@grid
-  coords = coordinates(grid)
+  coords = spxt@coords
+  indices = spxt@grid.index
   elevation = spxt@data$elevation
   
-  if(verbose) cat(" - Queen neighbours")
-  queenNeigh = cell2nb(grid@cells.dim[1],grid@cells.dim[2], type="queen")
+  # if(verbose) cat(" - Queen neighbours")
+  queenNeigh = dnearneigh(coords, 0, sqrt(prod(grid@cells.dim)))
   class(queenNeigh)<-"list"
   
-  if(verbose) cat(" - Water discharge order")
+  # if(verbose) cat(" - Water discharge order")
   waterOrder = order(elevation, decreasing=TRUE)
   waterQ = vector("list", length(queenNeigh))
   qfun<-function(xi, yi, zi, X, Y, Z) {
@@ -121,17 +149,17 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, verbose=TRUE) {
     waterQ[[i]] = qfun(xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
                        X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne])
   }  
-  if(verbose) cat(" - done.\n")
-  
-  
+  # if(verbose) cat(" - done.\n")
+
   dws = new("DistributedWatershed",
              waterOrder = waterOrder,
              waterQ = waterQ,
              queenNeigh = queenNeigh,
-             aquiferList = aquiferList,
+             aquifer = aquifer,
              lct = lct,
              forestlist = forestlist, 
              soillist = soillist,
+             xlist = xlist,
              data = spxt@data,
              coords.nrs = spxt@coords.nrs,
              grid = spxt@grid, 
