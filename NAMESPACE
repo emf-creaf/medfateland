@@ -8,7 +8,7 @@ import(medfate)
 importFrom(Rcpp, evalCpp)
 useDynLib(medfateland, .registration = TRUE)
 
-exportMethods("[", show, head, tail)
-exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape)
+exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
+exportMethods("[", show, spplot, head, tail)
 
 S3method(plot,spwbgrid)

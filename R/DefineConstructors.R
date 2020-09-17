@@ -19,7 +19,7 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist, verbose=TRUE) {
   return(spl)
 }
 
-SpatialGridLandscape<-function(sgt, lct, forestlist, soillist, verbose=TRUE) {
+SpatialGridLandscape<-function(sgt, lct, forestlist, soillist) {
   #check input
   if(!inherits(sgt,"SpatialGridTopography")) 
     stop("'sgt' has to be of class 'SpatialGridTopography'.")
@@ -27,11 +27,23 @@ SpatialGridLandscape<-function(sgt, lct, forestlist, soillist, verbose=TRUE) {
     stop("'forestlist' has to be a list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a list of 'soil' objects.")
-  
+  ncells = length(soillist)
+  for(i in 1:ncells) {
+    s = soillist[[i]]
+    if(class(s) == "data.frame") {
+      s = soil(s)
+    } else if(class(s)=="soil") {
+      soillist[[i]] = s
+    } else {
+      stop(paste0("Wrong input soil class for",i,"\n"))
+    }
+  }
+  xList = vector("list", ncells)
   sgl = new("SpatialGridLandscape",
             lct = lct,
             forestlist = forestlist, 
             soillist = soillist,
+            xlist = xlist,
             data = sgt@data,
             grid =sgt@grid, 
             bbox = sgt@bbox, 
@@ -47,11 +59,23 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist, verbose=TRUE) 
     stop("'forestlist' has to be a list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a list of 'soil' objects.")
-  
+  ncells = length(soillist)
+  for(i in 1:ncells) {
+    s = soillist[[i]]
+    if(class(s) == "data.frame") {
+      s = soil(s)
+    } else if(class(s)=="soil") {
+      soillist[[i]] = s
+    } else {
+      stop(paste0("Wrong input soil class for",i,"\n"))
+    }
+  }
+  xlist = vector("list", ncells)
   spxl = new("SpatialPixelsLandscape",
              lct = lct,
              forestlist = forestlist, 
              soillist = soillist,
+             xlist = xlist,
              data = spxt@data,
              coords.nrs = spxt@coords.nrs,
              grid = spxt@grid, 
