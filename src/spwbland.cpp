@@ -195,18 +195,38 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       }
       runoffExport += ri; //Add remaining
     } else if(lct[iCell]=="rock") {//all Precipitation becomes surface runoff if cell is rock outcrop
+      double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
+      Rain[iCell] = 0.0;
+      NetRain[iCell] = 0.0;
+      Snow[iCell] = 0.0;
+      if(tday<0.0) {
+        Snow[iCell] = precVec[iCell];
+      } else {
+        Rain[iCell] = precVec[iCell];
+        NetRain[iCell] = precVec[iCell];
+      }
       Runoff[iCell] =  Runon[iCell]+precVec[iCell];
       double ri = Runoff[iCell];
       if(ri>0.0) {
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
         NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
-        if(ni.size()>0) {
-          for(int j=0;j<ni.size();j++) Runon[ni[j]-1] += qi[j]*ri;//decrease index
-        } else {
-          runoffExport += ri; //If no suitable neighbours add ri to landscape export via runoff
+        for(int j=0;j<ni.size();j++)  {
+          Runon[ni[j]-1] += qi[j]*ri; //decrease index
+          ri -= qi[j]*ri;
         }
+        runoffExport += ri; //Add remaining
       }
     } else if(lct[iCell]=="static") {
+      double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
+      Rain[iCell] = 0.0;
+      NetRain[iCell] = 0.0;
+      Snow[iCell] = 0.0;
+      if(tday<0.0) {
+        Snow[iCell] = precVec[iCell];
+      } else {
+        Rain[iCell] = precVec[iCell];
+        NetRain[iCell] = precVec[iCell];
+      }
       // static cells receive water from other cells or Precipitation
       // but do not export to the atmosphere contribute nor to other cells.
       // Hence, water balance over the landscape is achieved by
