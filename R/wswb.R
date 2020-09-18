@@ -1,4 +1,4 @@
-spwbgrid<-function(y, SpParams, meteo, dates = NULL,
+wswb<-function(y, SpParams, meteo, dates = NULL,
                     summaryFreq = "years",
                     spwbcontrol = medfate::defaultControl(),
                     correctionFactors = defaultCorrectionFactors()) {
