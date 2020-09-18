@@ -45,8 +45,9 @@ setMethod("spatialSoilSummary", signature("SpatialPixelsLandscape"), function(ob
   }
   rownames(sm) = rownames(coordinates(object))
   s = sm
-  return(SpatialPixelsDataFrame(grid = object@grid, data = s,
-                                proj4string=object@proj4string))
+  return(SpatialPixelsDataFrame(as(object, "SpatialPoints"),
+                                data = s,
+                                grid = object@grid))
 })
 
 #### spatialForestSummary ####

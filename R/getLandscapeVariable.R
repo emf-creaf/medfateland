@@ -1,11 +1,17 @@
 .getAllowedVars <-function() {
-  return(c("lct", "basalArea", "SWE", "WTD","texture1", "texture2", "texture3",
+  return(c("elevation", "slope", "aspect", "lct", "basalArea", "SWE", "WTD","texture1", "texture2", "texture3",
            "SoilVol"))
 }
 .getLandscapeVar<-function(obj, variable, ...) {
   variable = match.arg(variable, .getAllowedVars())
   if(variable=="lct") {
     varplot = factor(obj@lct)
+  } else if(variable=="elevation") {
+    varplot = obj@data$elevation
+  } else if(variable=="slope") {
+    varplot = obj@data$slope
+  } else if(variable=="aspect") {
+    varplot = obj@data$aspect
   } else if(variable=="basalArea") {
     n = length(obj@forestlist)
     varplot = rep(NA, n)
@@ -112,6 +118,6 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                                             grid = obj@grid))
               
             } else {
-              return(getVariable(as(obj, "SpatialPixelsLandscape"), variable, ...))
+              return(getLandscapeVariable(as(obj, "SpatialPixelsLandscape"), variable, ...))
             } 
           })

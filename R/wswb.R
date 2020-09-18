@@ -1,11 +1,10 @@
 wswb<-function(y, SpParams, meteo, dates = NULL,
                     summaryFreq = "years",
                     spwbcontrol = medfate::defaultControl(),
-                    correctionFactors = defaultCorrectionFactors()) {
+                    correctionFactors = defaultWatershedCorrectionFactors()) {
 
   #check input
-  if(!inherits(y, "SpatialGridLandscape"))
-    stop("'y' has to be of class 'SpatialGridLandscape'.")
+  if(!inherits(y, "DistributedWatershed")) stop("'y' has to be of class 'DistributedWatershed'.")
   if(!inherits(meteo,"SpatialGridMeteorology") &&
      !inherits(meteo,"data.frame") &&
      !inherits(meteo, "MeteorologyInterpolationData"))
@@ -23,7 +22,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     datesMeteo = as.Date(row.names(meteo))
   } else if(inherits(meteo, "MeteorologyInterpolationData")) {
     datesMeteo = meteo@dates
-  } else if(inherits(meteo, "SpatialGridMeteorology")) {
+  } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
     datesMeteo = meteo@dates
   }
   if(is.null(dates)) {
@@ -45,7 +44,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   patchsize = y@forestlist[[1]]$patchsize
 
   #Print information area
-  cat("\n------------  spwbgrid ------------\n")
+  cat("\n------------  wswb ------------\n")
   cat(paste("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n", sep=""))
   cat(paste("Meteorological input class: ", class(meteo),"\n", sep=""))
   cat(paste("Number of days to simulate: ",nDays,"\n", sep=""))
@@ -53,22 +52,20 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste("Number of outlet cells: ", length(outlets),"\n\n"))
 
   cat(paste("Preparing spwb input"))
-  spwbInputList = vector("list", nCells)
   patchsize = NA
+
   for(i in 1:nCells) {
-    yid = y@forestlist[[i]]
-    patchsize = yid$patchsize
-    soil = y@soillist[[i]]
-    if((!is.na(yid)) && (!is.na(soil))) {
-      soil$Kdrain = 0.5
-      y@soillist[[i]] = soil
-      xi = forest2spwbInput(yid, soil, SpParams, spwbcontrol)
-      spwbInputList[[i]] = xi
-    }  else {
-      spwbInputList[[i]] = NA
+    f = y@forestlist[[i]]
+    s = y@soillist[[i]]
+    if((!is.null(f)) && (!is.null(s))) {
+      y@xlist[[i]] = forest2spwbInput(f, s, SpParams, spwbcontrol)
+    } else if((!is.null(s)) && (lct[i]== "agriculture")) {
+      y@xlist[[i]] = forest2spwbInput(emptyforest(), s, SpParams, spwbcontrol)
+    } else {
+      y@xlist[[i]] = NA
     }
   }
-  cat(paste(" - number of cells with spwbInput == NA: ", sum(is.na(spwbInputList)),"\n\n", sep=""))
+  cat(paste(" - number of cells with spwbInput == NA: ", sum(is.na(y@xlist)),"\n\n", sep=""))
 
 
   #Output matrices
@@ -114,7 +111,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
     if(inherits(meteo,"MeteorologyInterpolationData")) {
-      ml = interpolationgrid(meteo, y, dates[day], verbose = TRUE)
+      ml = interpolationpixels(meteo, y, dates[day], verbose = TRUE)
       ml = ml@data
       # print(class(ml))
       # stop("kk")
@@ -125,7 +122,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
       gridPrecipitation = ml$Precipitation
       gridRadiation = ml$Radiation
       gridWindSpeed = ml$WindSpeed
-    } else if(inherits(meteo,"SpatialGridMeteorology")) {
+    } else if(inherits(meteo,"SpatialPixelsMeteorology")) {
       ml = meteo@data[[i]]
       gridMinTemperature = as.numeric(ml["MinTemperature"])
       gridMaxTemperature = as.numeric(ml["MaxTemperature"])
@@ -156,15 +153,16 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
         gridWindSpeed = rep(meteo[i, "WindSpeed"], nCells)
       }
     }
-    df = .spwbgridDay(y@lct, spwbInputList, y@soillist,
-                     y@waterOrder, y@queenNeigh, y@waterQ,
-                     correctionFactors,
-                     datechar,
-                     gridMinTemperature, gridMaxTemperature, gridMinRelativeHumidity, gridMaxRelativeHumidity,
-                     gridPrecipitation, gridRadiation, gridWindSpeed,
-                     latitude, elevation, slope, aspect,
-                     patchsize)
+    df = .wswbDay(y@lct, y@xlist, y@soillist,
+                  y@waterOrder, y@queenNeigh, y@waterQ,
+                  correctionFactors,
+                  datechar,
+                  gridMinTemperature, gridMaxTemperature, gridMinRelativeHumidity, gridMaxRelativeHumidity,
+                  gridPrecipitation, gridRadiation, gridWindSpeed,
+                  latitude, elevation, slope, aspect,
+                  patchsize)
 
+    cat("+")
     summary_day = spatialSoilSummary(y, summary_function, spwbcontrol$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
@@ -195,7 +193,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   }
   cat("done\n\n")
   #Average summaries
-  cat("\n------------  spwbgrid ------------\n")
+  cat("\n------------  wswb ------------\n")
 
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   CellBalance<-list(Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
@@ -206,6 +204,6 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
             CellBalance = CellBalance,
             CellState = CellState,
             DailyRunoff = DailyRunoff)
-  class(l)<-c("spwbgrid","list")
+  class(l)<-c("wswb","list")
   return(l)
 }

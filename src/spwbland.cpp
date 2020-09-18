@@ -46,8 +46,8 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
   return(DDSsp);
 }
 
-// [[Rcpp::export(".spwbgridDay")]]
-List spwbgridDay(CharacterVector lct, List xList, List soilList,
+// [[Rcpp::export(".wswbDay")]]
+List wswbDay(CharacterVector lct, List xList, List soilList,
                  IntegerVector waterO, List queenNeigh, List waterQ,
                  List correctionFactors,
                  CharacterVector date,
@@ -70,6 +70,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
   double cellWidth = sqrt(patchsize); //cell width in m
   double n = 3.0;
   //1. Calculate water table depth
+  // Rcout<<"A.1";
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector WaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   for(int i=0;i<nX;i++){
@@ -82,6 +83,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
     }
   }
   //2. Calculate inflow/outflow for each cell (in m3/day)
+  // Rcout<<"A.2";
   NumericVector inflow(nX, 0.0);
   NumericVector outflow(nX, 0.0);
   for(int i=0;i<nX;i++){
@@ -111,6 +113,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
     }
   }
   //3. Apply changes in soil moisture to each cell
+  // Rcout<<"A.3";
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       double deltaS = 1000.0*((inflow[i]-outflow[i])/cellArea); //change in moisture in mm (L/m2)
@@ -144,14 +147,15 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
   // Rcout<<"\n";
 
   //B. Vertical and surface fluxes
+  // Rcout<<"B";
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterO[i]-1; //Decrease index!!!!
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = clone(Rcpp::as<Rcpp::List>(soilList[iCell])); //clone soil (we modify Kdrain)
-      double Kdrain = soil["Kdrain"];
-      soil["Kdrain"] = Kdrain*Rdrain;
+      double Kperc = soil["Kperc"];
+      soil["Kperc"] = Kperc*Rdrain;
 
       //Run daily soil water balance for the current cell
       List res;
@@ -207,7 +211,7 @@ List spwbgridDay(CharacterVector lct, List xList, List soilList,
       runoffExport += Runon[iCell] + precVec[iCell];
     }
   }
-
+  // Rcout<<"C";
 
   DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow, _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
                                              _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,

@@ -1,4 +1,4 @@
-plot.spwbgrid<-function(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...) {
+plot.wswb<-function(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...) {
 
   grid = x$grid
   if(type %in% names(x$CellBalance)) y = x$CellBalance[[type]]

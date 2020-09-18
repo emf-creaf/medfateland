@@ -1,16 +1,16 @@
 \encoding{UTF-8}
-\name{spwbgrid}
-\alias{spwbgrid}
-\alias{plot.spwbgrid}
+\name{wswb}
+\alias{wswb}
+\alias{plot.wswb}
 \title{Soil-plant water balance and lateral water discharge}
 \description{
-Function \code{spwbgrid} conducts daily soil and plant water balance over a grid of cells while incorporating water runoff from upperslope cells into the current cell.
+Function \code{wswb} conducts daily soil and plant water balance over a grid of cells while incorporating water runoff from upperslope cells into the current cell.
 }
 \usage{
-spwbgrid(y, SpParams, meteo, dates,
+wswb(y, SpParams, meteo, dates,
            summaryFreq = "years",
            control = defaultControl())
-\method{plot}{spwbgrid}(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...)
+\method{plot}{wswb}(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...)
 }
 \arguments{
   \item{y}{An object of class \code{\link{SpatialGridLandscape-class}}.}
@@ -26,7 +26,7 @@ spwbgrid(y, SpParams, meteo, dates,
   \item{...}{Additional parameters to function \code{\link{spplot}}.}
 }
 \details{
-Function \code{spwbgrid} requires daily meteorological data over a grid. The user may supply four different inputs:
+Function \code{wswb} requires daily meteorological data over a grid. The user may supply four different inputs:
 \enumerate{
 \item{An object of \code{\link{SpatialGridMeteorology-class}}.}
 \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
@@ -36,7 +36,7 @@ Function \code{spwbgrid} requires daily meteorological data over a grid. The use
 In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done over the grid every simulated day. In the case of (3) weather maps are read for each day. Finally, in the case of (4) spatial variation of weather is not considered.
 }
 \value{
-A list of class 'spwbgrid' with the following elements:
+A list of class 'wswb' with the following elements:
 \itemize{
  \item{\code{grid}: The \code{\link{GridTopology}} object corresponding to the simulated area.}
  \item{\code{LandscapeBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the landscape level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
@@ -71,24 +71,13 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{SpatialGridLandscape-class}}
 }
 \examples{
-# Load spatial grid landscape object
-data("exampleSGL")
-
-#Load meteorological data (the same will be used for all points)
-data("examplemeteo")
-
-#Load species parameters
+library(medfateland)
+code = "2004116"
+spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
+lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
+forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
+soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))
+dw = DistributedWatershed(spt, lct, forestlist, soillist)
+meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
 data("SpParamsMED")
-
-# Default control for local soil plant water balance
-control = defaultControl()
-
-# Default modifiers of hydraulic parameters
-correctionFactors = defaultHydraulicCorrectionFactors()
-
-# Run water balance simulation over the grid for five days
-# (you can test longer periods)
-res <- spwbgrid(exampleSGL, SpParamsMED, examplemeteo[1:5,],
-                summaryFreq = "months",
-                spwbcontrol = control, correctionFactors = correctionFactors)
 }

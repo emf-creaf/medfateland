@@ -166,9 +166,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// spwbgridDay
-List spwbgridDay(CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, List correctionFactors, CharacterVector date, NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec, NumericVector precVec, NumericVector radVec, NumericVector wsVec, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize);
-RcppExport SEXP _medfateland_spwbgridDay(SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP correctionFactorsSEXP, SEXP dateSEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP rhminVecSEXP, SEXP rhmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP wsVecSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP) {
+// wswbDay
+List wswbDay(CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, List correctionFactors, CharacterVector date, NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec, NumericVector precVec, NumericVector radVec, NumericVector wsVec, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize);
+RcppExport SEXP _medfateland_wswbDay(SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP correctionFactorsSEXP, SEXP dateSEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP rhminVecSEXP, SEXP rhmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP wsVecSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -192,7 +192,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type slope(slopeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(spwbgridDay(lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize));
+    rcpp_result_gen = Rcpp::wrap(wswbDay(lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -210,7 +210,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
-    {"_medfateland_spwbgridDay", (DL_FUNC) &_medfateland_spwbgridDay, 20},
+    {"_medfateland_wswbDay", (DL_FUNC) &_medfateland_wswbDay, 20},
     {NULL, NULL, 0}
 };
 

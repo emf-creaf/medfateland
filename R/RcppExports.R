@@ -49,7 +49,7 @@
     .Call(`_medfateland_getTrackSpeciesDDS`, trackSpecies, DDS, x)
 }
 
-.spwbgridDay <- function(lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize) {
-    .Call(`_medfateland_spwbgridDay`, lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize)
+.wswbDay <- function(lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize) {
+    .Call(`_medfateland_wswbDay`, lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize)
 }
 

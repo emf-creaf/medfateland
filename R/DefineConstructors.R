@@ -10,7 +10,7 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   for(i in 1:npoints) {
     s = soillist[[i]]
     if(class(s) == "data.frame") {
-      s = soil(s)
+      soillist[[i]] = soil(s)
     } else if(class(s)=="soil") {
       soillist[[i]] = s
     } else {
@@ -44,7 +44,7 @@ SpatialGridLandscape<-function(sgt, lct, forestlist, soillist) {
   for(i in 1:ncells) {
     s = soillist[[i]]
     if(class(s) == "data.frame") {
-      s = soil(s)
+      soillist[[i]] = soil(s)
     } else if(class(s)=="soil") {
       soillist[[i]] = s
     } else {
@@ -112,7 +112,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
   for(i in 1:ncells) {
     s = soillist[[i]]
     if(class(s) == "data.frame") {
-      s = soil(s)
+      soillist[[i]] = soil(s)
     } else if(class(s)=="soil") {
       soillist[[i]] = s
     } else {
