@@ -1,7 +1,11 @@
 \encoding{UTF-8}
-\name{spwbpoints}
+\name{medfate spatial}
 \alias{spwbpoints}
+\alias{spwbpixels}
+\alias{spwbgrid}
 \alias{growthpoints}
+\alias{growthpixels}
+\alias{growthgrid}
 
 \title{Model simulations for spatially-distributed forest stands}
 \description{
@@ -10,7 +14,15 @@ Functions \code{spwbpoints} and \code{growthpoints} allow calling local models \
 \usage{
 spwbpoints(y, SpParams, meteo, control = defaultControl(),
        dates = NULL, summaryFunction = NULL, args=NULL)
+spwbpixels(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL)
+spwbgrid(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL)
 growthpoints(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL)
+growthpixels(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL)
+growthgrid(y, SpParams, meteo, control = defaultControl(),
        dates = NULL, summaryFunction = NULL, args=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
