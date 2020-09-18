@@ -73,6 +73,7 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 \examples{
 library(medfateland)
 code = "2004116"
+code = "20054998"
 spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
 lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
 forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
@@ -80,5 +81,7 @@ soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code
 dw = DistributedWatershed(spt, lct, forestlist, soillist)
 meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
 data("SpParamsMED")
-dates = seq(as.Date("2019-01-01"), as.Date("2019-01-15"), by="day")
+dates = seq(as.Date("2019-03-01"), as.Date("2019-03-15"), by="day")
+
+res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "day")
 }

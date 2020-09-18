@@ -1,3 +1,16 @@
+# .ggspl<-function(spl) {
+#   spl_sf =st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
+#   g<-ggplot()+
+#     geom_sf(spl_sf, mapping = aes(fill=var), col=NA)
+#   return(g)
+# }
+# setMethod("plot", signature("SpatialPixelsLandscape"),
+#           function(x, variable = "lct", ...) {
+#             if(variable %in% .getAllowedVars()) {
+#               return(.ggspl(getLandscapeVariable(x, variable, ...)))
+#             }
+#           })
+
 setMethod("spplot", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", ...) {
             if(variable %in% .getAllowedVars()) {

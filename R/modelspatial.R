@@ -1,5 +1,6 @@
 .modelspatial<-function(y, SpParams, meteo, model = "spwb", 
-                        control = defaultControl(), dates = NULL,  
+                        control = defaultControl(), dates = NULL, 
+                        mergeTrees = FALSE,
                         summaryFunction=NULL, args=NULL) {
   sp = as(y,"SpatialPoints")
   topo = y@data
@@ -21,6 +22,7 @@
     f = forestlist[[i]]
     s = soillist[[i]]
     if((!is.null(f)) && (!is.null(s))) {
+      if(mergeTrees) f = forest_mergeTrees(f)
       # cat(" - Meteorology")
       if(inherits(meteo,"data.frame")) met = meteo
       else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {

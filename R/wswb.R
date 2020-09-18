@@ -41,7 +41,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   #Determine outlet cells (those without downhill neighbors)
   outlets = which(unlist(lapply(y@waterQ, sum))==0)
 
-  patchsize = y@forestlist[[1]]$patchsize
+  patchsize = prod(y@grid@cellsize)
 
   #Print information area
   cat("\n------------  wswb ------------\n")
@@ -52,7 +52,6 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste("Number of outlet cells: ", length(outlets),"\n\n"))
 
   cat(paste("Preparing spwb input"))
-  patchsize = NA
 
   for(i in 1:nCells) {
     f = y@forestlist[[i]]
@@ -113,8 +112,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     if(inherits(meteo,"MeteorologyInterpolationData")) {
       ml = interpolationpixels(meteo, y, dates[day], verbose = TRUE)
       ml = ml@data
-      # print(class(ml))
-      # stop("kk")
+      # print(head(ml))
       gridMinTemperature = ml$MinTemperature
       gridMaxTemperature = ml$MaxTemperature
       gridMinRelativeHumidity = ml$MinRelativeHumidity
@@ -200,7 +198,13 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                     Infiltration=Infiltration, DeepDrainage = DeepDrainage,
                     SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
   CellState<-list(SWE = SWE, Psi1 = Psi1, Volume = Volume, WTD = WTD)
-  l <- list(grid = y@grid, LandscapeBalance = LandscapeBalance,
+  l <- list(coords = y@coords,
+            coords.nrs = y@coords.nrs,
+            grid = y@grid, 
+            grid.index = y@grid.index,
+            bbox = y@bbox,
+            proj4string = y@proj4string, 
+            LandscapeBalance = LandscapeBalance,
             CellBalance = CellBalance,
             CellState = CellState,
             DailyRunoff = DailyRunoff)
