@@ -80,4 +80,5 @@ soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code
 dw = DistributedWatershed(spt, lct, forestlist, soillist)
 meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
 data("SpParamsMED")
+dates = seq(as.Date("2019-01-01"), as.Date("2019-01-15"), by="day")
 }
