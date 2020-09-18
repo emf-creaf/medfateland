@@ -4,17 +4,20 @@
   sp = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(sp, topo$elevation, topo$slope, topo$aspect)
-  longlat = spTransform(coordinates(sp),CRS("+proj=longlat"))
+  longlat = spTransform(sp,CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
+  
+  control$verbose = FALSE
   
   forestlist = y@forestlist
   soillist  = y@soillist
   xlist = y@xlist
-  reslist = vector("list",n)
+  
   n = length(forestlist)
-  txtProgressBar(0, n, style=3)
+  reslist = vector("list",n)
+  pb = txtProgressBar(0, n, style=3)
   for(i in 1:n) {
-    setTxtProgressBar(i)
+    setTxtProgressBar(pb, i)
     f = forestlist[[i]]
     s = soillist[[i]]
     if((!is.null(f)) && (!is.null(s))) {
@@ -28,13 +31,13 @@
       }
       # cat(" - Soil water balance")
       if(model=="spwb") {
-        xlist[[i]] = forest2spwbInput(yid, soil, SpParams, control)
-        S<-spwb(inputlist[[i]], soil, meteo=met, 
+        xlist[[i]] = forest2spwbInput(f, s, SpParams, control)
+        S<-spwb(xlist[[i]], s, meteo=met, 
                 latitude = latitude[i], elevation = y@data$elevation[i],
                 slope = y@data$slope[i], aspect = y@data$aspect[i])      
       } else if(model=="growth") {
-        xlist[[i]] = forest2growthInput(yid, soil, SpParams, control)
-        S<-growth(inputlist[[i]], soil, meteo=met, 
+        xlist[[i]] = forest2growthInput(f, s, SpParams, control)
+        S<-growth(xlist[[i]], s, meteo=met, 
                 latitude = latitude[i], elevation = y@data$elevation[i],
                 slope = y@data$slope[i], aspect = y@data$aspect[i])      
       }
