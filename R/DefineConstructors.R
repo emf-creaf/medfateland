@@ -129,7 +129,8 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
   elevation = spxt@data$elevation
   
   # if(verbose) cat(" - Queen neighbours")
-  queenNeigh = dnearneigh(coords, 0, sqrt(prod(grid@cells.dim)))
+  queenNeigh = dnearneigh(coords, 0, sqrt(prod(grid@cellsize)))
+  attributes(queenNeigh)<-NULL
   class(queenNeigh)<-"list"
   
   # if(verbose) cat(" - Water discharge order")

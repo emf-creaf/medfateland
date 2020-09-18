@@ -2,38 +2,39 @@
 \name{wswb}
 \alias{wswb}
 \alias{plot.wswb}
-\title{Soil-plant water balance and lateral water discharge}
+\title{Watershed water balance}
 \description{
-Function \code{wswb} conducts daily soil and plant water balance over a grid of cells while incorporating water runoff from upperslope cells into the current cell.
+Function \code{wswb} conducts daily soil and plant water balance over a gridded landscape while incorporating overflow and interflow from upperslope cells into the current cell.
 }
 \usage{
 wswb(y, SpParams, meteo, dates,
-           summaryFreq = "years",
-           control = defaultControl())
-\method{plot}{wswb}(x, type = "Runon", summaryIndex = 1, spIndex = NULL, ...)
+     summaryFreq = "years",
+     spwbcontrol = medfate::defaultControl(),
+     correctionFactors = defaultWatershedCorrectionFactors())
+\method{plot}{wswb}(x, type = "Runon", summaryIndex = 1, ...)
 }
 \arguments{
-  \item{y}{An object of class \code{\link{SpatialGridLandscape-class}}.}
+  \item{y}{An object of class \code{\link{DistributedWatershed-class}}.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
   \item{meteo}{Input meteorological data (see section details).}
   \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
   \item{summaryFreq}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
-  \item{control}{A list of control parameters (see \code{\link{defaultControl}}).}
-  \item{x}{An object of class \code{spwbgrid}.}
+  \item{spwbcontrol}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb}}.}
+  \item{correctionFactors}{A list of watershed correction factors for hydraulic parameters.}
+  \item{x}{An object of class \code{wswb} with simulation results.}
   \item{type}{Type of information to be drawn.}
   \item{summaryIndex}{The index of the summary to be ploted.}
-  \item{spIndex}{The index of the species to be ploted (for some types).}
   \item{...}{Additional parameters to function \code{\link{spplot}}.}
 }
 \details{
-Function \code{wswb} requires daily meteorological data over a grid. The user may supply four different inputs:
+Function \code{wswb} requires daily meteorological data over grid cells. The user may supply four different inputs:
 \enumerate{
-\item{An object of \code{\link{SpatialGridMeteorology-class}}.}
+\item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
 \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
 \item{A data frame with information regarding where to read meteorological data.}
 \item{A data frame with meteorological data common for all cells of the grid.}
 }
-In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done over the grid every simulated day. In the case of (3) weather maps are read for each day. Finally, in the case of (4) spatial variation of weather is not considered.
+In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done over each grid cell every simulated day. In the case of (3) weather maps are read for each day. Finally, in the case of (4) spatial variation of weather is not considered.
 }
 \value{
 A list of class 'wswb' with the following elements:
@@ -68,20 +69,21 @@ A list of class 'wswb' with the following elements:
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{SpatialGridLandscape-class}}
+\code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}
 }
 \examples{
-library(medfateland)
-code = "2004116"
 code = "20054998"
 spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
 lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
 forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
 soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))
-dw = DistributedWatershed(spt, lct, forestlist, soillist)
-meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
+
+meteo = readRDS("D:/Datasets/Hydrology/Products/Catalonia/ExampleMeteo/200554998.rds")
 data("SpParamsMED")
+
 dates = seq(as.Date("2019-03-01"), as.Date("2019-03-15"), by="day")
+
+dw = DistributedWatershed(spt, lct, forestlist, soillist)
 
 res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "day")
 }

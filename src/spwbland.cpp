@@ -70,11 +70,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   double cellWidth = sqrt(patchsize); //cell width in m
   double n = 3.0;
   //1. Calculate water table depth
-  Rcout<<"A.1";
+  Rcout<<"+";
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector WaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") | (lct[i]=="agriculture") ) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[i]);
       List soil = Rcpp::as<Rcpp::List>(soilList[i]);
       List control = x["control"];
@@ -83,11 +83,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     }
   }
   //2. Calculate inflow/outflow for each cell (in m3/day)
-  Rcout<<"A.2";
+  Rcout<<"+";
   NumericVector inflow(nX, 0.0);
   NumericVector outflow(nX, 0.0);
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") | (lct[i]=="agriculture")) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       List soil = Rcpp::as<Rcpp::List>(soilList[i]);
       double D = soil["SoilDepth"]; //Soil depth in mm
       NumericVector clay = soil["clay"];
@@ -102,7 +102,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         for(int j=0;j<ni.size();j++) {
           double tanBeta = (WaterTableElevation[i]-WaterTableElevation[ni[j]-1])/cellWidth;
           if(tanBeta>0.0) {
-            if((lct[ni[j]-1]=="wildland") | (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
+            if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
               double qn = tanBeta*T*cellWidth; //flow in m3
               inflow[ni[j]-1] += qn;
               outflow[i] += qn;
@@ -113,9 +113,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     }
   }
   //3. Apply changes in soil moisture to each cell
-  Rcout<<"A.3";
+  Rcout<<"+";
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") | (lct[i]=="agriculture")) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       double deltaS = 1000.0*((inflow[i]-outflow[i])/cellArea); //change in moisture in mm (L/m2)
       if(deltaS != 0.0) {
         // Rcout<<inflow[i]<< " "<<outflow[i]<< " "<<cellArea<<" "<<deltaS<<"_";
@@ -150,11 +150,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   // Rcout<<"\n";
 
   //B. Vertical and surface fluxes
-  Rcout<<"B";
+  Rcout<<"+";
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterO[i]-1; //Decrease index!!!!
-    if((lct[iCell]=="wildland") | (lct[iCell]=="agriculture")) {
+    if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = soilList[iCell]; 
       // double Kperc = soil["Kperc"];

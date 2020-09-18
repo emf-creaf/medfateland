@@ -1,14 +1,14 @@
 wswb<-function(y, SpParams, meteo, dates = NULL,
-                    summaryFreq = "years",
-                    spwbcontrol = medfate::defaultControl(),
-                    correctionFactors = defaultWatershedCorrectionFactors()) {
+               summaryFreq = "years",
+               spwbcontrol = medfate::defaultControl(),
+               correctionFactors = defaultWatershedCorrectionFactors()) {
 
   #check input
   if(!inherits(y, "DistributedWatershed")) stop("'y' has to be of class 'DistributedWatershed'.")
-  if(!inherits(meteo,"SpatialGridMeteorology") &&
+  if(!inherits(meteo,"SpatialPixelsMeteorology") &&
      !inherits(meteo,"data.frame") &&
      !inherits(meteo, "MeteorologyInterpolationData"))
-    stop("'meteo' has to be of class 'SpatialGridMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
+    stop("'meteo' has to be of class 'SpatialPixelsMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
   sp = spTransform(as(y, "SpatialPoints"), CRS("+proj=longlat"))
@@ -122,13 +122,13 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
       gridWindSpeed = ml$WindSpeed
     } else if(inherits(meteo,"SpatialPixelsMeteorology")) {
       ml = meteo@data[[i]]
-      gridMinTemperature = as.numeric(ml["MinTemperature"])
-      gridMaxTemperature = as.numeric(ml["MaxTemperature"])
-      gridMinRelativeHumidity = as.numeric(ml["MinRelativeHumidity"])
-      gridMaxRelativeHumidity = as.numeric(ml["MaxRelativeHumidity"])
-      gridPrecipitation = as.numeric(ml["Precipitation"])
-      gridRadiation = as.numeric(ml["Radiation"])
-      gridWindSpeed = as.numeric(ml["WindSpeed"])
+      gridMinTemperature = ml$MinTemperature
+      gridMaxTemperature = ml$MaxTemperature
+      gridMinRelativeHumidity = ml$MinRelativeHumidity
+      gridMaxRelativeHumidity = ml$MaxRelativeHumidity
+      gridPrecipitation = ml$Precipitation
+      gridRadiation = ml$Radiation
+      gridWindSpeed = ml$WindSpeed
     } else {
       if(!oneMeteoCell) { # Read meteo grid from file
         f = paste(meteo$dir[i], meteo$filename[i],sep="/")
@@ -151,6 +151,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
         gridWindSpeed = rep(meteo[i, "WindSpeed"], nCells)
       }
     }
+    gridRadiation[is.na(gridRadiation)] = mean(gridRadiation, na.rm=T)
     df = .wswbDay(y@lct, y@xlist, y@soillist,
                   y@waterOrder, y@queenNeigh, y@waterQ,
                   correctionFactors,
