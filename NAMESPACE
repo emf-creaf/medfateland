@@ -9,6 +9,6 @@ importFrom(Rcpp, evalCpp)
 useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
-exportMethods("[", show, spplot, head, tail)
+exportMethods("[", show, getLandscapeVariable, spplot, head, tail)
 
 S3method(plot,spwbgrid)
