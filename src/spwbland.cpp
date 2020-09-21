@@ -130,11 +130,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     }
   }
   
-  //A2b. Calculate BASEFLOW input/output for each cell (in m3/day)
+  //A2b. Calculate BASEFLOW output for each cell (in m3/day)
   NumericVector baseflowInput(nX, 0.0);
   NumericVector baseflowOutput(nX, 0.0);
   for(int i=0;i<nX;i++){
-    double Kbaseflow = Rbaseflow*RockConductivity[i];
+    double Kbaseflow = Rbaseflow*RockConductivity[i]; //m/day
     if(aquifer[i]>0) {
       double T = ((Kbaseflow*DTB[i]*0.001)/n)*pow(1.0-((DTB[i] - (aquifer[i]/RockPorosity[i]))/DTB[i]),n); //Transmissivity in m2
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
@@ -143,9 +143,10 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         double tanBeta = (AquiferWaterTableElevation[i]-AquiferWaterTableElevation[ni[j]-1])/cellWidth;
         if(tanBeta>0.0) {
           double qn = tanBeta*T*cellWidth; //flow in m3/day
-          qn = std::min(qn, aquifer[i]); //avoid excessive flow
+          qn = std::min(qn, aquifer[i]*cellArea); //avoid excessive outflow
           baseflowInput[ni[j]-1] += qn;
           baseflowOutput[i] += qn;
+          // Rcout<<qn<<"\n";
         }
       }
     }
@@ -190,8 +191,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   for(int i=0;i<nX;i++){
     double deltaA = 1000.0*((baseflowInput[i]-baseflowOutput[i])/cellArea); //change in moisture in mm (L/m2)
     if(deltaA != 0.0) {
-      double Wn = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
-      double DTAn = DTB[i] - (Wn/RockPorosity[i]); // New depth to aquifer (mm)
+      double newA = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
+      double DTAn = DTB[i] - (newA/RockPorosity[i]); // New depth to aquifer (mm)
+      // Rcout<<baseflowInput[i]<< " "<<baseflowOutput[i]<< " "<<cellArea<<" "<<deltaA<<" DTA "<< DTAn <<"\n";
       if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
         List x = Rcpp::as<Rcpp::List>(xList[i]);
         List soil = Rcpp::as<Rcpp::List>(soilList[i]);
@@ -205,9 +207,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         NumericVector Water_SAT = medfate::soil_waterSAT(soil, soilFunctions);
         int nlayers = dVec.length();
         double D = sum(dVec);
-        if(DTAn>D){ 
-          double deltaS = (DTAn-D)*RockPorosity[i]; //mm = l/m2 of water
-          Wn = Wn - deltaS; //Update Wn to limit depth to aquifer
+        if(DTAn<D){
+          double deltaS = (D-DTAn)*RockPorosity[i]; //mm = l/m2 of water
+          newA = newA - deltaS; //Update newA to limit depth to aquifer
           for(int l=(nlayers-1);l>=0;l--) { //Fill layers from bottom to top
             if(dVec[l]>0) {
               double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
@@ -218,10 +220,10 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           if(deltaS>0) { //If soil is completely saturated increase Runon (return flow) to be processed with vertical flows
             Runon[i] += deltaS;
           }
-        }  
+        }
       }
       //Store new aquifer water volume (mm)
-      aquifer[i] = Wn;
+      aquifer[i] = newA;
     }
   }
   

@@ -126,6 +126,8 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock) {
   
   #Remove NA data
   bedrock$Porosity[is.na(bedrock$Porosity)] = mean(bedrock$Porosity, na.rm=T)
+  minPorosity = 0.005
+  bedrock$Porosity[bedrock$Porosity<minPorosity] = minPorosity
   bedrock$Conductivity[is.na(bedrock$Conductivity)] = mean(bedrock$Conductivity, na.rm=T)
   bedrock$DepthToBedrock[is.na(bedrock$DepthToBedrock)] = mean(bedrock$DepthToBedrock, na.rm=T)
   

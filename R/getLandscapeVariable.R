@@ -106,7 +106,7 @@ setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
 setMethod("getLandscapeVariable", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
             if(variable %in% c("numNeigh", "waterOrder", "DTB","RockPorosity", "RockConductivity",
-                               "AquiferElevation")) {
+                               "AquiferElevation", "DTA","AquiferVolume")) {
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
               } else if(variable=="waterOrder") {
@@ -114,17 +114,26 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                 varplot = 1:length(wo)
                 varplot[wo] = 1:length(wo)
               } else if(variable =="DTB") {
-                varplot = obj@bedrock$DepthToBedrock
+                varplot = obj@bedrock$DepthToBedrock/1000.0  # in m
               } else if(variable =="RockPorosity") {
                 varplot = obj@bedrock$Porosity
               } else if(variable =="RockConductivity") {
                 varplot = obj@bedrock$Conductivity
+              } else if(variable =="AquiferVolume") {
+                varplot = obj@aquifer
               } else if(variable =="AquiferElevation") {
                 DTB = obj@bedrock$DepthToBedrock
                 aquifer = obj@aquifer
                 RockPorosity = obj@bedrock$Porosity
                 elevation = obj@data$elevation
-                varplot = elevation - (DTB/1000.0) + (aquifer/RockPorosity)/1000.0;
+                varplot = elevation - (DTB/1000.0) + (aquifer/RockPorosity)/1000.0 # in m
+                varplot[RockPorosity==0.0] = elevation[RockPorosity==0.0]
+              } else if(variable =="DTA") {
+                DTB = obj@bedrock$DepthToBedrock
+                aquifer = obj@aquifer
+                RockPorosity = obj@bedrock$Porosity
+                varplot = (DTB/1000.0) - (aquifer/RockPorosity)/1000.0
+                varplot[RockPorosity==0.0] = DTB[RockPorosity==0.0]/1000
               }
               return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
                                             data.frame(var = varplot), 
