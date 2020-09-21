@@ -167,8 +167,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // wswbDay
-List wswbDay(CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, List correctionFactors, CharacterVector date, NumericVector tminVec, NumericVector tmaxVec, NumericVector rhminVec, NumericVector rhmaxVec, NumericVector precVec, NumericVector radVec, NumericVector wsVec, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize);
-RcppExport SEXP _medfateland_wswbDay(SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP correctionFactorsSEXP, SEXP dateSEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP rhminVecSEXP, SEXP rhmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP wsVecSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP) {
+List wswbDay(CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, DataFrame bedrock, NumericVector aquifer, List correctionFactors, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize);
+RcppExport SEXP _medfateland_wswbDay(SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP bedrockSEXP, SEXP aquiferSEXP, SEXP correctionFactorsSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -178,21 +178,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type bedrock(bedrockSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type aquifer(aquiferSEXP);
     Rcpp::traits::input_parameter< List >::type correctionFactors(correctionFactorsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type tminVec(tminVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type tmaxVec(tmaxVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type rhminVec(rhminVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type rhmaxVec(rhmaxVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type precVec(precVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type radVec(radVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type wsVec(wsVecSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type latitude(latitudeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type slope(slopeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(wswbDay(lct, xList, soilList, waterO, queenNeigh, waterQ, correctionFactors, date, tminVec, tmaxVec, rhminVec, rhmaxVec, precVec, radVec, wsVec, latitude, elevation, slope, aspect, patchsize));
+    rcpp_result_gen = Rcpp::wrap(wswbDay(lct, xList, soilList, waterO, queenNeigh, waterQ, bedrock, aquifer, correctionFactors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -210,7 +206,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
-    {"_medfateland_wswbDay", (DL_FUNC) &_medfateland_wswbDay, 20},
+    {"_medfateland_wswbDay", (DL_FUNC) &_medfateland_wswbDay, 16},
     {NULL, NULL, 0}
 };
 

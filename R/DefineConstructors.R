@@ -99,7 +99,7 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist) {
   return(spxl)
 }
 
-DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
+DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock) {
   #check input
   if(!inherits(spxt,"SpatialPixelsTopography")) 
     stop("'spxt' has to be of class 'SpatialPixelsTopography'.")
@@ -107,6 +107,8 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
     stop("'forestlist' has to be a list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a list of 'soil' objects.")
+  if(!inherits(bedrock,"data.frame")) 
+    stop("'bedrock' has to be a data frame.")
   
   ncells = length(soillist)
   for(i in 1:ncells) {
@@ -120,7 +122,12 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
     }
   }
   xlist = vector("list", ncells)
-  aquifer = vector("list", ncells)
+  aquifer = rep(0.0,ncells)
+  
+  #Remove NA data
+  bedrock$Porosity[is.na(bedrock$Porosity)] = mean(bedrock$Porosity, na.rm=T)
+  bedrock$Conductivity[is.na(bedrock$Conductivity)] = mean(bedrock$Conductivity, na.rm=T)
+  bedrock$DepthToBedrock[is.na(bedrock$DepthToBedrock)] = mean(bedrock$DepthToBedrock, na.rm=T)
   
   #Take grid
   grid = spxt@grid
@@ -156,6 +163,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist) {
              waterOrder = waterOrder,
              waterQ = waterQ,
              queenNeigh = queenNeigh,
+             bedrock = bedrock,
              aquifer = aquifer,
              lct = lct,
              forestlist = forestlist, 

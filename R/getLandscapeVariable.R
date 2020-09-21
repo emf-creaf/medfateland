@@ -105,13 +105,26 @@ setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
 
 setMethod("getLandscapeVariable", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
-            if(variable %in% c("numNeigh", "waterOrder")) {
+            if(variable %in% c("numNeigh", "waterOrder", "DTB","RockPorosity", "RockConductivity",
+                               "AquiferElevation")) {
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
               } else if(variable=="waterOrder") {
                 wo = dw@waterOrder
                 varplot = 1:length(wo)
                 varplot[wo] = 1:length(wo)
+              } else if(variable =="DTB") {
+                varplot = obj@bedrock$DepthToBedrock
+              } else if(variable =="RockPorosity") {
+                varplot = obj@bedrock$Porosity
+              } else if(variable =="RockConductivity") {
+                varplot = obj@bedrock$Conductivity
+              } else if(variable =="AquiferElevation") {
+                DTB = obj@bedrock$DepthToBedrock
+                aquifer = obj@aquifer
+                RockPorosity = obj@bedrock$Porosity
+                elevation = obj@data$elevation
+                varplot = elevation - (DTB/1000.0) + (aquifer/RockPorosity)/1000.0;
               }
               return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
                                             data.frame(var = varplot), 

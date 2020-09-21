@@ -152,12 +152,19 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
       }
     }
     gridRadiation[is.na(gridRadiation)] = mean(gridRadiation, na.rm=T)
+    gridMeteo = data.frame(MinTemperature = gridMinTemperature, 
+                           MaxTemperature = gridMaxTemperature,
+                           MinRelativeHumidity = gridMinRelativeHumidity,
+                           MaxRelativeHumidity = gridMaxRelativeHumidity,
+                           Precipitation = gridPrecipitation,
+                           Radiation = gridRadiation,
+                           WindSpeed = gridWindSpeed)
     df = .wswbDay(y@lct, y@xlist, y@soillist,
                   y@waterOrder, y@queenNeigh, y@waterQ,
+                  y@bedrock, y@aquifer,
                   correctionFactors,
                   datechar,
-                  gridMinTemperature, gridMaxTemperature, gridMinRelativeHumidity, gridMaxRelativeHumidity,
-                  gridPrecipitation, gridRadiation, gridWindSpeed,
+                  gridMeteo,
                   latitude, elevation, slope, aspect,
                   patchsize)
 

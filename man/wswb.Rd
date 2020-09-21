@@ -77,13 +77,14 @@ spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopo
 lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
 forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
 soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))
+bedrock = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Bedrock/",code,".rds"))
 
 meteo = readRDS("D:/Datasets/Hydrology/Products/Catalonia/ExampleMeteo/200554998.rds")
 data("SpParamsMED")
 
-dates = seq(as.Date("2019-03-01"), as.Date("2019-03-15"), by="day")
+dates = seq(as.Date("2019-01-01"), as.Date("2019-03-31"), by="day")
 
-dw = DistributedWatershed(spt, lct, forestlist, soillist)
+dw = DistributedWatershed(spt, lct, forestlist, soillist, bedrock)
 
-res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "day")
+res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "month")
 }
