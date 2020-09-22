@@ -102,7 +102,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
          WTD = soil_waterTableDepth(object))
     }
 
-  cat(paste("Running simulations:\n"))
+  cat(paste("Simulation:\n"))
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
     cat(".")

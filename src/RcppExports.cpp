@@ -140,6 +140,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// drainageCells
+IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell);
+RcppExport SEXP _medfateland_drainageCells(SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP iCellSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
+    Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    Rcpp::traits::input_parameter< int >::type iCell(iCellSEXP);
+    rcpp_result_gen = Rcpp::wrap(drainageCells(queenNeigh, waterQ, iCell));
+    return rcpp_result_gen;
+END_RCPP
+}
 // getTrackSpeciesTranspiration
 NumericVector getTrackSpeciesTranspiration(NumericVector trackSpecies, NumericVector Eplant, DataFrame x);
 RcppExport SEXP _medfateland_getTrackSpeciesTranspiration(SEXP trackSpeciesSEXP, SEXP EplantSEXP, SEXP xSEXP) {
@@ -204,6 +217,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_willBurnWhenHitFloor", (DL_FUNC) &_medfateland_willBurnWhenHitFloor, 2},
     {"_medfateland_fireBrandBurningTimeFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandBurningTimeFromCanopyStructure, 1},
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
+    {"_medfateland_drainageCells", (DL_FUNC) &_medfateland_drainageCells, 3},
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_wswbDay", (DL_FUNC) &_medfateland_wswbDay, 16},

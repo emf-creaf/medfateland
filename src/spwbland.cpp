@@ -4,6 +4,30 @@
 #include <medfate.h>
 using namespace Rcpp;
 
+// [[Rcpp::export("drainageCells")]]
+IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
+  IntegerVector cells = IntegerVector::create(iCell);
+  IntegerVector neighbors = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell-1]);
+  int n = neighbors.size();
+  for(int i=0;i<n;i++) {
+    int nc = neighbors[i];
+    IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[nc-1]);
+    NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[nc-1]);
+    for(int j=0;j<ni.size();j++) {
+      if((ni[j]==iCell) & (qi[j]>0.0)) {
+        IntegerVector nicells = drainageCells(queenNeigh, waterQ, nc);
+        for(int k=0;k<nicells.size();k++) {
+          bool inBag = false;
+          for(int l=0;l<cells.size();l++) {
+            if(cells[l]==nicells[k]) inBag = true;
+          }
+          if(!inBag) cells.push_back(nicells[k]);
+        }
+      }
+    }
+  }
+  return(cells);
+}
 
 // [[Rcpp::export(".getTrackSpeciesTranspiration")]]
 NumericVector getTrackSpeciesTranspiration( NumericVector trackSpecies, NumericVector Eplant, DataFrame x) {
@@ -84,7 +108,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   NumericVector RockPorosity = bedrock["Porosity"]; //[0-1]
   
   //A1. Calculate soil and aquifer water table elevation (heads)
-  Rcout<<"(+)";
+  Rcout<<"+";
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector SoilWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
@@ -235,8 +259,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = soilList[iCell]; 
-      // double Kperc = soil["Kperc"];
-      // soil["Kperc"] = Kperc*Rdrain;
+      double Kperc = soil["Kperc"];
+      soil["Kperc"] = Kperc*Rdrain;
 
       //Run daily soil water balance for the current cell
       List res;
@@ -245,6 +269,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         precVec[iCell], Runon[iCell]);
+      soil["Kperc"] = Kperc; //Restore value
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = res["Soil"];
       DataFrame PL = res["Plants"];

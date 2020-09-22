@@ -41,6 +41,10 @@
     .Call(`_medfateland_fireBrandFlameHeightFromCanopyStructure`, crownLength, LAIc)
 }
 
+drainageCells <- function(queenNeigh, waterQ, iCell) {
+    .Call(`_medfateland_drainageCells`, queenNeigh, waterQ, iCell)
+}
+
 .getTrackSpeciesTranspiration <- function(trackSpecies, Eplant, x) {
     .Call(`_medfateland_getTrackSpeciesTranspiration`, trackSpecies, Eplant, x)
 }

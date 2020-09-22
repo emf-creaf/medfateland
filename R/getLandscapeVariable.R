@@ -105,7 +105,7 @@ setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
 
 setMethod("getLandscapeVariable", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
-            if(variable %in% c("numNeigh", "waterOrder", "DTB","RockPorosity", "RockConductivity",
+            if(variable %in% c("numNeigh", "waterOrder", "outlets","DTB","RockPorosity", "RockConductivity",
                                "AquiferElevation", "DTA","AquiferVolume")) {
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
@@ -113,6 +113,10 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                 wo = dw@waterOrder
                 varplot = 1:length(wo)
                 varplot[wo] = 1:length(wo)
+              } else if(variable=="outlets") {
+                outlets = which(unlist(lapply(obj@waterQ, sum))==0)
+                varplot = rep(FALSE, length(obj@waterQ))
+                varplot[outlets] = TRUE
               } else if(variable =="DTB") {
                 varplot = obj@bedrock$DepthToBedrock/1000.0  # in m
               } else if(variable =="RockPorosity") {
