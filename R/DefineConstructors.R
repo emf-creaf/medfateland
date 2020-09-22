@@ -120,6 +120,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock) {
     } else {
       stop(paste0("Wrong input soil class for",i,"\n"))
     }
+    if(!(lct[i] %in% c("wildland", "agriculture"))) soillist[[i]] = NA #Set to missing if lct does not allow soil
   }
   xlist = vector("list", ncells)
   aquifer = rep(0.0,ncells)

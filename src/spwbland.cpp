@@ -84,7 +84,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   NumericVector RockPorosity = bedrock["Porosity"]; //[0-1]
   
   //A1. Calculate soil and aquifer water table elevation (heads)
-  Rcout<<"+";
+  Rcout<<"(+)";
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector SoilWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
@@ -95,8 +95,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       List control = x["control"];
       WTD[i] = medfate::soil_waterTableDepth(soil, control["soilFunctions"]);
       SoilWaterTableElevation[i] = elevation[i]-(WTD[i]/1000.0);
-      AquiferWaterTableElevation[i] = elevation[i]-(DTB[i]/1000.0) + (aquifer[i]/RockPorosity[i])/1000.0;
     }
+    AquiferWaterTableElevation[i] = elevation[i]-(DTB[i]/1000.0) + (aquifer[i]/RockPorosity[i])/1000.0;
   }
   
   //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
@@ -117,9 +117,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
         //water table slope between target and neighbours
         for(int j=0;j<ni.size();j++) {
-          double tanBeta = (SoilWaterTableElevation[i]-SoilWaterTableElevation[ni[j]-1])/cellWidth;
-          if(tanBeta>0.0) {
-            if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
+          if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
+            double tanBeta = (SoilWaterTableElevation[i]-SoilWaterTableElevation[ni[j]-1])/cellWidth;
+            if(tanBeta>0.0) { 
               double qn = tanBeta*T*cellWidth; //flow in m3
               interflowInput[ni[j]-1] += qn;
               interflowOutput[i] += qn;
@@ -191,8 +191,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   for(int i=0;i<nX;i++){
     double deltaA = 1000.0*((baseflowInput[i]-baseflowOutput[i])/cellArea); //change in moisture in mm (L/m2)
     if(deltaA != 0.0) {
-      double newA = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
-      double DTAn = DTB[i] - (newA/RockPorosity[i]); // New depth to aquifer (mm)
+      aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
+      double DTAn = DTB[i] - (aquifer[i]/RockPorosity[i]); // New depth to aquifer (mm)
       // Rcout<<baseflowInput[i]<< " "<<baseflowOutput[i]<< " "<<cellArea<<" "<<deltaA<<" DTA "<< DTAn <<"\n";
       if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
         List x = Rcpp::as<Rcpp::List>(xList[i]);
@@ -209,7 +209,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         double D = sum(dVec);
         if(DTAn<D){
           double deltaS = (D-DTAn)*RockPorosity[i]; //mm = l/m2 of water
-          newA = newA - deltaS; //Update newA to limit depth to aquifer
+          aquifer[i] = aquifer[i] - deltaS; //Update aquifer to its maximum limit (soil depth)
           for(int l=(nlayers-1);l>=0;l--) { //Fill layers from bottom to top
             if(dVec[l]>0) {
               double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
@@ -222,8 +222,6 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           }
         }
       }
-      //Store new aquifer water volume (mm)
-      aquifer[i] = newA;
     }
   }
   
@@ -276,8 +274,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           }
         }
       }
-      runoffExport += ri; //Add remaining
-    } else if(lct[iCell]=="rock") {//all Precipitation becomes surface runoff if cell is rock outcrop
+      runoffExport += ri; //Add remaining to landscape export
+    } else if(lct[iCell]=="rock" || lct[iCell]=="artificial") {//all Precipitation becomes surface runoff if cell is rock outcrop/artificial
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
       NetRain[iCell] = 0.0;
@@ -288,7 +286,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         Rain[iCell] = precVec[iCell];
         NetRain[iCell] = precVec[iCell];
       }
-      Runoff[iCell] =  Runon[iCell]+precVec[iCell];
+      Runoff[iCell] =  Runon[iCell]+precVec[iCell]; //receives runon or precipitation
       double ri = Runoff[iCell];
       if(ri>0.0) {
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
@@ -297,9 +295,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           Runon[ni[j]-1] += qi[j]*ri; //decrease index
           ri -= qi[j]*ri;
         }
-        runoffExport += ri; //Add remaining
+        runoffExport += ri; //Add remaining to landscape export
       }
-    } else if(lct[iCell]=="static") {
+    } else if(lct[iCell]=="water") {
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
       NetRain[iCell] = 0.0;
@@ -310,11 +308,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         Rain[iCell] = precVec[iCell];
         NetRain[iCell] = precVec[iCell];
       }
-      // static cells receive water from other cells or Precipitation
+      // water cells receive water from other cells or Precipitation
       // but do not export to the atmosphere contribute nor to other cells.
-      // Hence, water balance over the landscape is achieved by
-      // adding this water to the landscape export via landscape runoff.
-      runoffExport += Runon[iCell] + precVec[iCell];
+      // any received water drains directly to the aquifer so that it can feed base flow
+      aquifer[iCell] += Runon[iCell] + precVec[iCell];
+      DeepDrainage[iCell] = Runon[iCell] + precVec[iCell];
     }
   }
   // Rcout<<"C";
