@@ -84,7 +84,12 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   SWE = Runon
   Psi1 = Runon
   WTD = Runon
+  DTA = Runon
   Volume = Runon
+  InterflowInput = Runon
+  InterflowOutput = Runon
+  BaseflowInput = Runon
+  BaseflowOutput = Runon
   LandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
                                 Snow = rep(0, nSummary),
                                 Rain = rep(0, nSummary),
@@ -99,7 +104,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     list(SWE = object$SWE,
          Psi1 = soil_psi(object)[1],
          Volume = sum(soil_water(object, model)),
-         WTD = soil_waterTableDepth(object))
+         WTD = soil_waterTableDepth(object, model))
     }
 
   cat(paste("Simulation:\n"))
@@ -181,18 +186,23 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + df$WaterBalance$DeepDrainage
     SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + df$WaterBalance$SoilEvaporation
     Transpiration[,ifactor] = Transpiration[,ifactor] + df$WaterBalance$Transpiration
+    InterflowInput[,ifactor] = InterflowInput[,ifactor] + df$WaterBalance$InterflowInput
+    InterflowOutput[,ifactor] = InterflowOutput[,ifactor] + df$WaterBalance$InterflowOutput
+    BaseflowInput[,ifactor] = BaseflowInput[,ifactor] + df$WaterBalance$BaseflowInput
+    BaseflowOutput[,ifactor] = BaseflowOutput[,ifactor] + df$WaterBalance$BaseflowOutput
     SWE[,ifactor] = SWE[,ifactor] + summary_df$SWE/t.df[ifactor]
     Psi1[,ifactor] = Psi1[,ifactor] + summary_df$Psi1/t.df[ifactor]
     Volume[,ifactor] = Volume[,ifactor] + summary_df$Volume/t.df[ifactor]
     WTD[,ifactor] = WTD[,ifactor] + summary_df$WTD/t.df[ifactor]
-
+    DTAday = (y@bedrock$DepthToBedrock/1000.0) - (y@aquifer/y@bedrock$Porosity)/1000.0
+    DTA[,ifactor] = DTA[,ifactor] + DTAday/t.df[ifactor]
+    
     DailyRunoff[day,] = df$WaterBalance$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
     LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain, na.rm=T)/nCells
     LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow, na.rm=T)/nCells
     LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(df$WaterBalance$Rain, na.rm=T)-sum(df$WaterBalance$NetRain, na.rm=T))/nCells
-    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(df$WaterBalance$DeepDrainage, na.rm=T)/nCells
     LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)/nCells
     LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)/nCells
     LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + df$RunoffExport/nCells
@@ -204,8 +214,10 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   CellBalance<-list(Rain = Rain, Snow = Snow, Interception = Interception, Runon = Runon, Runoff=Runoff,
                     Infiltration=Infiltration, DeepDrainage = DeepDrainage,
+                    InterflowInput = InterflowInput, InterflowOutput = InterflowOutput,
+                    BaseflowInput = BaseflowInput, BaseflowOutput = BaseflowOutput,
                     SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
-  CellState<-list(SWE = SWE, Psi1 = Psi1, Volume = Volume, WTD = WTD)
+  CellState<-list(SWE = SWE, Psi1 = Psi1, Volume = Volume, WTD = WTD, DTA = DTA)
   l <- list(coords = y@coords,
             coords.nrs = y@coords.nrs,
             grid = y@grid, 

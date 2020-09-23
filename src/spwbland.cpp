@@ -245,6 +245,10 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
             Runon[i] += deltaS;
           }
         }
+      
+      } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
+        Runon[i] += -DTAn*RockPorosity[i];
+        aquifer[i] = DTB[i]*RockPorosity[i];
       }
     }
   }
@@ -260,7 +264,14 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = soilList[iCell]; 
       double Kperc = soil["Kperc"];
-      soil["Kperc"] = Kperc*Rdrain;
+      double D = soil["SoilDepth"]; //Soil depth in mm
+      double DTA = DTB[i] - (aquifer[i]/RockPorosity[i]);
+      if(DTA < D) {
+        soil["Kperc"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
+      } else {
+        soil["Kperc"] = 1000.0*RockConductivity[i]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
+        // Rcout<<Kperc<< " "<<1000.0*RockConductivity[i]*Rdrain<<"\n";
+      } 
 
       //Run daily soil water balance for the current cell
       List res;
@@ -344,6 +355,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
 
   DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow, _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
                                              _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,
+                                             _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,  
+                                             _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,  
                                              _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
   return(List::create(_["WaterBalance"] = waterBalance,
                       _["RunoffExport"] = runoffExport));
