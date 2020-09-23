@@ -80,8 +80,10 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
              NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
              double patchsize) {
   int nX = xList.size();
-  NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL), NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
-  NumericVector Runoff(nX,NA_REAL), DeepDrainage(nX,NA_REAL);
+  NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
+  NumericVector NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
+  NumericVector SaturationExcess(nX, 0.0);
+  NumericVector Runoff(nX,NA_REAL), DeepDrainage(nX,0.0), AquiferDischarge(nX, 0.0);
   NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
   double runoffExport = 0.0;
 
@@ -204,8 +206,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         }
         // Rcout<<W[0]<<"\n";
         // stop("kk");
-        if(deltaS>0) { //If soil is completely saturated increase Runon (return flow) to be processed with vertical flows
-          Runon[i] += deltaS;
+        if(deltaS>0) { //If soil is completely saturated increase subsurface return flow to be processed with vertical flows
+          SaturationExcess[i] += deltaS;
         }
         // Rcout<<WTD[i]<<"/"<<waterTableDepth(soil,soilFunctions)<<"\n";
       }
@@ -214,13 +216,13 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   //A3b. Apply changes in aquifer to each cell
   for(int i=0;i<nX;i++){
     double deltaA = 1000.0*((baseflowInput[i]-baseflowOutput[i])/cellArea); //change in moisture in mm (L/m2)
-    if(deltaA != 0.0) {
-      aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
-      double DTAn = DTB[i] - (aquifer[i]/RockPorosity[i]); // New depth to aquifer (mm)
-      // Rcout<<baseflowInput[i]<< " "<<baseflowOutput[i]<< " "<<cellArea<<" "<<deltaA<<" DTA "<< DTAn <<"\n";
-      if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+    aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
+    double DTAn = DTB[i] - (aquifer[i]/RockPorosity[i]); // New depth to aquifer (mm)
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      List soil = Rcpp::as<Rcpp::List>(soilList[i]);
+      double D = soil["SoilDepth"];
+      if(DTAn<D){
         List x = Rcpp::as<Rcpp::List>(xList[i]);
-        List soil = Rcpp::as<Rcpp::List>(soilList[i]);
         NumericVector W = soil["W"]; //Access to soil state variable
         NumericVector dVec = soil["dVec"];
         NumericVector macro = soil["macro"];
@@ -230,26 +232,25 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         NumericVector Water_FC = medfate::soil_waterFC(soil, soilFunctions);
         NumericVector Water_SAT = medfate::soil_waterSAT(soil, soilFunctions);
         int nlayers = dVec.length();
-        double D = sum(dVec);
-        if(DTAn<D){
-          double deltaS = (D-DTAn)*RockPorosity[i]; //mm = l/m2 of water
-          aquifer[i] = aquifer[i] - deltaS; //Update aquifer to its maximum limit (soil depth)
-          for(int l=(nlayers-1);l>=0;l--) { //Fill layers from bottom to top
-            if(dVec[l]>0) {
-              double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
-              deltaS = std::max(Wn - Water_SAT[l],0.0); //Update deltaS, using the excess of water over saturation
-              W[l] = std::max(0.0,std::min(Wn, Water_SAT[l])/Water_FC[l]); //Update theta (this modifies 'soil') here no upper
-            }
-          }
-          if(deltaS>0) { //If soil is completely saturated increase Runon (return flow) to be processed with vertical flows
-            Runon[i] += deltaS;
+
+        double deltaS = (D-DTAn)*RockPorosity[i]; //mm = l/m2 of water
+        AquiferDischarge[i] = deltaS;
+        aquifer[i] = aquifer[i] - deltaS; //Update aquifer to its maximum limit (soil depth)
+        for(int l=(nlayers-1);l>=0;l--) { //Fill layers from bottom to top
+          if(dVec[l]>0) {
+            double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
+            deltaS = std::max(Wn - Water_SAT[l],0.0); //Update deltaS, using the excess of water over saturation
+            W[l] = std::max(0.0,std::min(Wn, Water_SAT[l])/Water_FC[l]); //Update theta (this modifies 'soil') here no upper
           }
         }
-      
-      } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
-        Runon[i] += -DTAn*RockPorosity[i];
-        aquifer[i] = DTB[i]*RockPorosity[i];
+        if(deltaS>0) { //If soil is completely saturated increase subsurface return flow to be processed with vertical flows
+          SaturationExcess[i] += deltaS;
+        }
       }
+      
+    } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
+      SaturationExcess[i] += -DTAn*RockPorosity[i];
+      aquifer[i] = DTB[i]*RockPorosity[i];
     }
   }
   
@@ -281,16 +282,16 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                        precVec[iCell], Runon[iCell]);
+                        precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
       soil["Kperc"] = Kperc; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = res["Soil"];
       DataFrame PL = res["Plants"];
       Snow[iCell] = DB["Snow"];
+      Snowmelt[iCell] = DB["Snowmelt"];
       Rain[iCell] = DB["Rain"];
       NetRain[iCell] = DB["NetRain"];
-      Runon[iCell] = DB["Runon"];
       Infiltration[iCell] = DB["Infiltration"];
       Runoff[iCell] = DB["Runoff"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
@@ -304,52 +305,64 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     } else if(lct[iCell]=="rock" || lct[iCell]=="artificial") {//all Precipitation becomes surface runoff if cell is rock outcrop/artificial
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
-      NetRain[iCell] = 0.0;
+      // NetRain[iCell] = 0.0;
       Snow[iCell] = 0.0;
-      if(tday<0.0) {
-        Snow[iCell] = precVec[iCell];
-      } else {
+      // if(tday<0.0) {
+        // Snow[iCell] = precVec[iCell];
+      // } else {
         Rain[iCell] = precVec[iCell];
-        NetRain[iCell] = precVec[iCell];
-      }
-      Runoff[iCell] =  Runon[iCell]+precVec[iCell]; //receives runon or precipitation
+      // }
+      Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+precVec[iCell]; //receives runon or precipitation
     } else if(lct[iCell]=="water") {
-      double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
-      NetRain[iCell] = 0.0;
       Snow[iCell] = 0.0;
-      if(tday<0.0) {
-        Snow[iCell] = precVec[iCell];
-      } else {
-        Rain[iCell] = precVec[iCell];
-        NetRain[iCell] = precVec[iCell];
-      }
+      // double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
+      // if(tday<0.0) {
+        // Snow[iCell] = precVec[iCell];
+      // } else {
+      Rain[iCell] = precVec[iCell];
+        // NetRain[iCell] = precVec[iCell];
+      // }
       // water cells receive water from other cells or Precipitation
       // but do not export to the atmosphere contribute nor to other cells.
       // any received water drains directly to the aquifer so that it can feed base flow
-      aquifer[iCell] += Runon[iCell] + precVec[iCell];
-      DeepDrainage[iCell] = Runon[iCell] + precVec[iCell];
+      DeepDrainage[iCell] = SaturationExcess[iCell]+Runon[iCell] + precVec[iCell];
+      aquifer[iCell] += DeepDrainage[iCell];
+      double DTAn = DTB[iCell] - (aquifer[iCell]/RockPorosity[iCell]); // New depth to aquifer (mm)
+      if(DTAn<0.0) { //Turn excess into Runoff
+        Runoff[iCell] = aquifer[iCell] - (DTB[iCell]*RockPorosity[iCell]);
+        DeepDrainage[iCell] = DeepDrainage[iCell] - Runoff[iCell];
+        aquifer[iCell] = DTB[iCell]*RockPorosity[iCell];
+      }
     }
     
-    //Assign runoff to runon of neighbours
+    //Assign runoff to runon of downhill neighbours
     double ri =  Runoff[iCell];
     if(ri>0.0) {
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
       NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
       if(ni.size()>0) {
         for(int j=0;j<ni.size();j++)  {
-          Runon[ni[j]-1] += qi[j]*ri; //decrease index
-          ri -= qi[j]*ri;
+          Runon[ni[j]-1] += (qi[j]*Runoff[iCell]); //decrease index
+          ri -= (qi[j]*Runoff[iCell]);
         }
       }
+      if(ri>0.0) {
+        if(sum(qi)>0.0 & ri > 0.00001) {
+          Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+          stop("Non-outlet cell with runoff export"); 
+        }
+        runoffExport += ri; //Add remaining to landscape export
+      }
     }
-    runoffExport += ri; //Add remaining to landscape export
     
   }
   // Rcout<<"C";
 
-  DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow, _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
-                                             _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage,
+  DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt, 
+                                             _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
+                                             _["Runoff"] = Runoff, _["SaturationExcess"] = SaturationExcess,
+                                             _["DeepDrainage"] = DeepDrainage, _["AquiferDischarge"] = AquiferDischarge,
                                              _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,  
                                              _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,  
                                              _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
