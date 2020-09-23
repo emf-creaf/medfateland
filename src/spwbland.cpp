@@ -366,8 +366,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                                              _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,  
                                              _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,  
                                              _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
-  return(List::create(_["WaterBalance"] = waterBalance,
-                      _["RunoffExport"] = runoffExport));
+  return(waterBalance);
 }
 
 

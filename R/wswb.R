@@ -197,7 +197,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                            Precipitation = gridPrecipitation,
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed)
-    df = .wswbDay(y@lct, y@xlist, y@soillist,
+    res_day = .wswbDay(y@lct, y@xlist, y@soillist,
                   y@waterOrder, y@queenNeigh, y@waterQ,
                   y@bedrock, y@aquifer, y@snowpack,
                   correctionFactors,
@@ -210,23 +210,23 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     summary_day = spatialSoilSummary(y, summary_function, spwbcontrol$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
-    Runon[,ifactor] = Runon[,ifactor] + df$WaterBalance$Runon
-    Runoff[,ifactor] = Runoff[,ifactor] + df$WaterBalance$Runoff
-    Rain[,ifactor] = Rain[,ifactor] + df$WaterBalance$Rain
-    NetRain[,ifactor] = NetRain[,ifactor] + df$WaterBalance$NetRain
-    Snow[,ifactor] = Snow[,ifactor] + df$WaterBalance$Snow
-    Snowmelt[,ifactor] = Snowmelt[,ifactor] + df$WaterBalance$Snow
-    Interception[,ifactor] = Interception[,ifactor] + (df$WaterBalance$Rain-df$WaterBalance$NetRain)
-    Infiltration[,ifactor] = Infiltration[,ifactor] + df$WaterBalance$Infiltration
-    DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + df$WaterBalance$DeepDrainage
-    SaturationExcess[,ifactor] = SaturationExcess[,ifactor] + df$WaterBalance$SaturationExcess
-    AquiferDischarge[,ifactor] = AquiferDischarge[,ifactor] + df$WaterBalance$AquiferDischarge
-    SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + df$WaterBalance$SoilEvaporation
-    Transpiration[,ifactor] = Transpiration[,ifactor] + df$WaterBalance$Transpiration
-    InterflowInput[,ifactor] = InterflowInput[,ifactor] + df$WaterBalance$InterflowInput
-    InterflowOutput[,ifactor] = InterflowOutput[,ifactor] + df$WaterBalance$InterflowOutput
-    BaseflowInput[,ifactor] = BaseflowInput[,ifactor] + df$WaterBalance$BaseflowInput
-    BaseflowOutput[,ifactor] = BaseflowOutput[,ifactor] + df$WaterBalance$BaseflowOutput
+    Runon[,ifactor] = Runon[,ifactor] + res_day$Runon
+    Runoff[,ifactor] = Runoff[,ifactor] + res_day$Runoff
+    Rain[,ifactor] = Rain[,ifactor] + res_day$Rain
+    NetRain[,ifactor] = NetRain[,ifactor] + res_day$NetRain
+    Snow[,ifactor] = Snow[,ifactor] + res_day$Snow
+    Snowmelt[,ifactor] = Snowmelt[,ifactor] + res_day$Snow
+    Interception[,ifactor] = Interception[,ifactor] + (res_day$Rain-res_day$NetRain)
+    Infiltration[,ifactor] = Infiltration[,ifactor] + res_day$Infiltration
+    DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + res_day$DeepDrainage
+    SaturationExcess[,ifactor] = SaturationExcess[,ifactor] + res_day$SaturationExcess
+    AquiferDischarge[,ifactor] = AquiferDischarge[,ifactor] + res_day$AquiferDischarge
+    SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + res_day$SoilEvaporation
+    Transpiration[,ifactor] = Transpiration[,ifactor] + res_day$Transpiration
+    InterflowInput[,ifactor] = InterflowInput[,ifactor] + res_day$InterflowInput
+    InterflowOutput[,ifactor] = InterflowOutput[,ifactor] + res_day$InterflowOutput
+    BaseflowInput[,ifactor] = BaseflowInput[,ifactor] + res_day$BaseflowInput
+    BaseflowOutput[,ifactor] = BaseflowOutput[,ifactor] + res_day$BaseflowOutput
     SWE[,ifactor] = SWE[,ifactor] + summary_df$SWE/t.df[ifactor]
     Psi1[,ifactor] = Psi1[,ifactor] + summary_df$Psi1/t.df[ifactor]
     Volume[,ifactor] = Volume[,ifactor] + summary_df$Volume/t.df[ifactor]
@@ -234,35 +234,35 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     DTAday = (y@bedrock$DepthToBedrock/1000.0) - (y@aquifer/y@bedrock$Porosity)/1000.0
     DTA[,ifactor] = DTA[,ifactor] + DTAday/t.df[ifactor]
     
-    DailyRunoff[day,] = df$WaterBalance$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
+    DailyRunoff[day,] = res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
-    LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain, na.rm=T)/nCells
-    LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow, na.rm=T)/nCells
-    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(df$WaterBalance$DeepDrainage, na.rm=T)/nCells
-    LandscapeBalance$SaturationExcess[ifactor] = LandscapeBalance$SaturationExcess[ifactor] + sum(df$WaterBalance$SaturationExcess, na.rm=T)/nCells
-    LandscapeBalance$AquiferDischarge[ifactor] = LandscapeBalance$AquiferDischarge[ifactor] + sum(df$WaterBalance$AquiferDischarge, na.rm=T)/nCells
-    LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + sum(df$WaterBalance$Runoff, na.rm=T)/nCells
-    LandscapeBalance$Snowmelt[ifactor]= LandscapeBalance$Snowmelt[ifactor] + sum(df$WaterBalance$Snowmelt, na.rm=T)/nCells
-    LandscapeBalance$NetRain[ifactor]= LandscapeBalance$NetRain[ifactor] + sum(df$WaterBalance$NetRain, na.rm=T)/nCells
-    LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(df$WaterBalance$Rain, na.rm=T) - sum(df$WaterBalance$NetRain, na.rm=T))/nCells
-    LandscapeBalance$Infiltration[ifactor]= LandscapeBalance$Infiltration[ifactor] + sum(df$WaterBalance$Infiltration, na.rm=T)/nCells
-    LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation, na.rm=T)/nCells
-    LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration, na.rm=T)/nCells
-    LandscapeBalance$Export[ifactor] = LandscapeBalance$Export[ifactor] + (df$RunoffExport/nCells)
+    LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(res_day$Rain, na.rm=T)/nCells
+    LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(res_day$Snow, na.rm=T)/nCells
+    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage, na.rm=T)/nCells
+    LandscapeBalance$SaturationExcess[ifactor] = LandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess, na.rm=T)/nCells
+    LandscapeBalance$AquiferDischarge[ifactor] = LandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge, na.rm=T)/nCells
+    LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff, na.rm=T)/nCells
+    LandscapeBalance$Snowmelt[ifactor]= LandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt, na.rm=T)/nCells
+    LandscapeBalance$NetRain[ifactor]= LandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain, na.rm=T)/nCells
+    LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(res_day$Rain, na.rm=T) - sum(res_day$NetRain, na.rm=T))/nCells
+    LandscapeBalance$Infiltration[ifactor]= LandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration, na.rm=T)/nCells
+    LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation, na.rm=T)/nCells
+    LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration, na.rm=T)/nCells
+    LandscapeBalance$Export[ifactor] = LandscapeBalance$Export[ifactor] + (sum(res_day$Runoff[outlets], na.rm=T)/nCells)
     
-    SoilLandscapeBalance$Rain[ifactor]= SoilLandscapeBalance$Rain[ifactor] + sum(df$WaterBalance$Rain[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Snow[ifactor]= SoilLandscapeBalance$Snow[ifactor] + sum(df$WaterBalance$Snow[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$DeepDrainage[ifactor] = SoilLandscapeBalance$DeepDrainage[ifactor] + sum(df$WaterBalance$DeepDrainage[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$SaturationExcess[ifactor] = SoilLandscapeBalance$SaturationExcess[ifactor] + sum(df$WaterBalance$SaturationExcess[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$AquiferDischarge[ifactor] = SoilLandscapeBalance$AquiferDischarge[ifactor] + sum(df$WaterBalance$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Runoff[ifactor] = SoilLandscapeBalance$Runoff[ifactor] + sum(df$WaterBalance$Runoff[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Snowmelt[ifactor]= SoilLandscapeBalance$Snowmelt[ifactor] + sum(df$WaterBalance$Snowmelt[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$NetRain[ifactor]= SoilLandscapeBalance$NetRain[ifactor] + sum(df$WaterBalance$NetRain[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Interception[ifactor]= SoilLandscapeBalance$Interception[ifactor] + (sum(df$WaterBalance$Rain[isSoilCell], na.rm=T) - sum(df$WaterBalance$NetRain[isSoilCell], na.rm=T))/nSoil
-    SoilLandscapeBalance$Infiltration[ifactor]= SoilLandscapeBalance$Infiltration[ifactor] + sum(df$WaterBalance$Infiltration[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$SoilEvaporation[ifactor] = SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(df$WaterBalance$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Transpiration[ifactor] = SoilLandscapeBalance$Transpiration[ifactor] + sum(df$WaterBalance$Transpiration[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Rain[ifactor]= SoilLandscapeBalance$Rain[ifactor] + sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Snow[ifactor]= SoilLandscapeBalance$Snow[ifactor] + sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$DeepDrainage[ifactor] = SoilLandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$SaturationExcess[ifactor] = SoilLandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$AquiferDischarge[ifactor] = SoilLandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Runoff[ifactor] = SoilLandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Snowmelt[ifactor]= SoilLandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$NetRain[ifactor]= SoilLandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Interception[ifactor]= SoilLandscapeBalance$Interception[ifactor] + (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
+    SoilLandscapeBalance$Infiltration[ifactor]= SoilLandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$SoilEvaporation[ifactor] = SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Transpiration[ifactor] = SoilLandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
   }
   cat("done\n\n")
   #Average summaries
