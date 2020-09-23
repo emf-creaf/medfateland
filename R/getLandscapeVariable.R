@@ -17,14 +17,14 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       f = obj@forestlist[[i]]
-      if(!is.null(f)) varplot[i] = sum(plant_basalArea(f), na.rm=T)
+      if(class(f)[1]=="forest") varplot[i] = sum(plant_basalArea(f), na.rm=T)
     }
   } else if(variable=="SWE") {
     n = length(obj@soillist)
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = s[["SWE"]]
+      if(class(s)[1]=="soil") varplot[i] = s[["SWE"]]
     }
     varplot = factor(varplot)
   } else if(variable=="WTD") {
@@ -32,7 +32,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = soil_waterTableDepth(s, ...)
+      if(class(s)[1]=="soil") varplot[i] = soil_waterTableDepth(s, ...)
     }
     varplot = factor(varplot)
   } else if(variable=="texture1") {
@@ -40,7 +40,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
+      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
     }
     varplot = factor(varplot)
   } else if(variable=="texture2") {
@@ -48,7 +48,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
+      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
     }
     varplot = factor(varplot)
   } else if(variable=="texture3") {
@@ -56,7 +56,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
+      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
     }
     varplot = factor(varplot)
   } else if(variable=="SoilVol") {
@@ -64,7 +64,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(!is.null(s)) varplot[i] = sum(soil_water(s, ...), na.rm=T)
+      if(class(s)[1]=="soil") varplot[i] = sum(soil_water(s, ...), na.rm=T)
     }
   } 
   return(varplot)
@@ -105,7 +105,7 @@ setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
 
 setMethod("getLandscapeVariable", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
-            if(variable %in% c("numNeigh", "waterOrder", "outlets","DTB","RockPorosity", "RockConductivity",
+            if(variable %in% c("numNeigh", "waterOrder", "outlets", "channel","DTB","RockPorosity", "RockConductivity",
                                "AquiferElevation", "DTA","AquiferVolume")) {
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
@@ -117,6 +117,8 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                 outlets = which(unlist(lapply(obj@waterQ, sum))==0)
                 varplot = rep(FALSE, length(obj@waterQ))
                 varplot[outlets] = TRUE
+              } else if(variable=="channel") {
+                varplot = obj@channel
               } else if(variable =="DTB") {
                 varplot = obj@bedrock$DepthToBedrock/1000.0  # in m
               } else if(variable =="RockPorosity") {

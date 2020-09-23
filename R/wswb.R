@@ -51,20 +51,20 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste("Number of landscape summaries: ", nSummary,"\n", sep=""))
   cat(paste("Number of outlet cells: ", length(outlets),"\n\n"))
 
-  cat(paste("Preparing spwb input"))
+  cat(paste("Preparing spwb input:\n"))
 
+  pb = txtProgressBar(0, nCells, style=3)
   for(i in 1:nCells) {
-    f = y@forestlist[[i]]
-    s = y@soillist[[i]]
-    if((!is.null(f)) && (!is.null(s))) {
+    setTxtProgressBar(pb,i)
+    if(y@lct[i] %in% c("wildland", "agriculture")) {
+      f = y@forestlist[[i]]
+      s = y@soillist[[i]]
       y@xlist[[i]] = forest2spwbInput(f, s, SpParams, spwbcontrol)
-    } else if((!is.null(s)) && (lct[i]== "agriculture")) {
-      y@xlist[[i]] = forest2spwbInput(emptyforest(), s, SpParams, spwbcontrol)
     } else {
       y@xlist[[i]] = NA
     }
   }
-  cat(paste(" - number of cells with spwbInput == NA: ", sum(is.na(y@xlist)),"\n\n", sep=""))
+  cat(paste("\nNumber of cells with spwbInput == NA: ", sum(is.na(y@xlist)),"\n\n", sep=""))
 
 
   #Output matrices

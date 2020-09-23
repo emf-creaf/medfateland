@@ -9,5 +9,5 @@ setClass("SpatialPixelsLandscape",
          contains="SpatialPixelsTopography")
 setClass("DistributedWatershed",
          slots=list(waterOrder = "numeric", waterQ = "list", queenNeigh = "list",
-                    bedrock = "data.frame", aquifer = "numeric"),
+                    channel = "logical", bedrock = "data.frame", aquifer = "numeric"),
          contains="SpatialPixelsLandscape")
