@@ -96,8 +96,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                                 Interception = rep(0, nSummary),
                                 SoilEvaporation = rep(0,nSummary),
                                 Transpiration = rep(0, nSummary),
-                                Runoff = rep(0, nSummary),
-                                DeepDrainage= rep(0, nSummary))
+                                Runoff = rep(0, nSummary))
 
 
   summary_function = function(object, model="SX") {

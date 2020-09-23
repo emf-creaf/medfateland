@@ -298,19 +298,6 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       //Add deep drainage to aquifer of the cell
       aquifer[iCell] += DeepDrainage[iCell];
       
-      //Assign runoff to runon of neighbours
-      double ri =  Runoff[iCell];
-      if(ri>0.0) {
-        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
-        NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
-        if(ni.size()>0) {
-          for(int j=0;j<ni.size();j++)  {
-            Runon[ni[j]-1] += qi[j]*ri; //decrease index
-            ri -= qi[j]*ri;
-          }
-        }
-      }
-      runoffExport += ri; //Add remaining to landscape export
     } else if(lct[iCell]=="rock" || lct[iCell]=="artificial") {//all Precipitation becomes surface runoff if cell is rock outcrop/artificial
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
@@ -323,16 +310,6 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         NetRain[iCell] = precVec[iCell];
       }
       Runoff[iCell] =  Runon[iCell]+precVec[iCell]; //receives runon or precipitation
-      double ri = Runoff[iCell];
-      if(ri>0.0) {
-        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
-        NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
-        for(int j=0;j<ni.size();j++)  {
-          Runon[ni[j]-1] += qi[j]*ri; //decrease index
-          ri -= qi[j]*ri;
-        }
-        runoffExport += ri; //Add remaining to landscape export
-      }
     } else if(lct[iCell]=="water") {
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
       Rain[iCell] = 0.0;
@@ -350,6 +327,21 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       aquifer[iCell] += Runon[iCell] + precVec[iCell];
       DeepDrainage[iCell] = Runon[iCell] + precVec[iCell];
     }
+    
+    //Assign runoff to runon of neighbours
+    double ri =  Runoff[iCell];
+    if(ri>0.0) {
+      IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
+      NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
+      if(ni.size()>0) {
+        for(int j=0;j<ni.size();j++)  {
+          Runon[ni[j]-1] += qi[j]*ri; //decrease index
+          ri -= qi[j]*ri;
+        }
+      }
+    }
+    runoffExport += ri; //Add remaining to landscape export
+    
   }
   // Rcout<<"C";
 
