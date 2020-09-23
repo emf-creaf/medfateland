@@ -20,13 +20,11 @@
       if(class(f)[1]=="forest") varplot[i] = sum(plant_basalArea(f), na.rm=T)
     }
   } else if(variable=="SWE") {
-    n = length(obj@soillist)
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
       if(class(s)[1]=="soil") varplot[i] = s[["SWE"]]
     }
-    varplot = factor(varplot)
   } else if(variable=="WTD") {
     n = length(obj@soillist)
     varplot = rep(NA, n)
@@ -34,7 +32,6 @@
       s = obj@soillist[[i]]
       if(class(s)[1]=="soil") varplot[i] = soil_waterTableDepth(s, ...)
     }
-    varplot = factor(varplot)
   } else if(variable=="texture1") {
     n = length(obj@soillist)
     varplot = rep(NA, n)
@@ -69,44 +66,34 @@
   } 
   return(varplot)
 }
-setGeneric("getLandscapeVariable", valueClass ="Spatial", function(obj, variable = "lct", ...){
+
+setGeneric("getLandscapeVariable", function(obj, variable = "lct", ...){
   standardGeneric("getLandscapeVariable")
 })
 setMethod("getLandscapeVariable", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", ...) {
             if(variable %in% .getAllowedVars()) {
-              return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
-                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                            grid = obj@grid))
-              
+              return(.getLandscapeVar(obj, variable, ...))
             } 
           })
 
 setMethod("getLandscapeVariable", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", ...) {
             if(var %in% .getAllowedVars()) {
-              return(SpatialGridDataFrame(obj@grid,
-                                          data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                          proj4string = obj@proj4string))
-              
+              return(var = .getLandscapeVar(obj, variable, ...))
             } 
           })
-
-
 setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
             if(var %in% .getAllowedVars()) {
-              return(SpatialPointsDataFrame(obj@coords,
-                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                            proj4string = obj@proj4string))
-              
+              return(.getLandscapeVar(obj, variable, ...))
             } 
           })
 
 setMethod("getLandscapeVariable", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
             if(variable %in% c("numNeigh", "waterOrder", "outlets", "channel","DTB","RockPorosity", "RockConductivity",
-                               "AquiferElevation", "DTA","AquiferVolume")) {
+                               "AquiferElevation", "DTA","AquiferVolume", "SWE")) {
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
               } else if(variable=="waterOrder") {
@@ -134,6 +121,8 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                 elevation = obj@data$elevation
                 varplot = elevation - (DTB/1000.0) + (aquifer/RockPorosity)/1000.0 # in m
                 varplot[RockPorosity==0.0] = elevation[RockPorosity==0.0]
+              } else if(variable=="SWE") {
+                varplot = obj@snowpack
               } else if(variable =="DTA") {
                 DTB = obj@bedrock$DepthToBedrock
                 aquifer = obj@aquifer
@@ -141,11 +130,48 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
                 varplot = (DTB/1000.0) - (aquifer/RockPorosity)/1000.0
                 varplot[RockPorosity==0.0] = DTB[RockPorosity==0.0]/1000
               }
-              return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
-                                            data.frame(var = varplot), 
-                                            grid = obj@grid))
-              
+              return(varplot)
             } else {
               return(getLandscapeVariable(as(obj, "SpatialPixelsLandscape"), variable, ...))
             } 
           })
+
+
+setGeneric("getLandscapeLayer", valueClass ="Spatial", function(obj, variable = "lct", ...){
+  standardGeneric("getLandscapeLayer")
+})
+setMethod("getLandscapeLayer", signature("SpatialPixelsLandscape"),
+          function(obj, variable = "lct", ...) {
+            if(variable %in% .getAllowedVars()) {
+              return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
+                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
+                                            grid = obj@grid))
+              
+            } 
+          })
+setMethod("getLandscapeLayer", signature("SpatialGridLandscape"),
+          function(obj, variable = "lct", ...) {
+            if(var %in% .getAllowedVars()) {
+              return(SpatialGridDataFrame(obj@grid,
+                                          data.frame(var = .getLandscapeVar(obj, variable, ...)), 
+                                          proj4string = obj@proj4string))
+              
+            } 
+          })
+setMethod("getLandscapeLayer", signature("SpatialPointsLandscape"),
+          function(obj, variable = "lct", ...) {
+            if(var %in% .getAllowedVars()) {
+              return(SpatialPointsDataFrame(obj@coords,
+                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
+                                            proj4string = obj@proj4string))
+              
+            } 
+          })
+setMethod("getLandscapeLayer", signature("DistributedWatershed"),
+          function(obj, variable = "lct", ...) {
+            return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
+                                          data.frame(var = getLandscapeVariable(obj, variable, ...)), 
+                                          grid = obj@grid))
+          })
+
+

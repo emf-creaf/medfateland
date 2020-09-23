@@ -137,6 +137,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
   }
   xlist = vector("list", ncells)
   aquifer = rep(0.0,ncells)
+  snowpack = rep(0.0,ncells)
   
   cat(paste("Checking bedrock data ...\n"))
   
@@ -211,6 +212,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
       forestlist = forestlist[-toRemove]
       soillist = soillist[-toRemove]
       aquifer = aquifer[-toRemove]
+      snowpack = snowpack[-toRemove]
       spxt = meteoland::SpatialPixelsTopography(SpatialPoints(coords, spxt@proj4string),
                                                 elevation = elevation, slope = slope, aspect = aspect,
                                                 grid = grid)
@@ -222,7 +224,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
       validOutlets = channel[outlets]
       validOutlets[numNeigh[outlets]==8] = TRUE
     } 
-    cat(paste0("Removed ", nrem,  " out of ", ncells, " (",round(nrem/ncells, 1),"%) grid cells.\n"))
+    cat(paste0("Removed ", nrem,  " out of ", ncells, " (",round(nrem/ncells, 2),"%) grid cells.\n"))
   }
   dws = new("DistributedWatershed",
              waterOrder = waterOrder,
@@ -231,6 +233,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
              bedrock = bedrock,
              channel = channel,
              aquifer = aquifer,
+             snowpack = snowpack,
              lct = lct,
              forestlist = forestlist, 
              soillist = soillist,

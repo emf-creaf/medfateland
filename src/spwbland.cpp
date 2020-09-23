@@ -73,7 +73,7 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 // [[Rcpp::export(".wswbDay")]]
 List wswbDay(CharacterVector lct, List xList, List soilList,
              IntegerVector waterO, List queenNeigh, List waterQ, 
-             DataFrame bedrock, NumericVector aquifer,
+             DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
              List correctionFactors,
              CharacterVector date,
              DataFrame gridMeteo,
@@ -265,14 +265,16 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       List soil = soilList[iCell]; 
       double Kperc = soil["Kperc"];
       double D = soil["SoilDepth"]; //Soil depth in mm
-      double DTA = DTB[i] - (aquifer[i]/RockPorosity[i]);
+      double DTA = DTB[i] - (aquifer[iCell]/RockPorosity[iCell]);
       if(DTA < D) {
         soil["Kperc"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
       } else {
-        soil["Kperc"] = 1000.0*RockConductivity[i]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
+        soil["Kperc"] = 1000.0*RockConductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
         // Rcout<<Kperc<< " "<<1000.0*RockConductivity[i]*Rdrain<<"\n";
       } 
-
+      //copy snowpack
+      soil["SWE"] = snowpack[iCell];
+      
       //Run daily soil water balance for the current cell
       List res;
       res = medfate::spwb_day(x, soil, date,
@@ -281,6 +283,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         precVec[iCell], Runon[iCell]);
       soil["Kperc"] = Kperc; //Restore value
+      snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = res["Soil"];
       DataFrame PL = res["Plants"];

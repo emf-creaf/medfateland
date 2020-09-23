@@ -53,7 +53,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_getTrackSpeciesDDS`, trackSpecies, DDS, x)
 }
 
-.wswbDay <- function(lct, xList, soilList, waterO, queenNeigh, waterQ, bedrock, aquifer, correctionFactors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize) {
-    .Call(`_medfateland_wswbDay`, lct, xList, soilList, waterO, queenNeigh, waterQ, bedrock, aquifer, correctionFactors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize)
+.wswbDay <- function(lct, xList, soilList, waterO, queenNeigh, waterQ, bedrock, aquifer, snowpack, correctionFactors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize) {
+    .Call(`_medfateland_wswbDay`, lct, xList, soilList, waterO, queenNeigh, waterQ, bedrock, aquifer, snowpack, correctionFactors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize)
 }
 

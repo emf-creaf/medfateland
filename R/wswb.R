@@ -104,9 +104,17 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
          Psi1 = soil_psi(object)[1],
          Volume = sum(soil_water(object, model)),
          WTD = soil_waterTableDepth(object, model))
-    }
-
-  cat(paste("Simulation:\n"))
+  }
+  
+  initialSoilContent = mean(getLandscapeVariable(y, "SoilVol"), na.rm=TRUE)
+  initialSnowContent = mean(getLandscapeVariable(y, "SWE"), na.rm=TRUE)
+  initialAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
+  
+  cat(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2),"\n"))
+  cat(paste0("Initial average snowpack content (mm): ", round(initialSnowContent,2),"\n"))
+  cat(paste0("Initial average aquifer content (mm): ", round(initialAquiferContent,2),"\n"))
+  
+  cat(paste0("\nPerforming daily simulations:\n"))
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
     cat(".")
@@ -165,7 +173,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                            WindSpeed = gridWindSpeed)
     df = .wswbDay(y@lct, y@xlist, y@soillist,
                   y@waterOrder, y@queenNeigh, y@waterQ,
-                  y@bedrock, y@aquifer,
+                  y@bedrock, y@aquifer, y@snowpack,
                   correctionFactors,
                   datechar,
                   gridMeteo,
@@ -208,6 +216,18 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   }
   cat("done\n\n")
   #Average summaries
+  
+  finallSoilContent = mean(getLandscapeVariable(y, "SoilVol"), na.rm=TRUE)
+  finalSnowContent = mean(getLandscapeVariable(y, "SWE"), na.rm=TRUE)
+  finalAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
+  
+  cat(paste0("Final average soil water content (mm): ", round(finallSoilContent,2),"\n"))
+  cat(paste0("Final average snowpack content (mm): ", round(finalSnowContent,2),"\n"))
+  cat(paste0("Final average aquifer content (mm): ", round(finalAquiferContent,2),"\n"))
+  cat(paste0("Change in soil water content (mm): ", round(finallSoilContent - initialSoilContent,2),"\n"))
+  cat(paste0("Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
+  cat(paste0("Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
+  
   cat("\n------------  wswb ------------\n")
 
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow

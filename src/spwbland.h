@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 List wswbDay(CharacterVector lct, List xList, List soilList,
              IntegerVector waterO, List queenNeigh, List waterQ,
-             DataFrame bedrock, NumericVector aquifer,
+             DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
              List correctionFactors,
              CharacterVector date,
              DataFrame gridMeteo,
