@@ -48,6 +48,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   #Print information area
   cat("\n------------  wswb ------------\n")
   cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
+  cat(paste0("Grid cells with soil: ", nSoil,"\n"))
   cat(paste0("Meteorological input class: ", class(meteo),"\n"))
   cat(paste0("Number of days to simulate: ",nDays,"\n"))
   cat(paste0("Number of landscape summaries: ", nSummary,"\n"))
@@ -308,7 +309,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   snowpack_wb = Snowsum - Snowmeltsum
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
   soil_wb = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum) - SoilRunoffsum - SoilDeepDrainagesum - SoilSoilEvaporationsum - SoilTranspirationsum;
-  landscape_wb = Precipitationsum - Exportsum
+  landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
   
   cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
   cat(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2),"\n"))
