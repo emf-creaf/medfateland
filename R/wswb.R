@@ -37,6 +37,11 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   nCells = length(y@forestlist)
   isSoilCell = y@lct %in% c("wildland", "agriculture")
   nSoil = sum(isSoilCell)
+  nWild = sum(y@lct %in% c("wildland"))
+  nAgri = sum(y@lct %in% c("agriculture"))
+  nRock = sum(y@lct %in% c("rock"))
+  nArti = sum(y@lct %in% c("artificial"))
+  nWater = sum(y@lct %in% c("water"))
   nSummary = sum(table(date.factor)>0)
   t.df = as.numeric(table(df.int))
 
@@ -48,10 +53,11 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   #Print information area
   cat("\n------------  wswb ------------\n")
   cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
-  cat(paste0("Grid cells with soil: ", nSoil,"\n"))
+  cat(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater,"\n"))
+  cat(paste0("Cells with soil: ", nSoil,"\n"))
   cat(paste0("Meteorological input class: ", class(meteo),"\n"))
   cat(paste0("Number of days to simulate: ",nDays,"\n"))
-  cat(paste0("Number of landscape summaries: ", nSummary,"\n"))
+  cat(paste0("Number of summaries: ", nSummary,"\n"))
   cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
 
   cat(paste("Preparing spwb input:\n"))
@@ -67,8 +73,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
       y@xlist[[i]] = NA
     }
   }
-  cat(paste("\nNumber of cells with spwbInput == NA: ", sum(is.na(y@xlist)),"\n\n", sep=""))
-
+  cat("\n\n")
 
   #Output matrices
   DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))
@@ -143,7 +148,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2),"\n"))
   cat(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2),"\n"))
   cat(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2),"\n"))
-  cat(paste0("Initial landscape water content (mm): ", round(initialLandscapeContent,2),"\n"))
+  cat(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2),"\n"))
   
   cat(paste0("\nPerforming daily simulations:\n"))
   for(day in 1:nDays) {
@@ -322,7 +327,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
   cat(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2),"\n"))
   cat(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2),"\n"))
-  cat(paste0("Final landscape water content (mm): ", round(finalLandscapeContent,2),"\n"))
+  cat(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2),"\n"))
   
   
   snowpack_wb = Snowsum - Snowmeltsum
@@ -350,12 +355,12 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   
   
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
-  cat(paste0("\nChange in landscape water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
-  cat(paste0("Landscape water balance components:\n"))
+  cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
+  cat(paste0("Watershed water balance components:\n"))
   cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
   cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
   cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
-  cat(paste0("Landscape water balance result (mm): ",round(landscape_wb,2),"\n"))
+  cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
   
   cat("\n------------  wswb ------------\n")
 
@@ -371,8 +376,8 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
             grid.index = y@grid.index,
             bbox = y@bbox,
             proj4string = y@proj4string, 
-            LandscapeBalance = LandscapeBalance,
-            SoilLandscapeBalance = SoilLandscapeBalance,
+            WatershedBalance = LandscapeBalance,
+            WatershedSoilBalance = SoilLandscapeBalance,
             CellBalance = CellBalance,
             CellState = CellState,
             DailyRunoff = DailyRunoff)
