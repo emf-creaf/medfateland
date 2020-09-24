@@ -140,18 +140,28 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       double Kinterflow = Rinterflow*Ks1;
       if(WTD[i]<D) {
         double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
+        List control = x["control"];
+        double saturatedVolume = medfate::soil_waterSAT(soil, control["soilFunctions"]);
+        double fieldCapacityVolume = medfate::soil_waterFC(soil, control["soilFunctions"]);
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
         //water table slope between target and neighbours
+        NumericVector qni(ni.size(), 0.0);
         for(int j=0;j<ni.size();j++) {
           if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
             double tanBeta = (SoilWaterTableElevation[i]-SoilWaterTableElevation[ni[j]-1])/cellWidth;
-            if(tanBeta>0.0) { 
-              double qn = tanBeta*T*cellWidth; //flow in m3
-              interflowInput[ni[j]-1] += qn;
-              interflowOutput[i] += qn;
-            }
+            if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3
           }
         }
+        double qntotal = sum(qni);
+        double qntotalallowed = std::min(qntotal, ((saturatedVolume-fieldCapacityVolume)/1000.0)*cellArea); //avoid excessive outflow
+        double corrfactor = qntotalallowed/qntotal;
+        for(int j=0;j<ni.size();j++) {
+          if(qni[j]>0.0) {
+            interflowInput[ni[j]-1] += qni[j]*corrfactor;
+            interflowOutput[i] += qni[j]*corrfactor;
+          }
+        }
+        
       }
     }
   }
@@ -165,14 +175,18 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       double T = ((Kbaseflow*DTB[i]*0.001)/n)*pow(1.0-((DTB[i] - (aquifer[i]/RockPorosity[i]))/DTB[i]),n); //Transmissivity in m2
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
       //water table slope between target and neighbours
+      NumericVector qni(ni.size(), 0.0);
       for(int j=0;j<ni.size();j++) {
         double tanBeta = (AquiferWaterTableElevation[i]-AquiferWaterTableElevation[ni[j]-1])/cellWidth;
-        if(tanBeta>0.0) {
-          double qn = tanBeta*T*cellWidth; //flow in m3/day
-          qn = std::min(qn, aquifer[i]*cellArea); //avoid excessive outflow
-          baseflowInput[ni[j]-1] += qn;
-          baseflowOutput[i] += qn;
-          // Rcout<<qn<<"\n";
+        if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
+      }
+      double qntotal = sum(qni);
+      double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*cellArea); //avoid excessive outflow
+      double corrfactor = qntotalallowed/qntotal;
+      for(int j=0;j<ni.size();j++) {
+        if(qni[j]>0.0) {
+          baseflowInput[ni[j]-1] += qni[j]*corrfactor;
+          baseflowOutput[i] += qni[j]*corrfactor;
         }
       }
     }
