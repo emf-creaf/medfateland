@@ -1,4 +1,4 @@
-buildSpatialPixelsTopography<-function(boundaries, grid, topo, proj4string, merge = FALSE) {
+buildWatershedTopography<-function(boundaries, grid, topo, proj4string, merge = FALSE) {
   b = as(boundaries, "SpatialPolygons")
   cat(paste("Number of watersheds: ", length(b),"\n"))
   cat(paste("1. Building grid coordinates.\n"))

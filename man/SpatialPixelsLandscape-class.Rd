@@ -14,17 +14,15 @@ Objects can be created by calls of the form \code{new("SpatialPixelsLandscape", 
 \section{Slots}{
   \describe{
     \item{\code{data}:}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
+    \item{\code{coords:}}{A matrix of pixel coordinates.}
     \item{\code{coords.nrs}:}{Inherited from \code{SpatialPointsDataFrame} but not used.}
-    \item{\code{grid}:}{Object of class \code{"GridTopology"}. }
+    \item{\code{grid}:}{Object of class \code{GridTopology}. }
     \item{\code{grid.index}:}{Index of points in full grid.}
     \item{\code{bbox}:}{Object of class \code{"matrix"} with the boundary box. }
     \item{\code{proj4string}:}{Object of class \code{"CRS"} with the projection string.}   
     \item{\code{lct}:}{A character vector of land cover type for each cell. Values allowed are: 'wildland', 'agriculture', 'rock' and 'static'.  }
     \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
     \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
-    \item{\code{waterOrder}:}{A numeric vector of cell processing order.}
-    \item{\code{waterQ}:}{A list of water discharge values to neighbours.}
-    \item{\code{queenNeigh}:}{A list of (queen) neighbours for each cell.}
     }
 }
 \section{Extends}{
@@ -33,7 +31,7 @@ Class \code{"\linkS4class{SpatialPixelsDataFrame}"}, distance 2.
 Class \code{"\linkS4class{SpatialPixels}"}, distance 3.
 Class \code{"\linkS4class{SpatialPointsDataFrame}"}, distance 3.
 Class \code{"\linkS4class{SpatialPoints}"}, distance 4.
-Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixelsTopography", distance 5.
+Class \code{"\linkS4class{Spatial}"}, distance 5.
 }
 \section{Methods}{
   \describe{

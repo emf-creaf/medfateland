@@ -140,9 +140,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       double Kinterflow = Rinterflow*Ks1;
       if(WTD[i]<D) {
         double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
+        List x = Rcpp::as<Rcpp::List>(xList[i]);
         List control = x["control"];
-        double saturatedVolume = medfate::soil_waterSAT(soil, control["soilFunctions"]);
-        double fieldCapacityVolume = medfate::soil_waterFC(soil, control["soilFunctions"]);
+        String model = control["soilFunctions"];
+        NumericVector saturatedVolume = medfate::soil_waterSAT(soil, model);
+        NumericVector fieldCapacityVolume = medfate::soil_waterFC(soil, model);
         IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
         //water table slope between target and neighbours
         NumericVector qni(ni.size(), 0.0);
@@ -153,7 +155,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           }
         }
         double qntotal = sum(qni);
-        double qntotalallowed = std::min(qntotal, ((saturatedVolume-fieldCapacityVolume)/1000.0)*cellArea); //avoid excessive outflow
+        double macroporeVolume = sum(saturatedVolume)-sum(fieldCapacityVolume);
+        double qntotalallowed = std::min(qntotal, (macroporeVolume/1000.0)*cellArea); //avoid excessive outflow
         double corrfactor = qntotalallowed/qntotal;
         for(int j=0;j<ni.size();j++) {
           if(qni[j]>0.0) {

@@ -1,6 +1,6 @@
 \encoding{UTF-8}
-\name{buildSpatialPixelsTopography}
-\alias{buildSpatialPixelsTopography}
+\name{buildWatershedTopography}
+\alias{buildWatershedTopography}
 \title{
 Build SpatialPixelsTopography for watersheds
 }
@@ -8,7 +8,7 @@ Build SpatialPixelsTopography for watersheds
 Defines objects \code{\link{SpatialPixelsTopography-class}} for watersheds whose boundaries are specified in a \code{\link{SpatialPolygons-class}} object.
 }
 \usage{
-buildSpatialPixelsTopography(boundaries, grid, topo, proj4string, merge = FALSE)
+buildWatershedTopography(boundaries, grid, topo, proj4string, merge = FALSE)
 }
 \arguments{
   \item{boundaries}{An object \code{\link{SpatialPolygons-class}} or \code{\link{SpatialPolygonsDataFrame-class}} containing the boundaries of the watershed.}

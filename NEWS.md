@@ -4,7 +4,7 @@
 
 # Version 0.2.2
 - New spatial object definitions
-- New function buildSpatialPixelsTopography
+- New function buildWatershedTopography
 
 # Version 0.2.1
 - Update for medfate version 0.2.1
