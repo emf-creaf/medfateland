@@ -73,25 +73,19 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 }
 \examples{
 
+\dontrun{
 df = readRDS("D:/Datasets/Hydrology/Products/Catalonia/DF_conques_Pfafs_LU.rds")
 
 code = "20054998"
-spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
-lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
-forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
-soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))
-bedrock = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Bedrock/",code,".rds"))
-channel = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Channels/",code,".rds"))
 
-dw = DistributedWatershed(spt, lct, forestlist, soillist, bedrock, channel)
-
+dw = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/DistributedWatershed/",code,".rds"))
 
 data("SpParamsMED")
 
 meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
-#meteo = readRDS("D:/Datasets/Hydrology/Products/Catalonia/ExampleMeteo/200554998.rds")
 
 dates = seq(as.Date("2019-01-01"), as.Date("2019-03-31"), by="day")
 
 res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "month")
+}
 }
