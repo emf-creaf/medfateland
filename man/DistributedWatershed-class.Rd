@@ -13,16 +13,23 @@ Objects can be created by calls of the form \code{new("DistributedWatershed", ..
 }
 \section{Slots}{
   \describe{
+    \item{\code{coords:}}{A matrix of pixel coordinates.}
+    \item{\code{coords.nrs}:}{Inherited from \code{SpatialPointsDataFrame} but not used.}
     \item{\code{grid}:}{Object of class \code{"GridTopology"}. }
+    \item{\code{grid.index}:}{Index of points in full grid.}
     \item{\code{bbox}:}{Object of class \code{"matrix"} with the boundary box. }
     \item{\code{proj4string}:}{Object of class \code{"CRS"} with the projection string.}   
     \item{\code{data}:}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
-    \item{\code{lct}:}{A character vector of land cover type for each cell. Values allowed are: 'wildland', 'agriculture', 'rock' and 'static'.  }
-    \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
-    \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
+    \item{\code{lct}:}{A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').}
     \item{\code{waterOrder}:}{A numeric vector of cell processing order.}
     \item{\code{waterQ}:}{A list of water discharge values to neighbours.}
     \item{\code{queenNeigh}:}{A list of neighbours for each cell.}
+    \item{\code{channel}:}{A logical vector indicating whether each cell belongs to the channel network.}
+    \item{\code{aquifer}:}{A numeric vector with the water content of the aquifer in each cell.}
+    \item{\code{snowpack}:}{A numeric vector with the snow water equivalent content of the snowpack in each cell.}
+    \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
+    \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
+    \item{\code{xlist}:}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
   }
 }
 \section{Extends}{
@@ -37,10 +44,9 @@ Class \code{"\linkS4class{SpatialVector}"}, distance 6.
 }
 \section{Methods}{
   \describe{
-    \item{getLCTs}{\code{signature(object = "SpatialGridLandscape")}: returns a SpatialGridDataFrame with the land cover types of the landscape cells.}
-    \item{spatialForestSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
-    \item{spatialSoilSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
-    \item{spplot}{\code{signature(object = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
+    \item{spatialForestSummary}{\code{signature(object = "DistributedWatershed")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
+    \item{spatialSoilSummary}{\code{signature(object = "DistributedWatershed")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
+    \item{spplot}{\code{signature(object = "DistributedWatershed")}: allows plotting maps of the watershed state.}
 	 }
 }
 

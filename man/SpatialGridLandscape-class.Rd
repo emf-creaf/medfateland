@@ -17,12 +17,10 @@ Objects can be created by calls of the form \code{new("SpatialGridLandscape", ..
     \item{\code{bbox}:}{Object of class \code{"matrix"} with the boundary box. }
     \item{\code{proj4string}:}{Object of class \code{"CRS"} with the projection string.}   
     \item{\code{data}:}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
-    \item{\code{lct}:}{A character vector of land cover type for each cell. Values allowed are: 'wildland', 'agriculture', 'rock' and 'static'.  }
+    \item{\code{lct}:}{A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').}
     \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
     \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
-    \item{\code{waterOrder}:}{A numeric vector of cell processing order.}
-    \item{\code{waterQ}:}{A list of water discharge values to neighbours.}
-    \item{\code{queenNeigh}:}{A list of neighbours for each cell.}
+    \item{\code{xlist}:}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
   }
 }
 \section{Extends}{

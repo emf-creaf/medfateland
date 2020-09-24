@@ -18,12 +18,14 @@ Objects can be created by calls of the form \code{new("SpatialPointsLandscape", 
 }
 \section{Slots}{
   \describe{
-    \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
-    \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
     \item{\code{data}:}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
     \item{\code{coords}:}{Object of class \code{"matrix"} with spatial coordinates. }
     \item{\code{bbox}:}{Object of class \code{"matrix"} with the boundary box. }
     \item{\code{proj4string}:}{Object of class \code{"CRS"} with the projection string. }
+    \item{\code{lct}:}{A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').}
+    \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }
+    \item{\code{soillist}:}{Object of class \code{"list"} containing a set of \code{\link{soil}} objects.}
+    \item{\code{xlist}:}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
   }
 }
 \section{Extends}{
