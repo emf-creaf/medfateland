@@ -249,8 +249,9 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       }
       
     } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
-      SaturationExcess[i] += -DTAn*RockPorosity[i];
+      AquiferDischarge[i] += -DTAn*RockPorosity[i];
       aquifer[i] = DTB[i]*RockPorosity[i];
+      SaturationExcess[i] = AquiferDischarge[i];
     }
   }
   
@@ -301,41 +302,44 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
 
       //Add deep drainage to aquifer of the cell
       aquifer[iCell] += DeepDrainage[iCell];
-      
-    } else if(lct[iCell]=="rock" || lct[iCell]=="artificial") {//all Precipitation becomes surface runoff if cell is rock outcrop/artificial
+    } else {
+      Rain[iCell] = 0.0;
+      Snow[iCell] = 0.0;
+      Snowmelt[iCell] = 0.0;
+      SoilEvaporation[iCell] = 0.0;
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
-      Rain[iCell] = 0.0;
-      // NetRain[iCell] = 0.0;
-      Snow[iCell] = 0.0;
-      // if(tday<0.0) {
-        // Snow[iCell] = precVec[iCell];
-      // } else {
+      if(tday<0.0) {
+        Snow[iCell] = precVec[iCell];
+        snowpack[iCell] += Snow[iCell];
+      } else {
         Rain[iCell] = precVec[iCell];
-      // }
-      Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+precVec[iCell]; //receives runon or precipitation
-    } else if(lct[iCell]=="water") {
-      Rain[iCell] = 0.0;
-      Snow[iCell] = 0.0;
-      // double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
-      // if(tday<0.0) {
-        // Snow[iCell] = precVec[iCell];
-      // } else {
-      Rain[iCell] = precVec[iCell];
-        // NetRain[iCell] = precVec[iCell];
-      // }
-      // water cells receive water from other cells or Precipitation
-      // but do not export to the atmosphere contribute nor to other cells.
-      // any received water drains directly to the aquifer so that it can feed base flow
-      DeepDrainage[iCell] = SaturationExcess[iCell]+Runon[iCell] + precVec[iCell];
-      aquifer[iCell] += DeepDrainage[iCell];
-      double DTAn = DTB[iCell] - (aquifer[iCell]/RockPorosity[iCell]); // New depth to aquifer (mm)
-      if(DTAn<0.0) { //Turn excess into Runoff
-        Runoff[iCell] = aquifer[iCell] - (DTB[iCell]*RockPorosity[iCell]);
-        DeepDrainage[iCell] = DeepDrainage[iCell] - Runoff[iCell];
-        aquifer[iCell] = DTB[iCell]*RockPorosity[iCell];
+      }
+      NetRain[iCell] = Rain[iCell];
+      if(snowpack[iCell]>0.0) {
+        double melt = medfate::hydrology_snowMelt(tday, radVec[iCell], 1.0, elevation[iCell]);
+        Snowmelt[iCell] = std::min(melt, snowpack[iCell]);
+        snowpack[iCell] -= Snowmelt[iCell];
+      }
+      if(lct[iCell]=="rock" || lct[iCell]=="artificial") {
+        Infiltration[iCell] = 0.0;
+        //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
+        Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+Snowmelt[iCell]+Rain[iCell]; 
+        DeepDrainage[iCell] = 0.0;
+      } else if(lct[iCell]=="water") {
+        // water cells receive water from other cells or Precipitation
+        // but do not export to the atmosphere contribute nor to other cells.
+        // any received water drains directly to the aquifer so that it can feed base flow
+        Infiltration[iCell] = SaturationExcess[iCell]+Runon[iCell] + Snowmelt[iCell]+ Rain[iCell];
+        DeepDrainage[iCell] = Infiltration[iCell];
+        aquifer[iCell] += DeepDrainage[iCell];
+        double DTAn = DTB[iCell] - (aquifer[iCell]/RockPorosity[iCell]); // New depth to aquifer (mm)
+        if(DTAn<0.0) { //Turn excess into Runoff
+          Runoff[iCell] = aquifer[iCell] - (DTB[iCell]*RockPorosity[iCell]);
+          DeepDrainage[iCell] = DeepDrainage[iCell] - Runoff[iCell];
+          aquifer[iCell] = DTB[iCell]*RockPorosity[iCell];
+        }
       }
     }
-    
     //Assign runoff to runon of downhill neighbours
     double ri =  Runoff[iCell];
     if(ri>0.0) {

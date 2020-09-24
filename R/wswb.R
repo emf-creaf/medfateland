@@ -287,6 +287,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   Runonsum = sum(LandscapeBalance$Runon, na.rm=T)
   Runoffsum = sum(LandscapeBalance$Runoff, na.rm=T)
   DeepDrainagesum= sum(LandscapeBalance$DeepDrainage, na.rm=T)
+  SaturationExcesssum= sum(LandscapeBalance$SaturationExcess, na.rm=T)
   SoilEvaporationsum= sum(LandscapeBalance$SoilEvaporation , na.rm=T)
   Transpirationsum = sum(LandscapeBalance$Transpiration , na.rm=T)
   AquiferDischargesum = sum(LandscapeBalance$AquiferDischarge , na.rm=T)
@@ -301,6 +302,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   SoilSnowmeltsum = sum(SoilLandscapeBalance$Snowmelt, na.rm=T)
   SoilRunonsum = sum(SoilLandscapeBalance$Runon, na.rm=T)
   SoilRunoffsum = sum(SoilLandscapeBalance$Runoff, na.rm=T)
+  SoilSaturationExcesssum= sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
   SoilDeepDrainagesum= sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
   SoilSoilEvaporationsum= sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
   SoilTranspirationsum = sum(SoilLandscapeBalance$Transpiration , na.rm=T)
@@ -308,7 +310,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   
   snowpack_wb = Snowsum - Snowmeltsum
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
-  soil_wb = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum) - SoilRunoffsum - SoilDeepDrainagesum - SoilSoilEvaporationsum - SoilTranspirationsum;
+  soil_wb = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilSaturationExcesssum + SoilAquiferDischargesum) - SoilRunoffsum - SoilDeepDrainagesum - SoilSoilEvaporationsum - SoilTranspirationsum;
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
   
   cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
