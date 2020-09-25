@@ -338,16 +338,16 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   
   snowpack_wb = Snowsum - Snowmeltsum
   cat(paste0("\nChange in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
+  cat(paste0("Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
   cat(paste0("Snowpack water balance components:\n"))
   cat(paste0("  Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
-  cat(paste0("Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
   
   soil_input = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
   soil_output = (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
   soil_wb =  soil_input - soil_output
   cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
-  cat(paste0("Soil water balance components:\n"))
   cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
+  cat(paste0("Soil water balance components:\n"))
   cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2)," Runon (mm) ", round(SoilRunonsum,2),"\n"))
   cat(paste0("  Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"  Subsurface flow input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface flow output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
   cat(paste0("  Runoff (mm) ",round(SoilRunoffsum,2)," Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"\n"))
