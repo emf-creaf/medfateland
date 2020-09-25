@@ -54,15 +54,15 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 \code{\link{spwb}}, \code{\link{growth}}
 }
 \examples{
-code = "2004138"
-spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
-lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
-forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
-soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))
-spl = SpatialPixelsLandscape(spt, lct, forestlist, soillist)
-meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
-data("SpParamsMED")
-dates = seq(as.Date("2019-03-01"), as.Date("2019-03-15"), by="day")
 
-res = spwbpixels(spl, SpParamsMED, meteo, dates = dates, summaryFunction = summary.spwb)
+#Load example watershed (inherits from SpatialPixelsLandscape)
+data("examplewatershed")
+
+#Load example meteo data frame from package meteoland
+data("examplemeteo")
+
+dates = seq(as.Date("2001-03-01"), as.Date("2019-03-15"), by="day")
+
+res = spwbpixels(examplewatershed, SpParamsMED, meteo, dates = dates, 
+                 summaryFunction = summary.spwb)
 }

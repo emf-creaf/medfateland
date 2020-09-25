@@ -115,6 +115,8 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                                 DeepDrainage = rep(0, nSummary),
                                 SaturationExcess = rep(0, nSummary),
                                 AquiferDischarge = rep(0, nSummary),
+                                Interflow = rep(0, nSummary),
+                                Baseflow = rep(0, nSummary),
                                 Export = rep(0, nSummary))
   SoilLandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
                                     Snow = rep(0, nSummary),
@@ -261,6 +263,8 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation, na.rm=T)/nCells
     LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration, na.rm=T)/nCells
     LandscapeBalance$Export[ifactor] = LandscapeBalance$Export[ifactor] + (sum(res_day$Runoff[outlets], na.rm=T)/nCells)
+    LandscapeBalance$Interflow[ifactor]= LandscapeBalance$Interflow[ifactor] + sum(res_day$InterflowInput, na.rm=T)/nCells
+    LandscapeBalance$Baseflow[ifactor]= LandscapeBalance$Baseflow[ifactor] + sum(res_day$BaseflowInput, na.rm=T)/nCells
     
     SoilLandscapeBalance$Rain[ifactor]= SoilLandscapeBalance$Rain[ifactor] + sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
     SoilLandscapeBalance$Snow[ifactor]= SoilLandscapeBalance$Snow[ifactor] + sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
@@ -305,6 +309,8 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   Transpirationsum = sum(LandscapeBalance$Transpiration , na.rm=T)
   AquiferDischargesum = sum(LandscapeBalance$AquiferDischarge , na.rm=T)
   Exportsum = sum(LandscapeBalance$Export, na.rm=T)
+  Interflowsum = sum(LandscapeBalance$Interflow , na.rm=T)
+  Baseflowsum = sum(LandscapeBalance$Baseflow , na.rm=T)
   
   SoilPrecipitationsum = sum(SoilLandscapeBalance$Precipitation, na.rm=T)
   SoilRainfallsum = sum(SoilLandscapeBalance$Rain, na.rm=T)
@@ -341,33 +347,38 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   soil_wb =  soil_input - soil_output
   cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
   cat(paste0("Soil water balance components:\n"))
-  cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2)," Runon (mm) ", round(SoilRunonsum,2),"\n"))
-  cat(paste0("  Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2), " Interflow input (mm) ",round(SoilInterflowInputsum,2),"\n"))
-  cat(paste0("  Interflow output (mm) ",round(SoilInterflowOutputsum,2)," Runoff (mm) ",round(SoilRunoffsum,2)," Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"\n"))
-  cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
   cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
+  cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2)," Runon (mm) ", round(SoilRunonsum,2),"\n"))
+  cat(paste0("  Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"  Subsurface flow input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface flow output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+  cat(paste0("  Runoff (mm) ",round(SoilRunoffsum,2)," Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"\n"))
+  cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
   
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
   cat(paste0("\nChange in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
+  cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
   cat(paste0("Aquifer water balance components:\n"))
   cat(paste0("  Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
-  cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
+  cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
   
   
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
   cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
+  cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
   cat(paste0("Watershed water balance components:\n"))
   cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
   cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
   cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
-  cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
+
+  cat(paste0("\Watershed lateral flows:\n"))
+  cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
+  cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
   
   cat("\n------------  wswb ------------\n")
 
   CellBalance<-list(Rain = Rain, Snow = Snow, Snowmelt = Snowmelt, Interception = Interception, NetRain = NetRain, Runon = Runon, Runoff=Runoff,
                     Infiltration=Infiltration, DeepDrainage = DeepDrainage, SaturationExcess = SaturationExcess, AquiferDischarge = AquiferDischarge,
-                    InterflowInput = InterflowInput, InterflowOutput = InterflowOutput,
-                    BaseflowInput = BaseflowInput, BaseflowOutput = BaseflowOutput,
+                    SubsurfaceInput = InterflowInput, SubsurfaceOutput = InterflowOutput,
+                    GroundwaterInput = BaseflowInput, GroundwaterOutput = BaseflowOutput,
                     SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
   CellState<-list(SWE = SWE, Psi1 = Psi1, SoilVol = SoilVol, WTD = WTD, DTA = DTA)
   l <- list(coords = y@coords,
