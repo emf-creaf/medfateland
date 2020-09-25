@@ -348,9 +348,10 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
   cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
   cat(paste0("Soil water balance components:\n"))
-  cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2)," Runon (mm) ", round(SoilRunonsum,2),"\n"))
-  cat(paste0("  Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"  Subsurface flow input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface flow output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-  cat(paste0("  Runoff (mm) ",round(SoilRunoffsum,2)," Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"\n"))
+  cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
+  cat(paste0("  Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
+  cat(paste0("  Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+  cat(paste0("  Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
   cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
   
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
@@ -358,8 +359,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
   cat(paste0("Aquifer water balance components:\n"))
   cat(paste0("  Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
-  cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
-  
+
   
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
   cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))

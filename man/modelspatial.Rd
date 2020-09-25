@@ -61,8 +61,11 @@ data("examplewatershed")
 #Load example meteo data frame from package meteoland
 data("examplemeteo")
 
-dates = seq(as.Date("2001-03-01"), as.Date("2019-03-15"), by="day")
+#Load default medfate parameters
+data("SpParamsMED")
 
-res = spwbpixels(examplewatershed, SpParamsMED, meteo, dates = dates, 
+dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+
+res = spwbpixels(examplewatershed, SpParamsMED, examplemeteo, dates = dates, 
                  summaryFunction = summary.spwb)
 }
