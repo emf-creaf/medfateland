@@ -224,7 +224,7 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
       validOutlets = channel[outlets]
       validOutlets[numNeigh[outlets]==8] = TRUE
     } 
-    cat(paste0("Removed ", nrem,  " out of ", ncells, " (",round(nrem/ncells, 2),"%) grid cells.\n"))
+    cat(paste0("Removed ", nrem,  " out of ", ncells, " (",round(100*nrem/ncells, 2),"%) grid cells.\n"))
   }
   dws = new("DistributedWatershed",
              waterOrder = waterOrder,

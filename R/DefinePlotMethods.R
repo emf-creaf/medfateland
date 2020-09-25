@@ -1,15 +1,16 @@
-# .ggspl<-function(spl) {
-#   spl_sf =st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
-#   g<-ggplot()+
-#     geom_sf(spl_sf, mapping = aes(fill=var), col=NA)
-#   return(g)
-# }
-# setMethod("plot", signature("SpatialPixelsLandscape"),
-#           function(x, variable = "lct", ...) {
-#             if(variable %in% .getAllowedVars()) {
-#               return(.ggspl(getLandscapeVariable(x, variable, ...)))
-#             }
-#           })
+.ggspl<-function(spl) {
+  spl_sf =st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
+  g<-ggplot()+
+    geom_sf(spl_sf, mapping = aes(fill=var), col=NA)
+  return(g)
+}
+setMethod("plot", signature("SpatialPixelsLandscape"),
+          function(x, y, ...) {
+            if(y %in% .getAllowedVars()) {
+              return(.ggspl(getLandscapeLayer(x, y, ...)))
+            }
+          })
+
 
 setMethod("spplot", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", ...) {
@@ -20,6 +21,14 @@ setMethod("spplot", signature("SpatialPixelsLandscape"),
             }
           })
 
+setMethod("plot", signature("SpatialGridLandscape"),
+          function(x, y, ...) {
+            if(y %in% .getAllowedVars()) {
+              return(.ggspl(getLandscapeLayer(x, y, ...)))
+            }
+          })
+
+
 setMethod("spplot", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", ...) {
             if(var %in% .getAllowedVars()) {
@@ -29,6 +38,13 @@ setMethod("spplot", signature("SpatialGridLandscape"),
             }
           })
 
+
+setMethod("plot", signature("SpatialPointsLandscape"),
+          function(x, y, ...) {
+            if(y %in% .getAllowedVars()) {
+              return(.ggspl(getLandscapeLayer(x, y, ...)))
+            }
+          })
 
 setMethod("spplot", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
@@ -42,4 +58,9 @@ setMethod("spplot", signature("SpatialPointsLandscape"),
 setMethod("spplot", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
             spplot(getLandscapeLayer(obj, variable, ...))
+          })
+
+setMethod("plot", signature("DistributedWatershed"),
+          function(x, y, ...) {
+            return(.ggspl(getLandscapeLayer(x, y, ...)))
           })

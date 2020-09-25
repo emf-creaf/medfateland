@@ -73,6 +73,14 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 }
 \examples{
 
+data("examplewatershed")
+data("examplemeteo")
+data("SpParamsMED")
+
+dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+
+res = wswb(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+
 \dontrun{
 df = readRDS("D:/Datasets/Hydrology/Products/Catalonia/DF_conques_Pfafs_LU.rds")
 
@@ -80,7 +88,6 @@ code = "20054998"
 
 dw = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/DistributedWatershed/",code,".rds"))
 
-data("SpParamsMED")
 
 meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
 
