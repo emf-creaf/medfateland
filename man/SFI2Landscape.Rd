@@ -7,7 +7,7 @@
 Create Landscape Classes from SFI
 }
 \description{
-Functions to create spatial landscape classes from Spanish Forest Inventory (SFI) data (see details). Internally, these functions make calls to \code{\link{forest_extractSFIforest}}.
+Functions to create spatial landscape classes from Spanish Forest Inventory (SFI) data (see details). Internally, these functions make calls to \code{\link{forest_extractSFIData}}.
 }
 \usage{
 SFI2SPL(SFItreeData, SFIshrubData, SFIherbData = NULL,
@@ -45,4 +45,4 @@ An object of class \code{\link{SpatialPointsLandscape-class}} or \code{\link{Spa
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 }
 
-\seealso{\code{\link{forest}}, \code{\link{forest_extractSFIforest}}}
+\seealso{\code{\link{forest}}, \code{\link{forest_extractSFIData}}}
