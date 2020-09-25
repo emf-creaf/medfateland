@@ -368,8 +368,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
   cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
   cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
-
-  cat(paste0("\Watershed lateral flows:\n"))
+  cat(paste0("Watershed lateral flows:\n"))
   cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
   cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
   
