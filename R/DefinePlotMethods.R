@@ -1,7 +1,8 @@
 .ggspl<-function(spl) {
   spl_sf =st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
   g<-ggplot()+
-    geom_sf(spl_sf, mapping = aes(fill=var), col=NA)
+    geom_sf(spl_sf, mapping = aes(fill=var), col=NA)+
+    theme_bw()
   return(g)
 }
 setMethod("plot", signature("SpatialPixelsLandscape"),

@@ -97,7 +97,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   Psi1 = Runon
   WTD = Runon
   DTA = Runon
-  Volume = Runon
+  SoilVol = Runon
   InterflowInput = Runon
   InterflowOutput = Runon
   BaseflowInput = Runon
@@ -136,7 +136,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   summary_function = function(object, model="SX") {
     list(SWE = object$SWE,
          Psi1 = soil_psi(object)[1],
-         Volume = sum(soil_water(object, model)),
+         SoilVol = sum(soil_water(object, model)),
          WTD = soil_waterTableDepth(object, model))
   }
   
@@ -239,7 +239,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     BaseflowOutput[,ifactor] = BaseflowOutput[,ifactor] + res_day$BaseflowOutput
     SWE[,ifactor] = SWE[,ifactor] + summary_df$SWE/t.df[ifactor]
     Psi1[,ifactor] = Psi1[,ifactor] + summary_df$Psi1/t.df[ifactor]
-    Volume[,ifactor] = Volume[,ifactor] + summary_df$Volume/t.df[ifactor]
+    SoilVol[,ifactor] = SoilVol[,ifactor] + summary_df$SoilVol/t.df[ifactor]
     WTD[,ifactor] = WTD[,ifactor] + summary_df$WTD/t.df[ifactor]
     DTAday = (y@bedrock$DepthToBedrock/1000.0) - (y@aquifer/y@bedrock$Porosity)/1000.0
     DTA[,ifactor] = DTA[,ifactor] + DTAday/t.df[ifactor]
@@ -369,7 +369,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                     InterflowInput = InterflowInput, InterflowOutput = InterflowOutput,
                     BaseflowInput = BaseflowInput, BaseflowOutput = BaseflowOutput,
                     SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
-  CellState<-list(SWE = SWE, Psi1 = Psi1, Volume = Volume, WTD = WTD, DTA = DTA)
+  CellState<-list(SWE = SWE, Psi1 = Psi1, SoilVol = SoilVol, WTD = WTD, DTA = DTA)
   l <- list(coords = y@coords,
             coords.nrs = y@coords.nrs,
             grid = y@grid, 

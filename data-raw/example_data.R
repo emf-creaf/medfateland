@@ -1,2 +1,2 @@
-examplewatershed = readRDS(paste0("D:/Datasets/Hydrology/Products/Vallcebre/CanVila_watershed.rds")) 
+examplewatershed = readRDS(paste0("D:/Datasets/Hydrology/Products/DistributedWatersheds/CanVila_watershed_30m.rds")) 
 usethis::use_data(examplewatershed)
