@@ -1,8 +1,11 @@
+// [[Rcpp::depends(medfate,meteoland)]]
 #include <numeric>
 #include <Rcpp.h>
 #include <meteoland.h>
 #include <medfate.h>
 using namespace Rcpp;
+using namespace medfate;
+using namespace meteoland;
 
 // [[Rcpp::export("drainageCells")]]
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
@@ -369,7 +372,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
         }
       }
       if(ri>0.0) {
-        if(sum(qi)>0.0 & ri > 0.00001) {
+        if((sum(qi)>0.0) & (ri > 0.00001)) {
           Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
           stop("Non-outlet cell with runoff export"); 
         }

@@ -36,4 +36,5 @@ reference:
   - starts_with("spwb")
   - starts_with("growth")
   - starts_with("plot.wswb")
+  - defaultWatershedCorrectionFactors
 
