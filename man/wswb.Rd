@@ -79,7 +79,7 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 \code{\link{plot.wswb}}, \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}
 }
 \examples{
-
+\dontrun{
 data("examplewatershed")
 data("examplemeteo")
 data("SpParamsMED")
@@ -87,19 +87,5 @@ data("SpParamsMED")
 dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 res = wswb(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
-
-\dontrun{
-df = readRDS("D:/Datasets/Hydrology/Products/Catalonia/DF_conques_Pfafs_LU.rds")
-
-code = "20054998"
-
-dw = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/DistributedWatershed/",code,".rds"))
-
-
-meteo = readRDS("D:/Datasets/Climate/Products/MeteorologyInterpolationData/interpolator_2019_calibrated.rds")
-
-dates = seq(as.Date("2019-01-01"), as.Date("2019-03-31"), by="day")
-
-res = wswb(dw, SpParamsMED, meteo, dates = dates, summaryFreq = "month")
 }
 }

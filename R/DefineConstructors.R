@@ -17,7 +17,7 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
       stop(paste0("Wrong input soil class for",i,"\n"))
     }
   }
-  xlist = vector("list", ncells)
+  xlist = vector("list", npoints)
   
   spl = new("SpatialPointsLandscape",
             lct = lct,

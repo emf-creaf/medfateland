@@ -1,0 +1,30 @@
+destination: "D:/Rservices/vegmod_web/static/medfatelanddocs"
+
+home:
+  links:
+  - text: Package website
+    href: https://vegmod.github.io/rpackage/medfate
+
+articles:
+- title: Overview
+  contents:
+    - starts_with("Package")
+- title: Simulation models
+  contents:
+    - starts_with("LandscapeWaterBalance")
+    
+reference:
+- title: Landscape classes
+  desc:  Landscape class definition and initialization
+  contents:
+  - starts_with("example")
+  - starts_with("Distributed")
+  - starts_with("Spatial")
+
+
+- title: Simulation
+  desc:  Simulation model functions
+  contents:
+  - starts_with("wswb")
+  - starts_with("spwb")
+

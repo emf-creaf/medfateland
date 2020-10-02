@@ -1,7 +1,7 @@
 .modelspatial<-function(y, SpParams, meteo, model = "spwb", 
                         control = defaultControl(), dates = NULL, 
                         mergeTrees = FALSE,
-                        summaryFunction=NULL, args=NULL) {
+                        summaryFunction=NULL, args=NULL, progress = TRUE) {
   sp = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(sp, topo$elevation, topo$slope, topo$aspect)
@@ -16,9 +16,9 @@
   
   n = length(forestlist)
   reslist = vector("list",n)
-  pb = txtProgressBar(0, n, style=3)
+  if(progress) pb = txtProgressBar(0, n, style=3)
   for(i in 1:n) {
-    setTxtProgressBar(pb, i)
+    if(progress) setTxtProgressBar(pb, i)
     f = forestlist[[i]]
     s = soillist[[i]]
     if((!is.null(f)) && (!is.null(s))) {
@@ -60,7 +60,8 @@
 }
 
 
-spwbpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+spwbpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, 
+                     summaryFunction=NULL, args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialPointsLandscape")) 
@@ -75,12 +76,14 @@ spwbpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
 
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("spwbpoints","list")
   return(res)
 }
-spwbgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+spwbgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, 
+                   summaryFunction=NULL, args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialGridLandscape")) 
@@ -95,12 +98,14 @@ spwbgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
   
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("spwbgrid","list")
   return(res)
 }
-spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, 
+                     args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialPixelsLandscape")) 
@@ -117,7 +122,8 @@ spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
   
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("spwbpixels","list")
   return(res)
@@ -137,12 +143,14 @@ growthpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = N
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
   
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("growthpoints","list")
   return(res)
 }
-growthgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+growthgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, 
+                     summaryFunction=NULL, args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialGridLandscape")) 
@@ -157,12 +165,14 @@ growthgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
   
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("growthgrid","list")
   return(res)
 }
-growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, 
+                       summaryFunction=NULL, args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialPixelsLandscape")) 
@@ -179,7 +189,8 @@ growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = N
     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
   }
   
-  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, summaryFunction = summaryFunction, args = args)
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates, 
+                    summaryFunction = summaryFunction, args = args, progress = progress)
   res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("growthpixels","list")
   return(res)

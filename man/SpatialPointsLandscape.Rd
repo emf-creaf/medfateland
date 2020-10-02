@@ -3,19 +3,17 @@
 \alias{SpatialPointsLandscape}
 \alias{SpatialPixelsLandscape}
 \alias{SpatialGridLandscape}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Creates Spatial Landscape Classes
+Creates spatial landscape objects
 }
 \description{
-Functions to initialize spatial landscape classes.
+Functions to instantiate spatial landscape classes.
 }
 \usage{
-SpatialPointsLandscape(spt, forestlist, soillist)
+SpatialPointsLandscape(spt, lct, forestlist, soillist)
 SpatialPixelsLandscape(spxt, lct, forestlist, soillist, verbose=TRUE)
 SpatialGridLandscape(sgt, lct, forestlist, soillist, verbose=TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{spt}{An object of class \code{\link{SpatialPointsTopography}}.}
   \item{spxt}{An object of class \code{\link{SpatialPixelsTopography}}.}
@@ -29,7 +27,7 @@ SpatialGridLandscape(sgt, lct, forestlist, soillist, verbose=TRUE)
 An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}} depending on the function.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 
-\seealso{\code{\link{forest}}, \code{\link{soil}}}
+\seealso{\code{\link{forest}}, \code{\link{soil}}, \code{\link{DistributedWatershed}}}

@@ -13,17 +13,17 @@ Functions that allow calling local models \code{\link{spwb}} and \code{\link{gro
 }
 \usage{
 spwbpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 spwbpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 spwbgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 growthpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 growthpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 growthgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL)
+       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -34,6 +34,7 @@ growthgrid(y, SpParams, meteo, control = defaultControl(),
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
+  \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{
 Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply three kinds of weather sources:
@@ -55,8 +56,9 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 \examples{
 
+\dontrun{
 #Load example watershed (inherits from SpatialPixelsLandscape)
-data("examplewatershed")
+data("examplepointslandscape")
 
 #Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -66,6 +68,7 @@ data("SpParamsMED")
 
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 
-res = spwbpixels(examplewatershed, SpParamsMED, examplemeteo, dates = dates, 
+res = spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates, 
                  summaryFunction = summary.spwb)
+}
 }
