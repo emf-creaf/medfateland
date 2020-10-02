@@ -128,7 +128,8 @@ spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
   class(res) = c("spwbpixels","list")
   return(res)
 }
-growthpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, summaryFunction=NULL, args=NULL) {
+growthpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL, 
+                       summaryFunction=NULL, args=NULL, progress = TRUE) {
   
   #Check input
   if(!inherits(y,"SpatialPointsLandscape")) 

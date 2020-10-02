@@ -6,8 +6,10 @@ import(methods)
 import(meteoland)
 import(medfate)
 importFrom(Rcpp, evalCpp)
-
+importFrom("stats", "var")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 export(buildWatershedTopography,
+       defaultWatershedCorrectionFactors,
        DistributedWatershed,
        growthpoints, growthpixels, growthgrid,
        plot.wswb,

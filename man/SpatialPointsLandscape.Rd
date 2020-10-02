@@ -11,8 +11,8 @@ Functions to instantiate spatial landscape classes.
 }
 \usage{
 SpatialPointsLandscape(spt, lct, forestlist, soillist)
-SpatialPixelsLandscape(spxt, lct, forestlist, soillist, verbose=TRUE)
-SpatialGridLandscape(sgt, lct, forestlist, soillist, verbose=TRUE)
+SpatialPixelsLandscape(spxt, lct, forestlist, soillist)
+SpatialGridLandscape(sgt, lct, forestlist, soillist)
 }
 \arguments{
   \item{spt}{An object of class \code{\link{SpatialPointsTopography}}.}

@@ -40,7 +40,7 @@ Class \code{"\linkS4class{SpatialPixels}"}, distance 4.
 Class \code{"\linkS4class{SpatialPointsDataFrame}"}, distance 4.
 Class \code{"\linkS4class{SpatialPoints}"}, distance 5.
 Class \code{"\linkS4class{Spatial}"}, distance 6.
-Class \code{"\linkS4class{SpatialVector}"}, distance 6.
+Class \code{"SpatialVector"}, distance 6.
 }
 \section{Methods}{
   \describe{
