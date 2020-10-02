@@ -37,11 +37,11 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 library(medfate)
 
 #Load plot data and species parameters from medfate
-data(exampleSPL)
+data(examplepointslandscape)
 data(SpParamsMED)
 
 #Apply summary function
-y <- spatialForestSummary(exampleSPL,summary.forest, SpParamsMED)
+y <- spatialForestSummary(examplepointslandscape,summary.forest, SpParamsMED)
 head(y@data)
 
 #Plot basal area

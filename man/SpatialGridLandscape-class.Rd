@@ -31,7 +31,6 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 4.
 }
 \section{Methods}{
   \describe{
-    \item{getLCTs}{\code{signature(object = "SpatialGridLandscape")}: returns a SpatialGridDataFrame with the land cover types of the landscape cells.}
     \item{spatialForestSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
     \item{spplot}{\code{signature(object = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}

@@ -21,10 +21,17 @@ reference:
   - starts_with("Distributed")
   - starts_with("Spatial")
 
+- title: Summary functions
+  desc:  Forest and soil summary functions for spatial classes
+  contents:
+  - starts_with("spatialForest")
+  - starts_with("spatialSoil")
+
 
 - title: Simulation
   desc:  Simulation model functions
   contents:
   - starts_with("wswb")
   - starts_with("spwb")
+  - starts_with("growth")
 
