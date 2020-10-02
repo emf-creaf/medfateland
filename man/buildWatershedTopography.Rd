@@ -26,5 +26,3 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
 \seealso{
 \code{\link{SpatialPixelsTopography}}
 }
-\examples{
-}

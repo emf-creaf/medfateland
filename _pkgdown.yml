@@ -20,6 +20,7 @@ reference:
   - starts_with("example")
   - starts_with("Distributed")
   - starts_with("Spatial")
+  - buildWatershedTopography
 
 - title: Summary functions
   desc:  Forest and soil summary functions for spatial classes
@@ -34,4 +35,5 @@ reference:
   - starts_with("wswb")
   - starts_with("spwb")
   - starts_with("growth")
+  - starts_with("plot.wswb")
 

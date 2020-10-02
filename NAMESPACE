@@ -1,5 +1,3 @@
-exportPattern("^[[:alpha:]]+")
-
 import(sp)
 import(sf)
 import(ggplot2)
@@ -8,6 +6,16 @@ import(methods)
 import(meteoland)
 import(medfate)
 importFrom(Rcpp, evalCpp)
+
+export(buildWatershedTopography,
+       DistributedWatershed,
+       growthpoints, growthpixels, growthgrid,
+       plot.wswb,
+       spwbpoints, spwbpixels, spwbgrid,
+       spatialForestSummary, spatialSoilSummary,
+       SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
+       wswb)
+
 useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
