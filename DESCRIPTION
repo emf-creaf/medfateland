@@ -9,7 +9,7 @@ Authors@R: c(
 Description: Functions to simulate hydrology and forest functioning/dynamics over landscapes.
 License: GPL (>= 2)
 LazyLoad: yes
-Depends: R (>= 3.4.0), sp, medfate
+Depends: R (>= 3.4.0), sp, medfate (>= 1.1.0)
 Imports: ggplot2, sf, spdep, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12)
 Suggests: knitr, rmarkdown, rjson
 LinkingTo: Rcpp, meteoland, medfate

@@ -75,7 +75,7 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 
 // [[Rcpp::export(".wswbDay")]]
 List wswbDay(CharacterVector lct, List xList, List soilList,
-             IntegerVector waterO, List queenNeigh, List waterQ, 
+             IntegerVector waterO, List queenNeigh, List waterQ,
              DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
              List correctionFactors,
              CharacterVector date,
@@ -98,7 +98,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   double cellArea = patchsize; //cell size in m2
   double cellWidth = sqrt(patchsize); //cell width in m
   double n = 3.0;
-  
+
   NumericVector tminVec = gridMeteo["MinTemperature"];
   NumericVector tmaxVec = gridMeteo["MaxTemperature"];
   NumericVector rhminVec = gridMeteo["MinRelativeHumidity"];
@@ -106,12 +106,12 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   NumericVector precVec = gridMeteo["Precipitation"];
   NumericVector radVec = gridMeteo["Radiation"];
   NumericVector wsVec = gridMeteo["WindSpeed"];
-  
-  
+
+
   NumericVector DTB = bedrock["DepthToBedrock"]; //mm
   NumericVector RockConductivity = bedrock["Conductivity"]; //m/day
   NumericVector RockPorosity = bedrock["Porosity"]; //[0-1]
-  
+
   //A1. Calculate soil and aquifer water table elevation (heads)
   Rcout<<"+";
   NumericVector WTD(nX,NA_REAL); //Water table depth
@@ -127,7 +127,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     }
     AquiferWaterTableElevation[i] = elevation[i]-(DTB[i]/1000.0) + (aquifer[i]/RockPorosity[i])/1000.0;
   }
-  
+
   //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
   Rcout<<"+";
   NumericVector interflowInput(nX, 0.0);
@@ -167,11 +167,11 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
             interflowOutput[i] += qni[j]*corrfactor;
           }
         }
-        
+
       }
     }
   }
-  
+
   //A2b. Calculate BASEFLOW output for each cell (in m3/day)
   NumericVector baseflowInput(nX, 0.0);
   NumericVector baseflowOutput(nX, 0.0);
@@ -197,7 +197,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       }
     }
   }
-  
+
   //A3a. Apply changes in soil moisture to each cell
   Rcout<<"+";
   for(int i=0;i<nX;i++){
@@ -267,14 +267,14 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
           SaturationExcess[i] += deltaS;
         }
       }
-      
+
     } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
       AquiferDischarge[i] += -DTAn*RockPorosity[i];
       aquifer[i] = DTB[i]*RockPorosity[i];
       SaturationExcess[i] = AquiferDischarge[i];
     }
   }
-  
+
   // Rcout<<"\n";
 
   //B. Vertical and surface fluxes
@@ -284,19 +284,19 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
     int iCell = waterO[i]-1; //Decrease index!!!!
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
-      List soil = soilList[iCell]; 
-      double Kperc = soil["Kperc"];
+      List soil = soilList[iCell];
+      double Kdrain = soil["Kdrain"];
       double D = soil["SoilDepth"]; //Soil depth in mm
       double DTA = DTB[i] - (aquifer[iCell]/RockPorosity[iCell]);
       if(DTA < D) {
-        soil["Kperc"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
+        soil["Kdrain"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
       } else {
-        soil["Kperc"] = 1000.0*RockConductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
-        // Rcout<<Kperc<< " "<<1000.0*RockConductivity[i]*Rdrain<<"\n";
-      } 
+        soil["Kdrain"] = 1000.0*RockConductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
+        // Rcout<<Kdrain<< " "<<1000.0*RockConductivity[i]*Rdrain<<"\n";
+      }
       //copy snowpack
       soil["SWE"] = snowpack[iCell];
-      
+
       //Run daily soil water balance for the current cell
       List res;
       res = medfate::spwb_day(x, soil, date,
@@ -304,7 +304,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
-      soil["Kperc"] = Kperc; //Restore value
+      soil["Kdrain"] = Kdrain; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = res["Soil"];
@@ -343,7 +343,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       if(lct[iCell]=="rock" || lct[iCell]=="artificial") {
         Infiltration[iCell] = 0.0;
         //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
-        Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+Snowmelt[iCell]+Rain[iCell]; 
+        Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+Snowmelt[iCell]+Rain[iCell];
         DeepDrainage[iCell] = 0.0;
       } else if(lct[iCell]=="water") {
         // water cells receive water from other cells or Precipitation
@@ -374,21 +374,21 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       if(ri>0.0) {
         if((sum(qi)>0.0) & (ri > 0.00001)) {
           Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
-          stop("Non-outlet cell with runoff export"); 
+          stop("Non-outlet cell with runoff export");
         }
         runoffExport += ri; //Add remaining to landscape export
       }
     }
-    
+
   }
   // Rcout<<"C";
 
-  DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt, 
+  DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,
                                              _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
                                              _["Runoff"] = Runoff, _["SaturationExcess"] = SaturationExcess,
                                              _["DeepDrainage"] = DeepDrainage, _["AquiferDischarge"] = AquiferDischarge,
-                                             _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,  
-                                             _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,  
+                                             _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,
+                                             _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,
                                              _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
   return(waterBalance);
 }
