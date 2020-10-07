@@ -1,6 +1,6 @@
 #Example watershed
 examplewatershed = readRDS(paste0("D:/Datasets/Hydrology/Products/DistributedWatersheds/CanVila_watershed_30m.rds")) 
-usethis::use_data(examplewatershed)
+usethis::use_data(examplewatershed, overwrite = T)
 
 #Example SpatialPointsLandscape
 ifn3 = readRDS("D:/Datasets/IFN/Products/IFN3/Rdata/forestlist_roots_IFN3_Catalunya.rds")
