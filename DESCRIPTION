@@ -10,7 +10,7 @@ Description: Functions to simulate hydrology and forest functioning/dynamics ove
 License: GPL (>= 2)
 LazyLoad: yes
 Depends: R (>= 3.4.0), sp, medfate (>= 1.1.0)
-Imports: ggplot2, sf, spdep, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12)
+Imports: ggplot2, sf, spdep, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), parallel
 Suggests: knitr, rmarkdown, rjson
 LinkingTo: Rcpp, meteoland, medfate
 Encoding: UTF-8

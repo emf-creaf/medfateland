@@ -13,19 +13,24 @@ Functions that allow calling local models \code{\link{spwb}} and \code{\link{gro
 }
 \usage{
 spwbpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 spwbpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 spwbgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 growthpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 growthpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 growthgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, progress = TRUE)
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
@@ -34,6 +39,7 @@ growthgrid(y, SpParams, meteo, control = defaultControl(),
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
+  \item{parellize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{
@@ -46,7 +52,11 @@ Simulation functions  accept different formats for meteorological input (paramet
 In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done for each spatial location and the period indicated in \code{meteo} or, if supplied, \code{dates}. Finally, in the case of (3) spatial variation of weather is not considered.
 }
 \value{
-TO BE DONE
+A list of class of the same name as the function called, containing spatial information of the input data and two child lists:
+\enumerate{
+\item{\code{xlist}: A list of model input objects for each simulated stand.}
+\item{\code{reslist}: A list of model output for each simulated stand.}
+}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
