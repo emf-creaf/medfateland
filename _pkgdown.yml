@@ -1,9 +1,9 @@
-destination: "D:/Rservices/vegmod_web/static/medfatelanddocs"
+destination: "~/Rservices/vegmod_web/static/medfatelanddocs"
 
 home:
   links:
   - text: Package website
-    href: https://vegmod.github.io/rpackage/medfate
+    href: https://vegmod.ctfc.cat/software/medfate/
 
 articles:
 - title: Overview
@@ -12,7 +12,7 @@ articles:
 - title: Simulation models
   contents:
     - starts_with("LandscapeWaterBalance")
-    
+
 reference:
 - title: Landscape classes
   desc:  Landscape class definition and initialization
