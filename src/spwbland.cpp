@@ -299,7 +299,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
 
       //Run daily soil water balance for the current cell
       List res;
-      res = medfate::spwb_day(x, soil, date,
+      res = medfate::spwb_day(x, date,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],

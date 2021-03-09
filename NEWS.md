@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.2.4
+- Update medfate 2.0
+
 # Version 0.2.3
 - Parallelization in spwb and growth simulations with Spatial*Landscape objects
 

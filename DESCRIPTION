@@ -1,15 +1,15 @@
 Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Forest Simulation
-Version: 0.2.3
-Date: 2020-10-07
+Version: 0.2.4
+Date: 2021-03-09
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
 Description: Functions to simulate hydrology and forest functioning/dynamics over landscapes.
 License: GPL (>= 2)
 LazyLoad: yes
-Depends: R (>= 3.4.0), sp, medfate (>= 1.1.0)
+Depends: R (>= 3.4.0), sp, medfate (>= 2.0.0)
 Imports: ggplot2, sf, spdep, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), parallel
 Suggests: knitr, rmarkdown, rjson
 LinkingTo: Rcpp, meteoland, medfate
