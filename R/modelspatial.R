@@ -37,13 +37,15 @@
     return(x)
   }
 
-  if(progress) cat("Initializing:\n")
-  if(progress) pb = txtProgressBar(0, n, style=3)
-  for(i in 1:n) {
-    if(progress) setTxtProgressBar(pb, i)
-    xlist[[i]] = initf(i)
+  if(model %in% c("spwb", "growth")) {
+    if(progress) cat("Initializing:\n")
+    if(progress) pb = txtProgressBar(0, n, style=3)
+    for(i in 1:n) {
+      if(progress) setTxtProgressBar(pb, i)
+      xlist[[i]] = initf(i)
+    }
+    if(progress) cat("\n")
   }
-  if(progress) cat("\n")
 
   simf<-function(i, sfun = NULL){
     f = forestlist[[i]]
@@ -64,6 +66,10 @@
                          slope = slope[i], aspect = aspect[i])
       } else if(model=="growth") {
         S<-medfate::growth(x, meteo=met,
+                           latitude = latitude[i], elevation = elevation[i],
+                           slope = slope[i], aspect = aspect[i])
+      } else if(model=="fordyn") {
+        S<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = control,
                            latitude = latitude[i], elevation = elevation[i],
                            slope = slope[i], aspect = aspect[i])
       }
@@ -245,5 +251,76 @@ growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = N
                     summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
   res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
   class(res) = c("growthpixels","list")
+  return(res)
+}
+fordynpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
+                       summaryFunction=NULL, args=NULL,
+                       parallelize = FALSE, progress = TRUE) {
+  
+  #Check input
+  if(!inherits(y,"SpatialPointsLandscape"))
+    stop("'y' has to be of class 'SpatialPointsLandscape'.")
+  if(!inherits(meteo,"data.frame") &&
+     !inherits(meteo,"SpatialPointsMeteorology") &&
+     !inherits(meteo,"MeteorologyInterpolationData"))
+    stop("'meteo' has to be of class 'data.frame', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
+  if(inherits(meteo,"SpatialPointsMeteorology")) {
+    ycoords = coordinates(y)
+    mcoords = coordinates(meteo)
+    if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  }
+  
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
+                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+  class(res) = c("fordynpoints","list")
+  return(res)
+}
+fordyngrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
+                     summaryFunction=NULL, args=NULL,
+                     parallelize = FALSE, progress = TRUE) {
+  
+  #Check input
+  if(!inherits(y,"SpatialGridLandscape"))
+    stop("'y' has to be of class 'SpatialGridLandscape'.")
+  if(!inherits(meteo,"data.frame") &&
+     !inherits(meteo,"SpatialGridMeteorology") &&
+     !inherits(meteo,"MeteorologyInterpolationData"))
+    stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
+  if(inherits(meteo,"SpatialGridMeteorology")) {
+    ycoords = coordinates(y)
+    mcoords = coordinates(meteo)
+    if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  }
+  
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
+                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+  class(res) = c("fordyngrid","list")
+  return(res)
+}
+fordynpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
+                       summaryFunction=NULL, args=NULL,
+                       parallelize = FALSE, progress = TRUE) {
+  
+  #Check input
+  if(!inherits(y,"SpatialPixelsLandscape"))
+    stop("'y' has to be of class 'SpatialPixelsLandscape'.")
+  if(!inherits(meteo,"data.frame") &&
+     !inherits(meteo,"SpatialPixelsMeteorology") &&
+     !inherits(meteo,"MeteorologyInterpolationData"))
+    stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
+  
+  #Get spatial object properties
+  if(inherits(meteo,"SpatialPixelsMeteorology")) {
+    ycoords = coordinates(y)
+    mcoords = coordinates(meteo)
+    if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  }
+  
+  l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
+                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+  class(res) = c("fordynpixels","list")
   return(res)
 }

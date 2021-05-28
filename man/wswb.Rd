@@ -73,7 +73,7 @@ A list of class 'wswb' with the following elements:
 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
 \code{\link{plot.wswb}}, \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}

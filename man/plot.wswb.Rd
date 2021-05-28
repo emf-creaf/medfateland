@@ -21,7 +21,7 @@ If \code{type = "DailyRunoff"}, the function draws the simulated daily runoff (m
 An object of class \code{\link{ggplot}}.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
 \code{\link{wswb}}, \code{\link{spwb}}, \code{\link{DistributedWatershed-class}}

@@ -6,10 +6,13 @@
 \alias{growthpoints}
 \alias{growthpixels}
 \alias{growthgrid}
+\alias{fordynpoints}
+\alias{fordynpixels}
+\alias{fordyngrid}
 
 \title{Medfate simulations for spatially-distributed forest stands}
 \description{
-Functions that allow calling local models \code{\link{spwb}} and \code{\link{growth}}, respectively, for a set of forest stands distributed in specific locations. No spatial processes are simulated.
+Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. No spatial processes are simulated.
 }
 \usage{
 spwbpoints(y, SpParams, meteo, control = defaultControl(),
@@ -28,6 +31,15 @@ growthpixels(y, SpParams, meteo, control = defaultControl(),
        dates = NULL, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 growthgrid(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
+fordynpoints(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
+fordynpixels(y, SpParams, meteo, control = defaultControl(),
+       dates = NULL, summaryFunction = NULL, args=NULL, 
+       parallelize = FALSE, progress = TRUE)
+fordyngrid(y, SpParams, meteo, control = defaultControl(),
        dates = NULL, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 }
@@ -59,10 +71,10 @@ A list of class of the same name as the function called, containing spatial info
 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}
 }
 \examples{
 

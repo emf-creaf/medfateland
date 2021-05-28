@@ -12,6 +12,7 @@ importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 export(buildWatershedTopography,
        defaultWatershedCorrectionFactors,
        DistributedWatershed,
+       fordynpoints, fordynpixels, fordyngrid,
        growthpoints, growthpixels, growthgrid,
        plot.wswb,
        spwbpoints, spwbpixels, spwbgrid,

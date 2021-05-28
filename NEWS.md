@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.2.5
+- Update medfate 2.2
+
 # Version 0.2.4
 - Update medfate 2.0
 

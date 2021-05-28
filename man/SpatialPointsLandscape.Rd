@@ -27,7 +27,7 @@ SpatialGridLandscape(sgt, lct, forestlist, soillist)
 An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}} depending on the function.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{\code{\link{forest}}, \code{\link{soil}}, \code{\link{DistributedWatershed}}}

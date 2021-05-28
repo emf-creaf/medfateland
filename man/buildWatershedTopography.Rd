@@ -21,7 +21,7 @@ buildWatershedTopography(boundaries, grid, topo, proj4string, merge = FALSE)
 A list of objects \code{\link{SpatialPixelsTopography-class}}, each one describing the topography of the watershed. If \code{merge = TRUE} or the number of polygons is one, a single \code{\link{SpatialPixelsTopography-class}} object.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
 \code{\link{SpatialPixelsTopography}}
