@@ -24,7 +24,7 @@ DistributedWatershed(spxt, lct, forestlist, soillist, bedrock, channel,
 An object of class \code{\link{DistributedWatershed-class}}.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{\code{\link{SpatialPixelsLandscape}}}
 \examples{

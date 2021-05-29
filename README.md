@@ -17,16 +17,17 @@ as follows (required package `devtools` should be installed/updated
 first):
 
 ``` r
-devtools::install_github("vegmod/medfateland")
+devtools::install_github("emf-creaf/medfateland")
 ```
 
 ## Documentation
 
-  - The package installation includes a number of *vignettes* that
+-   The package installation includes a number of *vignettes* that
     illustrate how to run simulation models in **medfateland**.
 
-  - The user is also advised to read *vignettes* included in package
+-   The user is also advised to read *vignettes* included in package
     **medfate**.
 
-  - Additional documentation of the package, including a *reference
-    book*, can be found at <https://vegmod.github.io/software/medfate>.
+-   Additional documentation of the package, including a *reference
+    book*, can be found at
+    <https://emf-creaf.github.io/medfatebook/index.html>.
