@@ -8,6 +8,10 @@ output: github_document
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "README-")
 ```
 
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/vegmod/medfateland/workflows/R-CMD-check/badge.svg)](https://github.com/vegmod/medfateland/actions)
+  <!-- badges: end -->
+  
 ## Introduction
 
 The R package **medfateland** has been designed to extend the capabilities of package **medfate** to the landscape level. It allows running the stand-level models available in medfate on points and cells within landscape. More importantly, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   

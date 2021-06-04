@@ -1,6 +1,10 @@
 medfateland - Mediterranean landscape forest functioning
 ================
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/vegmod/medfateland/workflows/R-CMD-check/badge.svg)](https://github.com/vegmod/medfateland/actions)
+<!-- badges: end -->
+
 ## Introduction
 
 The R package **medfateland** has been designed to extend the
