@@ -307,8 +307,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
       soil["Kdrain"] = Kdrain; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
-      DataFrame SB = res["Soil"];
-      DataFrame PL = res["Plants"];
+      DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
+      DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
       Snow[iCell] = DB["Snow"];
       Snowmelt[iCell] = DB["Snowmelt"];
       Rain[iCell] = DB["Rain"];
