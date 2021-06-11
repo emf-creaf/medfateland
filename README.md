@@ -16,12 +16,23 @@ medfateland can be used as a tool for eco-hydrological applications.
 
 ## Package installation
 
-Development versions of package **medfateland** can be found at GitHub
-as follows (required package `devtools` should be installed/updated
-first):
+Since both packages evolve together, installing **medfateland** normally
+requires an up-to-date version of **medfate**. The package is not
+available from CRAN because it is still under active development. Beta
+versions of package **medfateland** can be installed from GitHub as
+follows:
 
 ``` r
 devtools::install_github("emf-creaf/medfateland")
+```
+
+As with **medfate**, one may force the installation of package vignettes
+for **medfateland**, by using:
+
+``` r
+devtools::install_github("emf-creaf/medfateland", 
+                         build_opts = c("--no-resave-data", "--no-manual"),
+                         build_vignettes = TRUE)
 ```
 
 ## Documentation
