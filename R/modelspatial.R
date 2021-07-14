@@ -6,7 +6,7 @@
   sp = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(sp, topo$elevation, topo$slope, topo$aspect)
-  longlat = spTransform(sp,CRS("+proj=longlat"))
+  longlat = spTransform(sp,CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
   elevation = y@data$elevation
   slope = y@data$slope

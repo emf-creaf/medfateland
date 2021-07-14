@@ -11,7 +11,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     stop("'meteo' has to be of class 'SpatialPixelsMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
-  sp = spTransform(as(y, "SpatialPoints"), CRS("+proj=longlat"))
+  sp = spTransform(as(y, "SpatialPoints"), CRS(SRS_string = "EPSG:4326"))
   latitude = sp@coords[,2]
   elevation = y@data$elevation
   slope = y@data$slope
