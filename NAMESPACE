@@ -16,14 +16,15 @@ export(buildWatershedTopography,
        growthpoints, growthpixels, growthgrid,
        plot.spwbland, plot.growthland,
        spwbpoints, spwbpixels, spwbgrid,
-       spatialForestSummary, spatialSoilSummary,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland)
 
 useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
-exportMethods("[", show, getLandscapeVariable, spplot, head, tail)
+exportMethods("[", show, getLandscapeVariable, getLandscapeLayer, 
+              spatialForestSummary, spatialSoilSummary, 
+              plot, spplot, head, tail)
 
 S3method(plot,spwbland)
 S3method(plot,growthland)

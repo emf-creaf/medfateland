@@ -3,6 +3,8 @@
            "SoilVol"))
 }
 .getLandscapeVar<-function(obj, variable, ...) {
+  n = length(obj@forestlist)
+  varplot = rep(NA, n)
   variable = match.arg(variable, .getAllowedVars())
   if(variable=="lct") {
     varplot = factor(obj@lct)
@@ -13,31 +15,24 @@
   } else if(variable=="aspect") {
     varplot = obj@data$aspect
   } else if(variable=="basalArea") {
-    n = length(obj@forestlist)
-    varplot = rep(NA, n)
     for(i in 1:n) {
       f = obj@forestlist[[i]]
-      if(class(f)[1]=="forest") varplot[i] = sum(plant_basalArea(f), na.rm=T)
+      if(inherits(f,"forest")) varplot[i] = stand_basalArea(f)
     }
   } else if(variable=="SWE") {
-    varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = s[["SWE"]]
+      if(inherits(s,"soil")) varplot[i] = s[["SWE"]]
     }
   } else if(variable=="WTD") {
-    n = length(obj@soillist)
-    varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = soil_waterTableDepth(s, ...)
+      if(inherits(s,"soil")) varplot[i] = soil_waterTableDepth(s, ...)
     }
   } else if(variable=="texture1") {
-    n = length(obj@soillist)
-    varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
+      if(inherits(s,"soil")) varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
     }
     varplot = factor(varplot)
   } else if(variable=="texture2") {
@@ -45,7 +40,7 @@
     varplot = rep(NA, n)
     for(i in 1:n) {
       s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
+      if(inherits(s,"soil")) varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
     }
     varplot = factor(varplot)
   } else if(variable=="texture3") {
@@ -79,13 +74,13 @@ setMethod("getLandscapeVariable", signature("SpatialPixelsLandscape"),
 
 setMethod("getLandscapeVariable", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
-              return(var = .getLandscapeVar(obj, variable, ...))
+            if(variable %in% .getAllowedVars()) {
+              return(.getLandscapeVar(obj, variable, ...))
             } 
           })
 setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
+            if(variable %in% .getAllowedVars()) {
               return(.getLandscapeVar(obj, variable, ...))
             } 
           })
@@ -97,7 +92,7 @@ setMethod("getLandscapeVariable", signature("DistributedWatershed"),
               if(variable=="numNeigh") {
                 varplot = sapply(obj@queenNeigh,"length")
               } else if(variable=="waterOrder") {
-                wo = dw@waterOrder
+                wo = obj@waterOrder
                 varplot = 1:length(wo)
                 varplot[wo] = 1:length(wo)
               } else if(variable=="outlets") {
@@ -143,27 +138,25 @@ setGeneric("getLandscapeLayer", valueClass ="Spatial", function(obj, variable = 
 setMethod("getLandscapeLayer", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", ...) {
             if(variable %in% .getAllowedVars()) {
-              return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
-                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                            grid = obj@grid))
-              
+              df<-data.frame(y = .getLandscapeVar(obj, variable, ...))
+              names(df) <- variable
+              return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"), df, grid = obj@grid))
             } 
           })
 setMethod("getLandscapeLayer", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
-              return(SpatialGridDataFrame(obj@grid,
-                                          data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                          proj4string = obj@proj4string))
-              
+            if(variable %in% .getAllowedVars()) {
+              df<-data.frame(y = .getLandscapeVar(obj, variable, ...))
+              names(df) <- variable
+              return(SpatialGridDataFrame(obj@grid, df, proj4string = obj@proj4string))
             } 
           })
 setMethod("getLandscapeLayer", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
-              return(SpatialPointsDataFrame(obj@coords,
-                                            data.frame(var = .getLandscapeVar(obj, variable, ...)), 
-                                            proj4string = obj@proj4string))
+            if(variable %in% .getAllowedVars()) {
+              df<-data.frame(y = .getLandscapeVar(obj, variable, ...))
+              names(df) <- variable
+              return(SpatialPointsDataFrame(obj@coords, df,proj4string = obj@proj4string))
               
             } 
           })

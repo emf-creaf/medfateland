@@ -38,6 +38,8 @@ Class \code{"\linkS4class{Spatial}"}, distance 5.
   \describe{
     \item{spatialForestSummary}{\code{signature(object = "SpatialPixelsLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "SpatialPixelsLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
+    \item{getLandscapeLayer}{\code{signature(object = "SpatialPixelsLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
+    \item{getLandscapeVariable}{\code{signature(object = "SpatialPixelsLandscape")}: allows retrieving a variable as vector.}
     \item{spplot}{\code{signature(object = "SpatialPixelsLandscape")}: allows plotting maps of the landscape state.}
 	 }
 }
