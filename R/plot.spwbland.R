@@ -1,4 +1,4 @@
-plot.wswb<-function(x, type = "Runon", summaryIndex = 1, ...) {
+plot.spwbland<-function(x, type = "Runon", summaryIndex = 1, ...) {
   if(type=="DailyRunoff") {
     df = data.frame(Date = as.Date(row.names(x$DailyRunoff)), 
                     Runoff = rowSums(x$DailyRunoff, na.rm=T))
@@ -16,4 +16,7 @@ plot.wswb<-function(x, type = "Runon", summaryIndex = 1, ...) {
     stop("Unknown plot type")
   }
   return(g1)
+}
+plot.growthland<-function(x, type = "Runon", summaryIndex = 1, ...) {
+  return(plot.spwbland(x = x, type = type, summaryIndex = summaryIndex, ...))
 }

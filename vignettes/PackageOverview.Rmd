@@ -42,7 +42,7 @@ Simulating water balance on objects `DistributedWatershed` allows considering an
 ## Dynamic simulation functions
 ### Local water balance vs. watershed water balance
 
-Eco-hydrological processes are fundamental for the simulation models included in the `medfate` package. Eco-hydrological processes can be divided into local and landscape processes. By local processes we refer to the water balance of soils and plants within forest stands. Processes affecting soil water content include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. In package **medfate**, the soil water balance of a forest is primarily used to predict drought stress for living plants in it using function  `spwb()`. Package **medfateland**  allows simulating water balance for multiple stands distributed spatially using functions `spwbpoints()`, `spwbpixels()`  or `spwbgrid()`. When input data is in form of continuous spatial variation of forests over a landscape, the medfateland package allows studying local soil water balance in combination with lateral water transfer processes over watersheds using function `wswb()`. 
+Eco-hydrological processes are fundamental for the simulation models included in the `medfate` package. Eco-hydrological processes can be divided into local and landscape processes. By local processes we refer to the water balance of soils and plants within forest stands. Processes affecting soil water content include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. In package **medfate**, the soil water balance of a forest is primarily used to predict drought stress for living plants in it using function  `spwb()`. Package **medfateland**  allows simulating water balance for multiple stands distributed spatially using functions `spwbpoints()`, `spwbpixels()`  or `spwbgrid()`. When input data is in form of continuous spatial variation of forests over a landscape, the medfateland package allows studying local soil water balance in combination with lateral water transfer processes over watersheds using function `spwbland()`. 
 
 
 Functions `spwbpoints()`, `spwbpixels()`, `spwbgrid()`  may be used to:
@@ -51,7 +51,7 @@ Functions `spwbpoints()`, `spwbpixels()`, `spwbgrid()`  may be used to:
 2. Monitor or forecast temporal variation of plant drought stress in particular stands (for example to anticipate mortality events) or over entire landscapes.
 3. Monitor or forecast temporal variation of fuel moisture in particular stands (for example to monitor wildfire risk) or over entire landscapes.
 
-Function `wswb()` may be used to:
+Function `spwbland()` may be used to:
 
 1. Determine areas where particular plant species have high vulnerability to suffer from drought stress, while accounting for watershed hydrology.
 2. Partition the total rainfall in given watershed among: 

@@ -26,13 +26,21 @@ reference:
   - starts_with("spatialForest")
   - starts_with("spatialSoil")
 
+- title: Model inputs
+  desc:  Defaults for model inputs
+  contents:
+  - defaultWatershedCorrectionFactors
 
 - title: Simulation
   desc:  Simulation model functions
   contents:
-  - starts_with("wswb")
+  - spwbland
+  - growthland
   - starts_with("spwb")
   - starts_with("growth")
-  - starts_with("plot.wswb")
-  - defaultWatershedCorrectionFactors
+  - starts_with("fordyn")
 
+- title: Post-processing
+  desc:  Plotting functions
+  contents: 
+  - starts_with("plot.spwbland")

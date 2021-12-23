@@ -73,15 +73,16 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
   return(DDSsp);
 }
 
-// [[Rcpp::export(".wswbDay")]]
-List wswbDay(CharacterVector lct, List xList, List soilList,
-             IntegerVector waterO, List queenNeigh, List waterQ,
-             DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
-             List correctionFactors,
-             CharacterVector date,
-             DataFrame gridMeteo,
-             NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-             double patchsize) {
+// [[Rcpp::export(".watershedDay")]]
+List watershedDay(String localModel,
+                  CharacterVector lct, List xList, List soilList,
+                  IntegerVector waterO, List queenNeigh, List waterQ,
+                  DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
+                  List correctionFactors,
+                  CharacterVector date,
+                  DataFrame gridMeteo,
+                  NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
+                  double patchsize) {
   int nX = xList.size();
   NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
   NumericVector NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
@@ -278,6 +279,7 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
   // Rcout<<"\n";
 
   //B. Vertical and surface fluxes
+  List localResults(nX);
   Rcout<<"+";
   for(int i=0;i<nX;i++) {
     //get next cell in order
@@ -299,11 +301,19 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
 
       //Run daily soil water balance for the current cell
       List res;
-      res = medfate::spwb_day(x, date,
+      if(localModel=="spwb") {
+         res = medfate::spwb_day(x, date,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
+      } else if(localModel =="growth") {
+        res = medfate::growth_day(x, date,tminVec[iCell], tmaxVec[iCell], 
+                                  rhminVec[iCell], rhmaxVec[iCell], radVec[iCell], wsVec[iCell],
+                                  latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
+                                  precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
+      }
+      localResults[iCell] = res; //Store for output
       soil["Kdrain"] = Kdrain; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
@@ -390,7 +400,8 @@ List wswbDay(CharacterVector lct, List xList, List soilList,
                                              _["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,
                                              _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput,
                                              _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
-  return(waterBalance);
+  return(List::create(_["WatershedWaterBalance"] = waterBalance,
+                      _["LocalResults"] = localResults));
 }
 
 

@@ -74,21 +74,21 @@ res$reslist[[1]]
 
 ## Simulation of watershed hydrology
 
-Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. To illustrate this kind of simulation, which is carried out using function `wswb()`, we first load a small example watershed included with the package:
+Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. To illustrate this kind of simulation, which is carried out using function `spwbland()`, we first load a small example watershed included with the package:
 
 ```{r, warning=FALSE, fig.align="center", fig.width=7}
 data("examplewatershed")
 plot(examplewatershed, "elevation")
 ```
 
-As for the call to function `spwbpoints()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `wswb()` for a single month.
+As for the call to function `spwbpoints()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwbland()` for a single month.
 
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res = wswb(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+res = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
 ```
 
-Although simulations are performed using daily temporal steps, parameter `summaryFreq` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. Several plots can be drawn from the result of function `wswb()`. As an example we display a map of average soil water potential for the simulated month.
+Although simulations are performed using daily temporal steps, parameter `summaryFreq` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. Several plots can be drawn from the result of function `spwbland()`. As an example we display a map of average soil water potential for the simulated month.
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
 plot(res, "Psi1")
 ```

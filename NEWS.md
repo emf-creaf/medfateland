@@ -2,6 +2,10 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.3.0
+- Function 'wswb' renamed 'spwbland'
+- New function 'growthland'
+
 # Version 0.2.5
 - Update medfate 2.2
 

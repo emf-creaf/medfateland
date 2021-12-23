@@ -1,7 +1,8 @@
-wswb<-function(y, SpParams, meteo, dates = NULL,
-               summaryFreq = "years",
-               spwbcontrol = medfate::defaultControl(),
-               correctionFactors = defaultWatershedCorrectionFactors()) {
+.landSim<-function(landModel = "spwbland", 
+                   y, SpParams, meteo, dates = NULL,
+                   summaryFreq = "years",
+                   localControl = medfate::defaultControl(),
+                   correctionFactors = defaultWatershedCorrectionFactors()) {
 
   #check input
   if(!inherits(y, "DistributedWatershed")) stop("'y' has to be of class 'DistributedWatershed'.")
@@ -11,6 +12,10 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     stop("'meteo' has to be of class 'SpatialPixelsMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
+  if(landModel == "spwbland") localModel = "spwb"
+  else if(landModel=="growthland") localModel = "growth"
+  else if(landModel=="fordynland") localModel = "growth"
+  
   sp = spTransform(as(y, "SpatialPoints"), CRS(SRS_string = "EPSG:4326"))
   latitude = sp@coords[,2]
   elevation = y@data$elevation
@@ -51,7 +56,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   patchsize = prod(y@grid@cellsize)
 
   #Print information area
-  cat("\n------------  wswb ------------\n")
+  cat(paste0("\n------------ ", landModel," ------------\n"))
   cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
   cat(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater,"\n"))
   cat(paste0("Cells with soil: ", nSoil,"\n"))
@@ -60,7 +65,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("Number of summaries: ", nSummary,"\n"))
   cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
 
-  cat(paste("Preparing spwb input:\n"))
+  cat(paste0("Preparing ", localModel, " input:\n"))
 
   pb = txtProgressBar(0, nCells, style=3)
   for(i in 1:nCells) {
@@ -68,7 +73,8 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
     if(y@lct[i] %in% c("wildland", "agriculture")) {
       f = y@forestlist[[i]]
       s = y@soillist[[i]]
-      y@xlist[[i]] = forest2spwbInput(f, s, SpParams, spwbcontrol)
+      if(localModel=="spwb") y@xlist[[i]] = forest2spwbInput(f, s, SpParams, localControl)
+      else if(localModel=="growth") y@xlist[[i]] = forest2growthInput(f, s, SpParams, localControl)
     } else {
       y@xlist[[i]] = NA
     }
@@ -209,17 +215,20 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
                            Precipitation = gridPrecipitation,
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed)
-    res_day = .wswbDay(y@lct, y@xlist, y@soillist,
-                  y@waterOrder, y@queenNeigh, y@waterQ,
-                  y@bedrock, y@aquifer, y@snowpack,
-                  correctionFactors,
-                  datechar,
-                  gridMeteo,
-                  latitude, elevation, slope, aspect,
-                  patchsize)
-
+    ws_day = .watershedDay(localModel,
+                           y@lct, y@xlist, y@soillist,
+                           y@waterOrder, y@queenNeigh, y@waterQ,
+                           y@bedrock, y@aquifer, y@snowpack,
+                           correctionFactors,
+                           datechar,
+                           gridMeteo,
+                           latitude, elevation, slope, aspect,
+                           patchsize)
+    
+    res_day = ws_day[["WatershedWaterBalance"]]
+    
     cat("+")
-    summary_day = spatialSoilSummary(y, summary_function, spwbcontrol$soilFunctions)
+    summary_day = spatialSoilSummary(y, summary_function, localControl$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
     Runon[,ifactor] = Runon[,ifactor] + res_day$Runon
@@ -372,7 +381,7 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
   cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
   cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
   
-  cat("\n------------  wswb ------------\n")
+  cat(paste0("\n------------ ",landModel," ------------\n"))
 
   CellBalance<-list(Rain = Rain, Snow = Snow, Snowmelt = Snowmelt, Interception = Interception, NetRain = NetRain, Runon = Runon, Runoff=Runoff,
                     Infiltration=Infiltration, DeepDrainage = DeepDrainage, SaturationExcess = SaturationExcess, AquiferDischarge = AquiferDischarge,
@@ -391,6 +400,27 @@ wswb<-function(y, SpParams, meteo, dates = NULL,
             CellBalance = CellBalance,
             CellState = CellState,
             DailyRunoff = DailyRunoff)
-  class(l)<-c("wswb","list")
+  class(l)<-c(landModel,"list")
   return(l)
+}
+
+spwbland<-function(y, SpParams, meteo, dates = NULL,
+                   summaryFreq = "years",
+                   localControl = medfate::defaultControl(),
+                   correctionFactors = defaultWatershedCorrectionFactors()) {
+  return(.landSim("spwbland",
+                  y = y, SpParams = SpParams, meteo = meteo, dates = dates,
+                  summaryFreq = summaryFreq, 
+                  localControl = localControl,
+                  correctionFactors = correctionFactors))
+}
+growthland<-function(y, SpParams, meteo, dates = NULL,
+                   summaryFreq = "years",
+                   localControl = medfate::defaultControl(),
+                   correctionFactors = defaultWatershedCorrectionFactors()) {
+  return(.landSim("growthland",
+                  y = y, SpParams = SpParams, meteo = meteo, dates = dates,
+                  summaryFreq = summaryFreq, 
+                  localControl = localControl,
+                  correctionFactors = correctionFactors))
 }

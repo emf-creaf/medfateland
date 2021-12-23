@@ -17,3 +17,4 @@ LinkingTo: Rcpp, meteoland, medfate
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: utils, knitr
+LazyData: true

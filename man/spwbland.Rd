@@ -1,14 +1,19 @@
 \encoding{UTF-8}
-\name{wswb}
-\alias{wswb}
-\title{Watershed water balance model}
+\name{spwbland}
+\alias{spwbland}
+\alias{growthland}
+\title{Watershed simulations}
 \description{
-A distributed hydrological model that simulates daily water balance on the cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.
+Function \code{spwbland} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells. Function \code{growthland} is similar, but includes daily local carbon balance and growth processes in grid cells, provided by \code{\link{growth_day}}.
 }
 \usage{
-wswb(y, SpParams, meteo, dates,
+spwbland(y, SpParams, meteo, dates,
      summaryFreq = "years",
-     spwbcontrol = medfate::defaultControl(),
+     localControl = medfate::defaultControl(),
+     correctionFactors = defaultWatershedCorrectionFactors())
+growthland(y, SpParams, meteo, dates,
+     summaryFreq = "years",
+     localControl = medfate::defaultControl(),
      correctionFactors = defaultWatershedCorrectionFactors())
 }
 \arguments{
@@ -17,11 +22,11 @@ wswb(y, SpParams, meteo, dates,
   \item{meteo}{Input meteorological data (see section details).}
   \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
   \item{summaryFreq}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
-  \item{spwbcontrol}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb}}.}
+  \item{localControl}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
   \item{correctionFactors}{A list of watershed correction factors for hydraulic parameters.}
 }
 \details{
-Function \code{wswb} requires daily meteorological data over grid cells. The user may supply four different inputs:
+Functions \code{spwbland} and \code{growthland} require daily meteorological data over grid cells. The user may supply four different inputs:
 \enumerate{
 \item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
 \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
@@ -31,7 +36,7 @@ Function \code{wswb} requires daily meteorological data over grid cells. The use
 In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done over each grid cell every simulated day. In the case of (3) weather maps are read for each day. Finally, in the case of (4) spatial variation of weather is not considered.
 }
 \value{
-A list of class 'wswb' with the following elements:
+Function \code{spwbland} list of class 'spwbland' with the following elements:
 \itemize{
  \item{\code{coords}: A matrix of pixel coordinates.}
  \item{\code{coords.nrs}: Inherited from \code{SpatialPointsDataFrame} but not used.}
@@ -76,7 +81,7 @@ A list of class 'wswb' with the following elements:
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
-\code{\link{plot.wswb}}, \code{\link{spwb}}, \code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}
+\code{\link{plot.spwbland}}, \code{\link{spwb_day}},  \code{\link{growth_day}},\code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}
 }
 \examples{
 \dontrun{
@@ -86,6 +91,6 @@ data("SpParamsMED")
 
 dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
-res = wswb(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+res = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
 }
 }

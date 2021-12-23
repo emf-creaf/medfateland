@@ -21,7 +21,7 @@ A list with the following items:
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{wswb}}
+\code{\link{spwbland}}
 }
 \examples{
 defaultWatershedCorrectionFactors()
