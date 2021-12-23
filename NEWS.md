@@ -4,7 +4,8 @@
 
 # Version 0.3.0
 - Function 'wswb' renamed 'spwbland'
-- New function 'growthland'
+- New function 'growthland' and 'plot.growthland'
+- New plotting functions 'plot.spwbpoints', ...
 
 # Version 0.2.5
 - Update medfate 2.2

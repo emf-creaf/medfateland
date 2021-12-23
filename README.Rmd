@@ -1,5 +1,5 @@
 ---
-title: "medfateland - Mediterranean landscape forest functioning"
+title: "medfateland - Mediterranean landscape forest simulation"
 output: github_document
 ---
 

@@ -1,4 +1,4 @@
-medfateland - Mediterranean landscape forest functioning
+medfateland - Mediterranean landscape forest simulation
 ================
 
 <!-- badges: start -->
