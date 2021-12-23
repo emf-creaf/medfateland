@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -65,35 +61,35 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="medfateland---mediterranean-landscape-forest-functioning" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#medfateland---mediterranean-landscape-forest-functioning" class="anchor"></a>medfateland - Mediterranean landscape forest functioning</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="medfateland---mediterranean-landscape-forest-functioning">medfateland - Mediterranean landscape forest functioning<a class="anchor" aria-label="anchor" href="#medfateland---mediterranean-landscape-forest-functioning"></a>
+</h1></div>
 <!-- badges: start -->
 
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>The R package <strong>medfateland</strong> has been designed to extend the capabilities of package <strong>medfate</strong> to the landscape level. It allows running the stand-level models available in medfate on points and cells within landscape. More importantly, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.</p>
 </div>
-<div id="package-installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#package-installation" class="anchor"></a>Package installation</h2>
+<div class="section level2">
+<h2 id="package-installation">Package installation<a class="anchor" aria-label="anchor" href="#package-installation"></a>
+</h2>
 <p>Since both packages evolve together, installing <strong>medfateland</strong> normally requires an up-to-date version of <strong>medfate</strong>. The package is not available from CRAN because it is still under active development. Beta versions of package <strong>medfateland</strong> can be installed from GitHub as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/medfateland"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/medfateland"</span><span class="op">)</span></code></pre></div>
 <p>As with <strong>medfate</strong>, one may force the installation of package vignettes for <strong>medfateland</strong>, by using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/medfateland"</span>, 
-                         build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/medfateland"</span>, 
+                         build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
                          build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="documentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
 <ul>
 <li><p>The package installation includes a number of <em>vignettes</em> that illustrate how to run simulation models in <strong>medfateland</strong>.</p></li>
 <li><p>The user is also advised to read <em>vignettes</em> included in package <strong>medfate</strong>.</p></li>
-<li><p>Additional documentation of the package, including a <em>reference book</em>, can be found at <a href="https://emf-creaf.github.io/medfatebook/index.html" class="uri">https://emf-creaf.github.io/medfatebook/index.html</a>.</p></li>
+<li><p>Additional documentation of the package, including a <em>reference book</em>, can be found at <a href="https://emf-creaf.github.io/medfatebook/index.html" class="external-link uri">https://emf-creaf.github.io/medfatebook/index.html</a>.</p></li>
 </ul>
 </div>
 </div>
@@ -101,41 +97,53 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Reference book at <br><a href="https://emf-creaf.github.io/medfatebook/index.html">https://​emf-creaf.github.io/​medfatebook/​index.html</a>
-</li>
+<li><a href="https://emf-creaf.github.io/medfatebook/index.html" class="external-link">Reference book</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;= 2)</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing medfateland</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Miquel De Cáceres <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/vegmod/medfateland/actions"><img src="https://github.com/vegmod/medfateland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/vegmod/medfateland/actions" class="external-link"><img src="https://github.com/vegmod/medfateland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Miquel De Cáceres.</p>
+  <p></p>
+<p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -143,6 +151,8 @@
 
   
 
+
+  
 
   </body>
 </html>
