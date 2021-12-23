@@ -30,7 +30,8 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 \examples{
 \dontrun{
 code = "20054998"
-spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",code,".rds"))
+spt = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/",
+                     code,".rds"))
 lct = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/LandUse/",code,".rds"))
 forestlist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Forests/",code,".rds"))
 soillist = readRDS(paste0("D:/Datasets/Hydrology/Products/Catalonia/Soils/",code,".rds"))

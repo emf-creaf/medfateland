@@ -142,6 +142,7 @@
   
 
   summary_function = function(object, model="SX") {
+    if(!inherits(object,"soil")) return(list(SWE=NA, Psi1=NA, SoilVol=NA, WTD=NA))
     list(SWE = object$SWE,
          Psi1 = soil_psi(object)[1],
          SoilVol = sum(soil_water(object, model)),

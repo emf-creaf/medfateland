@@ -51,7 +51,7 @@ fordyngrid(y, SpParams, meteo, control = defaultControl(),
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
-  \item{parellize}{Boolean flag to try parallelization (will use all clusters minus one).}
+  \item{paralellize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{
