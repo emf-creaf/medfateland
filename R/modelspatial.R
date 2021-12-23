@@ -1,6 +1,6 @@
 .modelspatial<-function(y, SpParams, meteo, model = "spwb",
                         control = defaultControl(), dates = NULL,
-                        mergeTrees = FALSE,
+                        mergeTrees = FALSE, keepResults = TRUE,
                         summaryFunction=NULL, args=NULL,
                         parallelize = FALSE, progress = TRUE) {
   sp = as(y,"SpatialPoints")
@@ -21,12 +21,15 @@
 
   n = length(forestlist)
   reslist = vector("list",n)
-
+  summarylist = vector("list",n)
+  names(reslist) = names(forestlist)
+  names(summarylist) = names(forestlist)
+  
   initf<-function(i) {
     f = forestlist[[i]]
     s = soillist[[i]]
     x = NULL
-    if((!is.null(f)) && (!is.null(s))) {
+    if(inherits(f, "forest") && inherits(s, "soil")) {
       if(mergeTrees) f = forest_mergeTrees(f)
       if(model=="spwb") {
         x = medfate::forest2spwbInput(f, s, SpParams, control)
@@ -51,68 +54,78 @@
     f = forestlist[[i]]
     s = soillist[[i]]
     x = xlist[[i]]
-    if((!is.null(f)) && (!is.null(s))) {
-      if(inherits(meteo,"data.frame")) met = meteo
-      else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
-        met = meteo@data[[i]]
-      } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-        met = meteoland::interpolationpoints(meteo, spt[i], dates=dates, verbose=FALSE)
-        met = met@data[[1]]
-      }
-      if(!is.null(dates)) met = met[as.character(dates),] #subset dates
-      if(model=="spwb") {
-        S<-medfate::spwb(x, meteo=met,
-                         latitude = latitude[i], elevation = elevation[i],
-                         slope = slope[i], aspect = aspect[i])
-      } else if(model=="growth") {
-        S<-medfate::growth(x, meteo=met,
-                           latitude = latitude[i], elevation = elevation[i],
-                           slope = slope[i], aspect = aspect[i])
-      } else if(model=="fordyn") {
-        S<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = control,
-                           latitude = latitude[i], elevation = elevation[i],
-                           slope = slope[i], aspect = aspect[i])
-      }
-      if(!is.null(sfun)){
-        argList = list(object=S)
-        if(!is.null(args)) {
-          for(j in 1:length(args)) argList[names(args)[j]]=args[j]
-        }
-        res = do.call(sfun, args=argList)
-      } else {
-        res = S
-      }
-      return(res)
+    res = NULL
+    if(inherits(meteo,"data.frame")) met = meteo
+    else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
+      met = meteo@data[[i]]
+    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+      met = meteoland::interpolationpoints(meteo, spt[i], dates=dates, verbose=FALSE)
+      met = met@data[[1]]
     }
-    return(NULL)
+    if(!is.null(dates)) met = met[as.character(dates),] #subset dates
+    if(model=="spwb") {
+      if(inherits(x, "spwbInput")){
+        res<-medfate::spwb(x, meteo=met,
+                           latitude = latitude[i], elevation = elevation[i],
+                           slope = slope[i], aspect = aspect[i])
+      } 
+    } else if(model=="growth") {
+      if(inherits(x, "growthInput")) {
+        res<-medfate::growth(x, meteo=met,
+                             latitude = latitude[i], elevation = elevation[i],
+                             slope = slope[i], aspect = aspect[i])
+      } 
+    } else if(model=="fordyn") {
+      if(inherits(f, "forest") && inherits(s, "soil")) {
+        res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = control,
+                             latitude = latitude[i], elevation = elevation[i],
+                             slope = slope[i], aspect = aspect[i])
+      }
+    } 
+    if(!is.null(sfun) && !is.null(res)){
+      argList = list(object=res)
+      if(!is.null(args)) {
+        for(j in 1:length(args)) argList[names(args)[j]]=args[j]
+      }
+      s = do.call(sfun, args=argList)
+    } else {
+      s = NULL
+    }
+    return(list(result = res, summary = s))
   }
 
   if(parallelize) {
     if(progress) cat("Simulation...")
     env<-environment()
-    cl<-makeCluster(detectCores()-1)
+    cl<-parallel::makeCluster(parallel::detectCores()-1)
     varlist = c("forestlist", "soillist", "mergeTrees", "meteo", "model",
                 "SpParams", "control", "latitude", "elevation", "slope", "aspect",
                 "dates", "args", "xlist")
-    clusterExport(cl, varlist, envir = env)
-    reslist = clusterApply(cl, 1:n, simf, sfun = summaryFunction)
-    stopCluster(cl)
+    parallel::clusterExport(cl, varlist, envir = env)
+    reslist_parallel = parallel::clusterApply(cl, 1:n, simf, sfun = summaryFunction)
+    parallel::stopCluster(cl)
+    for(i in 1:n) {
+      reslist[[i]] = reslist_parallel[[i]]$result
+      summarylist[[i]] = reslist_parallel[[i]]$summary
+    }
     if(progress) cat("done.\n")
   } else {
     if(progress) cat("Simulation:\n")
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      reslist[[i]] = simf(i, sfun = summaryFunction)
+      sim_out = simf(i, sfun = summaryFunction)
+      if(keepResults) reslist[[i]] = sim_out$result
+      summarylist[[i]] = sim_out$summary
     }
   }
 
-  return(list(xlist = xlist, reslist = reslist))
+  return(list(xlist = xlist, resultlist = reslist, summarylist = summarylist))
 }
 
 
 spwbpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                     summaryFunction=NULL, args=NULL,
+                     keepResults = TRUE, summaryFunction=NULL, args=NULL,
                      parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -129,13 +142,14 @@ spwbpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("spwbpoints","list")
   return(res)
 }
 spwbgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                   summaryFunction=NULL, args=NULL,
+                   keepResults = TRUE, summaryFunction=NULL, args=NULL,
                    parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -152,13 +166,14 @@ spwbgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("spwbgrid","list")
   return(res)
 }
 spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                     summaryFunction=NULL, args=NULL,
+                     keepResults = TRUE, summaryFunction=NULL, args=NULL,
                      parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -177,13 +192,15 @@ spwbpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, 
+             bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("spwbpixels","list")
   return(res)
 }
 growthpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                       summaryFunction=NULL, args=NULL,
+                       keepResults = TRUE, summaryFunction=NULL, args=NULL,
                        parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -200,13 +217,14 @@ growthpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = N
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("growthpoints","list")
   return(res)
 }
 growthgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                     summaryFunction=NULL, args=NULL,
+                     keepResults = TRUE, summaryFunction=NULL, args=NULL,
                      parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -223,13 +241,14 @@ growthgrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("growthgrid","list")
   return(res)
 }
 growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                       summaryFunction=NULL, args=NULL,
+                       keepResults = TRUE, summaryFunction=NULL, args=NULL,
                        parallelize = FALSE, progress = TRUE) {
 
   #Check input
@@ -248,13 +267,14 @@ growthpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = N
   }
 
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("growthpixels","list")
   return(res)
 }
 fordynpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                       summaryFunction=NULL, args=NULL,
+                       keepResults = TRUE, summaryFunction=NULL, args=NULL,
                        parallelize = FALSE, progress = TRUE) {
   
   #Check input
@@ -271,13 +291,14 @@ fordynpoints<-function(y, SpParams, meteo, control = defaultControl(), dates = N
   }
   
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("fordynpoints","list")
   return(res)
 }
 fordyngrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                     summaryFunction=NULL, args=NULL,
+                     keepResults = TRUE, summaryFunction=NULL, args=NULL,
                      parallelize = FALSE, progress = TRUE) {
   
   #Check input
@@ -294,13 +315,14 @@ fordyngrid<-function(y, SpParams, meteo, control = defaultControl(), dates = NUL
   }
   
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(grid = y@grid, bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("fordyngrid","list")
   return(res)
 }
 fordynpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = NULL,
-                       summaryFunction=NULL, args=NULL,
+                       keepResults = TRUE, summaryFunction=NULL, args=NULL,
                        parallelize = FALSE, progress = TRUE) {
   
   #Check input
@@ -319,8 +341,10 @@ fordynpixels<-function(y, SpParams, meteo, control = defaultControl(), dates = N
   }
   
   l = .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", control = control, dates = dates,
-                    summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
-  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, bbox = y@bbox, proj4string = y@proj4string, xlist = l$xlist, reslist = l$reslist)
+                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+  res = list(coords = y@coords, coords.nrs = y@coords.nrs, grid = y@grid, grid.index = y@grid.index, 
+             bbox = y@bbox, proj4string = y@proj4string, 
+             xlist = l$xlist, resultlist = l$resultlist, summarylist = l$summarylist)
   class(res) = c("fordynpixels","list")
   return(res)
 }

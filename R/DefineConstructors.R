@@ -18,6 +18,8 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
     }
   }
   xlist = vector("list", npoints)
+  names(xlist) = names(forestlist)
+  names(lct) = names(forestlist)
   
   spl = new("SpatialPointsLandscape",
             lct = lct,

@@ -5,10 +5,10 @@ import(spdep)
 import(methods)
 import(meteoland)
 import(medfate)
-importFrom("parallel", "makeCluster","clusterExport", "clusterApply", "stopCluster")
 importFrom(Rcpp, evalCpp)
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
 export(buildWatershedTopography,
        defaultWatershedCorrectionFactors,
        DistributedWatershed,
@@ -27,4 +27,13 @@ exportMethods("[", show, getLandscapeVariable, getLandscapeLayer,
               plot, spplot, head, tail)
 
 S3method(plot,spwbland)
+S3method(plot,spwbpoints)
+S3method(plot,spwbpixels)
+S3method(plot,spwbgrid)
+S3method(plot,growthpoints)
+S3method(plot,growthpixels)
+S3method(plot,growthgrid)
+S3method(plot,fordynpoints)
+S3method(plot,fordynpixels)
+S3method(plot,fordyngrid)
 S3method(plot,growthland)

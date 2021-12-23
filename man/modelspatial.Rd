@@ -16,31 +16,31 @@ Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth
 }
 \usage{
 spwbpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 spwbpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 spwbgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 growthpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 growthpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 growthgrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 fordynpoints(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 fordynpixels(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 fordyngrid(y, SpParams, meteo, control = defaultControl(),
-       dates = NULL, summaryFunction = NULL, args=NULL, 
+       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 }
 \arguments{
@@ -49,6 +49,7 @@ fordyngrid(y, SpParams, meteo, control = defaultControl(),
   \item{meteo}{Meteorology data (see details).}
   \item{control}{A list of model control parameters (see \code{\link{defaultControl}}).}
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
+  \item{keepResults}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
   \item{paralellize}{Boolean flag to try parallelization (will use all clusters minus one).}
@@ -67,7 +68,8 @@ In the case of (1), all the spatio-temporal variation of weather is already supp
 A list of class of the same name as the function called, containing spatial information of the input data and two child lists:
 \enumerate{
 \item{\code{xlist}: A list of model input objects for each simulated stand.}
-\item{\code{reslist}: A list of model output for each simulated stand.}
+\item{\code{resultlist}: A list of model output for each simulated stand.}
+\item{\code{summarylist}: A list of model output summaries for each simulated stand.}
 }
 }
 \author{
