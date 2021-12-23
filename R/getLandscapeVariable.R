@@ -162,9 +162,9 @@ setMethod("getLandscapeLayer", signature("SpatialPointsLandscape"),
           })
 setMethod("getLandscapeLayer", signature("DistributedWatershed"),
           function(obj, variable = "lct", ...) {
-            return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),
-                                          data.frame(var = getLandscapeVariable(obj, variable, ...)), 
-                                          grid = obj@grid))
+            df<-data.frame(y = .getLandscapeVar(obj, variable, ...))
+            names(df) <- variable
+            return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"),df,grid = obj@grid))
           })
 
 

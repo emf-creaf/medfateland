@@ -1,8 +1,16 @@
 .ggspl<-function(spl) {
-  spl_sf =st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
-  g<-ggplot()+
-    geom_sf(spl_sf, mapping = aes(fill=var), col=NA)+
-    theme_bw()
+  var = names(spl@data)
+  if(inherits(spl, c("SpatialPixelsDataFrame", "SpatialGridDataFrame"))) {
+    spl_sf =sf::st_as_sf(as(spl, "SpatialPolygonsDataFrame"))
+    g<-ggplot()+
+      geom_sf(spl_sf, mapping = aes_string(fill=var), col=NA)+
+      theme_bw()
+  } else {
+    spl_sf =sf::st_as_sf(spl)
+    g<-ggplot()+
+      geom_sf(spl_sf, mapping = aes_string(col=var))+
+      theme_bw()
+  }
   return(g)
 }
 setMethod("plot", signature("SpatialPixelsLandscape"),
@@ -49,7 +57,7 @@ setMethod("plot", signature("SpatialPointsLandscape"),
 
 setMethod("spplot", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
+            if(variable %in% .getAllowedVars()) {
               spplot(getLandscapeLayer(obj, variable, ...))
             } else {
               spplot(as(obj, "SpatialPointsTopography"), variable, ...)

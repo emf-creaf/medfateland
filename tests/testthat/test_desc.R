@@ -10,6 +10,14 @@ test_that("Can extract variables from examplepointslandscape",{
   for(v in vars) expect_s4_class(getLandscapeLayer(examplepointslandscape, v), spdf)
 })
 
+test_that("Can plot variables from examplepointslandscape",{
+  for(v in vars) expect_s3_class(plot(examplepointslandscape, v), "ggplot")
+})
+
 test_that("Can extract variables from examplewatershed",{
   for(v in vars) expect_s4_class(getLandscapeLayer(examplewatershed, v), spdf)
+})
+
+test_that("Can plot variables from examplewatershed",{
+  for(v in vars) expect_s3_class(plot(examplewatershed, v), "ggplot")
 })
