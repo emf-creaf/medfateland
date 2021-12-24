@@ -25,7 +25,7 @@ Creates spatial objects containing summaries of simulations
 \method{summary}{fordyngrid}(object, summaryFunction, ...)
 }
 \arguments{
-  \item{x}{An object of the appropriate class, containing simulation results. }
+  \item{object}{An object of the appropriate class, containing simulation results. }
   \item{summaryFunction}{The summary function to be executed on simulation results (see details).}
   \item{...}{Additional parameters to the summary function.}
 }

@@ -52,7 +52,7 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{keepResults}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
-  \item{paralellize}{Boolean flag to try parallelization (will use all clusters minus one).}
+  \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{

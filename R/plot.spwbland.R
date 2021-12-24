@@ -3,7 +3,7 @@ plot.spwbland<-function(x, variable = "Runon", date = NULL, ...) {
     df = data.frame(Date = as.Date(row.names(x$DailyRunoff)), 
                     Runoff = rowSums(x$DailyRunoff, na.rm=T))
     g1<-ggplot(df)+
-      geom_line( aes(x=Date, y=Runoff), col="blue")+
+      geom_line( aes_string(x="Date", y="Runoff"), col="blue")+
       ylab("Watershed runoff (m3/day)")+theme_bw()
   } else if (variable %in% c(colnames(x$summarylist[[1]]))) {
     g1 = plot.summarypixels(x, variable, date, ...)
