@@ -48,7 +48,7 @@ setMethod("spplot", signature("SpatialGridLandscape"),
           })
 
 
-setMethod("plot", signature("SpatialPointsLandscape"),
+setMethod("plot", signature(x="SpatialPointsLandscape"),
           function(x, y, ...) {
             if(y %in% .getAllowedVars()) {
               return(.ggspl(getLandscapeLayer(x, y, ...)))

@@ -5,6 +5,7 @@ import(spdep)
 import(methods)
 import(meteoland)
 import(medfate)
+import(shiny)
 importFrom(Rcpp, evalCpp)
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
@@ -15,6 +16,7 @@ export(buildWatershedTopography,
        fordynpoints, fordynpixels, fordyngrid,
        growthpoints, growthpixels, growthgrid,
        spwbpoints, spwbpixels, spwbgrid,
+       shinyplotland,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland)
 
