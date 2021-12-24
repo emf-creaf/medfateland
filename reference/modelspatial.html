@@ -46,35 +46,35 @@
     </div>
 
     <div class="ref-description">
-    <p>Functions that allow calling local models <code>spwb</code>, <code>growth</code> or <code>fordyn</code>, for a set of forest stands distributed in specific locations. No spatial processes are simulated.</p>
+    <p>Functions that allow calling local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, for a set of forest stands distributed in specific locations. No spatial processes are simulated.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spwbpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spwbpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">spwbpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">spwbpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">spwbgrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">spwbgrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">growthpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">growthpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthgrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">growthgrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">fordynpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">fordynpoints</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">fordynpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">fordynpixels</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">fordyngrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">fordyngrid</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        dates <span class="op">=</span> <span class="cn">NULL</span>, keepResults <span class="op">=</span> <span class="cn">TRUE</span>, summaryFunction <span class="op">=</span> <span class="cn">NULL</span>, args<span class="op">=</span><span class="cn">NULL</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
@@ -84,17 +84,17 @@
     <dl><dt>y</dt>
 <dd><p>An object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code>, depending on the function called.</p></dd>
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
 <dt>meteo</dt>
 <dd><p>Meteorology data (see details).</p></dd>
 <dt>localControl</dt>
-<dd><p>A list of local model control parameters (see <code>defaultControl</code>).</p></dd>
+<dd><p>A list of local model control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>).</p></dd>
 <dt>dates</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a></code> object with the days of the period to be simulated. If <code>NULL</code>, then the whole period of <code>meteo</code> is used.</p></dd>
 <dt>keepResults</dt>
 <dd><p>Boolean flag to indicate that point/cell simulation results are to be returned (set to <code>FALSE</code> and use summary functions for large data sets).</p></dd>
 <dt>summaryFunction</dt>
-<dd><p>An appropriate function to calculate summaries (e.g., <code>summary.spwb</code>).</p></dd>
+<dd><p>An appropriate function to calculate summaries (e.g., <code><a href="https://emf-creaf.github.io/medfate/reference/summary.spwb.html" class="external-link">summary.spwb</a></code>).</p></dd>
 <dt>args</dt>
 <dd><p>List with additional arguments for the summary function.</p></dd>
 <dt>paralellize</dt>
@@ -122,7 +122,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>spwb</code>, <code>growth</code>, <code>fordyn</code>, <code><a href="summary.spwbpoints.html">summary.spwbpoints</a></code> , <code><a href="plot.summarypoints.html">plot.summarypoints</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, <code><a href="summary.spwbpoints.html">summary.spwbpoints</a></code> , <code><a href="plot.summarypoints.html">plot.summarypoints</a></code></p></div>
     </div>
 
     <div id="ref-examples">
