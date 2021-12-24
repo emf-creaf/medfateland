@@ -10,7 +10,7 @@ Description: Functions to simulate hydrology, forest functioning and dynamics ov
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes
-Depends: R (>= 3.4.0), sp, medfate (>= 2.0.0)
+Depends: R (>= 3.4.0), sp, medfate (>= 2.4.0)
 Imports: ggplot2, sf, spdep, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), parallel, shiny
 Suggests: 
     knitr,
