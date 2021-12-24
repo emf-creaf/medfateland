@@ -7,17 +7,17 @@
 Produces graphical output of the results of a watershed simulation model (\code{\link{spwbland}} or \code{\link{growthland}}).
 }
 \usage{
-\method{plot}{spwbland}(x, type = "Runon", summaryIndex = 1, ...)
-\method{plot}{growthland}(x, type = "Runon", summaryIndex = 1, ...)
+\method{plot}{spwbland}(x, variable = "Runon", date = NULL, ...)
+\method{plot}{growthland}(x, variable = "Runon", date = NULL, ...)
 }
 \arguments{
   \item{x}{An object of class \code{spwbland} with simulation results.}
-  \item{type}{Type of information to be drawn (see section details).}
-  \item{summaryIndex}{The index of the summary to be plotted.}
+  \item{variable}{Type of information to be drawn (see section details).}
+  \item{date}{The date of the summary to be plotted. Only used if variable is not \code{"DailyRunoff"} (see details).}
   \item{...}{Additional parameters (not used).}
 }
 \details{
-If \code{type = "DailyRunoff"}, the function draws the simulated daily runoff (m3) exported from the watershed. The other options are the element names of \code{x$CellBalance} and \code{x$CellState} (see \code{\link{spwbland}}), and the function draws a map with the desired variable corresponding to the summary indicated in \code{summaryIndex}.
+If \code{type = "DailyRunoff"}, the function draws the simulated daily runoff (m3) exported from the watershed. The other options are the element names of cell balance or state (see \code{\link{spwbland}}), and the function will call \code{\link{plot.summarypixels}}).
 }
 \value{
 An object of class \code{\link{ggplot}}.

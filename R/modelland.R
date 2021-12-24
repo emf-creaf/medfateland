@@ -65,11 +65,11 @@
   cat(paste0("Number of summaries: ", nSummary,"\n"))
   cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
 
-  cat(paste0("Preparing ", localModel, " input:\n"))
+  cat(paste0("Preparing ", localModel, " input...\n"))
 
-  pb = txtProgressBar(0, nCells, style=3)
+  # pb = txtProgressBar(0, nCells, style=3)
   for(i in 1:nCells) {
-    setTxtProgressBar(pb,i)
+    # setTxtProgressBar(pb,i)
     if(y@lct[i] %in% c("wildland", "agriculture")) {
       f = y@forestlist[[i]]
       s = y@soillist[[i]]
@@ -79,7 +79,7 @@
       y@xlist[[i]] = NA
     }
   }
-  cat("\n\n")
+  cat("done.\n\n")
 
   #Output matrices
   DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))

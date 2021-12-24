@@ -4,7 +4,7 @@ author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
-    toc: FALSE
+    toc: TRUE
 vignette: >
   %\VignetteIndexEntry{Landscape water balance}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,14 +24,24 @@ library(medfateland)
 
 Package `medfate` include functions `spwb()` or `growth()` to simulate soil water balance on a single forest stand. This section describes how to run simulations on a set of forest stands in one call. This is done using functions `spwbpoints()`, `spwbpixels()`, `spwbgrid()` and the corresponding growth functions. 
 
-As an example, we will use function `spwbpoints()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `SpatialPointsLandscape` as input. We begin by loading an example dataset of 30 forest stands:
+As an example, we will use function `spwbpoints()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `SpatialPointsLandscape` as input.
 
-```{r, fig.align='center', fig.width=5}
+### Example point data
+We begin by loading an example dataset of 30 forest stands:
+
+```{r, fig.align='center', fig.width=7}
 data("examplepointslandscape")
-plot(examplepointslandscape)
 ```
 
-As before, we need meteorological data, species parameters and control parameters (which will apply to all forest stands):
+We can draw maps of some variables using:
+
+```{r, fig.align='center', fig.width=7}
+plot(examplepointslandscape, "basalArea")
+```
+
+### Weather inputs and local control parameters
+
+As before, we need meteorological data, species parameters and control parameters for local simulations (which will apply to all forest stands):
 
 ```{r}
 data("examplemeteo")
@@ -40,11 +50,13 @@ control = defaultControl()
 control$verbose = FALSE
 ```
 
+### Calling the simulation function
+
 The call to `spwbpoints()` can be done as follows (here we restrict the dates for simplicity):
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 res <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
-                  dates = dates, control = control,  progress = FALSE)
+                  dates = dates, localControl = control,  progress = FALSE)
 ```
 
 Function `spwbpoints()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the `SpatialPointsLandscape` object.  Then it calls function `spwb()` for each forest stand and stores the result. The fact that we used `examplemeteo` as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function `spwbpoints()`).
@@ -55,40 +67,92 @@ The result of calling `spwbpoints()` is a list (whose class name is the same as 
 names(res)
 ```
 
-Apart from those elements describing spatial information, vector `xlist` contains the `spwbInput` corresponding to each forest stand, and vector `reslist` contains the output of `spwb()` function for each forest stand (i.e. elements of `reslist` are objects of an S3 class with the same name). This structure of the output of `spwbpoints()` allows querying information for the simulation of any particular forest stand. For example, if we want a monthly summary of water balance for the first stand, we can use function `summary.spwb()` from package **medfate**:
+Element `sp` describes spatial information, vector `xlist` contains the `spwbInput` corresponding to each forest stand, vector `resultlist` contains the output of `spwb()` function for each forest stand (i.e. its elements are objects of the S3 class `spwb`) and `summarylist` contains summaries (if requested, see below). 
+
+### Summaries and plots
+
+The structure of the output of `spwbpoints()` allows querying information for the simulation of any particular forest stand. For example, if we want a monthly summary of water balance for the first stand, we can use function `summary.spwb()` from package **medfate**:
 
 ```{r}
-summary(res$reslist[[1]], freq="months",FUN=sum, 
+summary(res$resultlist[[1]], freq="months",FUN=sum, 
         output="WaterBalance")
 ```
 
-If one needs to save memory, it is possible with `spwbpoints()` to generate summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of `spwb()`. For example the following code will produce the same output as before: 
+A more convenient way of generating summaries, though, is by calculating them on all forest stands, using:
 
-```{r, warning=FALSE}
-res <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
-                  dates = dates, control = control,  progress = FALSE,
-                  summaryFunction = summary.spwb)
-res$reslist[[1]]
+```{r}
+res_sum <- summary(res, summaryFunction = summary.spwb, 
+                   freq="months", output="WaterBalance")
+```
+where the argument `summaryFunction` points to the function to be used to generate summaries and the remaining arguments are those of the summary function. The result is an object of class:
+```{r}
+class(res_sum)
+```
+which contains two elements, the spatial information and the summaries:
+```{r}
+names(res_sum)
+```
+The summary for the first stand can be accessed through the first element of `summarylist`:
+```{r}
+res_sum$summarylist[[1]]
+```
+
+Summary objects are handy because they allow us to display plots:
+```{r, fig.align='center', fig.width=7}
+plot(res_sum, "Transpiration", "2001-03-01")
 ```
 
 
+### Simulation with integrated summaries
+
+If one needs to save memory, it is possible with `spwbpoints()` to generate summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of `spwb()`. For example the following code will keep summaries instead of simulation results: 
+
+```{r, warning=FALSE}
+res_2 <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
+                  dates = dates, localControl = control,                  
+                  keepResults = FALSE, progress = FALSE,
+                  summaryFunction = summary.spwb, args = list(freq="months"))
+```
+
+Now the summaries are embedded in the simulation results, and can be directly accessed through the element `summarylist`:
+```{r}
+res_2$summarylist[[1]]
+```
+
+And one can produce plots directly from simulation results:
+```{r, fig.align='center', fig.width=7}
+plot(res_2, "Transpiration", "2001-03-01")
+```
+
 ## Simulation of watershed hydrology
 
-Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. To illustrate this kind of simulation, which is carried out using function `spwbland()`, we first load a small example watershed included with the package:
+Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. 
+
+### Example data set
+To illustrate this kind of simulation, which is carried out using function `spwbland()`, we first load a small example watershed included with the package:
 
 ```{r, warning=FALSE, fig.align="center", fig.width=7}
 data("examplewatershed")
 plot(examplewatershed, "elevation")
 ```
 
+### Simulation function
 As for the call to function `spwbpoints()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwbland()` for a single month.
 
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+res_ws = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
 ```
 
-Although simulations are performed using daily temporal steps, parameter `summaryFreq` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. Several plots can be drawn from the result of function `spwbland()`. As an example we display a map of average soil water potential for the simulated month.
+Although simulations are performed using daily temporal steps, parameter `summaryFreq` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
+
+### Summaries and plots
+Unlike `spwbpoints()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwbland()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
+```{r}
+res_ws$summarylist[[1]]
+```
+
+Several plots can be drawn from the result of function `spwbland()` in a similar way as done for `spwbpoints()`. As an example we display a map of soil water volume for the simulated month:
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot(res, "Psi1")
+plot(res_ws, "SoilVol", "2001-01-01")
 ```

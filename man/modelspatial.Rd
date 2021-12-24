@@ -10,36 +10,36 @@
 \alias{fordynpixels}
 \alias{fordyngrid}
 
-\title{Medfate simulations for spatially-distributed forest stands}
+\title{Simulations for spatially-distributed forest stands}
 \description{
 Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. No spatial processes are simulated.
 }
 \usage{
-spwbpoints(y, SpParams, meteo, control = defaultControl(),
+spwbpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-spwbpixels(y, SpParams, meteo, control = defaultControl(),
+spwbpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-spwbgrid(y, SpParams, meteo, control = defaultControl(),
+spwbgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-growthpoints(y, SpParams, meteo, control = defaultControl(),
+growthpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-growthpixels(y, SpParams, meteo, control = defaultControl(),
+growthpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-growthgrid(y, SpParams, meteo, control = defaultControl(),
+growthgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-fordynpoints(y, SpParams, meteo, control = defaultControl(),
+fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-fordynpixels(y, SpParams, meteo, control = defaultControl(),
+fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
-fordyngrid(y, SpParams, meteo, control = defaultControl(),
+fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, progress = TRUE)
 }
@@ -47,7 +47,7 @@ fordyngrid(y, SpParams, meteo, control = defaultControl(),
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
   \item{meteo}{Meteorology data (see details).}
-  \item{control}{A list of model control parameters (see \code{\link{defaultControl}}).}
+  \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
   \item{keepResults}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
@@ -65,18 +65,19 @@ Simulation functions  accept different formats for meteorological input (paramet
 In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done for each spatial location and the period indicated in \code{meteo} or, if supplied, \code{dates}. Finally, in the case of (3) spatial variation of weather is not considered.
 }
 \value{
-A list of class of the same name as the function called, containing spatial information of the input data and two child lists:
-\enumerate{
+A list of class of the same name as the function called, also inheriting from an appropriate summary class (\code{summarypoints}, \code{summarypixels} or \code{summarygrid}), containing four elements:
+\itemize{
+\item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
 \item{\code{xlist}: A list of model input objects for each simulated stand.}
-\item{\code{resultlist}: A list of model output for each simulated stand.}
-\item{\code{summarylist}: A list of model output summaries for each simulated stand.}
+\item{\code{resultlist}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+\item{\code{summarylist}: A list of model output summaries for each simulated stand (if \code{summaryFunction} is not \code{NULL}).}
 }
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}
 }
 \examples{
 
@@ -90,9 +91,14 @@ data("examplemeteo")
 #Load default medfate parameters
 data("SpParamsMED")
 
+#Perform simulation
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+res = spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
 
-res = spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates, 
-                 summaryFunction = summary.spwb)
+#Generate summaries (these could have also been specified when calling 'spwbpoints')
+res_sum = summary(res, summaryFunction = summary.spwb, freq="month")
+
+#Plot summaries
+plot(res_sum, "Transpiration", "2001-03-01")
 }
 }

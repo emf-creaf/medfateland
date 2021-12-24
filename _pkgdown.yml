@@ -25,6 +25,7 @@ reference:
   contents:
   - starts_with("spatialForest")
   - starts_with("spatialSoil")
+  - starts_with("summary")
 
 - title: Model inputs
   desc:  Defaults for model inputs
