@@ -61,9 +61,15 @@
     <loc>/reference/plot.spwbland.html</loc>
   </url>
   <url>
+    <loc>/reference/plot.summarypoints.html</loc>
+  </url>
+  <url>
     <loc>/reference/spatialForestSummary.html</loc>
   </url>
   <url>
     <loc>/reference/spwbland.html</loc>
+  </url>
+  <url>
+    <loc>/reference/summary.spwbpoints.html</loc>
   </url>
 </urlset>

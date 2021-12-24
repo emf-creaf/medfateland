@@ -65,7 +65,7 @@
       <h1 data-toc-skip>Landscape water balance</h1>
                         <h4 data-toc-skip class="author">Miquel De Caceres</h4>
             
-            <h4 data-toc-skip class="date">2021-12-23</h4>
+            <h4 data-toc-skip class="date">2021-12-24</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -78,248 +78,205 @@
 <h2 id="simulations-on-a-set-of-forest-stands">Simulations on a set of forest stands<a class="anchor" aria-label="anchor" href="#simulations-on-a-set-of-forest-stands"></a>
 </h2>
 <p>Package <code>medfate</code> include functions <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code> to simulate soil water balance on a single forest stand. This section describes how to run simulations on a set of forest stands in one call. This is done using functions <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, <code><a href="../reference/modelspatial.html">spwbpixels()</a></code>, <code><a href="../reference/modelspatial.html">spwbgrid()</a></code> and the corresponding growth functions.</p>
-<p>As an example, we will use function <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class <code>SpatialPointsLandscape</code> as input. We begin by loading an example dataset of 30 forest stands:</p>
+<p>As an example, we will use function <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class <code>SpatialPointsLandscape</code> as input.</p>
+<div class="section level3">
+<h3 id="example-point-data">Example point data<a class="anchor" aria-label="anchor" href="#example-point-data"></a>
+</h3>
+<p>We begin by loading an example dataset of 30 forest stands:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplepointslandscape"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-1-1.png" width="480" style="display: block; margin: auto;"></p>
-<p>As before, we need meteorological data, species parameters and control parameters (which will apply to all forest stands):</p>
+<p>We can draw maps of some variables using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="st">"basalArea"</span><span class="op">)</span></code></pre></div>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-2-1.png" width="480" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="weather-inputs-and-local-control-parameters">Weather inputs and local control parameters<a class="anchor" aria-label="anchor" href="#weather-inputs-and-local-control-parameters"></a>
+</h3>
+<p>As before, we need meteorological data, species parameters and control parameters for local simulations (which will apply to all forest stands):</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span>
 <span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">control</span><span class="op">$</span><span class="va">verbose</span> <span class="op">=</span> <span class="cn">FALSE</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="calling-the-simulation-function">Calling the simulation function<a class="anchor" aria-label="anchor" href="#calling-the-simulation-function"></a>
+</h3>
 <p>The call to <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> can be done as follows (here we restrict the dates for simplicity):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-15"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelspatial.html">spwbpoints</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, 
-                  dates <span class="op">=</span> <span class="va">dates</span>, control <span class="op">=</span> <span class="va">control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+                  dates <span class="op">=</span> <span class="va">dates</span>, localControl <span class="op">=</span> <span class="va">control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>Function <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> first initializes model inputs by calling <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">forest2spwbInput()</a></code> for each forest stand described in the <code>SpatialPointsLandscape</code> object. Then it calls function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> for each forest stand and stores the result. The fact that we used <code>examplemeteo</code> as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>).</p>
 <p>The result of calling <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> is a list (whose class name is the same as the function name) with the following elements:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "coords"      "bbox"        "proj4string" "xlist"       "resultlist" </span>
-<span class="co">## [6] "summarylist"</span></code></pre>
-<p>Apart from those elements describing spatial information, vector <code>xlist</code> contains the <code>spwbInput</code> corresponding to each forest stand, and vector <code>reslist</code> contains the output of <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> function for each forest stand (i.e. elements of <code>reslist</code> are objects of an S3 class with the same name). This structure of the output of <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> allows querying information for the simulation of any particular forest stand. For example, if we want a monthly summary of water balance for the first stand, we can use function <code><a href="https://emf-creaf.github.io/medfate/reference/summary.spwb.html" class="external-link">summary.spwb()</a></code> from package <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">reslist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, freq<span class="op">=</span><span class="st">"months"</span>,FUN<span class="op">=</span><span class="va">sum</span>, 
+<pre><code><span class="co">## [1] "sp"          "xlist"       "resultlist"  "summarylist"</span></code></pre>
+<p>Element <code>sp</code> describes spatial information, vector <code>xlist</code> contains the <code>spwbInput</code> corresponding to each forest stand, vector <code>resultlist</code> contains the output of <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> function for each forest stand (i.e. its elements are objects of the S3 class <code>spwb</code>) and <code>summarylist</code> contains summaries (if requested, see below).</p>
+</div>
+<div class="section level3">
+<h3 id="summaries-and-plots">Summaries and plots<a class="anchor" aria-label="anchor" href="#summaries-and-plots"></a>
+</h3>
+<p>The structure of the output of <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> allows querying information for the simulation of any particular forest stand. For example, if we want a monthly summary of water balance for the first stand, we can use function <code><a href="https://emf-creaf.github.io/medfate/reference/summary.spwb.html" class="external-link">summary.spwb()</a></code> from package <strong>medfate</strong>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">resultlist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, freq<span class="op">=</span><span class="st">"months"</span>,FUN<span class="op">=</span><span class="va">sum</span>, 
         output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Length  Class   Mode </span>
-<span class="co">##      0   NULL   NULL</span></code></pre>
-<p>If one needs to save memory, it is possible with <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> to generate summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code>. For example the following code will produce the same output as before:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelspatial.html">spwbpoints</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, 
-                  dates <span class="op">=</span> <span class="va">dates</span>, control <span class="op">=</span> <span class="va">control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span>,
-                  summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span><span class="op">)</span>
-<span class="va">res</span><span class="op">$</span><span class="va">reslist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code><span class="co">## NULL</span></code></pre>
+<pre><code><span class="co">##                PET Precipitation     Rain Snow  NetRain Snowmelt Infiltration</span>
+<span class="co">## 2001-03-01 39.8194      67.79528 67.79528    0 54.32739        0     53.15197</span>
+<span class="co">##              Runoff DeepDrainage Evapotranspiration Interception</span>
+<span class="co">## 2001-03-01 1.175418     43.37507           26.24515     13.46789</span>
+<span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
+<span class="co">## 2001-03-01        3.440419        9.336834      9.336834</span></code></pre>
+<p>A more convenient way of generating summaries, though, is by calculating them on all forest stands, using:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span>, summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, 
+                   freq<span class="op">=</span><span class="st">"months"</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></code></pre></div>
+<p>where the argument <code>summaryFunction</code> points to the function to be used to generate summaries and the remaining arguments are those of the summary function. The result is an object of class:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res_sum</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "summarypoints" "list"</span></code></pre>
+<p>which contains two elements, the spatial information and the summaries:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_sum</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "sp"          "summarylist"</span></code></pre>
+<p>The summary for the first stand can be accessed through the first element of <code>summarylist</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res_sum</span><span class="op">$</span><span class="va">summarylist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">##                PET Precipitation     Rain Snow  NetRain Snowmelt Infiltration</span>
+<span class="co">## 2001-03-01 39.8194      67.79528 67.79528    0 54.32739        0     53.15197</span>
+<span class="co">##              Runoff DeepDrainage Evapotranspiration Interception</span>
+<span class="co">## 2001-03-01 1.175418     43.37507           26.24515     13.46789</span>
+<span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
+<span class="co">## 2001-03-01        3.440419        9.336834      9.336834</span></code></pre>
+<p>Summary objects are handy because they allow us to display plots:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span><span class="op">)</span></code></pre></div>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="simulation-with-integrated-summaries">Simulation with integrated summaries<a class="anchor" aria-label="anchor" href="#simulation-with-integrated-summaries"></a>
+</h3>
+<p>If one needs to save memory, it is possible with <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> to generate summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code>. For example the following code will keep summaries instead of simulation results:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelspatial.html">spwbpoints</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, 
+                  dates <span class="op">=</span> <span class="va">dates</span>, localControl <span class="op">=</span> <span class="va">control</span>,                  
+                  keepResults <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span>,
+                  summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Now the summaries are embedded in the simulation results, and can be directly accessed through the element <code>summarylist</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res_2</span><span class="op">$</span><span class="va">summarylist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">##                PET Precipitation     Rain Snow  NetRain Snowmelt Infiltration</span>
+<span class="co">## 2001-03-01 39.8194      67.79528 67.79528    0 54.32739        0     53.15197</span>
+<span class="co">##              Runoff DeepDrainage Evapotranspiration Interception</span>
+<span class="co">## 2001-03-01 1.175418     43.37507           26.24515     13.46789</span>
+<span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
+<span class="co">## 2001-03-01        3.440419        9.336834      9.336834</span></code></pre>
+<p>And one can produce plots directly from simulation results:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_2</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span><span class="op">)</span></code></pre></div>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-14-1.png" width="480" style="display: block; margin: auto;"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="simulation-of-watershed-hydrology">Simulation of watershed hydrology<a class="anchor" aria-label="anchor" href="#simulation-of-watershed-hydrology"></a>
 </h2>
-<p>Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. To illustrate this kind of simulation, which is carried out using function <code><a href="../reference/spwbland.html">spwbland()</a></code>, we first load a small example watershed included with the package:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other.</p>
+<div class="section level3">
+<h3 id="example-data-set">Example data set<a class="anchor" aria-label="anchor" href="#example-data-set"></a>
+</h3>
+<p>To illustrate this kind of simulation, which is carried out using function <code><a href="../reference/spwbland.html">spwbland()</a></code>, we first load a small example watershed included with the package:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplewatershed"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">examplewatershed</span>, <span class="st">"elevation"</span><span class="op">)</span></code></pre></div>
-<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="simulation-function">Simulation function<a class="anchor" aria-label="anchor" href="#simulation-function"></a>
+</h3>
 <p>As for the call to function <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> we will use the same weather (i.e. <code>examplemeteo</code>) across the watershed. To speed up calculations we call function <code><a href="../reference/spwbland.html">spwbland()</a></code> for a single month.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/spwbland.html">spwbland</a></span><span class="op">(</span><span class="va">examplewatershed</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summaryFreq <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## ------------ spwbland ------------
-## Grid cells: 66, patchsize: 10000 m2, area: 66 ha
-## Cell land use wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0
-## Cells with soil: 65
-## Meteorological input class: data.frame
-## Number of days to simulate: 31
-## Number of summaries: 1
-## Number of outlet cells: 1
-## 
-## Preparing spwb input:
-## 
-  |                                                                            
-  |                                                                      |   0%
-  |                                                                            
-  |=                                                                     |   2%
-  |                                                                            
-  |==                                                                    |   3%
-  |                                                                            
-  |===                                                                   |   5%
-  |                                                                            
-  |====                                                                  |   6%
-  |                                                                            
-  |=====                                                                 |   8%
-  |                                                                            
-  |======                                                                |   9%
-  |                                                                            
-  |=======                                                               |  11%
-  |                                                                            
-  |========                                                              |  12%
-  |                                                                            
-  |==========                                                            |  14%
-  |                                                                            
-  |===========                                                           |  15%
-  |                                                                            
-  |============                                                          |  17%
-  |                                                                            
-  |=============                                                         |  18%
-  |                                                                            
-  |==============                                                        |  20%
-  |                                                                            
-  |===============                                                       |  21%
-  |                                                                            
-  |================                                                      |  23%
-  |                                                                            
-  |=================                                                     |  24%
-  |                                                                            
-  |==================                                                    |  26%
-  |                                                                            
-  |===================                                                   |  27%
-  |                                                                            
-  |====================                                                  |  29%
-  |                                                                            
-  |=====================                                                 |  30%
-  |                                                                            
-  |======================                                                |  32%
-  |                                                                            
-  |=======================                                               |  33%
-  |                                                                            
-  |========================                                              |  35%
-  |                                                                            
-  |=========================                                             |  36%
-  |                                                                            
-  |===========================                                           |  38%
-  |                                                                            
-  |============================                                          |  39%
-  |                                                                            
-  |=============================                                         |  41%
-  |                                                                            
-  |==============================                                        |  42%
-  |                                                                            
-  |===============================                                       |  44%
-  |                                                                            
-  |================================                                      |  45%
-  |                                                                            
-  |=================================                                     |  47%
-  |                                                                            
-  |==================================                                    |  48%
-  |                                                                            
-  |===================================                                   |  50%
-  |                                                                            
-  |====================================                                  |  52%
-  |                                                                            
-  |=====================================                                 |  53%
-  |                                                                            
-  |======================================                                |  55%
-  |                                                                            
-  |=======================================                               |  56%
-  |                                                                            
-  |========================================                              |  58%
-  |                                                                            
-  |=========================================                             |  59%
-  |                                                                            
-  |==========================================                            |  61%
-  |                                                                            
-  |===========================================                           |  62%
-  |                                                                            
-  |=============================================                         |  64%
-  |                                                                            
-  |==============================================                        |  65%
-  |                                                                            
-  |===============================================                       |  67%
-  |                                                                            
-  |================================================                      |  68%
-  |                                                                            
-  |=================================================                     |  70%
-  |                                                                            
-  |==================================================                    |  71%
-  |                                                                            
-  |===================================================                   |  73%
-  |                                                                            
-  |====================================================                  |  74%
-  |                                                                            
-  |=====================================================                 |  76%
-  |                                                                            
-  |======================================================                |  77%
-  |                                                                            
-  |=======================================================               |  79%
-  |                                                                            
-  |========================================================              |  80%
-  |                                                                            
-  |=========================================================             |  82%
-  |                                                                            
-  |==========================================================            |  83%
-  |                                                                            
-  |===========================================================           |  85%
-  |                                                                            
-  |============================================================          |  86%
-  |                                                                            
-  |==============================================================        |  88%
-  |                                                                            
-  |===============================================================       |  89%
-  |                                                                            
-  |================================================================      |  91%
-  |                                                                            
-  |=================================================================     |  92%
-  |                                                                            
-  |==================================================================    |  94%
-  |                                                                            
-  |===================================================================   |  95%
-  |                                                                            
-  |====================================================================  |  97%
-  |                                                                            
-  |===================================================================== |  98%
-  |                                                                            
-  |======================================================================| 100%
-## 
-## Initial average soil water content (mm): 530.8
-## Initial average snowpack water content (mm): 0
-## Initial average aquifer water content (mm): 0
-## Initial watershed water content (mm): 522.76
-## 
-## Performing daily simulations:
-## .+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++done
-## 
-## Final average soil water content (mm): 530.8
-## Final average snowpack water content (mm): 0
-## Final average aquifer water content (mm): 56.53
-## Final watershed water content (mm): 579.29
-## 
-## Change in snowpack water content (mm): 0
-## Snowpack water balance result (mm): 0
-## Snowpack water balance components:
-##   Snow fall (mm) 9.77 Snow melt (mm) 9.77
-## 
-## Change in soil water content (mm): 0
-## Soil water balance result (mm): -0.68
-## Soil water balance components:
-##   Net rainfall (mm) 58.25 Snow melt (mm) 9.77
-##   Runon (mm) 1.15 Runoff (mm) 0
-##   Subsurface input (mm) 0  Subsurface output (mm) 0
-##   Deep drainage (mm) 57.4 Aquifer discharge (mm) 0
-##   Soil evaporation (mm) 8.7 Plant transpiration (mm) 3.75
-## 
-## Change in aquifer water content (mm): 56.53
-## Aquifer water balance result (mm): 56.53
-## Aquifer water balance components:
-##   Deep drainage (mm) 56.53 Aquifer discharge (mm) 0
-## 
-## Change in watershed water content (mm): 56.53
-## Watershed water balance result (mm): 55.86
-## Watershed water balance components:
-##   Precipitation (mm) 74.75
-##   Interception (mm) 6.63 Soil evaporation (mm) 8.57 Plant Transpiration (mm) 3.7
-##   Export (mm) 0
-## Watershed lateral flows:
-##   Subsurface flow (mm) 0
-##   Groundwater flow (mm) 14.51
-## 
-## ------------ spwbland ------------</code></pre>
-<p>Although simulations are performed using daily temporal steps, parameter <code>summaryFreq</code> allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. Several plots can be drawn from the result of function <code><a href="../reference/spwbland.html">spwbland()</a></code>. As an example we display a map of average soil water potential for the simulated month.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"Psi1"</span><span class="op">)</span></code></pre></div>
-<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></p>
+<span class="va">res_ws</span> <span class="op">=</span> <span class="fu"><a href="../reference/spwbland.html">spwbland</a></span><span class="op">(</span><span class="va">examplewatershed</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summaryFreq <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## </span>
+<span class="co">## ------------ spwbland ------------</span>
+<span class="co">## Grid cells: 66, patchsize: 10000 m2, area: 66 ha</span>
+<span class="co">## Cell land use wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0</span>
+<span class="co">## Cells with soil: 65</span>
+<span class="co">## Meteorological input class: data.frame</span>
+<span class="co">## Number of days to simulate: 31</span>
+<span class="co">## Number of summaries: 1</span>
+<span class="co">## Number of outlet cells: 1</span>
+<span class="co">## </span>
+<span class="co">## Preparing spwb input...</span>
+<span class="co">## done.</span>
+<span class="co">## </span>
+<span class="co">## Initial average soil water content (mm): 530.8</span>
+<span class="co">## Initial average snowpack water content (mm): 0</span>
+<span class="co">## Initial average aquifer water content (mm): 0</span>
+<span class="co">## Initial watershed water content (mm): 522.76</span>
+<span class="co">## </span>
+<span class="co">## Performing daily simulations:</span>
+<span class="co">## .+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++.+++++done</span>
+<span class="co">## </span>
+<span class="co">## Final average soil water content (mm): 530.8</span>
+<span class="co">## Final average snowpack water content (mm): 0</span>
+<span class="co">## Final average aquifer water content (mm): 56.53</span>
+<span class="co">## Final watershed water content (mm): 579.29</span>
+<span class="co">## </span>
+<span class="co">## Change in snowpack water content (mm): 0</span>
+<span class="co">## Snowpack water balance result (mm): 0</span>
+<span class="co">## Snowpack water balance components:</span>
+<span class="co">##   Snow fall (mm) 9.77 Snow melt (mm) 9.77</span>
+<span class="co">## </span>
+<span class="co">## Change in soil water content (mm): 0</span>
+<span class="co">## Soil water balance result (mm): -0.68</span>
+<span class="co">## Soil water balance components:</span>
+<span class="co">##   Net rainfall (mm) 58.25 Snow melt (mm) 9.77</span>
+<span class="co">##   Runon (mm) 1.15 Runoff (mm) 0</span>
+<span class="co">##   Subsurface input (mm) 0  Subsurface output (mm) 0</span>
+<span class="co">##   Deep drainage (mm) 57.4 Aquifer discharge (mm) 0</span>
+<span class="co">##   Soil evaporation (mm) 8.7 Plant transpiration (mm) 3.75</span>
+<span class="co">## </span>
+<span class="co">## Change in aquifer water content (mm): 56.53</span>
+<span class="co">## Aquifer water balance result (mm): 56.53</span>
+<span class="co">## Aquifer water balance components:</span>
+<span class="co">##   Deep drainage (mm) 56.53 Aquifer discharge (mm) 0</span>
+<span class="co">## </span>
+<span class="co">## Change in watershed water content (mm): 56.53</span>
+<span class="co">## Watershed water balance result (mm): 55.86</span>
+<span class="co">## Watershed water balance components:</span>
+<span class="co">##   Precipitation (mm) 74.75</span>
+<span class="co">##   Interception (mm) 6.63 Soil evaporation (mm) 8.57 Plant Transpiration (mm) 3.7</span>
+<span class="co">##   Export (mm) 0</span>
+<span class="co">## Watershed lateral flows:</span>
+<span class="co">##   Subsurface flow (mm) 0</span>
+<span class="co">##   Groundwater flow (mm) 14.51</span>
+<span class="co">## </span>
+<span class="co">## ------------ spwbland ------------</span></code></pre>
+<p>Although simulations are performed using daily temporal steps, parameter <code>summaryFreq</code> allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results.</p>
+</div>
+<div class="section level3">
+<h3 id="summaries-and-plots-1">Summaries and plots<a class="anchor" aria-label="anchor" href="#summaries-and-plots-1"></a>
+</h3>
+<p>Unlike <code><a href="../reference/modelspatial.html">spwbpoints()</a></code> where summaries could be arbitrarily generated <em>a posteriori</em> from simulation results, with <code><a href="../reference/spwbland.html">spwbland()</a></code> the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res_ws</span><span class="op">$</span><span class="va">summarylist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">##            Runon Runoff Infiltration     Rain  NetRain     Snow Snowmelt</span>
+<span class="co">## 2001-01-01     0      0      69.0857 64.98412 59.32033 9.765364 9.765364</span>
+<span class="co">##            Interception DeepDrainage AquiferDischarge SaturationExcess</span>
+<span class="co">## 2001-01-01      5.66379     57.30031                0                0</span>
+<span class="co">##            SoilEvaporation Transpiration SWE  SoilVol        Psi1  WTD      DTA</span>
+<span class="co">## 2001-01-01        8.680661      3.393262   0 563.8283 -0.03300001 4000 14.85055</span>
+<span class="co">##            InterflowInput InterflowOutput BaseflowInput BaseflowOutput</span>
+<span class="co">## 2001-01-01              0               0      6.421075       3.641498</span></code></pre>
+<p>Several plots can be drawn from the result of function <code><a href="../reference/spwbland.html">spwbland()</a></code> in a similar way as done for <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>. As an example we display a map of soil water volume for the simulated month:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_ws</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></code></pre></div>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
 </div>
   </div>
 
