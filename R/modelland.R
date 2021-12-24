@@ -85,29 +85,19 @@
   DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))
   colnames(DailyRunoff) = outlets
   rownames(DailyRunoff) = as.character(dates)
-  Runon = matrix(0,nrow=nCells, ncol=nSummary)
-  colnames(Runon) = levels(date.factor)[1:nSummary]
-  Runoff = Runon
-  Infiltration = Runon
-  Rain =Runon
-  NetRain =Runon
-  Snow =Runon
-  Snowmelt =Runon
-  Interception =Runon
-  DeepDrainage = Runon
-  AquiferDischarge = Runon
-  SaturationExcess = Runon
-  SoilEvaporation = Runon
-  Transpiration = Runon
-  SWE = Runon
-  Psi1 = Runon
-  WTD = Runon
-  DTA = Runon
-  SoilVol = Runon
-  InterflowInput = Runon
-  InterflowOutput = Runon
-  BaseflowInput = Runon
-  BaseflowOutput = Runon
+  
+  summarylist = vector("list", nCells)
+  vars = c("Runon", "Runoff", "Infiltration", "Rain", "NetRain", "Snow",
+           "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
+           "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
+           "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+  for(i in 1:nCells) {
+    m = matrix(0, nrow = nSummary, ncol = length(vars))
+    colnames(m) = vars
+    rownames(m) = levels(date.factor)[1:nSummary]
+    summarylist[[i]] = m
+  }
+
   LandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
                                 Snow = rep(0, nSummary),
                                 Snowmelt = rep(0, nSummary),
@@ -232,30 +222,23 @@
     summary_day = spatialSoilSummary(y, summary_function, localControl$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
-    Runon[,ifactor] = Runon[,ifactor] + res_day$Runon
-    Runoff[,ifactor] = Runoff[,ifactor] + res_day$Runoff
-    Rain[,ifactor] = Rain[,ifactor] + res_day$Rain
-    NetRain[,ifactor] = NetRain[,ifactor] + res_day$NetRain
-    Snow[,ifactor] = Snow[,ifactor] + res_day$Snow
-    Snowmelt[,ifactor] = Snowmelt[,ifactor] + res_day$Snow
-    Interception[,ifactor] = Interception[,ifactor] + (res_day$Rain-res_day$NetRain)
-    Infiltration[,ifactor] = Infiltration[,ifactor] + res_day$Infiltration
-    DeepDrainage[,ifactor] = DeepDrainage[,ifactor] + res_day$DeepDrainage
-    SaturationExcess[,ifactor] = SaturationExcess[,ifactor] + res_day$SaturationExcess
-    AquiferDischarge[,ifactor] = AquiferDischarge[,ifactor] + res_day$AquiferDischarge
-    SoilEvaporation[,ifactor] = SoilEvaporation[,ifactor] + res_day$SoilEvaporation
-    Transpiration[,ifactor] = Transpiration[,ifactor] + res_day$Transpiration
-    InterflowInput[,ifactor] = InterflowInput[,ifactor] + res_day$InterflowInput
-    InterflowOutput[,ifactor] = InterflowOutput[,ifactor] + res_day$InterflowOutput
-    BaseflowInput[,ifactor] = BaseflowInput[,ifactor] + res_day$BaseflowInput
-    BaseflowOutput[,ifactor] = BaseflowOutput[,ifactor] + res_day$BaseflowOutput
-    SWE[,ifactor] = SWE[,ifactor] + summary_df$SWE/t.df[ifactor]
-    Psi1[,ifactor] = Psi1[,ifactor] + summary_df$Psi1/t.df[ifactor]
-    SoilVol[,ifactor] = SoilVol[,ifactor] + summary_df$SoilVol/t.df[ifactor]
-    WTD[,ifactor] = WTD[,ifactor] + summary_df$WTD/t.df[ifactor]
+    varsSum = c("Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
+                "Infiltration", "DeepDrainage", "SaturationExcess",
+                "AquiferDischarge", "SoilEvaporation", "Transpiration",
+                "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+    varsState = c("SWE", "Psi1", "SoilVol", "WTD")
     DTAday = (y@bedrock$DepthToBedrock/1000.0) - (y@aquifer/y@bedrock$Porosity)/1000.0
-    DTA[,ifactor] = DTA[,ifactor] + DTAday/t.df[ifactor]
-    
+    for(i in 1:nCells) {
+      for(v in varsSum) {
+        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]
+      }
+      summarylist[[i]][ifactor,"Interception"] = summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
+      for(v in varsState) {
+        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + summary_df[[v]][i]/t.df[ifactor]
+      }  
+      summarylist[[i]][ifactor,"DTA"] = summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+    }
+
     DailyRunoff[day,] = res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
@@ -384,24 +367,12 @@
   
   cat(paste0("\n------------ ",landModel," ------------\n"))
 
-  CellBalance<-list(Rain = Rain, Snow = Snow, Snowmelt = Snowmelt, Interception = Interception, NetRain = NetRain, Runon = Runon, Runoff=Runoff,
-                    Infiltration=Infiltration, DeepDrainage = DeepDrainage, SaturationExcess = SaturationExcess, AquiferDischarge = AquiferDischarge,
-                    SubsurfaceInput = InterflowInput, SubsurfaceOutput = InterflowOutput,
-                    GroundwaterInput = BaseflowInput, GroundwaterOutput = BaseflowOutput,
-                    SoilEvaporation = SoilEvaporation, Transpiration = Transpiration)
-  CellState<-list(SWE = SWE, Psi1 = Psi1, SoilVol = SoilVol, WTD = WTD, DTA = DTA)
-  l <- list(coords = y@coords,
-            coords.nrs = y@coords.nrs,
-            grid = y@grid, 
-            grid.index = y@grid.index,
-            bbox = y@bbox,
-            proj4string = y@proj4string, 
+  l <- list(sp = as(y, "SpatialPixels"), 
+            summarylist = summarylist,
             WatershedBalance = LandscapeBalance,
             WatershedSoilBalance = SoilLandscapeBalance,
-            CellBalance = CellBalance,
-            CellState = CellState,
             DailyRunoff = DailyRunoff)
-  class(l)<-c(landModel,"list")
+  class(l)<-c(landModel,"summarypixels","list")
   return(l)
 }
 
