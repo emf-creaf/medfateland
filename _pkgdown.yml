@@ -45,3 +45,4 @@ reference:
   contents: 
   - starts_with("plot.")
   - starts_with("summary")
+  - shinyplotland
