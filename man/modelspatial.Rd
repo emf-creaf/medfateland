@@ -34,13 +34,16 @@ growthgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
+       dates = NULL, managementFunction = NULL, managementArgs = NULL,
+       keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
+       dates = NULL, managementFunction = NULL, managementArgs = NULL,
+       keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
+       dates = NULL, managementFunction = NULL, managementArgs = NULL,
+       keepResults = TRUE, summaryFunction = NULL, args=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 }
 \arguments{
@@ -55,6 +58,8 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{numCores}{Integer with the number of cores to be used for parallel computation.}
   \item{progress}{Boolean flag to display progress bar for simulations.}
+  \item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}).}
+  \item{managementArgs}{A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}).}
 }
 \details{
 Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources:
