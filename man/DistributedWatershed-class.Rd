@@ -13,7 +13,7 @@ Objects can be created by calls of the form \code{new("DistributedWatershed", ..
 }
 \section{Slots}{
   \describe{
-    \item{\code{coords:}}{A matrix of pixel coordinates.}
+    \item{\code{coords}:}{A matrix of pixel coordinates.}
     \item{\code{coords.nrs}:}{Inherited from \code{SpatialPointsDataFrame} but not used.}
     \item{\code{grid}:}{Object of class \code{"GridTopology"}. }
     \item{\code{grid.index}:}{Index of points in full grid.}
@@ -25,6 +25,7 @@ Objects can be created by calls of the form \code{new("DistributedWatershed", ..
     \item{\code{waterQ}:}{A list of water discharge values to neighbours.}
     \item{\code{queenNeigh}:}{A list of neighbours for each cell.}
     \item{\code{channel}:}{A logical vector indicating whether each cell belongs to the channel network.}
+    \item{\code{bedrock}:}{A data frame of bedrock properties (depth to bedrock, conductivity and porosity).}
     \item{\code{aquifer}:}{A numeric vector with the water content of the aquifer in each cell.}
     \item{\code{snowpack}:}{A numeric vector with the snow water equivalent content of the snowpack in each cell.}
     \item{\code{forestlist}:}{Object of class \code{"list"} containing a set of \code{\link{forest}} objects.  }

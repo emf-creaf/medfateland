@@ -14,7 +14,7 @@ Objects can be created by calls of the form \code{new("SpatialPixelsLandscape", 
 \section{Slots}{
   \describe{
     \item{\code{data}:}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
-    \item{\code{coords:}}{A matrix of pixel coordinates.}
+    \item{\code{coords}:}{A matrix of pixel coordinates.}
     \item{\code{coords.nrs}:}{Inherited from \code{SpatialPointsDataFrame} but not used.}
     \item{\code{grid}:}{Object of class \code{GridTopology}. }
     \item{\code{grid.index}:}{Index of points in full grid.}
