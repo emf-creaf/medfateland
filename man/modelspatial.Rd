@@ -56,13 +56,14 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{
-Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply three kinds of weather sources:
+Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources:
 \enumerate{
 \item{An object of \code{\link{SpatialPointsMeteorology-class}}, \code{\link{SpatialGridMeteorology-class}} or \code{\link{SpatialPixelsMeteorology-class}}, with the same spatial geometry as \code{y}.}
 \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
 \item{A data frame with meteorological data common for all points or grid cells.}
+\item{A character vector with filenames from which to read weather data.}
 }
-In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done for each spatial location and the period indicated in \code{meteo} or, if supplied, \code{dates}. Finally, in the case of (3) spatial variation of weather is not considered.
+In the case of (1) or (4), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done for each spatial location and the period indicated in \code{meteo} or, if supplied, \code{dates}. Finally, in the case of (3) spatial variation of weather is not considered.
 }
 \value{
 A list of class of the same name as the function called, also inheriting from an appropriate summary class (\code{summarypoints}, \code{summarypixels} or \code{summarygrid}), containing four elements:
