@@ -70,6 +70,10 @@
 <dt>soillist</dt>
 <dd><p>A list of objects of class 'forest' with the same number of elements as spatial points/pixels.</p></dd>
 </dl></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Function <code>SpatialPointsLandscape()</code> requires <em>named</em> vectors/lists for parameters <code>forestlist</code>, <code>soillist</code> and <code>lct</code>, whereas row names in the coordinate slot of <code>spt</code> also needs to be defined. This requirement ensures that if the number of elements in <code>spt</code> or these lists differs only the common points identified by name will be part of the returned object (a warning is launched in these cases). Name matching is not performed for <code>SpatialGridLandscape()</code> and <code>SpatialPixelsLandscape()</code>, which require the same number of grid cells as vector elements and assume that these are supplied in the right order.</p>
+    </div>
     <div id="value">
     <h2>Value</h2>
     <p>An object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code> depending on the function.</p>
@@ -80,7 +84,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="DistributedWatershed.html">DistributedWatershed</a></code></p></div>
+    <div class="dont-index"><p><code>forest</code>, <code>soil</code>, <code><a href="DistributedWatershed.html">DistributedWatershed</a></code></p></div>
     </div>
 
   </div>
