@@ -3,6 +3,10 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridLandscape-class}
+\alias{getLandscapeLayer,SpatialGridLandscape-method}
+\alias{getLandscapeVariable,SpatialGridLandscape-method}
+\alias{plot,SpatialGridLandscape,ANY-method}
+\alias{spplot,SpatialGridLandscape-method}
 
 \title{Class \code{"SpatialGridLandscape"}}
 \description{

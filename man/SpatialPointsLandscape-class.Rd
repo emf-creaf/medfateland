@@ -8,6 +8,10 @@
 \alias{tail,SpatialPointsLandscape-method}
 \alias{print,SpatialPointsLandscape-method}
 \alias{[,SpatialPointsLandscape,ANY,ANY,ANY-method}
+\alias{getLandscapeLayer,SpatialPointsLandscape-method}
+\alias{getLandscapeVariable,SpatialPointsLandscape-method}
+\alias{plot,SpatialPointsLandscape,ANY-method}
+\alias{spplot,SpatialPointsLandscape-method}
 
 \title{Class \code{"SpatialPointsLandscape"}}
 \description{
@@ -45,7 +49,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 4.
     \item{spatialSoilSummary}{\code{signature(object = "SpatialPointsLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPointsDataFrame-class}}. }
     \item{getLandscapeLayer}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
     \item{getLandscapeVariable}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as vector.}
-    \item{spplot}{\code{signature(object = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
+    \item{spplot}{\code{signature(obj = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
  }
 }
 \author{

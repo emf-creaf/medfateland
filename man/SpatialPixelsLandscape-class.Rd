@@ -3,6 +3,10 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsLandscape-class}
+\alias{getLandscapeLayer,SpatialPixelsLandscape-method}
+\alias{getLandscapeVariable,SpatialPixelsLandscape-method}
+\alias{plot,SpatialPixelsLandscape,ANY-method}
+\alias{spplot,SpatialPixelsLandscape-method}
 
 \title{Class \code{"SpatialPixelsLandscape"}}
 \description{
