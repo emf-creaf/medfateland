@@ -3,6 +3,10 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{DistributedWatershed-class}
+\alias{getLandscapeLayer, DistributedWatershed}
+\alias{getLandscapeVariable, DistributedWatershed}
+\alias{plot, DistributedWatershed, ANY}
+\alias{spplot, DistributedWatershed}
 
 \title{Class \code{"DistributedWatershed"}}
 \description{
@@ -48,6 +52,7 @@ Class \code{"SpatialVector"}, distance 6.
     \item{spatialForestSummary}{\code{signature(object = "DistributedWatershed")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "DistributedWatershed")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
     \item{spplot}{\code{signature(object = "DistributedWatershed")}: allows plotting maps of the watershed state.}
+    \item{plot}{\code{signature(x = "DistributedWatershed", y = "ANY")}: allows plotting ggplot maps of the watershed state.}
 	 }
 }
 
