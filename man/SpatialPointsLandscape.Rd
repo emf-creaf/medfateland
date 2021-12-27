@@ -22,6 +22,9 @@ SpatialGridLandscape(sgt, lct, forestlist, soillist)
   \item{forestlist}{A list of objects of class 'forest' with the same number of elements as spatial points/pixels.}
   \item{soillist}{A list of objects of class 'forest' with the same number of elements as spatial points/pixels.}
 }
+\details{
+Function \code{SpatialPointsLandscape()} requires \emph{named} vectors/lists for parameters \code{forestlist}, \code{soillist} and \code{lct}, whereas row names in the coordinate slot of \code{spt} also needs to be defined. This requirement ensures that if the number of elements in \code{spt} or these lists differs only the common points identified by name will be part of the returned object (a warning is launched in these cases). Name matching is not performed for \code{SpatialGridLandscape()} and \code{SpatialPixelsLandscape()}, which require the same number of grid cells as vector elements and assume that these are supplied in the right order.
+}
 \value{
 An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}} depending on the function.
 }
