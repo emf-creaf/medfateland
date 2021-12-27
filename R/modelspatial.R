@@ -57,7 +57,8 @@
     res = NULL
     if(inherits(meteo,"data.frame")) met = meteo
     else if(inherits(meteo, "character")) {
-      met = meteoland::readmeteorologypoints(meteo, stations = names(forestlist)[i])
+      if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = names(forestlist)[i], dates = dates)
+      else met = meteoland::readmeteorologypoints(meteo, stations = names(forestlist)[i])
       met = met@data[[1]]
     }
     else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
