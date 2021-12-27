@@ -48,7 +48,7 @@
       if(progress) setTxtProgressBar(pb, i)
       xlist[[i]] = initf(i)
     }
-    if(progress) cat("\n")
+    if(progress) cat("\n\n")
   }
 
   simf<-function(i, sfun = NULL, mfun = NULL){
