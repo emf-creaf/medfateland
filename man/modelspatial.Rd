@@ -17,31 +17,31 @@ Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth
 \usage{
 spwbpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 spwbpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 spwbgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 growthpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 growthpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 growthgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, args=NULL, 
-       parallelize = FALSE, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 }
 \arguments{
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
@@ -53,6 +53,7 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{args}{List with additional arguments for the summary function.}
   \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
+  \item{numCores}{Integer with the number of cores to be used for parallel computation.}
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{
