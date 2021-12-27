@@ -111,7 +111,7 @@ If one needs to save memory, it is possible with `spwbpoints()` to generate summ
 res_2 <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
                   dates = dates, localControl = control,                  
                   keepResults = FALSE, progress = FALSE,
-                  summaryFunction = summary.spwb, args = list(freq="months"))
+                  summaryFunction = summary.spwb, summaryArgs = list(freq="months"))
 ```
 
 Now the summaries are embedded in the simulation results, and can be directly accessed through the element `summarylist`:
