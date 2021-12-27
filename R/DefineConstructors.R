@@ -2,25 +2,31 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spt,"SpatialPointsTopography")) 
     stop("'spt' has to be of class 'SpatialPointsTopography'.")
-  if(!inherits(lct,"character")) 
-    stop("'lct' has to be a named character vector.")
-  if(is.null(names(lct))) 
-    stop("'lct' has to be a named character vector.")
-  if(is.null(id_names))
+  id_names_spt = row.names(spt@coords)
+  if(is.null(id_names_spt))
     stop("'spt' needs row names in coordinates, to be used as point IDs.")
   if(!inherits(forestlist,"list")) 
     stop("'forestlist' has to be a named list of 'forest' objects.")
-  if(is.null(names(forestlist))) 
+  id_names_fl = names(forestlist)
+  if(is.null(id_names_fl)) 
     stop("'forestlist' has to be a named list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
     stop("'soillist' has to be a named list of 'data.frame' or 'soil' objects.")
-  if(is.null(names(soillist))) 
-    stop("'soillist' has to be a named list of 'forest' objects.")
-  
-  id_names_spt = row.names(spt@coords)
-  id_names_lct = names(lct)
-  id_names_fl = names(forestlist)
   id_names_sl = names(soillist)
+  if(is.null(id_names_sl)) 
+    stop("'soillist' has to be a named list of 'forest' objects.")
+  if(!is.null(lct)) {
+    if(!inherits(lct,"character")) 
+      stop("'lct' has to be a named character vector.")
+    id_names_lct = names(lct)
+    if(is.null(id_names_lct)) 
+      stop("'lct' has to be a named character vector.")
+  } else {
+    lct = rep("wildland", length(id_names_fl))
+    names(lct) <- id_names_fl
+    id_names_lct <- id_names_fl
+  }
+  # Merge id names
   id_names_all = unique(c(id_names_spt, id_names_lct, id_names_fl, id_names_sl))
   l_ini = length(id_names_all)
   id_names_all = id_names_all[id_names_all %in% id_names_spt]
