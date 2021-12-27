@@ -39,7 +39,7 @@ fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       keepResults = TRUE, summaryFunction = NULL, args=NULL, 
+       keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
 fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
