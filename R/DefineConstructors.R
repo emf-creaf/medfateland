@@ -34,7 +34,7 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   id_names_all = id_names_all[id_names_all %in% id_names_fl]
   id_names_all = id_names_all[id_names_all %in% id_names_sl]
   npoints = length(id_names_all)
-  if(npoints < npoints_ini) warning(paste0("Input names are not the same: ",npoints - npoints_ini, " point IDs will be discarded!"))
+  if(npoints < npoints_ini) warning(paste0("Input names are not the same: ", npoints_ini - npoints, " point IDs will be discarded!"))
   
   # Subset (and reorder) vectors
   spt = spt[id_names_all]
