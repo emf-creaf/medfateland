@@ -1,26 +1,50 @@
 SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spt,"SpatialPointsTopography")) 
-    stop("'sgt' has to be of class 'SpatialPointsTopography'.")
+    stop("'spt' has to be of class 'SpatialPointsTopography'.")
+  id_names = row.names(spt@coords)
+  if(!inherits(lct,"character")) 
+    stop("'lct' has to be a named character vector.")
+  if(is.null(names(lct))) 
+    stop("'lct' has to be a named character vector.")
+  if(is.null(id_names))
+    stop("'spt' needs row names in coordinates, to be used as point IDs.")
   if(!inherits(forestlist,"list")) 
-    stop("'forestlist' has to be a list of 'forest' objects.")
+    stop("'forestlist' has to be a named list of 'forest' objects.")
+  if(is.null(names(forestlist))) 
+    stop("'forestlist' has to be a named list of 'forest' objects.")
   if(!inherits(soillist,"list")) 
-    stop("'soillist' has to be a list of 'soil' objects.")
-  npoints = length(soillist)
+    stop("'soillist' has to be a named list of 'data.frame' or 'soil' objects.")
+  if(is.null(names(soillist))) 
+    stop("'soillist' has to be a named list of 'forest' objects.")
+  # Check data availability
+  if(!all(names(lct) %in% id_names)) stop("'lct' does not contain data for all point IDs in 'spt'")
+  if(!all(names(forestlist) %in% id_names)) stop("'forestlist' does not contain data for all point IDs in 'spt'")
+  if(!all(names(soillist) %in% id_names)) stop("'soillist' does not contain data for all point IDs in 'spt'")
+  
+  # Subset (and reorder) vectors
+  lct = lct[id_names]
+  soillist = soillist[id_names]
+  forestlist = forestlist[id_names]
+  
+  npoints = length(id_names)
   for(i in 1:npoints) {
+    f = forestlist[[i]]
     s = soillist[[i]]
-    if(class(s) == "data.frame") {
+    if(inherits(s,"data.frame")) {
       soillist[[i]] = soil(s)
-    } else if(class(s)=="soil") {
+    } else if(inherits(s,"soil")) {
       soillist[[i]] = s
     } else {
       stop(paste0("Wrong input soil class for",i,"\n"))
     }
+    if(!inherits(f, "forest")) {
+      stop(paste0("Wrong input forest class for",i,"\n"))
+    }
   }
   xlist = vector("list", npoints)
-  names(xlist) = names(forestlist)
-  names(lct) = names(forestlist)
-  
+  names(xlist) = id_names
+
   spl = new("SpatialPointsLandscape",
             lct = lct,
             forestlist = forestlist, 
