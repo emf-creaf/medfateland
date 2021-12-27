@@ -56,7 +56,7 @@
     </div>
     <div id="slots">
     <h2>Slots</h2>
-    <p></p><dl><dt><code>coords:</code></dt>
+    <p></p><dl><dt><code>coords</code>:</dt>
 <dd><p>A matrix of pixel coordinates.</p></dd>
 
     <dt><code>coords.nrs</code>:</dt>
@@ -91,6 +91,9 @@
 
     <dt><code>channel</code>:</dt>
 <dd><p>A logical vector indicating whether each cell belongs to the channel network.</p></dd>
+
+    <dt><code>bedrock</code>:</dt>
+<dd><p>A data frame of bedrock properties (depth to bedrock, conductivity and porosity).</p></dd>
 
     <dt><code>aquifer</code>:</dt>
 <dd><p>A numeric vector with the water content of the aquifer in each cell.</p></dd>
@@ -129,7 +132,10 @@ Class <code>"SpatialVector"</code>, distance 6.</p>
 <dd><p><code>signature(object = "DistributedWatershed")</code>: calculates a summary function for the soil of all stands and returns an object of class <code>SpatialPixelsDataFrame-class</code>.</p></dd>
 
     <dt>spplot</dt>
-<dd><p><code>signature(object = "DistributedWatershed")</code>: allows plotting maps of the watershed state.</p></dd>
+<dd><p><code>signature(obj = "DistributedWatershed")</code>: allows plotting maps of the watershed state.</p></dd>
+
+    <dt>plot</dt>
+<dd><p><code>signature(x = "DistributedWatershed", y = "ANY")</code>: allows plotting ggplot maps of the watershed state.</p></dd>
 
 	 
 </dl></div>
