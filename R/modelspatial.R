@@ -56,13 +56,17 @@
     x = xlist[[i]]
     res = NULL
     if(inherits(meteo,"data.frame")) met = meteo
+    else if(inherits(meteo, "character")) {
+      met = meteoland::readmeteorologypointfiles(meteo, stations = names(forestlist)[i])
+      met = met@data[[1]]
+    }
     else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
       met = meteo@data[[i]]
     } else if(inherits(meteo, "MeteorologyInterpolationData")) {
       met = meteoland::interpolationpoints(meteo, spt[i], dates=dates, verbose=FALSE)
       met = met@data[[1]]
     }
-    if(!is.null(dates)) met = met[as.character(dates),] #subset dates
+    if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
     if(model=="spwb") {
       if(inherits(x, "spwbInput")){
         res<-medfate::spwb(x, meteo=met,
@@ -149,7 +153,7 @@
   } else if(sp=="pixels") {
     if(!inherits(y,"SpatialPixelsLandscape"))
       stop("'y' has to be of class 'SpatialPixelsLandscape'.")
-    if(!inherits(meteo,c("data.frame","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
+    if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
       stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
     if(inherits(meteo,"SpatialPixelsMeteorology")) {
       ycoords = coordinates(y)
@@ -159,14 +163,17 @@
   } else if(sp=="points") {
     if(!inherits(y,"SpatialPointsLandscape"))
       stop("'y' has to be of class 'SpatialPointsLandscape'.")
-    if(!inherits(meteo,c("data.frame","SpatialPointsMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
+    if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
+      stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
     if(inherits(meteo,"SpatialPointsMeteorology")) {
       ycoords = coordinates(y)
       mcoords = coordinates(meteo)
       if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
     }
   } 
+  if(inherits(meteo, "character")) {
+    if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
+  }
 }
 
 spwbpoints<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
