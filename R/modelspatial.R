@@ -94,7 +94,7 @@
       if(!is.null(summaryArgs)) {
         for(j in 1:length(summaryArgs)) argList[names(summaryArgs)[j]]=summaryArgs[j]
       }
-      s = do.call(sfun, summaryArgs=argList)
+      s = do.call(sfun, args=argList)
     } else {
       s = NULL
     }
