@@ -28,13 +28,13 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   }
   # Merge id names
   id_names_all = unique(c(id_names_spt, id_names_lct, id_names_fl, id_names_sl))
-  l_ini = length(id_names_all)
+  npoints_ini = length(id_names_all)
   id_names_all = id_names_all[id_names_all %in% id_names_spt]
   id_names_all = id_names_all[id_names_all %in% id_names_lct]
   id_names_all = id_names_all[id_names_all %in% id_names_fl]
   id_names_all = id_names_all[id_names_all %in% id_names_sl]
   npoints = length(id_names_all)
-  if(npoints < l_ini) warning(paste0("Input names are not the same: ",npoints - lini, " point IDs will be discarded!"))
+  if(npoints < npoints_ini) warning(paste0("Input names are not the same: ",npoints - npoints_ini, " point IDs will be discarded!"))
   
   # Subset (and reorder) vectors
   spt = spt[id_names_all]
