@@ -1,8 +1,9 @@
 .modelspatial<-function(y, SpParams, meteo, model = "spwb",
                         localControl = defaultControl(), dates = NULL,
-                        mergeTrees = FALSE, keepResults = TRUE,
+                        keepResults = TRUE,
                         summaryFunction=NULL, args=NULL,
-                        parallelize = FALSE, progress = TRUE) {
+                        parallelize = FALSE, numCores = detectCores()-1,
+                        progress = TRUE) {
   spts = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
@@ -30,7 +31,6 @@
     s = soillist[[i]]
     x = NULL
     if(inherits(f, "forest") && inherits(s, "soil")) {
-      if(mergeTrees) f = forest_mergeTrees(f)
       if(model=="spwb") {
         x = medfate::forest2spwbInput(f, s, SpParams, localControl)
       } else if(model=="growth") {
@@ -102,8 +102,8 @@
   if(parallelize) {
     if(progress) cat("Simulation...")
     env<-environment()
-    cl<-parallel::makeCluster(parallel::detectCores()-1)
-    varlist = c("forestlist", "soillist", "mergeTrees", "meteo", "model",
+    cl<-parallel::makeCluster(numCores)
+    varlist = c("forestlist", "soillist", "meteo", "model",
                 "SpParams", "localControl", "latitude", "elevation", "slope", "aspect",
                 "dates", "args", "xlist")
     parallel::clusterExport(cl, varlist, envir = env)
@@ -179,64 +179,73 @@
 
 spwbpoints<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                     parallelize = FALSE, progress = TRUE) {
+                     parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("points", y, meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 spwbgrid<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                    keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                   parallelize = FALSE, progress = TRUE) {
+                   parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("grid", y, meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 spwbpixels<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                     parallelize = FALSE, progress = TRUE) {
+                     parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("pixels", y,meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 growthpoints<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                       parallelize = FALSE, progress = TRUE) {
+                       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("points", y, meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 growthgrid<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                     parallelize = FALSE, progress = TRUE) {
+                     parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("grid",y,meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 growthpixels<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                       parallelize = FALSE, progress = TRUE) {
+                       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("pixels",y,meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 fordynpoints<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                       parallelize = FALSE, progress = TRUE) {
+                       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("points",y, meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 fordyngrid<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                     parallelize = FALSE, progress = TRUE) {
+                     parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("grid",y,meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
 fordynpixels<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        keepResults = TRUE, summaryFunction=NULL, args=NULL,
-                       parallelize = FALSE, progress = TRUE) {
+                       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
   .checkmodelinputs("pixels",y,meteo)
   .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
-                    keepResults = keepResults, summaryFunction = summaryFunction, args = args, parallelize = parallelize, progress = progress)
+                keepResults = keepResults, summaryFunction = summaryFunction, args = args, 
+                parallelize = parallelize, numCores = numCores, progress = progress)
 }
