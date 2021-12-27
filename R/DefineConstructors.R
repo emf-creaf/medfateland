@@ -2,7 +2,6 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
   #check input
   if(!inherits(spt,"SpatialPointsTopography")) 
     stop("'spt' has to be of class 'SpatialPointsTopography'.")
-  id_names = row.names(spt@coords)
   if(!inherits(lct,"character")) 
     stop("'lct' has to be a named character vector.")
   if(is.null(names(lct))) 
@@ -17,17 +16,29 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
     stop("'soillist' has to be a named list of 'data.frame' or 'soil' objects.")
   if(is.null(names(soillist))) 
     stop("'soillist' has to be a named list of 'forest' objects.")
-  # Check data availability
-  if(!all(names(lct) %in% id_names)) stop("'lct' does not contain data for all point IDs in 'spt'")
-  if(!all(names(forestlist) %in% id_names)) stop("'forestlist' does not contain data for all point IDs in 'spt'")
-  if(!all(names(soillist) %in% id_names)) stop("'soillist' does not contain data for all point IDs in 'spt'")
+  
+  id_names_spt = row.names(spt@coords)
+  id_names_lct = names(lct)
+  id_names_fl = names(forestlist)
+  id_names_sl = names(soillist)
+  id_names_all = unique(c(id_names_spt, id_names_lct, id_names_fl, id_names_sl))
+  l_ini = length(id_names_all)
+  id_names_all = id_names_all[id_names_all %in% id_names_spt]
+  id_names_all = id_names_all[id_names_all %in% id_names_lct]
+  id_names_all = id_names_all[id_names_all %in% id_names_fl]
+  id_names_all = id_names_all[id_names_all %in% id_names_sl]
+  npoints = length(id_names_all)
+  if(npoints < l_ini) warning(paste0("Input names are not the same: ",npoints - lini, " point IDs will be discarded!"))
   
   # Subset (and reorder) vectors
-  lct = lct[id_names]
-  soillist = soillist[id_names]
-  forestlist = forestlist[id_names]
+  spt = spt[id_names_all]
+  lct = lct[id_names_all]
+  soillist = soillist[id_names_all]
+  forestlist = forestlist[id_names_all]
   
-  npoints = length(id_names)
+  xlist = vector("list", npoints)
+  names(xlist) = id_names_all
+  
   for(i in 1:npoints) {
     f = forestlist[[i]]
     s = soillist[[i]]
@@ -42,8 +53,6 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
       stop(paste0("Wrong input forest class for",i,"\n"))
     }
   }
-  xlist = vector("list", npoints)
-  names(xlist) = id_names
 
   spl = new("SpatialPointsLandscape",
             lct = lct,
