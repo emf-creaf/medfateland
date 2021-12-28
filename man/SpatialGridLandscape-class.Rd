@@ -3,10 +3,12 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridLandscape-class}
-\alias{getLandscapeLayer,SpatialGridLandscape-method}
-\alias{getLandscapeVariable,SpatialGridLandscape-method}
 \alias{plot,SpatialGridLandscape,ANY-method}
 \alias{spplot,SpatialGridLandscape-method}
+\alias{spatialForestSummary,SpatialGridLandscape-method}
+\alias{spatialSoilSummary,SpatialGridLandscape-method}
+\alias{getLandscapeLayer,SpatialGridLandscape-method}
+\alias{getLandscapeVariable,SpatialGridLandscape-method}
 
 \title{Class \code{"SpatialGridLandscape"}}
 \description{
@@ -35,16 +37,17 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 4.
 }
 \section{Methods}{
   \describe{
+    \item{plot}{\code{signature(x = "SpatialGridLandscape", y = "ANY")}: allows plotting ggplot maps of the landscape state.}
+    \item{spplot}{\code{signature(obj = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
     \item{spatialForestSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "SpatialGridLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialGridDataFrame-class}}. }
     \item{getLandscapeLayer}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
     \item{getLandscapeVariable}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as vector.}
-    \item{spplot}{\code{signature(object = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
 	 }
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

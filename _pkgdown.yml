@@ -20,11 +20,12 @@ reference:
   - starts_with("Spatial")
   - buildWatershedTopography
 
-- title: Summary functions for spatial classes
+- title: Summary/extract functions for spatial classes
   desc:  Forest and soil summary functions for spatial classes
   contents:
   - starts_with("spatialForest")
   - starts_with("spatialSoil")
+  - starts_with("getLandscape")
 
 - title: Model inputs
   desc:  Defaults for model inputs

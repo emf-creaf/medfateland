@@ -3,10 +3,12 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsLandscape-class}
-\alias{getLandscapeLayer,SpatialPixelsLandscape-method}
-\alias{getLandscapeVariable,SpatialPixelsLandscape-method}
 \alias{plot,SpatialPixelsLandscape,ANY-method}
 \alias{spplot,SpatialPixelsLandscape-method}
+\alias{spatialForestSummary,SpatialPixelsLandscape-method}
+\alias{spatialSoilSummary,SpatialPixelsLandscape-method}
+\alias{getLandscapeLayer,SpatialPixelsLandscape-method}
+\alias{getLandscapeVariable,SpatialPixelsLandscape-method}
 
 \title{Class \code{"SpatialPixelsLandscape"}}
 \description{
@@ -40,16 +42,17 @@ Class \code{"\linkS4class{Spatial}"}, distance 5.
 }
 \section{Methods}{
   \describe{
+    \item{plot}{\code{signature(x = "SpatialPixelsLandscape", y = "ANY")}: allows plotting ggplot maps of the landscape state.}
+    \item{spplot}{\code{signature(obj = "SpatialPixelsLandscape")}: allows plotting maps of the landscape state.}
     \item{spatialForestSummary}{\code{signature(object = "SpatialPixelsLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "SpatialPixelsLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPixelsDataFrame-class}}. }
-    \item{getLandscapeLayer}{\code{signature(object = "SpatialPixelsLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
-    \item{getLandscapeVariable}{\code{signature(object = "SpatialPixelsLandscape")}: allows retrieving a variable as vector.}
-    \item{spplot}{\code{signature(object = "SpatialPixelsLandscape")}: allows plotting maps of the landscape state.}
+    \item{getLandscapeLayer}{\code{signature(obj = "SpatialPixelsLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
+    \item{getLandscapeVariable}{\code{signature(obj = "SpatialPixelsLandscape")}: allows retrieving a variable as vector.}
 	 }
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

@@ -2,17 +2,9 @@
 \name{spatialForestSummary}
 \alias{spatialForestSummary}
 \alias{spatialSoilSummary}
-\alias{spatialForestSummary-methods}
-\alias{spatialSoilSummary-methods}
-\alias{spatialForestSummary,SpatialPointsLandscape-method}
-\alias{spatialForestSummary,SpatialPixelsLandscape-method}
-\alias{spatialForestSummary,SpatialGridLandscape-method}
-\alias{spatialSoilSummary,SpatialPointsLandscape-method}
-\alias{spatialSoilSummary,SpatialPixelsLandscape-method}
-\alias{spatialSoilSummary,SpatialGridLandscape-method}
 \title{Forest and soil summaries over space}
 \description{
- Functions to calculates a summary function for the forest or soil of all cells in a \code{\link{SpatialPointsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+ Functions to calculates a summary function for the forest or soil of all spatial elements in an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
 }
 \usage{
 spatialForestSummary(object, summaryFunction, ...)
@@ -28,7 +20,7 @@ An object of class \code{\link{SpatialPointsDataFrame}}, \code{\link{SpatialPixe
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
 \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}

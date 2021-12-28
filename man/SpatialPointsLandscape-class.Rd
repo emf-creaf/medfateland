@@ -8,10 +8,12 @@
 \alias{tail,SpatialPointsLandscape-method}
 \alias{print,SpatialPointsLandscape-method}
 \alias{[,SpatialPointsLandscape,ANY,ANY,ANY-method}
-\alias{getLandscapeLayer,SpatialPointsLandscape-method}
-\alias{getLandscapeVariable,SpatialPointsLandscape-method}
 \alias{plot,SpatialPointsLandscape,ANY-method}
 \alias{spplot,SpatialPointsLandscape-method}
+\alias{spatialForestSummary,SpatialPointsLandscape-method}
+\alias{spatialSoilSummary,SpatialPointsLandscape-method}
+\alias{getLandscapeLayer,SpatialPointsLandscape-method}
+\alias{getLandscapeVariable,SpatialPointsLandscape-method}
 
 \title{Class \code{"SpatialPointsLandscape"}}
 \description{
@@ -45,19 +47,17 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 4.
     \item{tail}{\code{signature(x = "SpatialPointsLandscape", n = "numeric", ... = "ANY")}: returns the last n points of object x.}
     \item{print}{\code{signature(x = "SpatialPointsLandscape", ...= "ANY", digits = "numeric")}: prints object x.}
     \item{show}{\code{signature(object = "SpatialPointsLandscape")}: prints object x.}
+    \item{plot}{\code{signature(x = "SpatialPointsLandscape", y = "ANY")}: allows plotting ggplot maps of the landscape state.}
+    \item{spplot}{\code{signature(obj = "SpatialPointsLandscape")}: allows plotting maps of the landscape state.}
     \item{spatialForestSummary}{\code{signature(object = "SpatialPointsLandscape")}: calculates a summary function for all forest stands and returns an object of class \code{\link{SpatialPointsDataFrame-class}}. }
     \item{spatialSoilSummary}{\code{signature(object = "SpatialPointsLandscape")}: calculates a summary function for the soil of all stands and returns an object of class \code{\link{SpatialPointsDataFrame-class}}. }
-    \item{getLandscapeLayer}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
-    \item{getLandscapeVariable}{\code{signature(object = "SpatialGridLandscape")}: allows retrieving a variable as vector.}
-    \item{spplot}{\code{signature(obj = "SpatialGridLandscape")}: allows plotting maps of the landscape state.}
+    \item{getLandscapeLayer}{\code{signature(obj = "SpatialGridLandscape")}: allows retrieving a variable as SpatialPixelsDataFrame.}
+    \item{getLandscapeVariable}{\code{signature(obj = "SpatialGridLandscape")}: allows retrieving a variable as vector.}
  }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{SpatialPointsTopography}}, \code{\link{SpatialPointsLandscape}}, \code{\link{SpatialGridLandscape}}, \code{\link{spatialForestSummary}}, \code{\link{forest}}
 }
