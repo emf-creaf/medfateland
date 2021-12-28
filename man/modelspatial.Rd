@@ -1,5 +1,5 @@
 \encoding{UTF-8}
-\name{medfate spatial}
+\name{spwbpoints}
 \alias{spwbpoints}
 \alias{spwbpixels}
 \alias{spwbgrid}
@@ -84,7 +84,7 @@ A list of class of the same name as the function called, also inheriting from an
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbpoints_day}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}
 }
 \examples{
 

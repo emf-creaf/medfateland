@@ -13,9 +13,11 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExpo
 export(buildWatershedTopography,
        defaultWatershedCorrectionFactors,
        DistributedWatershed,
-       fordynpoints, fordynpixels, fordyngrid,
-       growthpoints, growthpixels, growthgrid,
        spwbpoints, spwbpixels, spwbgrid,
+       growthpoints, growthpixels, growthgrid,
+       fordynpoints, fordynpixels, fordyngrid,
+       spwbpoints_day, spwbpixels_day, spwbgrid_day,
+       growthpoints_day, growthpixels_day, growthgrid_day,
        shinyplotland,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland)

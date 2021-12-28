@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.4.0
+- New functions 'spwbpoints_day', 'growthpoints_day',...
+
 # Version 0.3.0
 - Function 'wswb' renamed 'spwbland'
 - New function 'growthland' and 'plot.growthland'

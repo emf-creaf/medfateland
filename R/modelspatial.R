@@ -27,28 +27,40 @@
   names(resultlist) = names(forestlist)
   names(summarylist) = names(forestlist)
   
-  initf<-function(i) {
-    f = forestlist[[i]]
-    s = soillist[[i]]
-    x = NULL
-    if(inherits(f, "forest") && inherits(s, "soil")) {
-      if(model=="spwb") {
-        x = medfate::forest2spwbInput(f, s, SpParams, localControl)
-      } else if(model=="growth") {
-        x = medfate::forest2growthInput(f, s, SpParams, localControl)
-      }
-    }
-    return(x)
-  }
 
   if(model %in% c("spwb", "growth")) {
-    if(progress) cat("Initializing:\n")
-    if(progress) pb = txtProgressBar(0, n, style=3)
+    init<-rep(FALSE, n)
     for(i in 1:n) {
-      if(progress) setTxtProgressBar(pb, i)
-      xlist[[i]] = initf(i)
+      f = forestlist[[i]]
+      s = soillist[[i]]
+      if(inherits(f, "forest") && inherits(s, "soil")) {
+        init[i] = TRUE
+        x = xlist[[i]]
+        if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
+        if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+      }
     }
-    if(progress) cat("\n\n")
+    w_init = which(init)
+    if(length(w_init)>0) {
+      if(progress) cat(paste0("Creating ", length(w_init)," input objects for model '", model, "':\n"))
+      if(progress) pb = txtProgressBar(0, length(w_init), style=3)
+      for(w in 1:length(w_init)) {
+        if(progress) setTxtProgressBar(pb, w)
+        i = w_init[w]
+        f = forestlist[[i]]
+        s = soillist[[i]]
+        if(inherits(f, "forest") && inherits(s, "soil")) {
+          if(model=="spwb") {
+            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, localControl)
+          } else if(model=="growth") {
+            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, localControl)
+          }
+        }
+      }
+      if(progress) cat("\n\n")
+    } else {
+      if(progress) cat(paste0("All input objects are already available for '", model, "'.\n\n"))
+    }
   }
 
   simf<-function(i, sfun = NULL, mfun = NULL){
@@ -102,7 +114,7 @@
   }
 
   if(parallelize) {
-    if(progress) cat(paste0("Simulation (", numCores, " cores)..."))
+    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days (", numCores, " cores)..."))
     env<-environment()
     cl<-parallel::makeCluster(numCores)
     varlist = c("forestlist", "soillist", "xlist", "meteo", "model",
@@ -118,7 +130,7 @@
     }
     if(progress) cat("done.\n")
   } else {
-    if(progress) cat("Simulation:\n")
+    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days:\n"))
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
