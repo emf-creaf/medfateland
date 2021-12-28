@@ -77,15 +77,11 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The R package <strong>medfateland</strong> has been designed to extend the capabilities of medfate to the landscape level. It allows running the stand-level models available in medfate on points and cells within landscape. More importantly, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.</p>
+<p>The R package <strong>medfateland</strong> has been designed to run simulations of forest functioning and dynamics at the landscape and regional scales. The package allows executing the stand-level models available in package <strong>medfate</strong> on points and cells within landscape, in either sequential or parallel computation. In addition, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.</p>
 </div>
 <div class="section level2">
 <h2 id="data-structures">Data structures<a class="anchor" aria-label="anchor" href="#data-structures"></a>
 </h2>
-<div class="section level3">
-<h3 id="forest-objects">Forest objects<a class="anchor" aria-label="anchor" href="#forest-objects"></a>
-</h3>
-</div>
 <div class="section level3">
 <h3 id="spatial-objects">Spatial objects<a class="anchor" aria-label="anchor" href="#spatial-objects"></a>
 </h3>
@@ -98,7 +94,7 @@
 <li>
 <code>SpatialGridLandscape</code>: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a complete grid. Extends class <code>SpatialGridTopography</code>.</li>
 </ul>
-<p>Spatial objects allow simulations to be performed more easily for a set of forests distributed spatially. For example, simulations on objects <code>SpatialPointsLandscape</code> are performed sequentially for all forest stands, but no landscape processes are considered.</p>
+<p>Spatial objects allow simulations to be performed more easily for a set of forests distributed spatially. For example, simulations on objects <code>SpatialPointsLandscape</code>, <code>SpatialPixelsLandscape</code> or <code>SpatialGridLandscape</code> are performed sequentially or in parallel computation for all forest stands, but no landscape processes are considered.</p>
 <p>An additional spatial class is defined for watershed ecohydrological modelling:</p>
 <ul>
 <li>
@@ -113,14 +109,14 @@
 <div class="section level3">
 <h3 id="local-water-balance-vs--watershed-water-balance">Local water balance vs. watershed water balance<a class="anchor" aria-label="anchor" href="#local-water-balance-vs--watershed-water-balance"></a>
 </h3>
-<p>Eco-hydrological processes are fundamental for the simulation models included in the <code>medfate</code> package. Eco-hydrological processes can be divided into local and landscape processes. By local processes we refer to the water balance of soils and plants within forest stands. Processes affecting soil water content include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. In package <strong>medfate</strong>, the soil water balance of a forest is primarily used to predict drought stress for living plants in it using function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code>. Package <strong>medfateland</strong> allows simulating water balance for multiple stands distributed spatially using functions <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, <code><a href="../reference/modelspatial.html">spwbpixels()</a></code> or <code><a href="../reference/modelspatial.html">spwbgrid()</a></code>. When input data is in form of continuous spatial variation of forests over a landscape, the medfateland package allows studying local soil water balance in combination with lateral water transfer processes over watersheds using function <code><a href="../reference/spwbland.html">spwbland()</a></code>.</p>
-<p>Functions <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, <code><a href="../reference/modelspatial.html">spwbpixels()</a></code>, <code><a href="../reference/modelspatial.html">spwbgrid()</a></code> may be used to:</p>
+<p>Eco-hydrological processes are fundamental for the simulation models included in the <code>medfate</code> package. Eco-hydrological processes can be divided into local and landscape processes. By local processes we refer to the water balance of soils and plants within forest stands. Processes affecting soil water content include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration.</p>
+<p>In package <strong>medfate</strong>, the soil water balance of a forest is primarily used to predict drought stress for living plants in it using function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code>. Package <strong>medfateland</strong> allows simulating water balance for multiple stands distributed spatially over a given time period using functions <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, <code><a href="../reference/modelspatial.html">spwbpixels()</a></code> or <code><a href="../reference/modelspatial.html">spwbgrid()</a></code>, which make internal calls to <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> on elements the spatial classes introduced above. Functions <code><a href="../reference/modelspatial_day.html">spwbpoints_day()</a></code>, <code><a href="../reference/modelspatial_day.html">spwbpixels_day()</a></code> and <code><a href="../reference/modelspatial_day.html">spwbgrid_day()</a></code> are analogous to the former, but are used for the simulation of a single day, using internal calls to function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day()</a></code> of <strong>medfate</strong>. Functions <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>, <code><a href="../reference/modelspatial.html">spwbpixels()</a></code>, <code><a href="../reference/modelspatial.html">spwbgrid()</a></code>, and their one-day counterparts, may be used to:</p>
 <ol style="list-style-type: decimal">
-<li>Monitor or forecast temporal variation in soil water content in particular stands (for example to estimate mushroom yield) or over entire landscapes.</li>
-<li>Monitor or forecast temporal variation of plant drought stress in particular stands (for example to anticipate mortality events) or over entire landscapes.</li>
-<li>Monitor or forecast temporal variation of fuel moisture in particular stands (for example to monitor wildfire risk) or over entire landscapes.</li>
+<li>Monitor or forecast temporal variation in soil water content in particular stands (for example to estimate mushroom yield) or over continuous areas.</li>
+<li>Monitor or forecast temporal variation of plant drought stress in particular stands (for example to anticipate mortality events) or over continuous areas.</li>
+<li>Monitor or forecast temporal variation of fuel moisture in particular stands (for example to monitor wildfire risk) or over continuous areas.</li>
 </ol>
-<p>Function <code><a href="../reference/spwbland.html">spwbland()</a></code> may be used to:</p>
+<p>When input data is in form of continuous spatial variation of forests over a landscape, the <strong>medfateland</strong> package allows studying local soil water balance in combination with lateral water transfer processes using function <code><a href="../reference/spwbland.html">spwbland()</a></code>. Function <code><a href="../reference/spwbland.html">spwbland()</a></code> may be used to:</p>
 <ol style="list-style-type: decimal">
 <li>Determine areas where particular plant species have high vulnerability to suffer from drought stress, while accounting for watershed hydrology.</li>
 <li>Partition the total rainfall in given watershed among:
@@ -133,15 +129,20 @@
 </ol>
 </div>
 <div class="section level3">
-<h3 id="forest-growth">Forest growth<a class="anchor" aria-label="anchor" href="#forest-growth"></a>
+<h3 id="carbon-balance-and-plant-growth">Carbon balance and plant growth<a class="anchor" aria-label="anchor" href="#carbon-balance-and-plant-growth"></a>
 </h3>
-<p>Changes in leaf area and plant growth are key to evaluate the influence of climatic conditions on forest structure and function. Processes affecting annual changes leaf area and plant size are those involved water and carbon balances, as well as those affecting growth directly. Processes influencing plant water balance include those affecting soil water content, such as rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. Carbon balance arises from the relationship between plant photosynthesis and respiration, although carbon reserves play a role in the availabity of carbon for growth. Water and carbon balances are coupled through the regulation of transpiration done by stomata. Plant growth is affected by the availability of carbon (source limitation), but also by temperature and water status (sink limitation).</p>
-<p>Package <code>medfate</code> allows simulating plant growth of a set of cohorts (competing for light and water) in a single forest stand using function <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code> or for multiple stands distributed spatially using function <code><a href="../reference/modelspatial.html">growthpoints()</a></code>. Leaf area of plants can be severely decreased by drought stress, causing an increase in dead leaf area and affecting carbon and water fluxes. Functions <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code> and <code><a href="../reference/modelspatial.html">growthpoints()</a></code> may be used to:</p>
+<p>Changes in leaf area and plant growth are key to evaluate the influence of climatic conditions on forest structure and function. Processes affecting annual changes leaf area and plant size are those involved water and carbon balances, as well as those affecting growth directly. Processes influencing plant water balance include those affecting soil water content, such as rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. Carbon balance arises from the relationship between plant photosynthesis and respiration, although carbon reserves play a role in the availability of carbon for growth. Water and carbon balances are coupled through the regulation of transpiration done by stomata. Plant growth is affected by the availability of carbon (source limitation), but also by temperature and water status (sink limitation). Leaf area of plants can be severely decreased by drought stress, causing an increase in dead leaf area and affecting carbon and water fluxes.</p>
+<p>Package <strong>medfate</strong> allows simulating plant growth and mortality of a set of cohorts (competing for light and water) in a single forest stand using function <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code>. Package <strong>medfateland</strong> extends this by providing functions <code><a href="../reference/modelspatial.html">growthpoints()</a></code>, <code><a href="../reference/modelspatial.html">growthpixels()</a></code> and <code><a href="../reference/modelspatial.html">growthgrid()</a></code>, which operate on spatial classes and make internal calls to function <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code>. Functions <code><a href="../reference/modelspatial.html">growthpoints()</a></code>, <code><a href="../reference/modelspatial.html">growthpixels()</a></code> and <code><a href="../reference/modelspatial.html">growthgrid()</a></code>, or their one-day counterparts, may be used to:</p>
 <ol style="list-style-type: decimal">
 <li>Monitor or forecast temporal variation in water fluxes and soil water content in particular stands (for example to estimate regulation ecosystem services) taking into account processes determining plant growth.</li>
 <li>Monitor or forecast temporal variation of plant drought stress in particular stands(for example to anticipate mortality events) taking into account processes determining plant growth.</li>
 <li>Monitor or forecast temporal variation of live fuel moisture and the amount of standing dead and live fuels in particular stands (for example to monitor wildfire risk).</li>
 </ol>
+<p>When input data is in form of continuous spatial variation of forests over a landscape, <strong>medfateland</strong> package allows studying local water balance and plant growth processes in combination with lateral water transfer processes using function <code><a href="../reference/spwbland.html">growthland()</a></code>. Thus, <code><a href="../reference/spwbland.html">growthland()</a></code> is analogous to <code><a href="../reference/spwbland.html">spwbland()</a></code> but incorporating additional processes.</p>
+</div>
+<div class="section level3">
+<h3 id="forest-dynamics">Forest dynamics<a class="anchor" aria-label="anchor" href="#forest-dynamics"></a>
+</h3>
 </div>
 </div>
   </div>
