@@ -53,11 +53,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spwbland</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, <span class="va">dates</span>,
      summaryFreq <span class="op">=</span> <span class="st">"years"</span>,
      localControl <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
-     correctionFactors <span class="op">=</span> <span class="fu"><a href="defaultWatershedCorrectionFactors.html">defaultWatershedCorrectionFactors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+     correctionFactors <span class="op">=</span> <span class="fu"><a href="defaultWatershedCorrectionFactors.html">defaultWatershedCorrectionFactors</a></span><span class="op">(</span><span class="op">)</span>,
+     progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu">growthland</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParams</span>, <span class="va">meteo</span>, <span class="va">dates</span>,
      summaryFreq <span class="op">=</span> <span class="st">"years"</span>,
      localControl <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
-     correctionFactors <span class="op">=</span> <span class="fu"><a href="defaultWatershedCorrectionFactors.html">defaultWatershedCorrectionFactors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+     correctionFactors <span class="op">=</span> <span class="fu"><a href="defaultWatershedCorrectionFactors.html">defaultWatershedCorrectionFactors</a></span><span class="op">(</span><span class="op">)</span>,
+     progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +78,8 @@
 <dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>) for function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></dd>
 <dt>correctionFactors</dt>
 <dd><p>A list of watershed correction factors for hydraulic parameters.</p></dd>
+<dt>progress</dt>
+<dd><p>Boolean flag to display progress information for simulations.</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
