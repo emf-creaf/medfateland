@@ -114,7 +114,7 @@
   }
 
   if(parallelize) {
-    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days (", numCores, " cores):"))
+    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations (", numCores, " cores):"))
     env<-environment()
     if(progress) cat(" preparation")
     XI = vector("list", n)
@@ -137,7 +137,7 @@
     }
     if(progress) cat(".\n")
   } else {
-    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days:\n"))
+    if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations:\n"))
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
