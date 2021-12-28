@@ -69,3 +69,5 @@ Package **medfate** allows simulating plant growth and mortality of a set of coh
 When input data is in form of continuous spatial variation of forests over a landscape, **medfateland** package allows studying local water balance and plant growth processes in combination with lateral water transfer processes using function `growthland()`. Thus, `growthland()` is analogous to `spwbland()` but incorporating additional processes.
 
 ### Forest dynamics
+
+Changes in forest structure and composition result from the interplay of demographic processes (growth, mortality and recruitment) and may include forest management. Package **medfate** includes function `fordyn()`, which allows simulating these processes at yearly time steps on a given forest stand, building on previous models. Package **medfateland** extends this by providing functions `fordynpoints()`, `fordynpixels()` and `fordyngrid()`, which operate on spatial classes and make internal calls to function `fordyn()`.
