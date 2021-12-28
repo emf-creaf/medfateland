@@ -1,3 +1,55 @@
+.simf<-function(xi, meteo, dates, model,
+                SpParams, localControl, keepResults = TRUE,
+                summaryFunction = NULL, summaryArgs = NULL, 
+                managementFunction = NULL, managementArgs = NULL){
+  f = xi$forest
+  s = xi$soil
+  x = xi$x
+  res = NULL
+  if(inherits(meteo,"data.frame")) met = meteo
+  else if(inherits(meteo, "character")) {
+    if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
+    else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
+    met = met@data[[1]]
+  }
+  else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteo@data[[xi$i]]
+  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
+    met = met@data[[1]]
+  }
+  if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
+  if(model=="spwb") {
+    if(inherits(x, "spwbInput")){
+      res<-medfate::spwb(x, meteo=met,
+                         latitude = xi$latitude, elevation = xi$elevation,
+                         slope = xi$slope, aspect = xi$aspect)
+    } 
+  } else if(model=="growth") {
+    if(inherits(x, "growthInput")) {
+      res<-medfate::growth(x, meteo=met,
+                           latitude = xi$latitude, elevation = xi$elevation,
+                           slope = xi$slope, aspect = xi$aspect)
+    } 
+  } else if(model=="fordyn") {
+    if(inherits(f, "forest") && inherits(s, "soil")) {
+      res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = localControl,
+                           latitude = xi$latitude, elevation = xi$elevation,
+                           slope = xi$slope, aspect = xi$aspect,
+                           management_function = managementFunction, management_args = managementArgs)
+    }
+  } 
+  if(!is.null(summaryFunction) && !is.null(res)){
+    argList = list(object=res)
+    if(!is.null(summaryArgs)) argList = c(argList, summaryArgs)
+    s = do.call(summaryFunction, args=argList)
+  } else {
+    s = NULL
+  }
+  if(!keepResults) res <- NULL
+  return(list(result = res, summary = s))
+}
+
 .modelspatial<-function(y, SpParams, meteo, model = "spwb",
                         localControl = defaultControl(), dates = NULL,
                         managementFunction = NULL, managementArgs = NULL,
@@ -63,56 +115,6 @@
     }
   }
 
-  simf<-function(xi, sfun = NULL, mfun = NULL){
-    f = xi$forest
-    s = xi$soil
-    x = xi$x
-    res = NULL
-    if(inherits(meteo,"data.frame")) met = meteo
-    else if(inherits(meteo, "character")) {
-      if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
-      else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
-      met = met@data[[1]]
-    }
-    else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
-      met = meteo@data[[xi$i]]
-    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
-      met = met@data[[1]]
-    }
-    if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
-    if(model=="spwb") {
-      if(inherits(x, "spwbInput")){
-        res<-medfate::spwb(x, meteo=met,
-                           latitude = xi$latitude, elevation = xi$elevation,
-                           slope = xi$slope, aspect = xi$aspect)
-      } 
-    } else if(model=="growth") {
-      if(inherits(x, "growthInput")) {
-        res<-medfate::growth(x, meteo=met,
-                             latitude = xi$latitude, elevation = xi$elevation,
-                             slope = xi$slope, aspect = xi$aspect)
-      } 
-    } else if(model=="fordyn") {
-      if(inherits(f, "forest") && inherits(s, "soil")) {
-        res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = localControl,
-                             latitude = xi$latitude, elevation = xi$elevation,
-                             slope = xi$slope, aspect = xi$aspect,
-                             management_function = mfun, management_args = managementArgs)
-      }
-    } 
-    if(!is.null(sfun) && !is.null(res)){
-      argList = list(object=res)
-      if(!is.null(summaryArgs)) {
-        for(j in 1:length(summaryArgs)) argList[names(summaryArgs)[j]]=summaryArgs[j]
-      }
-      s = do.call(sfun, args=argList)
-    } else {
-      s = NULL
-    }
-    return(list(result = res, summary = s))
-  }
-
   if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations:\n"))
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
@@ -128,11 +130,14 @@
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     env<-environment()
     cl<-parallel::makeCluster(numCores)
-    varlist = c("meteo", "model","SpParams", "localControl", 
-                "dates", "summaryArgs", "managementArgs")
-    parallel::clusterExport(cl, varlist, envir = env)
-    reslist_parallel = parallel::parLapplyLB(cl, XI, simf, 
-                                             sfun = summaryFunction, mfun = managementFunction,
+    # varlist = c("meteo", "model","SpParams", "localControl", 
+    #             "dates", "summaryArgs", "managementArgs")
+    # parallel::clusterExport(cl, varlist, envir = env)
+    reslist_parallel = parallel::parLapplyLB(cl, XI, .simf, 
+                                             meteo = meteo, dates = dates, model = model, 
+                                             SpParams = SpParams, localControl = localControl, keepResults = keepResults,
+                                             summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                                             managementFunction = managementFunction, managementArgs = managementArgs,
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
@@ -149,8 +154,12 @@
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
-      sim_out = simf(xi = xi, sfun = summaryFunction, mfun = managementFunction)
-      if(keepResults) resultlist[[i]] = sim_out$result
+      sim_out = .simf(xi = xi, 
+                      meteo = meteo, dates = dates, model = model, 
+                      SpParams = SpParams, localControl = localControl, keepResults = keepResults,
+                      summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                      managementFunction = managementFunction, managementArgs = managementArgs)
+      resultlist[[i]] = sim_out$result
       summarylist[[i]] = sim_out$summary
     }
   }
