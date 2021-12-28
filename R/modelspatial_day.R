@@ -1,7 +1,7 @@
 .modelspatial_day<-function(y, meteo, date, model = "spwb", 
                             SpParams, 
                             localControl = defaultControl(),
-                            parallelize = FALSE, numCores = detectCores()-1,
+                            parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                             progress = TRUE) {
   spts = as(y,"SpatialPoints")
   topo = y@data
@@ -61,20 +61,18 @@
     }
   }
 
-  simf_day<-function(i){
-    f = forestlist[[i]]
-    s = soillist[[i]]
-    x = xlist[[i]]
+  simf_day<-function(xi){
+    x = xi$x
     res = NULL
     if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
     else if(inherits(meteo, "character")) {
-      met = meteoland::readmeteorologypoints(meteo, stations = names(forestlist)[i], dates = date)
+      met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
       met = met@data[[1]]
     }
     else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
-      met = meteo@data[[i]]
+      met = meteo@data[[xi$i]]
     } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      met = meteoland::interpolationpoints(meteo, spt[i], dates=date, verbose=FALSE)
+      met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
       met = met@data[[1]]
     }
     tmin = met[date,"MinTemperature"]
@@ -88,41 +86,52 @@
       if(inherits(x, "spwbInput")){
         res<-medfate::spwb_day(x, date, 
                                tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                               latitude = latitude[i], elevation = elevation[i],
-                               slope = slope[i], aspect = aspect[i], prec = prec)
+                               latitude = xi$latitude, elevation = xi$elevation,
+                               slope = xi$slope, aspect = xi$aspect, prec = prec)
       } 
     } else if(model=="growth") {
       if(inherits(x, "growthInput")) {
         res<-medfate::growth_day(x, date, 
                                  tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                                 latitude = latitude[i], elevation = elevation[i],
-                                 slope = slope[i], aspect = aspect[i], prec = prec)
+                                 latitude = xi$latitude, elevation = xi$elevation,
+                                 slope = xi$slope, aspect = xi$aspect, prec = prec)
       } 
     } 
     return(res)
   }
 
+  if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"':\n"))
   if(parallelize) {
-    if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"' (", numCores, " cores)..."))
+    if(progress) cat("  i) Preparation\n")
+    
+    if(is.null(chunk.size)) chunk.size = floor(n/numCores)
+    
+    XI = vector("list", n)
+    for(i in 1:n) {
+      XI[[i]] = list(i = i, id = names(forestlist)[i], spt = spt[i], x = xlist[[i]],
+                     latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+    }
+    if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     env<-environment()
     cl<-parallel::makeCluster(numCores)
-    varlist = c("forestlist", "soillist", "xlist", "meteo", "model",
-                "SpParams", "localControl", "latitude", "elevation", "slope", "aspect",
+    varlist = c("meteo", "model","SpParams", "localControl",
                 "date")
     parallel::clusterExport(cl, varlist, envir = env)
-    reslist_parallel = parallel::clusterApply(cl, 1:n, simf_day)
+    reslist_parallel = parallel::parLapply(cl, XI, simf_day, chunk.size = chunk.size)
     parallel::stopCluster(cl)
-    if(progress) cat("retrieving results...")
+    if(progress) cat("  iii) Retrieval\n")
     for(i in 1:n) {
       resultlist[[i]] = reslist_parallel[[i]]
     }
-    if(progress) cat("done.\n")
+    if(progress) cat("\n")
   } else {
-    if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"':\n"))
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      resultlist[[i]] = simf_day(i)
+      xi = list(i = i, id = names(forestlist)[i],
+                spt = spt[i], x = xlist[[i]],
+                latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+      resultlist[[i]] = simf_day(xi)
     }
   }
   if(inherits(y, "SpatialGrid")) {
@@ -142,38 +151,38 @@
 }
 
 spwbpoints_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                         parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("points", y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 spwbgrid_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("grid", y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 spwbpixels_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                         parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("pixels", y,meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 growthpoints_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                           parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                           parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("points", y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 growthgrid_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                         parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("grid",y,meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 growthpixels_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                           parallelize = FALSE, numCores = detectCores()-1, progress = TRUE) {
+                           parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs("pixels",y,meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, progress = progress)
+                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
