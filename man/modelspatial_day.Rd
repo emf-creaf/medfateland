@@ -13,17 +13,17 @@ Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{
 }
 \usage{
 spwbpoints_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 spwbpixels_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 spwbgrid_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthpoints_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthpixels_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthgrid_day(y, meteo, date, SpParams, localControl = defaultControl(), 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 }
 \arguments{
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
@@ -33,6 +33,7 @@ growthgrid_day(y, meteo, date, SpParams, localControl = defaultControl(),
   \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
   \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{numCores}{Integer with the number of cores to be used for parallel computation.}
+  \item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
   \item{progress}{Boolean flag to display progress bar for simulations.}
 }
 \details{

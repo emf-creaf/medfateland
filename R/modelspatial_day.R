@@ -102,7 +102,7 @@
 
   if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"':\n"))
   if(parallelize) {
-    if(progress) cat("  i) Preparation\n")
+    if(progress) cat("   i) Preparation\n")
     
     if(is.null(chunk.size)) chunk.size = floor(n/numCores)
     
@@ -119,7 +119,7 @@
     parallel::clusterExport(cl, varlist, envir = env)
     reslist_parallel = parallel::parLapply(cl, XI, simf_day, chunk.size = chunk.size)
     parallel::stopCluster(cl)
-    if(progress) cat("  iii) Retrieval\n")
+    if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
       resultlist[[i]] = reslist_parallel[[i]]
     }

@@ -17,34 +17,34 @@ Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth
 \usage{
 spwbpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 spwbpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 spwbgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 growthgrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
        keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
        keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
        keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, progress = TRUE)
+       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE)
 }
 \arguments{
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
@@ -57,6 +57,7 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{summaryArgs}{List with additional arguments for the summary function.}
   \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{numCores}{Integer with the number of cores to be used for parallel computation.}
+  \item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
   \item{progress}{Boolean flag to display progress bar for simulations.}
   \item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}).}
   \item{managementArgs}{A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}).}
