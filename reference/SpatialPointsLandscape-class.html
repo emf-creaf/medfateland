@@ -72,10 +72,10 @@
 <dd><p>A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').</p></dd>
 
     <dt><code>forestlist</code>:</dt>
-<dd><p>Object of class <code>"list"</code> containing a set of <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects.</p></dd>
+<dd><p>Object of class <code>"list"</code> containing a set of <code>forest</code> objects.</p></dd>
 
     <dt><code>soillist</code>:</dt>
-<dd><p>Object of class <code>"list"</code> containing a set of <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code> objects.</p></dd>
+<dd><p>Object of class <code>"list"</code> containing a set of <code>soil</code> objects.</p></dd>
 
     <dt><code>xlist</code>:</dt>
 <dd><p>Object of class <code>"list"</code> containing a set of spwb or growth model input objects.</p></dd>
@@ -106,6 +106,12 @@ Class <code>"Spatial"</code>, by class "SpatialPoints", distance 4.</p>
     <dt>show</dt>
 <dd><p><code>signature(object = "SpatialPointsLandscape")</code>: prints object x.</p></dd>
 
+    <dt>plot</dt>
+<dd><p><code>signature(x = "SpatialPointsLandscape", y = "ANY")</code>: allows plotting ggplot maps of the landscape state.</p></dd>
+
+    <dt>spplot</dt>
+<dd><p><code>signature(obj = "SpatialPointsLandscape")</code>: allows plotting maps of the landscape state.</p></dd>
+
     <dt>spatialForestSummary</dt>
 <dd><p><code>signature(object = "SpatialPointsLandscape")</code>: calculates a summary function for all forest stands and returns an object of class <code>SpatialPointsDataFrame-class</code>.</p></dd>
 
@@ -113,23 +119,20 @@ Class <code>"Spatial"</code>, by class "SpatialPoints", distance 4.</p>
 <dd><p><code>signature(object = "SpatialPointsLandscape")</code>: calculates a summary function for the soil of all stands and returns an object of class <code>SpatialPointsDataFrame-class</code>.</p></dd>
 
     <dt>getLandscapeLayer</dt>
-<dd><p><code>signature(object = "SpatialGridLandscape")</code>: allows retrieving a variable as SpatialPixelsDataFrame.</p></dd>
+<dd><p><code>signature(obj = "SpatialGridLandscape")</code>: allows retrieving a variable as SpatialPixelsDataFrame.</p></dd>
 
     <dt>getLandscapeVariable</dt>
-<dd><p><code>signature(object = "SpatialGridLandscape")</code>: allows retrieving a variable as vector.</p></dd>
-
-    <dt>spplot</dt>
-<dd><p><code>signature(obj = "SpatialGridLandscape")</code>: allows plotting maps of the landscape state.</p></dd>
+<dd><p><code>signature(obj = "SpatialGridLandscape")</code>: allows retrieving a variable as vector.</p></dd>
 
  
 </dl></div>
     <div id="author">
     <h2>Author</h2>
-    <p>Miquel De Cáceres Ainsa, Centre Tecnologic Forestal de Catalunya</p>
+    <p>Miquel De Cáceres Ainsa, CREAF</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>SpatialPointsTopography</code>, <code><a href="SpatialPointsLandscape.html">SpatialPointsLandscape</a></code>, <code><a href="SpatialPointsLandscape.html">SpatialGridLandscape</a></code>, <code><a href="spatialForestSummary.html">spatialForestSummary</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code></p></div>
+    <div class="dont-index"><p><code>SpatialPointsTopography</code>, <code><a href="SpatialPointsLandscape.html">SpatialPointsLandscape</a></code>, <code><a href="SpatialPointsLandscape.html">SpatialGridLandscape</a></code>, <code><a href="spatialForestSummary.html">spatialForestSummary</a></code>, <code>forest</code></p></div>
     </div>
 
     <div id="ref-examples">
