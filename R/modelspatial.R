@@ -77,7 +77,7 @@
     else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
       met = meteo@data[[xi$i]]
     } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      met = meteoland::interpolationpoints(meteo, spt[xi$i], dates=dates, verbose=FALSE)
+      met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
       met = met@data[[1]]
     }
     if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
@@ -116,32 +116,33 @@
   if(parallelize) {
     if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days (", numCores, " cores):"))
     env<-environment()
-    if(progress) cat(" preparation, ")
+    if(progress) cat(" preparation")
     XI = vector("list", n)
     for(i in 1:n) {
-      XI[[i]] = list(i = i, id = names(forestlist)[i],
+      XI[[i]] = list(i = i, id = names(forestlist)[i], spt = spt[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
-    if(progress) cat("parallel computation, ")
+    if(progress) cat(", computation")
     cl<-parallel::makeCluster(numCores)
     varlist = c("meteo", "model","SpParams", "localControl", 
                 "dates", "summaryArgs", "managementArgs")
     parallel::clusterExport(cl, varlist, envir = env)
     reslist_parallel = parallel::parLapply(cl, XI, simf, sfun = summaryFunction, mfun = managementFunction)
     parallel::stopCluster(cl)
-    if(progress) cat("retrieving results, ")
+    if(progress) cat(", retrieval")
     for(i in 1:n) {
       resultlist[[i]] = reslist_parallel[[i]]$result
       summarylist[[i]] = reslist_parallel[[i]]$summary
     }
-    if(progress) cat("done.\n")
+    if(progress) cat(".\n")
   } else {
     if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations for ", length(dates)," days:\n"))
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, id = names(forestlist)[i],
+                spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
       sim_out = simf(xi = xi, sfun = summaryFunction, mfun = managementFunction)
