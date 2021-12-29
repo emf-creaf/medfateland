@@ -20,10 +20,10 @@
   return(c("Texture (first layer)" = "texture1", 
            "Texture (second layer)" = "texture2", 
            "Texture (third layer)" ="texture3",
-           "Total soil extractable volume (mm)" = "SoilVolExtract",
-           "Total soil volume at saturation (mm)" = "SoilVolSAT",
-           "Total soil volume at field capacity (mm)" = "SoilVolFC",
-           "Total soil volume at wilting point (mm)" = "SoilVolWP"))
+           "Total water extractable volume (mm)" = "SoilVolExtract",
+           "Total water volume at saturation (mm)" = "SoilVolSAT",
+           "Total water volume at field capacity (mm)" = "SoilVolFC",
+           "Total water volume at wilting point (mm)" = "SoilVolWP"))
 }
 .getLandscapeSoilVar<-function(obj, variable) {
   n = length(obj@soillist)
