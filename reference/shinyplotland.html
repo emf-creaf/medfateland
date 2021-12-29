@@ -60,8 +60,11 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>The shiny app can be used to display spatial inputs or simulation results. For spatial inputs, supply an object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code>. For simulation results, supply an object of class <code>summarypoints</code>, <code>summarypixels</code> or <code>summarygrid</code>.
-Only run this function in interactive mode.</p>
+    <p>Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results.</p>
+<p><em>Spatial inputs</em>:
+This is the case if the user supplies an object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code>. Allowed plots are the same as in <code><a href="getLandscapeLayer.html">getLandscapeLayer</a></code>.</p>
+<p><em>Simulation result summaries</em>:
+This is the case if the user supplies an object of class <code>summarypoints</code>, <code>summarypixels</code> or <code>summarygrid</code>. Available plots depend on the summary function used to create the result summaries.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
@@ -73,7 +76,7 @@ Only run this function in interactive mode.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="plot.summarypoints.html">plot.summarypoints</a></code></p></div>
+    <div class="dont-index"><p><code><a href="plot.summarypoints.html">plot.summarypoints</a></code>, <code><a href="getLandscapeLayer.html">getLandscapeLayer</a></code></p></div>
     </div>
 
   </div>
