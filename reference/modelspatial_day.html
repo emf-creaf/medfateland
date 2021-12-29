@@ -46,26 +46,26 @@
     </div>
 
     <div class="ref-description">
-    <p>Functions that allow calling local models <code>spwb_day</code> or <code>growth_day</code>, for a set of forest stands distributed in specific locations and a given date. No spatial processes are simulated.</p>
+    <p>Functions that allow calling local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>, for a set of forest stands distributed in specific locations and a given date. No spatial processes are simulated.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spwbpoints_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spwbpoints_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">spwbpixels_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">spwbpixels_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">spwbgrid_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">spwbgrid_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthpoints_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">growthpoints_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthpixels_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,
+<span class="fu">growthpixels_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">growthgrid_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>, 
+<span class="fu">growthgrid_day</span><span class="op">(</span><span class="va">y</span>, <span class="va">meteo</span>, <span class="va">date</span>, <span class="va">SpParams</span>, localControl <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>, 
        parallelize <span class="op">=</span> <span class="cn">FALSE</span>, numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, chunk.size <span class="op">=</span> <span class="cn">NULL</span>, 
        progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
@@ -79,9 +79,9 @@
 <dt>date</dt>
 <dd><p>A string with the date to be simulated.</p></dd>
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
 <dt>localControl</dt>
-<dd><p>A list of local model control parameters (see <code>defaultControl</code>).</p></dd>
+<dd><p>A list of local model control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>).</p></dd>
 <dt>parallelize</dt>
 <dd><p>Boolean flag to try parallelization (will use all clusters minus one).</p></dd>
 <dt>numCores</dt>
@@ -107,7 +107,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>spwb_day</code>, <code>growth_day</code>, <code><a href="modelspatial.html">spwbpoints</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>, <code><a href="modelspatial.html">spwbpoints</a></code></p></div>
     </div>
 
     <div id="ref-examples">
