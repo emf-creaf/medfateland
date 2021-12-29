@@ -36,6 +36,22 @@ The following string values are available for \code{variable}.
    \item{\code{"SoilVolSAT"}:}{Total water volume at saturation (mm).}
    \item{\code{"SoilVolFC"}:}{Total water volume at field capacity (mm).}
    \item{\code{"SoilVolWP"}:}{Total water volume at wilting point (mm).}
+   \item{\code{"SoilVolCurr"}:}{Current total water volume (mm).}
+}
+
+\emph{Watershed}:
+\itemize{
+   \item{\code{"numNeigh"}:}{Number of cell neighbours (integer).}
+   \item{\code{"waterOrder"}:}{Cell order for lateral water transfer (integer).}
+   \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
+   \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
+   \item{\code{"DepthToBedrock"}:}{Depth to bedrock (m).}
+   \item{\code{"RockPorosity"}:}{Bedrock porosity.}
+   \item{\code{"RockConductivity"}:}{Bedrock conductivity.}
+   \item{\code{"AquiferElevation"}:}{Aquifer elevation over bedrock (m).}
+   \item{\code{"DepthToAquifer"}:}{Depth to aquifer (m).}
+   \item{\code{"AquiferVolume"}:}{Aquifer volume (mm).}
+   \item{\code{"Snowpack"}:}{Snowpack water equivalent (mm).}
 }
 
 \emph{Forest stand}:
@@ -58,17 +74,16 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplotland}}
 }
 \examples{
-library(medfate)
-
-#Load plot data and species parameters from medfate
+#Load data and species parameters from medfate
 data(examplepointslandscape)
 data(SpParamsMED)
 
-#Apply summary function
-y <- spatialForestSummary(examplepointslandscape,summary.forest, SpParamsMED)
-head(y@data)
+#Calculate basal area for all forest stands
+y <- getLandscapeLayer(examplepointslandscape, "basalArea")
 
 #Plot basal area
-spplot(y["BA"])
+spplot(y)
 
+# More straigthforwardly
+plot(examplepointslandscape, "basalArea")
 }

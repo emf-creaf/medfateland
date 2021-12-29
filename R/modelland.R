@@ -140,8 +140,8 @@
          WTD = soil_waterTableDepth(object, model))
   }
   
-  initialSoilContent = mean(getLandscapeVariable(y, "SoilVol"), na.rm=TRUE)
-  initialSnowContent = mean(getLandscapeVariable(y, "SWE"), na.rm=TRUE)
+  initialSoilContent = mean(getLandscapeVariable(y, "SoilVolCurr"), na.rm=TRUE)
+  initialSnowContent = mean(getLandscapeVariable(y, "Snowpack"), na.rm=TRUE)
   initialAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
   initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
@@ -283,8 +283,8 @@
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   SoilLandscapeBalance$Precipitation = SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
   
-  finalSoilContent = mean(getLandscapeVariable(y, "SoilVol"), na.rm=TRUE)
-  finalSnowContent = mean(getLandscapeVariable(y, "SWE"), na.rm=TRUE)
+  finalSoilContent = mean(getLandscapeVariable(y, "SoilVolCurr"), na.rm=TRUE)
+  finalSnowContent = mean(getLandscapeVariable(y, "Snowpack"), na.rm=TRUE)
   finalAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
   finalLandscapeContent = finalSoilContent*(nSoil/nCells)+finalAquiferContent+finalSnowContent
   

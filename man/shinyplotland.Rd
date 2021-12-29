@@ -7,10 +7,11 @@ Shiny app with interactive plots and maps
 Creates a shiny app with interactive plots for spatial inputs and simulation results 
 }
 \usage{
-shinyplotland(x)
+shinyplotland(x, SpParams = NULL)
 }
 \arguments{
   \item{x}{The object containing information to be drawn (see details).}
+  \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
 }
 \details{
 Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 

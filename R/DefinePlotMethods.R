@@ -15,53 +15,35 @@
 }
 setMethod("plot", signature("SpatialPixelsLandscape"),
           function(x, y, ...) {
-            if(y %in% .getAllowedVars()) {
-              return(.ggspl(getLandscapeLayer(x, y, ...)))
-            }
+            return(.ggspl(getLandscapeLayer(x, y, ...)))
           })
 
 
 setMethod("spplot", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", ...) {
-            if(variable %in% .getAllowedVars()) {
-              spplot(getLandscapeLayer(obj, variable, ...))
-            } else {
-              spplot(as(obj, "SpatialPixelsTopography"), variable, ...)
-            }
+            spplot(getLandscapeLayer(obj, variable, ...))
           })
 
 setMethod("plot", signature("SpatialGridLandscape"),
           function(x, y, ...) {
-            if(y %in% .getAllowedVars()) {
-              return(.ggspl(getLandscapeLayer(x, y, ...)))
-            }
+            return(.ggspl(getLandscapeLayer(x, y, ...)))
           })
 
 
 setMethod("spplot", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", ...) {
-            if(var %in% .getAllowedVars()) {
-              spplot(getLandscapeLayer(obj, variable, ...))
-            } else {
-              spplot(as(obj, "SpatialGridTopography"), variable, ...)
-            }
+            spplot(getLandscapeLayer(obj, variable, ...))
           })
 
 
 setMethod("plot", signature(x="SpatialPointsLandscape"),
           function(x, y, ...) {
-            if(y %in% .getAllowedVars()) {
-              return(.ggspl(getLandscapeLayer(x, y, ...)))
-            }
+            return(.ggspl(getLandscapeLayer(x, y, ...)))
           })
 
 setMethod("spplot", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", ...) {
-            if(variable %in% .getAllowedVars()) {
-              spplot(getLandscapeLayer(obj, variable, ...))
-            } else {
-              spplot(as(obj, "SpatialPointsTopography"), variable, ...)
-            }
+            spplot(getLandscapeLayer(obj, variable, ...))
           })
 
 setMethod("spplot", signature("DistributedWatershed"),

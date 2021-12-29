@@ -1,12 +1,14 @@
 .shinyplot_spatial<-function(x, SpParams) {
+  plot_main_choices = c("Topography","Soil", "Forest stand")
+  if(inherits(x, "DistributedWatershed")) plot_main_choices = c(plot_main_choices, "Watershed")
   ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput(
           inputId = "plot_main_type",
           label = "Category",
-          choices = c("Topography","Soil", "Forest stand"),
-          selected = c("Topography")
+          choices = plot_main_choices,
+          selected = plot_main_choices[1]
         ),
         selectInput(
           inputId = "plot_var",
@@ -26,6 +28,7 @@
       if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars()
       else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars()
       else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars()
+      else if(main_plot=="Watershed") sub_choices = .getAllowedWatershedVars()
       updateSelectInput(session, "plot_var",
                         choices = sub_choices)
     })
