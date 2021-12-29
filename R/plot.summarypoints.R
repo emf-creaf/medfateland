@@ -44,13 +44,13 @@
   if(inherits(x, c("summarypoints"))) {
     a = sf::st_as_sf(SpatialPointsDataFrame(x$sp, data = df))
     g1<-ggplot()+geom_sf(data=a, aes_string(col="y"))+
-      scale_color_continuous("")
+      scale_color_continuous("", ...)
   } else {
     spdf = SpatialPixelsDataFrame(as(x$sp, "SpatialPoints"), data = df, 
                                   grid = x$sp@grid)
     a = sf::st_as_sf(as(spdf, "SpatialPolygonsDataFrame"))
     g1<-ggplot()+geom_sf(data=a, aes_string(fill="y"))+
-      scale_fill_continuous("")
+      scale_fill_continuous("", ...)
   }
   g1<-g1+
     labs(title = paste0(variable, " [", date,"]"))+

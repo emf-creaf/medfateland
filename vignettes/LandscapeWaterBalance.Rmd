@@ -46,17 +46,16 @@ As before, we need meteorological data, species parameters and control parameter
 ```{r}
 data("examplemeteo")
 data("SpParamsMED")
-control = defaultControl()
-control$verbose = FALSE
+localControl = defaultControl()
 ```
 
 ### Calling the simulation function
 
 The call to `spwbpoints()` can be done as follows (here we restrict the dates for simplicity):
 ```{r, warning=FALSE}
-dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+dates = seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
 res <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
-                  dates = dates, localControl = control,  progress = FALSE)
+                  dates = dates, localControl = localControl,  progress = FALSE)
 ```
 
 Function `spwbpoints()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the `SpatialPointsLandscape` object.  Then it calls function `spwb()` for each forest stand and stores the result. The fact that we used `examplemeteo` as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function `spwbpoints()`).
@@ -67,39 +66,41 @@ The result of calling `spwbpoints()` is a list (whose class name is the same as 
 names(res)
 ```
 
-Element `sp` describes spatial information, vector `xlist` contains the `spwbInput` corresponding to each forest stand, vector `resultlist` contains the output of `spwb()` function for each forest stand (i.e. its elements are objects of the S3 class `spwb`) and `summarylist` contains summaries (if requested, see below). 
+Element `sp` describes spatial information, vector `xlist` contains the `spwbInput` corresponding to each forest stand (which can be used in subsequent simulations), vector `resultlist` contains the output of `spwb()` function for each forest stand (i.e. its elements are objects of the S3 class `spwb`) and `summarylist` contains summaries (if requested, see below). 
 
 ### Summaries and plots
 
-The structure of the output of `spwbpoints()` allows querying information for the simulation of any particular forest stand. For example, if we want a monthly summary of water balance for the first stand, we can use function `summary.spwb()` from package **medfate**:
+The structure of the output of `spwbpoints()` allows querying information for the simulation of any particular forest stand. For example, we may use function `plot.spwb()`, from package **medfate**, to display the simulation results on a particular plot:
+```{r, fig.width=7}
+plot(res$resultlist[[1]], "Evapotranspiration")
+```
+
+If we want a monthly summary of water balance for the first stand, we can use function `summary.spwb()` from package **medfate**:
 
 ```{r}
 summary(res$resultlist[[1]], freq="months",FUN=sum, 
         output="WaterBalance")
 ```
 
-A more convenient way of generating summaries, though, is by calculating them on all forest stands, using:
+However, a more convenient way of generating summaries is by calculating them on all forest stands, using:
 
 ```{r}
 res_sum <- summary(res, summaryFunction = summary.spwb, 
                    freq="months", output="WaterBalance")
 ```
-where the argument `summaryFunction` points to the function to be used to generate summaries and the remaining arguments are those of the summary function. The result is an object of class:
-```{r}
-class(res_sum)
-```
-which contains two elements, the spatial information and the summaries:
+where the argument `summaryFunction` points to the function to be used to generate summaries and the remaining arguments are those of the summary function. The result is an object of class `summarypoints` that contains two elements, the spatial information and the summaries:
 ```{r}
 names(res_sum)
 ```
-The summary for the first stand can be accessed through the first element of `summarylist`:
+The summary for the first stand can now be accessed through the first element of `summarylist`:
 ```{r}
 res_sum$summarylist[[1]]
 ```
 
-Summary objects are handy because they allow us to display plots:
+Summary objects are handy because they allow us to display maps:
 ```{r, fig.align='center', fig.width=7}
-plot(res_sum, "Transpiration", "2001-03-01")
+plot(res_sum, "Transpiration", "2001-01-01", limits=c(0,35))
+plot(res_sum, "Transpiration", "2001-02-01", limits=c(0,35))
 ```
 
 
@@ -109,7 +110,7 @@ If one needs to save memory, it is possible with `spwbpoints()` to generate summ
 
 ```{r, warning=FALSE}
 res_2 <- spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, 
-                  dates = dates, localControl = control,                  
+                  dates = dates, localControl = localControl,                  
                   keepResults = FALSE, progress = FALSE,
                   summaryFunction = summary.spwb, summaryArgs = list(freq="months"))
 ```
@@ -121,7 +122,7 @@ res_2$summarylist[[1]]
 
 And one can produce plots directly from simulation results:
 ```{r, fig.align='center', fig.width=7}
-plot(res_2, "Transpiration", "2001-03-01")
+plot(res_2, "Transpiration", "2001-02-01")
 ```
 
 ## Simulation of watershed hydrology
