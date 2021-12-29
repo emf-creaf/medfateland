@@ -61,7 +61,7 @@
 <dt>variable</dt>
 <dd><p>A string with the name of the variable to extract (see details).</p></dd>
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>), required for most forest stand variables.</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>), required for most forest stand variables.</p></dd>
 <dt>...</dt>
 <dd><p>Additional arguments (not used).</p></dd>
 </dl></div>
@@ -79,6 +79,18 @@
 <li><p><code>"SoilVolSAT"</code>:Total water volume at saturation (mm).</p></li>
 <li><p><code>"SoilVolFC"</code>:Total water volume at field capacity (mm).</p></li>
 <li><p><code>"SoilVolWP"</code>:Total water volume at wilting point (mm).</p></li>
+<li><p><code>"SoilVolCurr"</code>:Current total water volume (mm).</p></li>
+</ul><p><em>Watershed</em>:</p><ul><li><p><code>"numNeigh"</code>:Number of cell neighbours (integer).</p></li>
+<li><p><code>"waterOrder"</code>:Cell order for lateral water transfer (integer).</p></li>
+<li><p><code>"outlets"</code>:Water outlet (TRUE/FALSE).</p></li>
+<li><p><code>"channel"</code>:Water channel (TRUE/FALSE).</p></li>
+<li><p><code>"DepthToBedrock"</code>:Depth to bedrock (m).</p></li>
+<li><p><code>"RockPorosity"</code>:Bedrock porosity.</p></li>
+<li><p><code>"RockConductivity"</code>:Bedrock conductivity.</p></li>
+<li><p><code>"AquiferElevation"</code>:Aquifer elevation over bedrock (m).</p></li>
+<li><p><code>"DepthToAquifer"</code>:Depth to aquifer (m).</p></li>
+<li><p><code>"AquiferVolume"</code>:Aquifer volume (mm).</p></li>
+<li><p><code>"Snowpack"</code>:Snowpack water equivalent (mm).</p></li>
 </ul><p><em>Forest stand</em>:</p><ul><li><p><code>"basalArea"</code>:Basal area (m2/ha).</p></li>
 <li><p><code>"LAI"</code>:Leaf area index (m2/m2).</p></li>
 <li><p><code>"foliarBiomass"</code>:Foliar biomass (kg/m2).</p></li>
@@ -95,39 +107,25 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">summary.forest</a></code>, <code><a href="shinyplotland.html">shinyplotland</a></code></p></div>
+    <div class="dont-index"><p><code>forest</code>, <code>soil</code>, <code>summary.forest</code>, <code><a href="shinyplotland.html">shinyplotland</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/medfate/" class="external-link">medfate</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Load plot data and species parameters from medfate</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">#Load data and species parameters from medfate</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SpParamsMED</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">#Apply summary function</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="spatialForestSummary.html">spatialForestSummary</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>,<span class="va">summary.forest</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">@</span><span class="va">data</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               N        BA      LAI LAI_trees LAI_shrubs      Fuel Fuel_trees</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81065  7505.040 17.979315 2.928201 1.5312124   1.396989 0.8544299  0.5203893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81066  9082.442 18.129386 3.722152 1.6708314   2.051321 0.8883878  0.5027531</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81067 23052.709 27.047489 5.074824 3.4277940   1.647030 1.3435287  0.9755124</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81068 18387.701 15.173311 3.856122 2.2013572   1.654764 1.0242196  0.5922004</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81069 16085.260 15.391164 5.456221 1.8383754   3.617846 1.3215300  0.5641413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81070  1637.528  4.066122 9.395508 0.7496639   8.645844 1.7834416  0.1870801</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Fuel_shrubs Phytovolume</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81065   0.3340407       0.302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81066   0.3856347       0.237</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81067   0.3680163       0.503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81068   0.4320192       0.248</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81069   0.7573887       0.301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81070   1.5963615       4.344</span>
+<span class="r-in"><span class="co">#Calculate basal area for all forest stands</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">getLandscapeLayer</span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="st">"basalArea"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#Plot basal area</span></span>
-<span class="r-in"><span class="fu">spplot</span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="st">"BA"</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">spplot</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="getLandscapeLayer-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
+<span class="r-in"><span class="co"># More straigthforwardly</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">examplepointslandscape</span>, <span class="st">"basalArea"</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="getLandscapeLayer-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
