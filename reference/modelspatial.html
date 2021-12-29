@@ -133,7 +133,8 @@
     <div id="value">
     <h2>Value</h2>
     <p>A list of class of the same name as the function called, also inheriting from an appropriate summary class (<code>summarypoints</code>, <code>summarypixels</code> or <code>summarygrid</code>), containing four elements:</p><ul><li><p><code>sp</code>: An object with spatial information (of <code>SpatialPoints-class</code>, <code>SpatialPixels-class</code> or <code>SpatialGrid-class</code>).</p></li>
-<li><p><code>xlist</code>: A list of model input objects for each simulated stand.</p></li>
+<li><p><code>xlist</code>: A list of <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="updateState.html">updateState</a></code>).</p></li>
+<li><p><code>forestlist</code>: A list of <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects for each simulated stand (only in <code>fordynpoints</code>, <code>fordynpixels</code> and <code>fordyngrid</code>), to be used in subsequent simulations (see <code><a href="updateState.html">updateState</a></code>).</p></li>
 <li><p><code>resultlist</code>: A list of model output for each simulated stand (if <code>keepResults = TRUE</code>).</p></li>
 <li><p><code>summarylist</code>: A list of model output summaries for each simulated stand (if <code>summaryFunction</code> is not <code>NULL</code>).</p></li>
 </ul></div>
@@ -143,7 +144,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, <code><a href="modelspatial_day.html">spwbpoints_day</a></code>, <code><a href="summary.spwbpoints.html">summary.spwbpoints</a></code> , <code><a href="plot.summarypoints.html">plot.summarypoints</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, <code><a href="modelspatial_day.html">spwbpoints_day</a></code>, <code><a href="summary.spwbpoints.html">summary.spwbpoints</a></code> , <code><a href="plot.summarypoints.html">plot.summarypoints</a></code>, <code><a href="updateState.html">updateState</a></code></p></div>
     </div>
 
     <div id="ref-examples">
