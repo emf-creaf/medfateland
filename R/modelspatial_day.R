@@ -1,3 +1,42 @@
+.f_spatial_day<-function(xi, meteo, date, model){
+  x = xi$x
+  res = NULL
+  if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
+  else if(inherits(meteo, "character")) {
+    met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
+    met = met@data[[1]]
+  }
+  else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteo@data[[xi$i]]
+  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
+    met = met@data[[1]]
+  }
+  tmin = met[date,"MinTemperature"]
+  tmax = met[date,"MaxTemperature"]
+  rhmin = met[date,"MinRelativeHumidity"]
+  rhmax = met[date,"MaxRelativeHumidity"]
+  rad = met[date,"Radiation"]
+  wind = met[date,"WindSpeed"]
+  prec = met[date,"Precipitation"]
+  if(model=="spwb") {
+    if(inherits(x, "spwbInput")){
+      res<-medfate::spwb_day(x, date, 
+                             tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
+                             latitude = xi$latitude, elevation = xi$elevation,
+                             slope = xi$slope, aspect = xi$aspect, prec = prec)
+    } 
+  } else if(model=="growth") {
+    if(inherits(x, "growthInput")) {
+      res<-medfate::growth_day(x, date, 
+                               tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
+                               latitude = xi$latitude, elevation = xi$elevation,
+                               slope = xi$slope, aspect = xi$aspect, prec = prec)
+    } 
+  } 
+  return(res)
+}
+
 .modelspatial_day<-function(y, meteo, date, model = "spwb", 
                             SpParams, 
                             localControl = defaultControl(),
@@ -61,44 +100,6 @@
     }
   }
 
-  simf_day<-function(xi){
-    x = xi$x
-    res = NULL
-    if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
-    else if(inherits(meteo, "character")) {
-      met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
-      met = met@data[[1]]
-    }
-    else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
-      met = meteo@data[[xi$i]]
-    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
-      met = met@data[[1]]
-    }
-    tmin = met[date,"MinTemperature"]
-    tmax = met[date,"MaxTemperature"]
-    rhmin = met[date,"MinRelativeHumidity"]
-    rhmax = met[date,"MaxRelativeHumidity"]
-    rad = met[date,"Radiation"]
-    wind = met[date,"WindSpeed"]
-    prec = met[date,"Precipitation"]
-    if(model=="spwb") {
-      if(inherits(x, "spwbInput")){
-        res<-medfate::spwb_day(x, date, 
-                               tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                               latitude = xi$latitude, elevation = xi$elevation,
-                               slope = xi$slope, aspect = xi$aspect, prec = prec)
-      } 
-    } else if(model=="growth") {
-      if(inherits(x, "growthInput")) {
-        res<-medfate::growth_day(x, date, 
-                                 tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                                 latitude = xi$latitude, elevation = xi$elevation,
-                                 slope = xi$slope, aspect = xi$aspect, prec = prec)
-      } 
-    } 
-    return(res)
-  }
 
   if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"':\n"))
   if(parallelize) {
@@ -112,12 +113,10 @@
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
-    env<-environment()
     cl<-parallel::makeCluster(numCores)
-    varlist = c("meteo", "model","SpParams", "localControl",
-                "date")
-    parallel::clusterExport(cl, varlist, envir = env)
-    reslist_parallel = parallel::parLapply(cl, XI, simf_day, chunk.size = chunk.size)
+    reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial_day, 
+                                             meteo = meteo, date = date, model = model,
+                                             chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
@@ -131,7 +130,7 @@
       xi = list(i = i, id = names(forestlist)[i],
                 spt = spt[i], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
-      resultlist[[i]] = simf_day(xi)
+      resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
     }
   }
   if(inherits(y, "SpatialGrid")) {

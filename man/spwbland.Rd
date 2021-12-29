@@ -10,11 +10,13 @@ Function \code{spwbland} implements a distributed hydrological model that simula
 spwbland(y, SpParams, meteo, dates,
      summaryFreq = "years",
      localControl = medfate::defaultControl(),
-     correctionFactors = defaultWatershedCorrectionFactors())
+     correctionFactors = defaultWatershedCorrectionFactors(),
+     progress = TRUE)
 growthland(y, SpParams, meteo, dates,
      summaryFreq = "years",
      localControl = medfate::defaultControl(),
-     correctionFactors = defaultWatershedCorrectionFactors())
+     correctionFactors = defaultWatershedCorrectionFactors(),
+     progress = TRUE)
 }
 \arguments{
   \item{y}{An object of class \code{\link{DistributedWatershed-class}}.}
@@ -24,6 +26,8 @@ growthland(y, SpParams, meteo, dates,
   \item{summaryFreq}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
   \item{localControl}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
   \item{correctionFactors}{A list of watershed correction factors for hydraulic parameters.}
+  \item{progress}{Boolean flag to display progress information for simulations.}
+
 }
 \details{
 Functions \code{spwbland} and \code{growthland} require daily meteorological data over grid cells. The user may supply four different inputs:

@@ -1,11 +1,10 @@
-.getAllowedVars <-function() {
-  return(c("elevation", "slope", "aspect", "lct", "basalArea", "SWE", "WTD","texture1", "texture2", "texture3",
-           "SoilVol"))
+.getAllowedTopographyVars <-function() {
+  return(c( "Elevation (m)" = "elevation", 
+            "Slope (degrees)" = "slope", 
+            "Aspect (degrees)" = "aspect", 
+            "Land cover type" ="lct"))
 }
-.getLandscapeVar<-function(obj, variable, ...) {
-  n = length(obj@forestlist)
-  varplot = rep(NA, n)
-  variable = match.arg(variable, .getAllowedVars())
+.getLandscapeTopographyVar<-function(obj, variable) {
   if(variable=="lct") {
     varplot = factor(obj@lct)
   } else if(variable=="elevation") {
@@ -14,74 +13,89 @@
     varplot = obj@data$slope
   } else if(variable=="aspect") {
     varplot = obj@data$aspect
-  } else if(variable=="basalArea") {
-    for(i in 1:n) {
-      f = obj@forestlist[[i]]
-      if(inherits(f,"forest")) varplot[i] = stand_basalArea(f)
+  }
+  return(varplot)
+}
+.getAllowedSoilVars <-function() {
+  return(c("Texture (first layer)" = "texture1", 
+           "Texture (second layer)" = "texture2", 
+           "Texture (third layer)" ="texture3",
+           "Total soil extractable volume (mm)" = "SoilVolExtract",
+           "Total soil volume at saturation (mm)" = "SoilVolSAT",
+           "Total soil volume at field capacity (mm)" = "SoilVolFC",
+           "Total soil volume at wilting point (mm)" = "SoilVolWP"))
+}
+.getLandscapeSoilVar<-function(obj, variable) {
+  n = length(obj@soillist)
+  varplot = rep(NA, n)
+  for(i in 1:n) {
+    s = obj@soillist[[i]]
+    if(inherits(s,"soil")) {
+      if(variable=="texture1") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
+      else if(variable=="texture2") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
+      else if(variable=="texture3") varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
+      else if(variable=="SoilVolExtract") varplot[i] = sum(soil_waterExtractable(s), na.rm=TRUE)
+      else if(variable=="SoilVolSAT") varplot[i] = sum(soil_waterSAT(s), na.rm=TRUE)
+      else if(variable=="SoilVolFC") varplot[i] = sum(soil_waterFC(s), na.rm=TRUE)
+      else if(variable=="SoilVolWP") varplot[i] = sum(soil_waterWP(s), na.rm=TRUE)
     }
-  } else if(variable=="SWE") {
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(inherits(s,"soil")) varplot[i] = s[["SWE"]]
-    }
-  } else if(variable=="WTD") {
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(inherits(s,"soil")) varplot[i] = soil_waterTableDepth(s, ...)
-    }
-  } else if(variable=="texture1") {
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(inherits(s,"soil")) varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
-    }
-    varplot = factor(varplot)
-  } else if(variable=="texture2") {
-    n = length(obj@soillist)
-    varplot = rep(NA, n)
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(inherits(s,"soil")) varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
-    }
-    varplot = factor(varplot)
-  } else if(variable=="texture3") {
-    n = length(obj@soillist)
-    varplot = rep(NA, n)
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
-    }
-    varplot = factor(varplot)
-  } else if(variable=="SoilVol") {
-    n = length(obj@soillist)
-    varplot = rep(NA, n)
-    for(i in 1:n) {
-      s = obj@soillist[[i]]
-      if(class(s)[1]=="soil") varplot[i] = sum(soil_water(s, ...), na.rm=T)
-    }
-  } 
+  }
   return(varplot)
 }
 
-setGeneric("getLandscapeVariable", function(obj, variable = "lct", ...){
+.getAllowedForestStandVars <-function() {
+  return(c("Basal area (m2/ha)"="basalArea", 
+           "Leaf area index (m2/m2)" = "LAI", 
+           "Foliar biomass (kg/m2)" = "foliarBiomass", 
+           "Fine live fuel (kg/m2)" = "fuel", 
+           "Shrub phytovolume (m3/m2)" = "phytovolume"))
+}
+.getLandscapeForestStandVar<-function(obj, variable, SpParams = NULL) {
+  n = length(obj@forestlist)
+  varplot = rep(NA, n)
+  for(i in 1:n) {
+    f = obj@forestlist[[i]]
+    if(inherits(f,"forest")) {
+      if(variable=="basalArea") varplot[i] = stand_basalArea(f)
+      else if(variable=="LAI") varplot[i] = stand_LAI(f, SpParams)
+      else if(variable=="foliarBiomass") varplot[i] = stand_foliarBiomass(f, SpParams)
+      else if(variable=="fuel") varplot[i] = stand_fuel(f, SpParams)
+      else if(variable=="phytovolume") varplot[i] = stand_phytovolume(f, SpParams)
+    }
+  }
+  return(varplot)
+}
+
+.getAllowedVars <-function() {
+  return(c(.getAllowedTopographyVars(),.getAllowedSoilVars(),.getAllowedForestStandVars()))
+}
+.getLandscapeVar<-function(obj, variable, SpParams = NULL, ...) {
+  variable = match.arg(variable, .getAllowedVars())
+  if(variable %in% .getAllowedTopographyVars()) return(.getLandscapeTopographyVar(obj, variable))
+  else if(variable %in% .getAllowedSoilVars()) return(.getLandscapeSoilVar(obj, variable))
+  else if(variable %in% .getAllowedForestStandVars()) return(.getLandscapeForestStandVar(obj, variable, SpParams))
+}
+
+setGeneric("getLandscapeVariable", function(obj, variable = "lct", SpParams = NULL, ...){
   standardGeneric("getLandscapeVariable")
 })
 setMethod("getLandscapeVariable", signature("SpatialPixelsLandscape"),
-          function(obj, variable = "lct", ...) {
+          function(obj, variable = "lct", SpParams = NULL, ...) {
             if(variable %in% .getAllowedVars()) {
-              return(.getLandscapeVar(obj, variable, ...))
+              return(.getLandscapeVar(obj, variable, SpParams, ...))
             } 
           })
 
 setMethod("getLandscapeVariable", signature("SpatialGridLandscape"),
-          function(obj, variable = "lct", ...) {
+          function(obj, variable = "lct", SpParams = NULL, ...) {
             if(variable %in% .getAllowedVars()) {
-              return(.getLandscapeVar(obj, variable, ...))
+              return(.getLandscapeVar(obj, variable, SpParams = NULL, ...))
             } 
           })
 setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
-          function(obj, variable = "lct", ...) {
+          function(obj, variable = "lct", SpParams = NULL, ...) {
             if(variable %in% .getAllowedVars()) {
-              return(.getLandscapeVar(obj, variable, ...))
+              return(.getLandscapeVar(obj, variable, SpParams = NULL, ...))
             } 
           })
 

@@ -40,7 +40,7 @@ growthgrid_day(y, meteo, date, SpParams, localControl = defaultControl(),
   \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
   \item{numCores}{Integer with the number of cores to be used for parallel computation.}
   \item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
-  \item{progress}{Boolean flag to display progress bar for simulations.}
+  \item{progress}{Boolean flag to display progress information for simulations.}
 }
 \details{
 Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbpoints}}
@@ -72,7 +72,7 @@ data("examplemeteo")
 data("SpParamsMED")
 
 #Perform simulation
-dates = "2001-03-01"
+date = "2001-03-01"
 res = spwbpoints_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
 }
 }

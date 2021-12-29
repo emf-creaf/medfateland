@@ -2,7 +2,8 @@
                    y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors()) {
+                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   progress = TRUE) {
 
   #check input
   if(!inherits(y, "DistributedWatershed")) stop("'y' has to be of class 'DistributedWatershed'.")
@@ -56,20 +57,20 @@
   patchsize = prod(y@grid@cellsize)
 
   #Print information area
-  cat(paste0("\n------------ ", landModel," ------------\n"))
-  cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
-  cat(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater,"\n"))
-  cat(paste0("Cells with soil: ", nSoil,"\n"))
-  cat(paste0("Meteorological input class: ", class(meteo),"\n"))
-  cat(paste0("Number of days to simulate: ",nDays,"\n"))
-  cat(paste0("Number of summaries: ", nSummary,"\n"))
-  cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
+  if(progress) {
+    cat(paste0("\n------------ ", landModel," ------------\n"))
+    cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
+    cat(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater,"\n"))
+    cat(paste0("Cells with soil: ", nSoil,"\n"))
+    cat(paste0("Meteorological input class: ", class(meteo),"\n"))
+    cat(paste0("Number of days to simulate: ",nDays,"\n"))
+    cat(paste0("Number of summaries: ", nSummary,"\n"))
+    cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
+    
+    cat(paste0("Preparing ", localModel, " input...\n"))
+  }
 
-  cat(paste0("Preparing ", localModel, " input...\n"))
-
-  # pb = txtProgressBar(0, nCells, style=3)
   for(i in 1:nCells) {
-    # setTxtProgressBar(pb,i)
     if(y@lct[i] %in% c("wildland", "agriculture")) {
       f = y@forestlist[[i]]
       s = y@soillist[[i]]
@@ -79,7 +80,7 @@
       y@xlist[[i]] = NA
     }
   }
-  cat("done.\n\n")
+  if(progress) cat("done.\n\n")
 
   #Output matrices
   DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))
@@ -144,15 +145,17 @@
   initialAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
   initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
-  cat(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2),"\n"))
-  cat(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2),"\n"))
-  cat(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2),"\n"))
-  cat(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2),"\n"))
-  
-  cat(paste0("\nPerforming daily simulations:\n"))
+  if(progress) {
+    cat(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2),"\n"))
+    cat(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2),"\n"))
+    cat(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2),"\n"))
+    cat(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2),"\n"))
+    
+    cat(paste0("\nPerforming daily simulations:\n"))
+  }
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
-    cat(".")
+    if(progress) cat(".")
     i = which(datesMeteo == dates[day]) #date index in meteo data
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
@@ -214,11 +217,11 @@
                            datechar,
                            gridMeteo,
                            latitude, elevation, slope, aspect,
-                           patchsize)
+                           patchsize, progress)
     
     res_day = ws_day[["WatershedWaterBalance"]]
     
-    cat("+")
+    if(progress) cat("+")
     summary_day = spatialSoilSummary(y, summary_function, localControl$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
@@ -275,7 +278,7 @@
     SoilLandscapeBalance$SoilEvaporation[ifactor] = SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
     SoilLandscapeBalance$Transpiration[ifactor] = SoilLandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
   }
-  cat("done\n\n")
+  if(progress) cat("done\n\n")
   #Average summaries
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   SoilLandscapeBalance$Precipitation = SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
@@ -323,49 +326,56 @@
   SoilInterflowOutputsum = sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
   
   
-  cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
-  cat(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2),"\n"))
-  cat(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2),"\n"))
-  cat(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2),"\n"))
-  
+  if(progress){
+    cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
+    cat(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2),"\n"))
+    cat(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2),"\n"))
+    cat(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2),"\n"))
+  }
   
   snowpack_wb = Snowsum - Snowmeltsum
-  cat(paste0("\nChange in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
-  cat(paste0("Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
-  cat(paste0("Snowpack water balance components:\n"))
-  cat(paste0("  Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
-  
+  if(progress) {
+    cat(paste0("\nChange in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
+    cat(paste0("Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
+    cat(paste0("Snowpack water balance components:\n"))
+    cat(paste0("  Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+  }
   soil_input = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
   soil_output = (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
   soil_wb =  soil_input - soil_output
-  cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
-  cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
-  cat(paste0("Soil water balance components:\n"))
-  cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
-  cat(paste0("  Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
-  cat(paste0("  Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-  cat(paste0("  Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
-  cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
+  if(progress) {
+    cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
+    cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
+    cat(paste0("Soil water balance components:\n"))
+    cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
+    cat(paste0("  Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
+    cat(paste0("  Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+    cat(paste0("  Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
+    cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
+  }
   
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
-  cat(paste0("\nChange in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
-  cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
-  cat(paste0("Aquifer water balance components:\n"))
-  cat(paste0("  Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
-
+  if(progress){
+    cat(paste0("\nChange in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
+    cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
+    cat(paste0("Aquifer water balance components:\n"))
+    cat(paste0("  Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
+  }
   
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
-  cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
-  cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
-  cat(paste0("Watershed water balance components:\n"))
-  cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
-  cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
-  cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
-  cat(paste0("Watershed lateral flows:\n"))
-  cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
-  cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
-  
-  cat(paste0("\n------------ ",landModel," ------------\n"))
+  if(progress) {
+    cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
+    cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
+    cat(paste0("Watershed water balance components:\n"))
+    cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
+    cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
+    cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
+    cat(paste0("Watershed lateral flows:\n"))
+    cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
+    cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
+    
+    cat(paste0("\n------------ ",landModel," ------------\n"))
+  }
 
   l <- list(sp = as(y, "SpatialPixels"), 
             summarylist = summarylist,
@@ -379,20 +389,22 @@
 spwbland<-function(y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors()) {
+                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   progress = TRUE) {
   return(.landSim("spwbland",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
                   summaryFreq = summaryFreq, 
                   localControl = localControl,
-                  correctionFactors = correctionFactors))
+                  correctionFactors = correctionFactors, progress = progress))
 }
 growthland<-function(y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors()) {
+                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   progress = TRUE) {
   return(.landSim("growthland",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
                   summaryFreq = summaryFreq, 
                   localControl = localControl,
-                  correctionFactors = correctionFactors))
+                  correctionFactors = correctionFactors, progress = progress))
 }

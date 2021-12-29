@@ -59,7 +59,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 4.
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{SpatialPointsTopography}}, \code{\link{SpatialPointsLandscape}}, \code{\link{SpatialGridLandscape}}, \code{\link{spatialForestSummary}}, \code{\link{forest}}
+\code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
 }
 \examples{
 showClass("SpatialPointsLandscape")

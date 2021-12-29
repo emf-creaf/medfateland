@@ -56,7 +56,7 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{
-\code{\link{SpatialPixelsTopography-class}}, \code{\link{SpatialPointsLandscape-class}}, \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}
+\code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
 }
 \examples{
 #Structure of the S4 object

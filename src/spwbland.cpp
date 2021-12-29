@@ -82,7 +82,7 @@ List watershedDay(String localModel,
                   CharacterVector date,
                   DataFrame gridMeteo,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                  double patchsize) {
+                  double patchsize, bool progress = true) {
   int nX = xList.size();
   NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
   NumericVector NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
@@ -114,7 +114,7 @@ List watershedDay(String localModel,
   NumericVector RockPorosity = bedrock["Porosity"]; //[0-1]
 
   //A1. Calculate soil and aquifer water table elevation (heads)
-  Rcout<<"+";
+  if(progress) Rcout<<"+";
   NumericVector WTD(nX,NA_REAL); //Water table depth
   NumericVector SoilWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
@@ -130,7 +130,7 @@ List watershedDay(String localModel,
   }
 
   //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
-  Rcout<<"+";
+  if(progress) Rcout<<"+";
   NumericVector interflowInput(nX, 0.0);
   NumericVector interflowOutput(nX, 0.0);
   for(int i=0;i<nX;i++){
@@ -200,7 +200,7 @@ List watershedDay(String localModel,
   }
 
   //A3a. Apply changes in soil moisture to each cell
-  Rcout<<"+";
+  if(progress) Rcout<<"+";
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       double deltaS = 1000.0*((interflowInput[i]-interflowOutput[i])/cellArea); //change in moisture in mm (L/m2)
@@ -280,7 +280,7 @@ List watershedDay(String localModel,
 
   //B. Vertical and surface fluxes
   List localResults(nX);
-  Rcout<<"+";
+  if(progress) Rcout<<"+";
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterO[i]-1; //Decrease index!!!!

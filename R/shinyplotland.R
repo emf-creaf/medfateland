@@ -1,12 +1,18 @@
-.shinyplot_spatial<-function(x) {
+.shinyplot_spatial<-function(x, SpParams) {
   ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput(
+          inputId = "plot_main_type",
+          label = "Category",
+          choices = c("Topography","Soil", "Forest stand"),
+          selected = c("Topography")
+        ),
+        selectInput(
           inputId = "plot_var",
           label = "Variable", 
-          choices = .getAllowedVars(),
-          selected = .getAllowedVars()[1]
+          choices = .getAllowedTopographyVars(),
+          selected = .getAllowedTopographyVars()[1]
         ),
       ),
       mainPanel(
@@ -15,9 +21,16 @@
     )
   )
   server <- function(input, output, session) {
-  
+    observe({
+      main_plot <- input$plot_main_type
+      if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars()
+      else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars()
+      else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars()
+      updateSelectInput(session, "plot_var",
+                        choices = sub_choices)
+    })
     output$spatial_plot <- renderPlot({
-      plot(x, input$plot_var)
+      plot(x, y= input$plot_var, SpParams = SpParams)
     })
   }
   
@@ -58,9 +71,9 @@
   }
   shinyApp(ui = ui, server = server)
 }
-shinyplotland<-function(x) {
+shinyplotland<-function(x, SpParams = NULL) {
   if(inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape")))
-    return(.shinyplot_spatial(x))
+    return(.shinyplot_spatial(x, SpParams))
   else if(inherits(x, c("summarypoints", "summarygrid", "summarypixels")))
     return(.shinyplot_results(x))
   else {

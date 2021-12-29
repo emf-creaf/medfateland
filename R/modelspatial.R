@@ -1,4 +1,4 @@
-.simf<-function(xi, meteo, dates, model,
+.f_spatial<-function(xi, meteo, dates, model,
                 SpParams, localControl, keepResults = TRUE,
                 summaryFunction = NULL, summaryArgs = NULL, 
                 managementFunction = NULL, managementArgs = NULL){
@@ -128,12 +128,8 @@
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
-    env<-environment()
     cl<-parallel::makeCluster(numCores)
-    # varlist = c("meteo", "model","SpParams", "localControl", 
-    #             "dates", "summaryArgs", "managementArgs")
-    # parallel::clusterExport(cl, varlist, envir = env)
-    reslist_parallel = parallel::parLapplyLB(cl, XI, .simf, 
+    reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model, 
                                              SpParams = SpParams, localControl = localControl, keepResults = keepResults,
                                              summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
@@ -154,7 +150,7 @@
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
-      sim_out = .simf(xi = xi, 
+      sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model, 
                       SpParams = SpParams, localControl = localControl, keepResults = keepResults,
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
