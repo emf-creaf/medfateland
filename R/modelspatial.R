@@ -50,6 +50,43 @@
   return(list(result = res, summary = s))
 }
 
+.checkmodelinputs<-function(sp, y, meteo) {
+  if(sp=="grid") {
+    if(!inherits(y,"SpatialGridLandscape"))
+      stop("'y' has to be of class 'SpatialGridLandscape'.")
+    if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
+      stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
+    if(inherits(meteo,"SpatialGridMeteorology")) {
+      ycoords = coordinates(y)
+      mcoords = coordinates(meteo)
+      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+    }
+  } else if(sp=="pixels") {
+    if(!inherits(y,"SpatialPixelsLandscape"))
+      stop("'y' has to be of class 'SpatialPixelsLandscape'.")
+    if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
+      stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
+    if(inherits(meteo,"SpatialPixelsMeteorology")) {
+      ycoords = coordinates(y)
+      mcoords = coordinates(meteo)
+      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+    }
+  } else if(sp=="points") {
+    if(!inherits(y,"SpatialPointsLandscape"))
+      stop("'y' has to be of class 'SpatialPointsLandscape'.")
+    if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
+      stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
+    if(inherits(meteo,"SpatialPointsMeteorology")) {
+      ycoords = coordinates(y)
+      mcoords = coordinates(meteo)
+      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+    }
+  } 
+  if(inherits(meteo, "character")) {
+    if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
+  }
+}
+
 .modelspatial<-function(y, SpParams, meteo, model = "spwb",
                         localControl = defaultControl(), dates = NULL,
                         managementFunction = NULL, managementArgs = NULL,
@@ -169,48 +206,26 @@
     sp = "points"
     sp_class = "SpatialPoints"
   }
-  res = list(sp = as(y, sp_class), 
-             xlist = xlist, resultlist = resultlist, summarylist = summarylist)
+  if(model=="fordyn") {
+    forestlist_out = vector("list",n)
+    names(forestlist_out) = names(forestlist)
+    for(i in 1:n) {
+      #Copy last forest structure
+      fs_i = resultlist[[i]]$ForestStructures
+      forestlist_out[[i]] = fs_i[[length(fs_i)]]
+    }
+    res = list(sp = as(y, sp_class), 
+               xlist = xlist, forestlist = forestlist_out,
+               resultlist = resultlist, summarylist = summarylist)
+  } else {
+    res = list(sp = as(y, sp_class), 
+               xlist = xlist, resultlist = resultlist, summarylist = summarylist)
+  }
+  
   class(res) = c(paste0(model, sp),paste0("summary",sp),"list")
   return(res)
 }
 
-.checkmodelinputs<-function(sp, y, meteo) {
-  if(sp=="grid") {
-    if(!inherits(y,"SpatialGridLandscape"))
-      stop("'y' has to be of class 'SpatialGridLandscape'.")
-    if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialGridMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } else if(sp=="pixels") {
-    if(!inherits(y,"SpatialPixelsLandscape"))
-      stop("'y' has to be of class 'SpatialPixelsLandscape'.")
-    if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialPixelsMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } else if(sp=="points") {
-    if(!inherits(y,"SpatialPointsLandscape"))
-      stop("'y' has to be of class 'SpatialPointsLandscape'.")
-    if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialPointsMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } 
-  if(inherits(meteo, "character")) {
-    if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
-  }
-}
 
 spwbpoints<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,

@@ -16,6 +16,8 @@ setMethod("[", signature("SpatialPointsLandscape"),definition =
               x@bbox = sp@bbox
               x@forestlist = x@forestlist[i]
               x@soillist = x@soillist[i]
+              x@xlist = x@xlist[i]
+              x@lct = x@lct[i]
               x@data = x@data[i, , ..., drop = FALSE]
               x
             }

@@ -27,7 +27,7 @@
       main_plot <- input$plot_main_type
       if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars()
       else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars()
-      else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars()
+      else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars(SpParams)
       else if(main_plot=="Watershed") sub_choices = .getAllowedWatershedVars()
       updateSelectInput(session, "plot_var",
                         choices = sub_choices)

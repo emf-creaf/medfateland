@@ -76,9 +76,7 @@
       s = y@soillist[[i]]
       if(localModel=="spwb") y@xlist[[i]] = forest2spwbInput(f, s, SpParams, localControl)
       else if(localModel=="growth") y@xlist[[i]] = forest2growthInput(f, s, SpParams, localControl)
-    } else {
-      y@xlist[[i]] = NA
-    }
+    } 
   }
   if(progress) cat("done.\n\n")
 

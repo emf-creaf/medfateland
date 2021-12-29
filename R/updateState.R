@@ -16,31 +16,30 @@ updateState<-function(x, y) {
       stop("'y' should be of class 'spwbgrid', 'growthgrid', 'fordyngrid', 'spwbgrid_day' or 'growthgrid_day'")
   }  
   n = length(x@forestlist)
-  print("xlist")
   if(!is.null(y$xlist)) {
     if(length(y$xlist)!=n) stop("'xlist' in 'y' does not have the same length as the elements in 'x'")
     for(i in 1:n) {
-      x@xlist[i] = y$xlist[i]
-      x@soillist[i] = y$xlist[i]$soil
+      if(!is.null(y$xlist[[i]])) {
+        x@xlist[[i]] = y$xlist[[i]]
+        if("soil" %in% names(y$xlist[[i]])) x@soillist[[i]] = y$xlist[[i]]$soil
+      }
     }
   }
   if(inherits(y, c("fordynpoints", "fordynpixels", "fordyngrid"))) {
     if(!is.null(y$forestlist)) {
       if(length(y$forestlist)!=n) stop("'forestlist`' in 'y' does not have the same length as the elements in 'x'")
       for(i in 1:n) {
-        x@forestlist[i] = y$forestlist[i]
+        if(!is.null(y$forestlist[[i]]))  x@forestlist[[i]] = y$forestlist[[i]]
       }
     }
   }
   if(inherits(y, c("spwbland", "growthland"))) {
-    print("aquifer")
     if(!is.null(y$aquifer)) {
       if(length(y$aquifer)!=n) stop("'aquifer`' in 'y' does not have the same length as the elements in 'x'")
       for(i in 1:n) {
         x@aquifer[i] = y$aquifer[i]
       }
     }
-    print("snowpack")
     if(!is.null(y$snowpack)) {
       if(length(y$snowpack)!=n) stop("'snowpack`' in 'y' does not have the same length as the elements in 'x'")
       for(i in 1:n) {

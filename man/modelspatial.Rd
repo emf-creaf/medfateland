@@ -85,7 +85,8 @@ In the case of (1) or (4), all the spatio-temporal variation of weather is alrea
 A list of class of the same name as the function called, also inheriting from an appropriate summary class (\code{summarypoints}, \code{summarypixels} or \code{summarygrid}), containing four elements:
 \itemize{
 \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
-\item{\code{xlist}: A list of model input objects for each simulated stand.}
+\item{\code{xlist}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
+\item{\code{forestlist}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynpoints}, \code{fordynpixels} and \code{fordyngrid}), to be used in subsequent simulations (see \code{\link{updateState}}).}
 \item{\code{resultlist}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
 \item{\code{summarylist}: A list of model output summaries for each simulated stand (if \code{summaryFunction} is not \code{NULL}).}
 }
@@ -94,7 +95,7 @@ A list of class of the same name as the function called, also inheriting from an
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbpoints_day}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbpoints_day}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}, \code{\link{updateState}}
 }
 \examples{
 
