@@ -378,6 +378,9 @@
   }
 
   l <- list(sp = as(y, "SpatialPixels"), 
+            xlist = y@xlist,
+            aquifer = y@aquifer,
+            snowpack = y@snowpack,
             summarylist = summarylist,
             WatershedBalance = LandscapeBalance,
             WatershedSoilBalance = SoilLandscapeBalance,

@@ -42,15 +42,12 @@ In the case of (1), all the spatio-temporal variation of weather is already supp
 \value{
 Function \code{spwbland} list of class 'spwbland' with the following elements:
 \itemize{
- \item{\code{coords}: A matrix of pixel coordinates.}
- \item{\code{coords.nrs}: Inherited from \code{SpatialPointsDataFrame} but not used.}
- \item{\code{grid}: The \code{\link{GridTopology}} object corresponding to the simulated area.}
- \item{\code{grid.index}: Index of points in full grid.}
- \item{\code{bbox}: Object of class \code{"matrix"} with the boundary box.}
- \item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
- \item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
- \item{\code{CellBalance}: A list of matrices (each with as many rows as cells and as many columns as summary points) representing the water balance for each cell:
-   \itemize{
+ \item{\code{sp}: An object of class \code{\link{SpatialPixels}}.}
+ \item{\code{xlist}: A list of model input objects for each simulated stand.}
+ \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
+ \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
+ \item{\code{summarylist}: A list of cell summaries, containing the following variables:
+    \itemize{
      \item{\code{Rain}: Rainfall (in mm).}
      \item{\code{Snow}: Snowfall (in mm).}
      \item{\code{Snowmelt}: Snow melt (in mm).}
@@ -68,16 +65,14 @@ Function \code{spwbland} list of class 'spwbland' with the following elements:
      \item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
      \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
      \item{\code{Transpiration}: Plant transpiration (in mm).}
-  }
- }
- \item{\code{CellState}: A list of matrices (each with as many rows as cells and as many columns as summary points) representing the average soil state for each cell:
-   \itemize{
      \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
      \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
      \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
      \item{\code{WTD}: Water table depth (in mm from surface).}
   }
  }
+ \item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+ \item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
  \item{\code{DailyRunoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 }
 }

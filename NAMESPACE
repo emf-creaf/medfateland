@@ -20,7 +20,8 @@ export(buildWatershedTopography,
        growthpoints_day, growthpixels_day, growthgrid_day,
        shinyplotland,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
-       spwbland, growthland)
+       spwbland, growthland,
+       updateState)
 
 useDynLib(medfateland, .registration = TRUE)
 

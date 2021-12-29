@@ -4,6 +4,7 @@
 
 # Version 0.4.0
 - New functions 'spwbpoints_day', 'growthpoints_day',...
+- New function 'updateState'
 
 # Version 0.3.0
 - Function 'wswb' renamed 'spwbland'
