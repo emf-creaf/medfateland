@@ -65,7 +65,7 @@
       <h1 data-toc-skip>Package overview</h1>
                         <h4 data-toc-skip class="author">Miquel De Caceres</h4>
             
-            <h4 data-toc-skip class="date">2021-12-28</h4>
+            <h4 data-toc-skip class="date">2021-12-29</h4>
       
       
       <div class="hidden name"><code>PackageOverview.Rmd</code></div>
@@ -82,17 +82,14 @@
 <div class="section level2">
 <h2 id="data-structures">Data structures<a class="anchor" aria-label="anchor" href="#data-structures"></a>
 </h2>
-<div class="section level3">
-<h3 id="spatial-objects">Spatial objects<a class="anchor" aria-label="anchor" href="#spatial-objects"></a>
-</h3>
-<p>Package <strong>medfateland</strong> offers three spatial classes that inherit fields from three corresponding classes in package <strong>meteoland</strong>:</p>
+<p>Package <strong>medfateland</strong> offers three <em>spatial classes</em> that inherit fields from three corresponding classes in package <strong>meteoland</strong>:</p>
 <ul>
 <li>
-<code>SpatialPointsLandscape</code>: represents a set of forest stands (including soil description) as points within a landscape. Extends class <code>SpatialPointsTopography</code>.</li>
+<code>SpatialPointsLandscape-class</code>: represents a set of forest stands (including soil description) as points within a landscape. Extends class <code>SpatialPointsTopography-class</code>.</li>
 <li>
-<code>SpatialPixelsLandscape</code>: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a gridded landscape. Extends class <code>SpatialPixelsTopography</code>.</li>
+<code>SpatialPixelsLandscape-class</code>: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a gridded landscape. Extends class <code>SpatialPixelsTopography-class</code>.</li>
 <li>
-<code>SpatialGridLandscape</code>: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a complete grid. Extends class <code>SpatialGridTopography</code>.</li>
+<code>SpatialGridLandscape-class</code>: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a complete grid. Extends class <code>SpatialGridTopography-class</code>.</li>
 </ul>
 <p>Spatial objects allow simulations to be performed more easily for a set of forests distributed spatially. For example, simulations on objects <code>SpatialPointsLandscape</code>, <code>SpatialPixelsLandscape</code> or <code>SpatialGridLandscape</code> are performed sequentially or in parallel computation for all forest stands, but no landscape processes are considered.</p>
 <p>An additional spatial class is defined for watershed ecohydrological modelling:</p>
@@ -101,7 +98,6 @@
 <code>DistributedWatershed</code>: Represents a (forested) watershed, including land cover units (i.e. agricultural, rock outcrops or urban areas), forest and soil information as well as bedrock properties. Extends class <code>SpatialPixelsLandscape</code>.</li>
 </ul>
 <p>Simulating water balance on objects <code>DistributedWatershed</code> allows considering an aquifer compartment for each cell as well as simulating spatial water transfer between cells, i.e. overland, subsurface water and groundwater flows.</p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="dynamic-simulation-functions">Dynamic simulation functions<a class="anchor" aria-label="anchor" href="#dynamic-simulation-functions"></a>
