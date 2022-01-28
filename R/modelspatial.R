@@ -21,22 +21,22 @@
   if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
-      res<-medfate::spwb(x, meteo=met,
+      try({res<-medfate::spwb(x, meteo=met,
                          latitude = xi$latitude, elevation = xi$elevation,
-                         slope = xi$slope, aspect = xi$aspect)
+                         slope = xi$slope, aspect = xi$aspect)})
     } 
   } else if(model=="growth") {
     if(inherits(x, "growthInput")) {
-      res<-medfate::growth(x, meteo=met,
+      try({res<-medfate::growth(x, meteo=met,
                            latitude = xi$latitude, elevation = xi$elevation,
-                           slope = xi$slope, aspect = xi$aspect)
+                           slope = xi$slope, aspect = xi$aspect)})
     } 
   } else if(model=="fordyn") {
     if(inherits(f, "forest") && inherits(s, "soil")) {
-      res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = localControl,
+      try({res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = localControl,
                            latitude = xi$latitude, elevation = xi$elevation,
                            slope = xi$slope, aspect = xi$aspect,
-                           management_function = managementFunction, management_args = managementArgs)
+                           management_function = managementFunction, management_args = managementArgs)})
     }
   } 
   if(!is.null(summaryFunction) && !is.null(res)){
