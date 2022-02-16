@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -88,19 +88,19 @@
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">spatialForestSummary</span><span class="op">(</span><span class="va">examplepointslandscape</span>,<span class="va">summary.forest</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">@</span><span class="va">data</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               N        BA      LAI LAI_trees LAI_shrubs      Fuel Fuel_trees</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81065  7505.040 17.979315 2.928201 1.5312124   1.396989 0.8544299  0.5203893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81066  9082.442 18.129386 3.722152 1.6708314   2.051321 0.8883878  0.5027531</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81067 23052.709 27.047489 5.074824 3.4277940   1.647030 1.3435287  0.9755124</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81068 18387.701 15.173311 3.856122 2.2013572   1.654764 1.0242196  0.5922004</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81069 16085.260 15.391164 5.456221 1.8383754   3.617846 1.3215300  0.5641413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81070  1637.528  4.066122 9.395508 0.7496639   8.645844 1.7834416  0.1870801</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Fuel_shrubs Phytovolume</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81065   0.3340407       0.302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81066   0.3856347       0.237</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81067   0.3680163       0.503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81068   0.4320192       0.248</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81069   0.7573887       0.301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81070   1.5963615       4.344</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81065  7505.040 17.979315 2.986352 1.5262534   1.460099 0.8603646  0.5203893</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81066  9082.442 18.129386 3.703106 1.6644026   2.038703 0.9088505  0.5027531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81067 23052.709 27.047489 5.109926 3.3918796   1.718046 1.3633089  0.9755124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81068 18387.701 15.173311 3.831616 2.1341424   1.697474 1.0058308  0.5922004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81069 16085.260 15.391164 5.448975 1.7675924   3.681383 1.3605642  0.5641413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81070  1637.528  4.066122 9.178073 0.7030039   8.475069 1.7054906  0.1859211</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Fuel_shrubs Phytovolume  PARground SWRground</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81065   0.3399753       0.302 20.8821176 31.342186</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81066   0.4060974       0.237 13.7933886 23.052564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81067   0.3877964       0.503  6.5681223 13.305480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81068   0.4136304       0.248 12.8902046 21.924676</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81069   0.7964228       0.301  5.4255049 11.549103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81070   1.5195695       4.344  0.6541171  2.409723</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#Plot basal area</span></span>
 <span class="r-in"><span class="fu">spplot</span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="st">"BA"</span><span class="op">]</span><span class="op">)</span></span>
@@ -116,11 +116,11 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
