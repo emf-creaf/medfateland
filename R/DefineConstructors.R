@@ -14,7 +14,7 @@ SpatialPointsLandscape<-function(spt, lct, forestlist, soillist) {
     stop("'soillist' has to be a named list of 'data.frame' or 'soil' objects.")
   id_names_sl = names(soillist)
   if(is.null(id_names_sl)) 
-    stop("'soillist' has to be a named list of 'forest' objects.")
+    stop("'soillist' has to be a named list of 'soil' objects.")
   if(!is.null(lct)) {
     if(!inherits(lct,"character")) 
       stop("'lct' has to be a named character vector.")

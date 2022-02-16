@@ -18,7 +18,7 @@ SpatialGridLandscape(sgt, lct, forestlist, soillist)
   \item{spt}{An object of class \code{\link{SpatialPointsTopography}}.}
   \item{spxt}{An object of class \code{\link{SpatialPixelsTopography}}.}
   \item{sgt}{An object of class \code{\link{SpatialGridTopography}}.}
-  \item{lct}{A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock' or 'static').}
+  \item{lct}{A named character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock' or 'static').}
   \item{forestlist}{A list of objects of class 'forest' with the same number of elements as spatial points/pixels.}
   \item{soillist}{A list of objects of class 'forest' with the same number of elements as spatial points/pixels.}
 }
