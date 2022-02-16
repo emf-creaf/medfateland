@@ -69,7 +69,7 @@
     if(inherits(meteo,"SpatialPixelsMeteorology")) {
       ycoords = coordinates(y)
       mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+      if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
     }
   } else if(sp=="points") {
     if(!inherits(y,"SpatialPointsLandscape"))
@@ -79,7 +79,7 @@
     if(inherits(meteo,"SpatialPointsMeteorology")) {
       ycoords = coordinates(y)
       mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+      if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
     }
   } 
   if(inherits(meteo, "character")) {

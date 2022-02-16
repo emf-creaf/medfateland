@@ -2,6 +2,10 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.4.1
+- Bug correction in modelspatial during coordinate checking
+- Welcome sentence
+
 # Version 0.4.0
 - New functions 'spwbpoints_day', 'growthpoints_day',...
 - New function 'updateState'
