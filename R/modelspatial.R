@@ -5,6 +5,7 @@
   f = xi$forest
   s = xi$soil
   x = xi$x
+  f_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
   else if(inherits(meteo, "character")) {
@@ -46,8 +47,12 @@
   } else {
     s = NULL
   }
-  if(!keepResults) res <- NULL
-  return(list(result = res, summary = s))
+  if(!keepResults)  res = NULL
+  if(model=="fordyn"){
+    fs_i = res$ForestStructures
+    f_out = fs_i[[length(fs_i)]]
+  }
+  return(list(result = res, summary = s, forest_out = f_out))
 }
 
 .checkmodelinputs<-function(sp, y, meteo) {
@@ -115,6 +120,8 @@
   summarylist = vector("list",n)
   names(resultlist) = names(forestlist)
   names(summarylist) = names(forestlist)
+  forestlist_out = vector("list",n)
+  names(forestlist_out) = names(forestlist)
   
 
   if(model %in% c("spwb", "growth")) {
@@ -175,8 +182,9 @@
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
-      resultlist[[i]] = reslist_parallel[[i]]$result
+      if(keepResults) resultlist[[i]] = reslist_parallel[[i]]$result
       summarylist[[i]] = reslist_parallel[[i]]$summary
+      if(model=="fordyn") forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
     }
     if(progress) cat("\n")
   } else {
@@ -189,11 +197,12 @@
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model, 
-                      SpParams = SpParams, localControl = localControl, keepResults = keepResults,
+                      SpParams = SpParams, localControl = localControl,
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                       managementFunction = managementFunction, managementArgs = managementArgs)
-      resultlist[[i]] = sim_out$result
+      if(keepResults) resultlist[[i]] = sim_out$result
       summarylist[[i]] = sim_out$summary
+      if(model=="fordyn") forestlist_out[[i]] = sim_out$forest_out
     }
   }
   if(inherits(y, "SpatialGrid")) {
@@ -207,13 +216,6 @@
     sp_class = "SpatialPoints"
   }
   if(model=="fordyn") {
-    forestlist_out = vector("list",n)
-    names(forestlist_out) = names(forestlist)
-    for(i in 1:n) {
-      #Copy last forest structure
-      fs_i = resultlist[[i]]$ForestStructures
-      forestlist_out[[i]] = fs_i[[length(fs_i)]]
-    }
     res = list(sp = as(y, sp_class), 
                xlist = xlist, forestlist = forestlist_out,
                resultlist = resultlist, summarylist = summarylist)
