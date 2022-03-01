@@ -306,12 +306,14 @@ List watershedDay(String localModel,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                        precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
+                        precVec[iCell], Runon[iCell]+SaturationExcess[iCell],
+                        true);
       } else if(localModel =="growth") {
         res = medfate::growth_day(x, date,tminVec[iCell], tmaxVec[iCell], 
                                   rhminVec[iCell], rhmaxVec[iCell], radVec[iCell], wsVec[iCell],
                                   latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                                  precVec[iCell], Runon[iCell]+SaturationExcess[iCell]);
+                                  precVec[iCell], Runon[iCell]+SaturationExcess[iCell],
+                                  true);
       }
       localResults[iCell] = res; //Store for output
       soil["Kdrain"] = Kdrain; //Restore value

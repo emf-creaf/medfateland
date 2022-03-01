@@ -24,14 +24,16 @@
       res<-medfate::spwb_day(x, date, 
                              tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
                              latitude = xi$latitude, elevation = xi$elevation,
-                             slope = xi$slope, aspect = xi$aspect, prec = prec)
+                             slope = xi$slope, aspect = xi$aspect, prec = prec,
+                             modifyInput = TRUE)
     } 
   } else if(model=="growth") {
     if(inherits(x, "growthInput")) {
       res<-medfate::growth_day(x, date, 
                                tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
                                latitude = xi$latitude, elevation = xi$elevation,
-                               slope = xi$slope, aspect = xi$aspect, prec = prec)
+                               slope = xi$slope, aspect = xi$aspect, prec = prec,
+                               modifyInput = TRUE)
     } 
   } 
   return(res)

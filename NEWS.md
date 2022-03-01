@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.4.2
+- Compliance with medfate '2.6.2'
+
 # Version 0.4.1
 - Bug correction in modelspatial during coordinate checking
 - Welcome sentence
