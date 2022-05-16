@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
       </span>
     </div>
 
@@ -59,13 +59,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="LandscapeWaterBalance_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Landscape water balance</h1>
                         <h4 data-toc-skip class="author">Miquel De Caceres</h4>
             
-            <h4 data-toc-skip class="date">2022-02-16</h4>
+            <h4 data-toc-skip class="date">2022-05-16</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -127,14 +127,14 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">resultlist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, freq<span class="op">=</span><span class="st">"months"</span>,FUN<span class="op">=</span><span class="va">sum</span>, 
         output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span>
-<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6638736 13.093006</span>
-<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305199  5.552842</span>
+<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6640244 13.093006</span>
+<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305321  5.552842</span>
 <span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span>
-<span class="co">## 2001-01-01    50.756880      0  38.52782436           36.97977    20.434965</span>
-<span class="co">## 2001-02-01     6.383362      0   0.04848833           23.71497     1.627339</span>
+<span class="co">## 2001-01-01    50.757030      0     37.16334           39.23106    20.434814</span>
+<span class="co">## 2001-02-01     6.383374      0      0.00000           28.05538     1.627327</span>
 <span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
-<span class="co">## 2001-01-01       5.1524883        11.39231      11.39231</span>
-<span class="co">## 2001-02-01       0.6236007        21.46403      21.46403</span></code></pre>
+<span class="co">## 2001-01-01       5.0336702        13.75525      13.76257</span>
+<span class="co">## 2001-02-01       0.4989328        25.88060      25.92912</span></code></pre>
 <p>However, a more convenient way of generating summaries is by calculating them on all forest stands in one step, using function <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> for objects of class <code>spwbpoints</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span>, summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, 
@@ -147,14 +147,14 @@
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res_sum</span><span class="op">$</span><span class="va">summarylist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span>
-<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6638736 13.093006</span>
-<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305199  5.552842</span>
+<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6640244 13.093006</span>
+<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305321  5.552842</span>
 <span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span>
-<span class="co">## 2001-01-01    50.756880      0  38.52782436           36.97977    20.434965</span>
-<span class="co">## 2001-02-01     6.383362      0   0.04848833           23.71497     1.627339</span>
+<span class="co">## 2001-01-01    50.757030      0     37.16334           39.23106    20.434814</span>
+<span class="co">## 2001-02-01     6.383374      0      0.00000           28.05538     1.627327</span>
 <span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
-<span class="co">## 2001-01-01       5.1524883        11.39231      11.39231</span>
-<span class="co">## 2001-02-01       0.6236007        21.46403      21.46403</span></code></pre>
+<span class="co">## 2001-01-01       5.0336702        13.75525      13.76257</span>
+<span class="co">## 2001-02-01       0.4989328        25.88060      25.92912</span></code></pre>
 <p>Objects of class <code>summarypoints</code> are handy because their <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function allows us to display maps of temporal summaries:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-01-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -183,14 +183,14 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res_2</span><span class="op">$</span><span class="va">summarylist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span>
-<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6638736 13.093006</span>
-<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305199  5.552842</span>
+<span class="co">## 2001-01-01 44.47224      74.74949 58.098839 16.650650 37.6640244 13.093006</span>
+<span class="co">## 2001-02-01 83.79015       4.99943  2.457859  2.541571  0.8305321  5.552842</span>
 <span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span>
-<span class="co">## 2001-01-01    50.756880      0  38.52782436           36.97977    20.434965</span>
-<span class="co">## 2001-02-01     6.383362      0   0.04848833           23.71497     1.627339</span>
+<span class="co">## 2001-01-01    50.757030      0     37.16334           39.23106    20.434814</span>
+<span class="co">## 2001-02-01     6.383374      0      0.00000           28.05538     1.627327</span>
 <span class="co">##            SoilEvaporation PlantExtraction Transpiration</span>
-<span class="co">## 2001-01-01       5.1524883        11.39231      11.39231</span>
-<span class="co">## 2001-02-01       0.6236007        21.46403      21.46403</span></code></pre>
+<span class="co">## 2001-01-01       5.0336702        13.75525      13.76257</span>
+<span class="co">## 2001-02-01       0.4989328        25.88060      25.92912</span></code></pre>
 <p>And one can produce maps with summary results directly from the output of the simulation function:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_2</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -266,7 +266,7 @@
 <span class="co">## Final average soil water content (mm): 530.8</span>
 <span class="co">## Final average snowpack water content (mm): 0</span>
 <span class="co">## Final average aquifer water content (mm): 56.47</span>
-<span class="co">## Final watershed water content (mm): 579.23</span>
+<span class="co">## Final watershed water content (mm): 579.24</span>
 <span class="co">## </span>
 <span class="co">## Change in snowpack water content (mm): 0</span>
 <span class="co">## Snowpack water balance result (mm): 0</span>
@@ -288,10 +288,10 @@
 <span class="co">##   Deep drainage (mm) 56.47 Aquifer discharge (mm) 0</span>
 <span class="co">## </span>
 <span class="co">## Change in watershed water content (mm): 56.47</span>
-<span class="co">## Watershed water balance result (mm): 55.8</span>
+<span class="co">## Watershed water balance result (mm): 55.81</span>
 <span class="co">## Watershed water balance components:</span>
 <span class="co">##   Precipitation (mm) 74.75</span>
-<span class="co">##   Interception (mm) 6.64 Soil evaporation (mm) 8.61 Plant Transpiration (mm) 3.7</span>
+<span class="co">##   Interception (mm) 6.64 Soil evaporation (mm) 8.61 Plant Transpiration (mm) 3.69</span>
 <span class="co">##   Export (mm) 0</span>
 <span class="co">## Watershed lateral flows:</span>
 <span class="co">##   Subsurface flow (mm) 0</span>
@@ -309,11 +309,11 @@
 <pre><code><span class="co">##            Runon Runoff Infiltration     Rain  NetRain     Snow Snowmelt</span>
 <span class="co">## 2001-01-01     0      0     69.15817 64.98412 59.39281 9.765364 9.765364</span>
 <span class="co">##            Interception DeepDrainage AquiferDischarge SaturationExcess</span>
-<span class="co">## 2001-01-01     5.591314     57.37068                0                0</span>
+<span class="co">## 2001-01-01     5.591314     57.37157                0                0</span>
 <span class="co">##            SoilEvaporation Transpiration SWE  SoilVol        Psi1  WTD      DTA</span>
-<span class="co">## 2001-01-01        8.728107      3.343277   0 563.8283 -0.03300001 4000 14.84968</span>
+<span class="co">## 2001-01-01        8.728266      3.343243   0 563.8283 -0.03300001 4000 14.84968</span>
 <span class="co">##            InterflowInput InterflowOutput BaseflowInput BaseflowOutput</span>
-<span class="co">## 2001-01-01              0               0      6.422443       3.655436</span></code></pre>
+<span class="co">## 2001-01-01              0               0      6.422511       3.655516</span></code></pre>
 <p>Several plots can be drawn from the result of function <code><a href="../reference/spwbland.html">spwbland()</a></code> in a similar way as done for <code><a href="../reference/modelspatial.html">spwbpoints()</a></code>. As an example we display a map of soil water volume for the simulated month:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_ws</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></code></pre></div>
@@ -339,7 +339,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
