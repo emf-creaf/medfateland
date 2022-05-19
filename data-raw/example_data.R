@@ -13,7 +13,13 @@ spt = ifn3_topo[1001:1100,] #40 IFN stands
 codes = rownames(spt@coords)
 spt@coords = 1000*round(spt@coords/1000) #Decrease resolution to 1km
 lct = rep("wildland", length(codes))
-examplepointslandscape = SpatialPointsLandscape(spt, lct, ifn3[codes], ifn3_soils[codes])
+names(lct) = codes
+ifn3 = ifn3[codes]
+for(i in 1:length(ifn3)) {
+  ifn3[[i]]$treeData = ifn3[[i]]$treeData[,1:6]
+  ifn3[[i]] = forest_mergeTrees(ifn3[[i]])
+}
+examplepointslandscape = SpatialPointsLandscape(spt= spt, lct = lct, forestlist = ifn3[codes], soillist = ifn3_soils[codes])
 crs <- CRS(SRS_string = "EPSG:25831")
 comment(crs)<-gsub("°", "º", comment(crs)) # Replace non-ASCII character
 examplepointslandscape@proj4string <- crs
