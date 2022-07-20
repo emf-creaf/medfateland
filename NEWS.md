@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 0.4.3
+- Compliance with medfate '2.7.6'
+
 # Version 0.4.2
 - Compliance with medfate '2.6.2'
 

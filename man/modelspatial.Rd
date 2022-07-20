@@ -15,43 +15,43 @@
 Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. No spatial processes are simulated.
 }
 \usage{
-spwbpoints(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+spwbpoints(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-spwbpixels(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+spwbpixels(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-spwbgrid(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+spwbgrid(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-growthpoints(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+growthpoints(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-growthpixels(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+growthpixels(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-growthgrid(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+growthgrid(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
+       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 }
@@ -61,6 +61,7 @@ fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
   \item{meteo}{Meteorology data (see details).}
   \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
   \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
+  \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
   \item{keepResults}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
   \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
   \item{summaryArgs}{List with additional arguments for the summary function.}
