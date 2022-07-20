@@ -98,9 +98,8 @@
 
 .modelspatial<-function(y, SpParams, meteo, model = "spwb",
                         localControl = defaultControl(), dates = NULL,
-                        CO2ByYear = numeric(0), 
                         managementFunction = NULL, managementArgs = NULL,
-                        keepResults = TRUE,
+                        CO2ByYear = numeric(0), keepResults = TRUE,
                         summaryFunction=NULL, summaryArgs=NULL,
                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                         progress = TRUE) {
