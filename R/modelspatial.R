@@ -186,9 +186,9 @@
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
-      if(keepResults) resultlist[[i]] = reslist_parallel[[i]]$result
-      summarylist[[i]] = reslist_parallel[[i]]$summary
-      if(model=="fordyn") forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
+      if(keepResults && !is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
+      if(!is.null(reslist_parallel[[i]]$summary)) summarylist[[i]] = reslist_parallel[[i]]$summary
+      if(model=="fordyn" && !is.null(reslist_parallel[[i]]$forest_out)) forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
     }
     if(progress) cat("\n")
   } else {
@@ -204,9 +204,9 @@
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                       managementFunction = managementFunction, managementArgs = managementArgs)
-      if(keepResults) resultlist[[i]] = sim_out$result
-      summarylist[[i]] = sim_out$summary
-      if(model=="fordyn") forestlist_out[[i]] = sim_out$forest_out
+      if(keepResults && !is.null(sim_out$result)) resultlist[[i]] = sim_out$result
+      if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
+      if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
     }
   }
   if(inherits(y, "SpatialGrid")) {
