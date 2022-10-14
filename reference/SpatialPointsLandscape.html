@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -50,25 +50,31 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SpatialPointsLandscape</span><span class="op">(</span><span class="va">spt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span>
-<span class="fu">SpatialPixelsLandscape</span><span class="op">(</span><span class="va">spxt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span>
-<span class="fu">SpatialGridLandscape</span><span class="op">(</span><span class="va">sgt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SpatialPointsLandscape</span><span class="op">(</span><span class="va">spt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span></span>
+<span><span class="fu">SpatialPixelsLandscape</span><span class="op">(</span><span class="va">spxt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span></span>
+<span><span class="fu">SpatialGridLandscape</span><span class="op">(</span><span class="va">sgt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>spt</dt>
 <dd><p>An object of class <code>SpatialPointsTopography</code>.</p></dd>
-<dt>spxt</dt>
+
+  <dt>spxt</dt>
 <dd><p>An object of class <code>SpatialPixelsTopography</code>.</p></dd>
-<dt>sgt</dt>
+
+  <dt>sgt</dt>
 <dd><p>An object of class <code>SpatialGridTopography</code>.</p></dd>
-<dt>lct</dt>
+
+  <dt>lct</dt>
 <dd><p>A named character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock' or 'static').</p></dd>
-<dt>forestlist</dt>
+
+  <dt>forestlist</dt>
 <dd><p>A list of objects of class 'forest' with the same number of elements as spatial points/pixels.</p></dd>
-<dt>soillist</dt>
+
+  <dt>soillist</dt>
 <dd><p>A list of objects of class 'forest' with the same number of elements as spatial points/pixels.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -76,7 +82,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code> depending on the function.</p>
+    
+
+<p>An object of class <code><a href="SpatialPointsLandscape-class.html">SpatialPointsLandscape-class</a></code>, <code><a href="SpatialPixelsLandscape-class.html">SpatialPixelsLandscape-class</a></code> or <code><a href="SpatialGridLandscape-class.html">SpatialGridLandscape-class</a></code> depending on the function.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -99,7 +107,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

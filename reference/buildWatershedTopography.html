@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -50,25 +50,32 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">buildWatershedTopography</span><span class="op">(</span><span class="va">boundaries</span>, <span class="va">grid</span>, <span class="va">topo</span>, <span class="va">proj4string</span>, merge <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">buildWatershedTopography</span><span class="op">(</span><span class="va">boundaries</span>, <span class="va">grid</span>, <span class="va">topo</span>, <span class="va">proj4string</span>, merge <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>boundaries</dt>
 <dd><p>An object <code>SpatialPolygons-class</code> or <code>SpatialPolygonsDataFrame-class</code> containing the boundaries of the watershed.</p></dd>
-<dt>grid</dt>
+
+  <dt>grid</dt>
 <dd><p>An object <code>GridTopology-class</code> containing the grid definition.</p></dd>
-<dt>topo</dt>
+
+  <dt>topo</dt>
 <dd><p>An object <code>SpatialGridTopography-class</code> containing the topographic features at appropriate resolution</p></dd>
-<dt>proj4string</dt>
+
+  <dt>proj4string</dt>
 <dd><p>Projection string (i.e. <code>CRS</code>) corresponding to the grid definition.</p></dd>
-<dt>merge</dt>
+
+  <dt>merge</dt>
 <dd><p>A boolean flag to indicate wether polygons should be merged.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of objects <code>SpatialPixelsTopography-class</code>, each one describing the topography of the watershed. If <code>merge = TRUE</code> or the number of polygons is one, a single <code>SpatialPixelsTopography-class</code> object.</p>
+    
+
+<p>A list of objects <code>SpatialPixelsTopography-class</code>, each one describing the topography of the watershed. If <code>merge = TRUE</code> or the number of polygons is one, a single <code>SpatialPixelsTopography-class</code> object.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -91,7 +98,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -50,30 +50,39 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">DistributedWatershed</span><span class="op">(</span><span class="va">spxt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span>, <span class="va">bedrock</span>, <span class="va">channel</span>, 
-                     validateOutlets <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">DistributedWatershed</span><span class="op">(</span><span class="va">spxt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span>, <span class="va">bedrock</span>, <span class="va">channel</span>, </span>
+<span>                     validateOutlets <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>spxt</dt>
 <dd><p>An object of class <code>SpatialPixelsTopography</code>.</p></dd>
-<dt>lct</dt>
+
+  <dt>lct</dt>
 <dd><p>A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').</p></dd>
-<dt>forestlist</dt>
+
+  <dt>forestlist</dt>
 <dd><p>A list of objects of class 'forest' with the same number of elements as spatial pixels.</p></dd>
-<dt>soillist</dt>
+
+  <dt>soillist</dt>
 <dd><p>A list of objects of class 'forest' with the same number of elements as spatial pixels.</p></dd>
-<dt>bedrock</dt>
+
+  <dt>bedrock</dt>
 <dd><p>A data frame with the same number of rows as spatial pixels and containing hydraulic bedrock properties: 'DepthToBedrock' (mm), 'Conductivity' (m/day), 'Porosity' ([0-1]).</p></dd>
-<dt>channel</dt>
+
+  <dt>channel</dt>
 <dd><p>A logical vector to indicate which watershed cells belong to the channel network.</p></dd>
-<dt>validateOutlets</dt>
+
+  <dt>validateOutlets</dt>
 <dd><p>A flag to remove outlet cells that are outside channel network and on the boundaries of the watershed.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code><a href="DistributedWatershed-class.html">DistributedWatershed-class</a></code>.</p>
+    
+
+<p>An object of class <code><a href="DistributedWatershed-class.html">DistributedWatershed-class</a></code>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -86,18 +95,18 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">code</span> <span class="op">=</span> <span class="st">"20054998"</span></span>
-<span class="r-in"><span class="va">spt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/"</span>,</span>
-<span class="r-in">                     <span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lct</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/LandUse/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">forestlist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Forests/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">soillist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Soils/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bedrock</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Bedrock/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">channel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Channels/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">dw</span> <span class="op">=</span> <span class="fu">DistributedWatershed</span><span class="op">(</span><span class="va">spt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span>, <span class="va">bedrock</span>, <span class="va">channel</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">code</span> <span class="op">=</span> <span class="st">"20054998"</span></span></span>
+<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/SpatialPixelsTopography/"</span>,</span></span>
+<span class="r-in"><span>                     <span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lct</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/LandUse/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">forestlist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Forests/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">soillist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Soils/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bedrock</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Bedrock/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">channel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"D:/Datasets/Hydrology/Products/Catalonia/Channels/"</span>,<span class="va">code</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dw</span> <span class="op">=</span> <span class="fu">DistributedWatershed</span><span class="op">(</span><span class="va">spt</span>, <span class="va">lct</span>, <span class="va">forestlist</span>, <span class="va">soillist</span>, <span class="va">bedrock</span>, <span class="va">channel</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -112,7 +121,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

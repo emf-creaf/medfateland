@@ -67,7 +67,7 @@
     <loc>/reference/plot.spwbland.html</loc>
   </url>
   <url>
-    <loc>/reference/plot.summarypoints.html</loc>
+    <loc>/reference/plot.summaryspatial.html</loc>
   </url>
   <url>
     <loc>/reference/shinyplotland.html</loc>
@@ -79,7 +79,7 @@
     <loc>/reference/spwbland.html</loc>
   </url>
   <url>
-    <loc>/reference/summary.spwbpoints.html</loc>
+    <loc>/reference/summary.spwbspatial.html</loc>
   </url>
   <url>
     <loc>/reference/updateState.html</loc>
