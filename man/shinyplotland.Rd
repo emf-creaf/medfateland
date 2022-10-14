@@ -20,7 +20,7 @@ Only run this function in interactive mode. The shiny app can be used to display
 This is the case if the user supplies an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}. Allowed plots are the same as in \code{\link{getLandscapeLayer}}.
 
 \emph{Simulation result summaries}:
-This is the case if the user supplies an object of class \code{\link{summarypoints}}, \code{\link{summarypixels}} or \code{\link{summarygrid}}. Available plots depend on the summary function used to create the result summaries.
+This is the case if the user supplies an object of class \code{\link{summaryspatial}}. Available plots depend on the summary function used to create the result summaries.
 
 }
 \value{
@@ -30,5 +30,5 @@ An object that represents the shiny app
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{plot.summarypoints}}, \code{\link{getLandscapeLayer}}
+\code{\link{plot.summaryspatial}}, \code{\link{getLandscapeLayer}}
 }

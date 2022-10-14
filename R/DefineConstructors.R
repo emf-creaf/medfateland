@@ -84,9 +84,9 @@ SpatialGridLandscape<-function(sgt, lct, forestlist, soillist) {
   ncells = length(soillist)
   for(i in 1:ncells) {
     s = soillist[[i]]
-    if(class(s) == "data.frame") {
+    if(inherits(s, "data.frame")) {
       soillist[[i]] = soil(s)
-    } else if(class(s)=="soil") {
+    } else if(inherits(s, "soil")) {
       soillist[[i]] = s
     } else {
       stop(paste0("Wrong input soil class for",i,"\n"))
@@ -116,9 +116,9 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist) {
   ncells = length(soillist)
   for(i in 1:ncells) {
     s = soillist[[i]]
-    if(class(s) == "data.frame") {
+    if(inherits(s, "data.frame")) {
       soillist[[i]] = soil(s)
-    } else if(class(s)=="soil") {
+    } else if(inherits(s, "soil")) {
       soillist[[i]] = s
     } else {
       stop(paste0("Wrong input soil class for",i,"\n"))
@@ -160,9 +160,9 @@ DistributedWatershed<-function(spxt, lct, forestlist, soillist, bedrock, channel
       f = forestlist[[i]]
       s = soillist[[i]]
       if(!is.null(s)) {
-        if(class(s) == "data.frame") {
+        if(inherits(s, "data.frame")) {
           soillist[[i]] = soil(s)
-        } else if(class(s)=="soil") {
+        } else if(inherits(s, "soil")) {
           soillist[[i]] = s
         } else {
           stop(paste0("Wrong input soil class for",i,"\n"))

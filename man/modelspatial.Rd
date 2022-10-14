@@ -51,7 +51,7 @@ Simulation functions  accept different formats for meteorological input (paramet
 In the case of (1) or (4), all the spatio-temporal variation of weather is already supplied by the user. In the case of (2), interpolation of weather is done for each spatial location and the period indicated in \code{meteo} or, if supplied, \code{dates}. Finally, in the case of (3) spatial variation of weather is not considered.
 }
 \value{
-A list of class of the same name as the function called, also inheriting from an appropriate summary class (\code{summarypoints}, \code{summarypixels} or \code{summarygrid}), containing four elements:
+A list of class of the same name as the function called, also inheriting from a summary class (\code{summaryspatial}), containing four elements:
 \itemize{
 \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
 \item{\code{xlist}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
@@ -64,7 +64,7 @@ A list of class of the same name as the function called, also inheriting from an
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbspatial_day}}, \code{\link{summary.spwbspatial}} , \code{\link{plot.summarypoints}}, \code{\link{updateState}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbspatial_day}}, \code{\link{summary.spwbspatial}} , \code{\link{plot.summaryspatial}}, \code{\link{updateState}}
 }
 \examples{
 

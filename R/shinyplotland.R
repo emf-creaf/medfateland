@@ -77,7 +77,7 @@
 shinyplotland<-function(x, SpParams = NULL) {
   if(inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape")))
     return(.shinyplot_spatial(x, SpParams))
-  else if(inherits(x, c("summarypoints", "summarygrid", "summarypixels")))
+  else if(inherits(x, c("summaryspatial")))
     return(.shinyplot_results(x))
   else {
     stop("Wrong class type for 'x'")
