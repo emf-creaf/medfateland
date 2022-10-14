@@ -64,7 +64,7 @@ A list of class of the same name as the function called, also inheriting from an
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbpoints_day}}, \code{\link{summary.spwbpoints}} , \code{\link{plot.summarypoints}}, \code{\link{updateState}}
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbspatial_day}}, \code{\link{summary.spwbspatial}} , \code{\link{plot.summarypoints}}, \code{\link{updateState}}
 }
 \examples{
 
@@ -82,7 +82,7 @@ data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 res = spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
 
-#Generate summaries (these could have also been specified when calling 'spwbpoints')
+#Generate summaries (these could have also been specified when calling 'spwbspatial')
 res_sum = summary(res, summaryFunction = summary.spwb, freq="month")
 
 #Plot summaries

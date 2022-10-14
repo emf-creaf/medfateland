@@ -17,7 +17,7 @@ growthspatial_day(y, meteo, date, SpParams, localControl = defaultControl(),
 }
 \arguments{
   \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.}
-  \item{meteo}{Meteorology data (see \code{\link{spwbpoints}}).}
+  \item{meteo}{Meteorology data (see \code{\link{spwbspatial}}).}
   \item{date}{A string with the date to be simulated.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
   \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
@@ -27,7 +27,7 @@ growthspatial_day(y, meteo, date, SpParams, localControl = defaultControl(),
   \item{progress}{Boolean flag to display progress information for simulations.}
 }
 \details{
-Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbpoints}}
+Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbspatial}}
 }
 \value{
 A list of class of the same name as the function called containing three elements:
@@ -41,7 +41,7 @@ A list of class of the same name as the function called containing three element
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
-\code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwbpoints}}
+\code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwbspatial}}
 }
 \examples{
 
@@ -57,6 +57,6 @@ data("SpParamsMED")
 
 #Perform simulation
 date = "2001-03-01"
-res = spwbpoints_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
+res = spwbspatial_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
 }
 }

@@ -80,7 +80,7 @@ Function \code{spwbland} list of class 'spwbland' with the following elements:
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
-\code{\link{plot.spwbland}}, \code{\link{spwb_day}},  \code{\link{growth_day}},\code{\link{spwbpoints}}, \code{\link{DistributedWatershed-class}}
+\code{\link{plot.spwbland}}, \code{\link{spwb_day}},  \code{\link{growth_day}},\code{\link{spwbspatial}}, \code{\link{DistributedWatershed-class}}
 }
 \examples{
 \dontrun{

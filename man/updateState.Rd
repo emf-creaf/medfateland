@@ -20,5 +20,5 @@ An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{Spati
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \seealso{
-\code{\link{spwbpoints}}, \code{\link{spwbpoints_day}}, \code{\link{spwbland}}
+\code{\link{spwbspatial}}, \code{\link{spwbspatial_day}}, \code{\link{spwbland}}
 }
