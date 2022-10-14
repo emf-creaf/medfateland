@@ -34,14 +34,13 @@
   }
   return(character(0))
 }
-.plot_result<-function(x, variable, date, ...) {
+plot.summaryspatial<-function(x, variable, date, ...) {
   match.arg(variable, .getSummaryMatrixVarNames(x))
   match.arg(date, .getSummaryMatrixDates(x))
   vec <- .getSummaryMatrixVariable(x, variable, date)
   
   df = data.frame(y = vec)
-  row.names(df) = names(x$forestlist)
-  if(inherits(x, c("summarypoints"))) {
+  if(inherits(x$sp, c("SpatialPoints"))) {
     a = sf::st_as_sf(SpatialPointsDataFrame(x$sp, data = df))
     g1<-ggplot()+geom_sf(data=a, aes_string(col="y"))+
       scale_color_continuous("", ...)
@@ -56,13 +55,4 @@
     labs(title = paste0(variable, " [", date,"]"))+
     theme_bw()
   return(g1)
-}
-plot.summarypoints<-function(x, variable, date, ...) {
-  return(.plot_result(x,variable, date,...))
-}
-plot.summarygrid<-function(x, variable, date, ...) {
-  return(.plot_result(x,variable, date,...))
-}
-plot.summarypixels<-function(x, variable, date, ...) {
-  return(.plot_result(x,variable, date,...))
 }

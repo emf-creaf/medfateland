@@ -136,54 +136,27 @@
     }
   }
   if(inherits(y, "SpatialGrid")) {
-    sp = "grid"
     sp_class = "SpatialGrid"
   } else if(inherits(y, "SpatialPixels")) {
-    sp = "pixels"
     sp_class = "SpatialPixels"
   } else if(inherits(y, "SpatialPoints")) {
-    sp = "points"
     sp_class = "SpatialPoints"
   }
   res = list(sp = as(y, sp_class), 
              xlist = xlist, resultlist = resultlist)
-  class(res) = c(paste0(model, sp, "_day"),"list")
+  class(res) = c(paste0(model, "spatial", "_day"),"list")
   return(res)
 }
 
-spwbpoints_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
+spwbspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("points", y, meteo)
+  .checkmodelinputs(y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
                     parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
-spwbgrid_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("grid", y, meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
-}
-spwbpixels_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("pixels", y,meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
-}
-growthpoints_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
+growthspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                            parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("points", y, meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
-}
-growthgrid_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("grid",y,meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
-}
-growthpixels_day<-function(y, meteo, date, SpParams, localControl = defaultControl(), 
-                           parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs("pixels",y,meteo)
+  .checkmodelinputs(y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
                     parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }

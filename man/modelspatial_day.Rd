@@ -1,38 +1,22 @@
 \encoding{UTF-8}
-\name{spwbpoints_day}
-\alias{spwbpoints_day}
-\alias{spwbpixels_day}
-\alias{spwbgrid_day}
-\alias{growthpoints_day}
-\alias{growthpixels_day}
-\alias{growthgrid_day}
+\name{spwbspatial_day}
+\alias{spwbspatial_day}
+\alias{growthspatial_day}
 
 \title{One-day simulation for spatially-distributed forest stands}
 \description{
 Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, for a set of forest stands distributed in specific locations and a given date. No spatial processes are simulated.
 }
 \usage{
-spwbpoints_day(y, meteo, date, SpParams, localControl = defaultControl(),
+spwbspatial_day(y, meteo, date, SpParams, localControl = defaultControl(),
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-spwbpixels_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-spwbgrid_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthpoints_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthpixels_day(y, meteo, date, SpParams, localControl = defaultControl(),
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthgrid_day(y, meteo, date, SpParams, localControl = defaultControl(), 
+growthspatial_day(y, meteo, date, SpParams, localControl = defaultControl(),
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 }
 \arguments{
-  \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
+  \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.}
   \item{meteo}{Meteorology data (see \code{\link{spwbpoints}}).}
   \item{date}{A string with the date to be simulated.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}

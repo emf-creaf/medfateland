@@ -13,11 +13,8 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExpo
 export(buildWatershedTopography,
        defaultWatershedCorrectionFactors,
        DistributedWatershed,
-       spwbpoints, spwbpixels, spwbgrid,
-       growthpoints, growthpixels, growthgrid,
-       fordynpoints, fordynpixels, fordyngrid,
-       spwbpoints_day, spwbpixels_day, spwbgrid_day,
-       growthpoints_day, growthpixels_day, growthgrid_day,
+       spwbspatial, growthspatial, fordynspatial,
+       spwbspatial_day, growthspatial_day,
        shinyplotland,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland,
@@ -33,16 +30,8 @@ exportMethods("[", show, getLandscapeVariable, getLandscapeLayer,
 S3method(plot,spwbland)
 S3method(plot,growthland)
 
-S3method(plot,summarypoints)
-S3method(plot,summarypixels)
-S3method(plot,summarygrid)
+S3method(plot,summaryspatial)
 
-S3method(summary,spwbpoints)
-S3method(summary,spwbpixels)
-S3method(summary,spwbgrid)
-S3method(summary,growthpoints)
-S3method(summary,growthpixels)
-S3method(summary,growthgrid)
-S3method(summary,fordynpoints)
-S3method(summary,fordynpixels)
-S3method(summary,fordyngrid)
+S3method(summary,spwbspatial)
+S3method(summary,growthspatial)
+S3method(summary,fordynspatial)

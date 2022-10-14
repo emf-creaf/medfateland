@@ -1,62 +1,30 @@
 \encoding{UTF-8}
-\name{spwbpoints}
-\alias{spwbpoints}
-\alias{spwbpixels}
-\alias{spwbgrid}
-\alias{growthpoints}
-\alias{growthpixels}
-\alias{growthgrid}
-\alias{fordynpoints}
-\alias{fordynpixels}
-\alias{fordyngrid}
+\name{spwbspatial}
+\alias{spwbspatial}
+\alias{growthspatial}
+\alias{fordynspatial}
 
 \title{Simulations for spatially-distributed forest stands}
 \description{
 Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. No spatial processes are simulated.
 }
 \usage{
-spwbpoints(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+spwbspatial(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-spwbpixels(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
+growthspatial(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
-spwbgrid(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthpoints(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthpixels(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-growthgrid(y, SpParams, meteo, localControl = defaultControl(), dates = NULL, 
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-fordynpoints(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-fordynpixels(y, SpParams, meteo, localControl = defaultControl(),
-       dates = NULL, managementFunction = NULL, managementArgs = NULL,
-       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
-       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
-       progress = TRUE)
-fordyngrid(y, SpParams, meteo, localControl = defaultControl(),
+fordynspatial(y, SpParams, meteo, localControl = defaultControl(),
        dates = NULL, managementFunction = NULL, managementArgs = NULL,
        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction = NULL, summaryArgs=NULL, 
        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, 
        progress = TRUE)
 }
 \arguments{
-  \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}, depending on the function called.}
+  \item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.}
   \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
   \item{meteo}{Meteorology data (see details).}
   \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
@@ -112,7 +80,7 @@ data("SpParamsMED")
 
 #Perform simulation
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-res = spwbpoints(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
+res = spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
 
 #Generate summaries (these could have also been specified when calling 'spwbpoints')
 res_sum = summary(res, summaryFunction = summary.spwb, freq="month")

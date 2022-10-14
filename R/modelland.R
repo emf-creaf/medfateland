@@ -24,7 +24,7 @@
   aspect = y@data$aspect
 
   if(inherits(meteo,"data.frame")) {
-    oneMeteoCell = ("MeanTemperature" %in% names(meteo))
+    oneMeteoCell = ("MinTemperature" %in% names(meteo))
     datesMeteo = as.Date(row.names(meteo))
   } else if(inherits(meteo, "MeteorologyInterpolationData")) {
     datesMeteo = meteo@dates
@@ -190,7 +190,7 @@
         gridRadiation = as.numeric(ml["Radiation"])
         gridWindSpeed = as.numeric(ml["WindSpeed"])
       } else { # repeat values for all cells
-        gridMinTemperature = rep(meteo[i,"MeanTemperature"], nCells)
+        gridMinTemperature = rep(meteo[i,"MinTemperature"], nCells)
         gridMaxTemperature = rep(meteo[i,"MaxTemperature"], nCells)
         gridMinRelativeHumidity = rep(meteo[i,"MinRelativeHumidity"], nCells)
         gridMaxRelativeHumidity = rep(meteo[i,"MaxRelativeHumidity"], nCells)
