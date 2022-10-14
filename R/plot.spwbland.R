@@ -6,7 +6,7 @@ plot.spwbland<-function(x, variable = "Runon", date = NULL, ...) {
       geom_line( aes_string(x="Date", y="Runoff"), col="blue")+
       ylab("Watershed runoff (m3/day)")+theme_bw()
   } else if (variable %in% c(colnames(x$summarylist[[1]]))) {
-    g1 = plot.summarypixels(x, variable, date, ...)
+    g1 = plot.summaryspatial(x, variable, date, ...)
   } else {
     stop("Unknown plot variable")
   }
