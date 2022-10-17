@@ -6,6 +6,8 @@
   f = xi$forest
   s = xi$soil
   x = xi$x
+  sp = xi$sp
+  
   f_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
@@ -14,9 +16,14 @@
     else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
     met = met@data[[1]]
   }
-  else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
+  else if(inherits(meteo,"SpatialPointsMeteorology")) {
     met = meteo@data[[xi$i]]
-  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+  } 
+  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteoland::extractgridpoints(meteo, sp)
+    met = met@data[[1]]
+  } 
+  else if(inherits(meteo, "MeteorologyInterpolationData")) {
     met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
     met = met@data[[1]]
   }
@@ -166,7 +173,9 @@
         
     XI = vector("list", n)
     for(i in 1:n) {
-      XI[[i]] = list(i = i, id = names(forestlist)[i], spt = spt[i],
+      XI[[i]] = list(i = i, 
+                     sp = spts[i],
+                     id = names(forestlist)[i], spt = spt[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
@@ -190,7 +199,9 @@
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      xi = list(i = i, id = names(forestlist)[i],
+      xi = list(i = i, 
+                sp = spts[i],
+                id = names(forestlist)[i],
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
