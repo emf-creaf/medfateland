@@ -1,9 +1,13 @@
-.f_spatial_day<-function(xi, meteo, date, model){
+.f_spatial_day<-function(xi, meteo, date, model, sp_class){
   x = xi$x
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
   else if(inherits(meteo, "character")) {
-    met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
+    if(sp_class == "SpatialPoints") {
+      met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
+    } else {
+      met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+    }
     met = met@data[[1]]
   }
   else if(inherits(meteo,"SpatialPointsMeteorology")) {
