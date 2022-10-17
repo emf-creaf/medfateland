@@ -1,26 +1,29 @@
-.f_spatial<-function(xi, meteo, dates, model,
-                SpParams, localControl, CO2ByYear = numeric(0), 
-                keepResults = TRUE,
-                summaryFunction = NULL, summaryArgs = NULL, 
-                managementFunction = NULL, managementArgs = NULL){
+.f_spatial<-function(xi, meteo, dates, model, sp_class,
+                     SpParams, localControl, CO2ByYear = numeric(0), 
+                     keepResults = TRUE,
+                     summaryFunction = NULL, summaryArgs = NULL, 
+                     managementFunction = NULL, managementArgs = NULL){
   f = xi$forest
   s = xi$soil
   x = xi$x
-  sp = xi$sp
-  
+
   f_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
   else if(inherits(meteo, "character")) {
-    if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
-    else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
+    if(sp_class == "SpatialPoints") {
+      if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
+      else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
+    } else {
+      met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+    }
     met = met@data[[1]]
   }
   else if(inherits(meteo,"SpatialPointsMeteorology")) {
     met = meteo@data[[xi$i]]
   } 
   else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-    met = meteoland::extractgridpoints(meteo, sp)
+    met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
     met = met@data[[1]]
   } 
   else if(inherits(meteo, "MeteorologyInterpolationData")) {
@@ -105,6 +108,15 @@
                         summaryFunction=NULL, summaryArgs=NULL,
                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                         progress = TRUE) {
+  
+  if(inherits(y, "SpatialGrid")) {
+    sp_class = "SpatialGrid"
+  } else if(inherits(y, "SpatialPixels")) {
+    sp_class = "SpatialPixels"
+  } else if(inherits(y, "SpatialPoints")) {
+    sp_class = "SpatialPoints"
+  }
+  
   spts = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
@@ -174,15 +186,15 @@
     XI = vector("list", n)
     for(i in 1:n) {
       XI[[i]] = list(i = i, 
-                     sp = spts[i],
-                     id = names(forestlist)[i], spt = spt[i],
+                     id = names(forestlist)[i], 
+                     spt = spt[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
-                                             meteo = meteo, dates = dates, model = model, 
+                                             meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                                              SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, keepResults = keepResults,
                                              summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                                              managementFunction = managementFunction, managementArgs = managementArgs,
@@ -200,13 +212,12 @@
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, 
-                sp = spts[i],
                 id = names(forestlist)[i],
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
       sim_out = .f_spatial(xi = xi, 
-                      meteo = meteo, dates = dates, model = model, 
+                      meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                       managementFunction = managementFunction, managementArgs = managementArgs)
@@ -214,13 +225,6 @@
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
       if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
     }
-  }
-  if(inherits(y, "SpatialGrid")) {
-    sp_class = "SpatialGrid"
-  } else if(inherits(y, "SpatialPixels")) {
-    sp_class = "SpatialPixels"
-  } else if(inherits(y, "SpatialPoints")) {
-    sp_class = "SpatialPoints"
   }
   if(model=="fordyn") {
     res = list(sp = as(y, sp_class), 

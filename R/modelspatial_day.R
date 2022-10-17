@@ -6,9 +6,14 @@
     met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
     met = met@data[[1]]
   }
-  else if(inherits(meteo,"SpatialPointsMeteorology") || inherits(meteo,"SpatialGridMeteorology")|| inherits(meteo,"SpatialPixelsMeteorology")) {
+  else if(inherits(meteo,"SpatialPointsMeteorology")) {
     met = meteo@data[[xi$i]]
-  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+  } 
+  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+    met = met@data[[1]]
+  } 
+  else if(inherits(meteo, "MeteorologyInterpolationData")) {
     met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
     met = met@data[[1]]
   }
@@ -111,7 +116,9 @@
     
     XI = vector("list", n)
     for(i in 1:n) {
-      XI[[i]] = list(i = i, id = names(forestlist)[i], spt = spt[i], x = xlist[[i]],
+      XI[[i]] = list(i = i, 
+                     id = names(forestlist)[i], 
+                     spt = spt[i], x = xlist[[i]],
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
