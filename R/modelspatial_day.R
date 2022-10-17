@@ -53,6 +53,15 @@
                             localControl = defaultControl(),
                             parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                             progress = TRUE) {
+  
+  if(inherits(y, "SpatialGrid")) {
+    sp_class = "SpatialGrid"
+  } else if(inherits(y, "SpatialPixels")) {
+    sp_class = "SpatialPixels"
+  } else if(inherits(y, "SpatialPoints")) {
+    sp_class = "SpatialPoints"
+  }
+  
   spts = as(y,"SpatialPoints")
   topo = y@data
   spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
@@ -128,7 +137,7 @@
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial_day, 
-                                             meteo = meteo, date = date, model = model,
+                                             meteo = meteo, date = date, model = model, sp_class = sp_class,
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
@@ -143,16 +152,10 @@
       xi = list(i = i, id = names(forestlist)[i],
                 spt = spt[i], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
-      resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
+      resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model, sp_class = sp_class)
     }
   }
-  if(inherits(y, "SpatialGrid")) {
-    sp_class = "SpatialGrid"
-  } else if(inherits(y, "SpatialPixels")) {
-    sp_class = "SpatialPixels"
-  } else if(inherits(y, "SpatialPoints")) {
-    sp_class = "SpatialPoints"
-  }
+
   res = list(sp = as(y, sp_class), 
              xlist = xlist, resultlist = resultlist)
   class(res) = c(paste0(model, "spatial", "_day"),"list")
