@@ -1,5 +1,7 @@
 #' Scenario of forest dynamics
 #' 
+#' Evaluates forest dynamics over a landscape including climate and management scenarios
+#'
 #' @param y An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
 #'    Management units should be defined in this object.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 

@@ -43,5 +43,5 @@ Management units should be defined in this object.}
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
 \description{
-Scenario of forest dynamics
+Evaluates forest dynamics over a landscape including climate and management scenarios
 }

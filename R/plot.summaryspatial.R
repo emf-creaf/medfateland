@@ -34,6 +34,24 @@
   }
   return(character(0))
 }
+
+#' Displays spatial simulation summaries
+#' 
+#' Produces graphical output of the summaries of a simulation models
+#' 
+#' @param x An object of class \code{summaryspatial}, with simulation summaries.
+#' @param variable The variable to be drawn.
+#' @param date The date of the summary to be plotted.
+#' @param ... Additional parameters (passed to scale definition, such as \code{limits}).
+#' 
+#' @details Appropriate values for \code{x} can originate from calls to summary functions (e.g. \code{\link{summary.spwbspatial}}). 
+#' Alternatively, if summary functions were specified at the time of performing simulations, 
+#' the result of the simulation function (e.g. \code{\link{spwbspatial}}) will already contain the summaries.
+#' 
+#' @return An object of class \code{\link{ggplot}}.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' @seealso \code{\link{spwbspatial}}, \code{\link{summary.spwbspatial}}
 plot.summaryspatial<-function(x, variable, date, ...) {
   match.arg(variable, .getSummaryMatrixVarNames(x))
   match.arg(date, .getSummaryMatrixDates(x))
