@@ -1,3 +1,16 @@
+#' Updates the state of a landscape object
+#' 
+#' Updates the state of a spatial object 'x' according to the final state in simulation outcome 'y' 
+#' 
+#' @param x An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}}
+#' @param y The object resulting of a simulation previously carried on \code{x}.
+#' 
+#' @return An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}} with modified state variables.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' @seealso \code{\link{spwbspatial}}, \code{\link{spwbspatial_day}}, \code{\link{spwbland}}
+#' 
 updateState<-function(x, y) {
   if(!inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape"))) stop("'x' should be of class 'SpatialPointsLandscape', 'SpatialPixelsLandscape' or 'SpatialGridLandscape' ")
   if(!inherits(y, c("spwbspatial", "growthspatial", "fordynspatial",

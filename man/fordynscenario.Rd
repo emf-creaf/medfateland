@@ -38,7 +38,7 @@ Management units should be defined in this object.}
 
 \item{numCores}{Integer with the number of cores to be used for parallel computation.}
 
-\item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
+\item{chunk.size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
