@@ -177,7 +177,7 @@
   }
 
   # Replicate management function and arguments if they have length 1
-  if(mode %in% c("fordyn")) {
+  if(model %in% c("fordyn")) {
     if(!is.null(managementFunction)) {
       if(length(managementFunction)==1) managementFunction = rep(managementFunction, n)
       if(length(managementFunction != n)) stop("Wrong length of management function")
