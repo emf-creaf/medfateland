@@ -18,6 +18,7 @@ export(buildWatershedTopography,
        shinyplotland,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland,
+       fordynscenario,
        updateState)
 
 useDynLib(medfateland, .registration = TRUE)

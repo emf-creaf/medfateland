@@ -74,6 +74,27 @@
   }
   shinyApp(ui = ui, server = server)
 }
+
+#' Shiny app with interactive plots and maps
+#' 
+#' Creates a shiny app with interactive plots for spatial inputs and simulation results 
+#' 
+#' @param x The object containing information to be drawn (see details).
+#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
+#' 
+#' @details Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
+#' 
+#'   \emph{Spatial inputs}:
+#'     This is the case if the user supplies an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}. Allowed plots are the same as in \code{\link{getLandscapeLayer}}.
+#'     
+#'   \emph{Simulation result summaries}:
+#'     This is the case if the user supplies an object of class \code{\link{summaryspatial}}. Available plots depend on the summary function used to create the result summaries.
+#'     
+#' @return An object that represents the shiny app 
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{plot.summaryspatial}}, \code{\link{getLandscapeLayer}}
 shinyplotland<-function(x, SpParams = NULL) {
   if(inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape")))
     return(.shinyplot_spatial(x, SpParams))

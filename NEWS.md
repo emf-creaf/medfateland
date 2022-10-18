@@ -4,6 +4,7 @@
 
 # Version 0.5.0
 - Reduction of package functions to 'spatial' functions
+- New function 'fordynscenario'
 
 # Version 0.4.3
 - Compliance with medfate '2.7.6'

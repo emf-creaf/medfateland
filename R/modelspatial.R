@@ -1,8 +1,7 @@
 .f_spatial<-function(xi, meteo, dates, model, sp_class,
                      SpParams, localControl, CO2ByYear = numeric(0), 
                      keepResults = TRUE,
-                     summaryFunction = NULL, summaryArgs = NULL, 
-                     managementFunction = NULL, managementArgs = NULL){
+                     summaryFunction = NULL, summaryArgs = NULL){
   f = xi$forest
   s = xi$soil
   x = xi$x
@@ -51,7 +50,7 @@
                            latitude = xi$latitude, elevation = xi$elevation,
                            slope = xi$slope, aspect = xi$aspect,
                            CO2ByYear = CO2ByYear,
-                           management_function = managementFunction, management_args = managementArgs)})
+                           management_function = xi$managementFunction, management_args = xi$managementArgs)})
     }
   } 
   if(!is.null(summaryFunction) && !is.null(res)){
@@ -177,6 +176,18 @@
     }
   }
 
+  # Replicate management function and arguments if they have length 1
+  if(mode %in% c("fordyn")) {
+    if(!is.null(managementFunction)) {
+      if(length(managementFunction)==1) managementFunction = rep(managementFunction, n)
+      if(length(managementFunction != n)) stop("Wrong length of management function")
+    }
+    if(!is.null(managementArgs)) {
+      if(length(managementArgs)==1) managementArgs = rep(managementArgs, n)
+      if(length(managementArgs != n)) stop("Wrong length of management arguments")
+    }
+  }
+  
   if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations:\n"))
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
@@ -185,11 +196,16 @@
         
     XI = vector("list", n)
     for(i in 1:n) {
+      mf = NULL
+      if(!is.null(managementFunction)) mf = managementFunction[i]
+      ma = NULL
+      if(!is.null(managementArgs)) ma = managementArgs[i]
       XI[[i]] = list(i = i, 
                      id = names(forestlist)[i], 
                      spt = spt[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
-                     latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+                     latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
+                     managementFunction = mf, managementArgs = ma)
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
@@ -197,7 +213,6 @@
                                              meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                                              SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, keepResults = keepResults,
                                              summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
-                                             managementFunction = managementFunction, managementArgs = managementArgs,
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
@@ -211,16 +226,20 @@
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
+      mf = NULL
+      if(!is.null(managementFunction)) mf = managementFunction[i]
+      ma = NULL
+      if(!is.null(managementArgs)) ma = managementArgs[i]
       xi = list(i = i, 
                 id = names(forestlist)[i],
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
-                latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+                latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
+                managementFunction = mf, managementArgs = ma)
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
-                      summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
-                      managementFunction = managementFunction, managementArgs = managementArgs)
+                      summaryFunction = summaryFunction, summaryArgs = summaryArgs)
       if(keepResults && !is.null(sim_out$result)) resultlist[[i]] = sim_out$result
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
       if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
