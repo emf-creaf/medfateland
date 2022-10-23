@@ -1,9 +1,76 @@
+#' Class \code{"SpatialPointsLandscape"}
+#' 
+#' An S4 class that represents a set of forest stands along with their spatial location
+#' 
+#' @param data Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.
+#' @param coords Object of class \code{"matrix"} with spatial coordinates.
+#' @param bbox Object of class \code{"matrix"} with the boundary box.
+#' @param proj4string Object of class \code{"CRS"} with the projection string.
+#' @param lct A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').
+#' @param forestlist Object of class \code{"list"} containing a set of \code{\link{forest}} objects.
+#' @param soillist Object of class \code{"list"} containing a set of \code{\link{soil}} objects.
+#' @param xlist Object of class \code{"list"} containing a set of spwb or growth model input objects.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' 
+#' @examples 
+#' showClass("SpatialPointsLandscape")
+#' 
 setClass("SpatialPointsLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list", xlist = "list"),
          contains="SpatialPointsTopography")
+
+#' Class \code{"SpatialGridLandscape"}
+#' 
+#' An S4 class that represents a landscape configuration over a grid of coordinates.
+#' 
+#' @slot grid Object of class \code{"GridTopology"}.
+#' @slot bbox Object of class \code{"matrix"} with the boundary box.
+#' @slot proj4string Object of class \code{"CRS"} with the projection string.
+#' @slot data Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.
+#' @slot lct A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').
+#' @slot forestlist Object of class \code{"list"} containing a set of \code{\link{forest}} objects.
+#' @slot soillist Object of class \code{"list"} containing a set of \code{\link{soil}} objects.
+#' @slot xlist Object of class \code{"list"} containing a set of spwb or growth model input objects.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' 
+#' @examples 
+#' #Structure of the S4 object
+#' showClass("SpatialGridLandscape")
+#' 
 setClass("SpatialGridLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list", xlist = "list"),
          contains="SpatialGridTopography")
+
+#' Class \code{"SpatialPixelsLandscape"}
+#' 
+#' An S4 class that represents a landscape configuration over an (incomplete) grid of coordinates.
+#' 
+#' @param data Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.
+#' @param coords A matrix of pixel coordinates.
+#' @param coords.nrs Inherited from \code{SpatialPointsDataFrame} but not used.
+#' @param grid Object of class \code{GridTopology}.
+#' @param grid.index Index of points in full grid.
+#' @param bbox Object of class \code{"matrix"} with the boundary box.
+#' @param proj4string Object of class \code{"CRS"} with the projection string.
+#' @param lct A character vector with the land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').
+#' @param forestlist Object of class \code{"list"} containing a set of \code{\link{forest}} objects.
+#' @param soillist Object of class \code{"list"} containing a set of \code{\link{soil}} objects.
+#' @param xlist Object of class \code{"list"} containing a set of spwb or growth model input objects.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' 
+#' @examples 
+#' #Structure of the S4 object
+#' showClass("SpatialPixelsLandscape")
+#' 
 setClass("SpatialPixelsLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list", xlist = "list"),
          contains="SpatialPixelsTopography")

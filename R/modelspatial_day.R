@@ -162,12 +162,58 @@
   return(res)
 }
 
+#' One-day simulation for spatially-distributed forest stands
+#' 
+#' Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, for a set of forest stands distributed in specific locations and a given date. 
+#' No spatial processes are simulated.
+#'
+#' @param y An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' @param meteo Meteorology data (see \code{\link{spwbspatial}}).
+#' @param date A string with the date to be simulated.
+#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
+#' @param localControl A list of local model control parameters (see \code{\link{defaultControl}}).
+#' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
+#' @param numCores Integer with the number of cores to be used for parallel computation.
+#' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param progress Boolean flag to display progress information for simulations.
+#' 
+#' @returns A list of class of the same name as the function called containing three elements:
+#' \itemize{
+#'   \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
+#'   \item{\code{xlist}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
+#'   \item{\code{resultlist}: A list of model output for each simulated stand.}
+#' }
+#' 
+#' @details Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbspatial}}
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwbspatial}}
+#' 
+#' @examples 
+#' \dontrun{
+#'   #Load example watershed (inherits from SpatialPixelsLandscape)
+#'   data("examplepointslandscape")
+#'   
+#'   #Load example meteo data frame from package meteoland
+#'   data("examplemeteo")
+#'   
+#'   #Load default medfate parameters
+#'   data("SpParamsMED")
+#'   
+#'   #Perform simulation
+#'   date = "2001-03-01"
+#'   res = spwbspatial_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
+#' }
+#' 
+#' @name spwbspatial_day
 spwbspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs(y, meteo)
   .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
                     parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
+#' @rdname spwbspatial_day
 growthspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                            parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
   .checkmodelinputs(y, meteo)
