@@ -159,46 +159,129 @@
 setGeneric("getLandscapeVariable", function(obj, variable = "lct", SpParams = NULL, ...){
   standardGeneric("getLandscapeVariable")
 })
-setMethod("getLandscapeVariable", signature("SpatialPixelsLandscape"),
-          function(obj, variable = "lct", SpParams = NULL, ...) {
-            return(.getLandscapeVar(obj, variable, SpParams, ...))
-          })
-
-setMethod("getLandscapeVariable", signature("SpatialGridLandscape"),
-          function(obj, variable = "lct", SpParams = NULL, ...) {
-            return(.getLandscapeVar(obj, variable, SpParams, ...))
-          })
-setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
-          function(obj, variable = "lct", SpParams = NULL, ...) {
-            return(.getLandscapeVar(obj, variable, SpParams, ...))
-          })
-setMethod("getLandscapeVariable", signature("DistributedWatershed"),
-          function(obj, variable = "lct", SpParams = NULL, ...) {
-            return(.getLandscapeVar(obj, variable, SpParams, ...))
-          })
 
 
 setGeneric("getLandscapeLayer", valueClass ="Spatial", function(obj, variable = "lct", SpParams = NULL, ...){
   standardGeneric("getLandscapeLayer")
 })
+
+
+#' Landscape variables
+#' 
+#' Extract or estimate variables from objects \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' 
+#' @param obj An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' @param variable A string with the name of the variable to extract (see details).
+#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
+#' @param ... Additional arguments (not used).
+#' 
+#' @details The following string values are available for \code{variable}. 
+#'  \emph{Topography}:
+#'    \itemize{
+#'       \item{\code{"elevation"}:}{Elevation in m.}
+#'       \item{\code{"slope"}:}{Slope in degrees.} 
+#'       \item{\code{"aspect"}:}{Slope in degrees.} 
+#'       \item{\code{"lct"}:}{Land cover type.}
+#'    }
+#'    
+#'  \emph{Soil}:
+#'    \itemize{
+#'      \item{\code{"texture1"}:}{Texture class of the first soil layer.}
+#'      \item{\code{"texture2"}:}{Texture class of the second soil layer.} 
+#'      \item{\code{"texture3"}:}{Texture class of the third soil layer.} 
+#'      \item{\code{"SoilVolExtract"}:}{Total water extractable volume (mm).}
+#'      \item{\code{"SoilVolSAT"}:}{Total water volume at saturation (mm).}
+#'      \item{\code{"SoilVolFC"}:}{Total water volume at field capacity (mm).}
+#'      \item{\code{"SoilVolWP"}:}{Total water volume at wilting point (mm).}
+#'      \item{\code{"SoilVolCurr"}:}{Current total water volume (mm).}
+#'    }
+#'    
+#'  \emph{Watershed}:
+#'    \itemize{
+#'      \item{\code{"numNeigh"}:}{Number of cell neighbours (integer).}
+#'      \item{\code{"waterOrder"}:}{Cell order for lateral water transfer (integer).}
+#'      \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
+#'      \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
+#'      \item{\code{"DepthToBedrock"}:}{Depth to bedrock (m).}
+#'      \item{\code{"RockPorosity"}:}{Bedrock porosity.}
+#'      \item{\code{"RockConductivity"}:}{Bedrock conductivity.}
+#'      \item{\code{"AquiferElevation"}:}{Aquifer elevation over bedrock (m).}
+#'      \item{\code{"DepthToAquifer"}:}{Depth to aquifer (m).}
+#'      \item{\code{"AquiferVolume"}:}{Aquifer volume (mm).}
+#'      \item{\code{"Snowpack"}:}{Snowpack water equivalent (mm).}
+#'    }
+#'
+#' \emph{Forest stand}:
+#'    \itemize{
+#'      \item{\code{"basalArea"}:}{Basal area (m2/ha).}
+#'      \item{\code{"LAI"}:}{Leaf area index (m2/m2).} 
+#'      \item{\code{"foliarBiomass"}:}{Foliar biomass (kg/m2).} 
+#'      \item{\code{"fuel"}:}{Fine live fuel (kg/m2).} 
+#'      \item{\code{"phytovolume"}:}{Shrub phytovolume (m3/m2).}
+#'    }
+#'
+#' @returns Function \code{getLandscapeLayer} returns an object of class \code{\link{SpatialPointsDataFrame}}, \code{\link{SpatialPixelsDataFrame}} or \code{\link{SpatialGridDataFrame}}, depending on the input. Function \code{getLandscapeVariable} returns a numeric or character vector.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' @seealso \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplotland}}
+#' 
+#' @examples
+#'  # Load data and species parameters from medfate
+#'  data(examplepointslandscape)
+#'  data(SpParamsMED)
+#'  
+#'  # Calculate basal area for all forest stands
+#'  y <- getLandscapeLayer(examplepointslandscape, "basalArea")
+#'  # Plot basal area
+#'  spplot(y)
+#'  
+#'  # More straigthforwardly
+#'  plot(examplepointslandscape, "basalArea")
+#'  
+#' @name getLandscapeVariable
+setMethod("getLandscapeVariable", signature("SpatialPixelsLandscape"),
+          function(obj, variable = "lct", SpParams = NULL, ...) {
+            return(.getLandscapeVar(obj, variable, SpParams, ...))
+          })
+#' @rdname getLandscapeVariable
+setMethod("getLandscapeVariable", signature("SpatialGridLandscape"),
+          function(obj, variable = "lct", SpParams = NULL, ...) {
+            return(.getLandscapeVar(obj, variable, SpParams, ...))
+          })
+#' @rdname getLandscapeVariable
+setMethod("getLandscapeVariable", signature("SpatialPointsLandscape"),
+          function(obj, variable = "lct", SpParams = NULL, ...) {
+            return(.getLandscapeVar(obj, variable, SpParams, ...))
+          })
+#' @rdname getLandscapeVariable
+setMethod("getLandscapeVariable", signature("DistributedWatershed"),
+          function(obj, variable = "lct", SpParams = NULL, ...) {
+            return(.getLandscapeVar(obj, variable, SpParams, ...))
+          })
+
+#' @rdname getLandscapeVariable
 setMethod("getLandscapeLayer", signature("SpatialPixelsLandscape"),
           function(obj, variable = "lct", SpParams = NULL, ...) {
             df<-data.frame(y = .getLandscapeVar(obj, variable, SpParams, ...))
             names(df) <- variable
             return(SpatialPixelsDataFrame(as(obj,"SpatialPoints"), df, grid = obj@grid))
           })
+#' @rdname getLandscapeVariable
 setMethod("getLandscapeLayer", signature("SpatialGridLandscape"),
           function(obj, variable = "lct", SpParams = NULL, ...) {
             df<-data.frame(y = .getLandscapeVar(obj, variable, SpParams,...))
             names(df) <- variable
             return(SpatialGridDataFrame(obj@grid, df, proj4string = obj@proj4string))
           })
+#' @rdname getLandscapeVariable
 setMethod("getLandscapeLayer", signature("SpatialPointsLandscape"),
           function(obj, variable = "lct", SpParams = NULL, ...) {
             df<-data.frame(y = .getLandscapeVar(obj, variable, SpParams,...))
             names(df) <- variable
             return(SpatialPointsDataFrame(obj@coords, df,proj4string = obj@proj4string))
           })
+#' @rdname getLandscapeVariable
 setMethod("getLandscapeLayer", signature("DistributedWatershed"),
           function(obj, variable = "lct", SpParams = NULL, ...) {
             df<-data.frame(y = .getLandscapeVar(obj, variable, SpParams,...))
