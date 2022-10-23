@@ -258,7 +258,75 @@
   return(res)
 }
 
-
+#' Simulations for spatially-distributed forest stands
+#' 
+#' Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. 
+#' No spatial processes are simulated.
+#' 
+#' @param y An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
+#' @param meteo Input meteorological data (see section details).
+#' @param localControl A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
+#' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
+#' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
+#' @param keepResults Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
+#' @param summaryFunction An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
+#' @param summaryArgs List with additional arguments for the summary function.
+#' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
+#' @param numCores Integer with the number of cores to be used for parallel computation.
+#' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param progress Boolean flag to display progress information for simulations.
+#' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
+#' @param managementArgs A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}).
+#' 
+#' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources: 
+#' \enumerate{
+#'   \item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
+#'   \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
+#'   \item{A data frame with information regarding where to read meteorological data.}
+#'   \item{A data frame with meteorological data common for all cells of the grid.}
+#'   }
+#'  In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. 
+#'  In the case of (2), interpolation of weather is done over each grid cell every simulated day. 
+#'  In the case of (3) weather maps are read for each day. 
+#'  Finally, in the case of (4) spatial variation of weather is not considered.
+#'  
+#' @returns A list of class of the same name as the function called, also inheriting from a summary class (\code{summaryspatial}), containing four elements:
+#' \itemize{
+#'   \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
+#'   \item{\code{xlist}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
+#'   \item{\code{forestlist}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynpoints}, \code{fordynpixels} and \code{fordyngrid}), to be used in subsequent simulations (see \code{\link{updateState}}).}
+#'   \item{\code{resultlist}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+#'   \item{\code{summarylist}: A list of model output summaries for each simulated stand (if \code{summaryFunction} is not \code{NULL}).}
+#' }
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbspatial_day}}, \code{\link{summary.spwbspatial}} , \code{\link{plot.summaryspatial}}, \code{\link{updateState}}
+#' 
+#' @examples
+#'  \dontrun{
+#'   # Load example watershed (inherits from SpatialPixelsLandscape)
+#'   data("examplepointslandscape")
+#'   
+#'   # Load example meteo data frame from package meteoland
+#'   data("examplemeteo")
+#'   
+#'   # Load default medfate parameters
+#'   data("SpParamsMED")
+#'   
+#'   # Perform simulation
+#'   dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+#'   res = spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
+#'   
+#'   # Generate summaries (these could have also been specified when calling 'spwbspatial')
+#'   res_sum = summary(res, summaryFunction = summary.spwb, freq="month")
+#'   
+#'   # Plot summaries
+#'   plot(res_sum, "Transpiration", "2001-03-01")
+#'  }
+#' 
+#' @name spwbspatial
 spwbspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                      parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
@@ -267,6 +335,8 @@ spwbspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates
                 CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                 parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
+
+#' @rdname spwbspatial
 growthspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
@@ -275,6 +345,8 @@ growthspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dat
                 CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                 parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
+
+#' @rdname spwbspatial
 fordynspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        managementFunction = NULL, managementArgs = NULL,
                        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
