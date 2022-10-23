@@ -25,7 +25,7 @@ useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
 exportMethods("[", show, getLandscapeVariable, getLandscapeLayer, 
-              spatialForestSummary, spatialSoilSummary, 
+              spatialForestSummary, spatialSoilSummary, spatialModelInputSummary,
               plot, spplot, head, tail)
 
 S3method(plot,spwbland)

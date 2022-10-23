@@ -50,48 +50,78 @@
                               proj4string=object@proj4string))
 }
 
-setGeneric("spatialSoilSummary", valueClass ="Spatial", function(object, summaryFunction, ...){
-  standardGeneric("spatialSoilSummary")
-})
-setMethod("spatialSoilSummary", signature("SpatialPointsLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialPointsSummary(object, "soillist", summaryFunction, ...))
-})
-setMethod("spatialSoilSummary", signature("SpatialPixelsLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialPixelsSummary(object, "soillist", summaryFunction, ...))
-})
-setMethod("spatialSoilSummary", signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialGridSummary(object, "soillist", summaryFunction, ...))
-})
 
-
-#### spatialForestSummary ####
 setGeneric("spatialForestSummary", valueClass ="Spatial",
            function(object, summaryFunction, ...){
              standardGeneric("spatialForestSummary")
            })
-setMethod("spatialForestSummary", signature("SpatialPointsLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialPointsSummary(object, "forestlist", summaryFunction, ...))
+setGeneric("spatialSoilSummary", valueClass ="Spatial", function(object, summaryFunction, ...){
+  standardGeneric("spatialSoilSummary")
 })
-setMethod("spatialForestSummary", signature("SpatialPixelsLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialPixelsSummary(object, "forestlist", summaryFunction, ...))
-})
-setMethod("spatialForestSummary", signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
-  return(.spatialGridSummary(object, "forestlist", summaryFunction, ...))
-})
-
-
-
-#### spatialModelInputSummary ####
 setGeneric("spatialModelInputSummary", valueClass ="Spatial",
            function(object, summaryFunction, ...){
              standardGeneric("spatialModelInputSummary")
            })
+
+#' Forest and soil summaries over space
+#' 
+#' Functions to calculates a summary function for the forest or soil of all spatial elements in an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' 
+#' @param object An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' @param summaryFunction A function that accepts objects of class \code{\link{forest}} or \code{soil}, respectively.
+#' @param ... Additional arguments to the summary function.
+#' 
+#' @returns An object of class \code{\link{SpatialPointsDataFrame}}, \code{\link{SpatialPixelsDataFrame}} or \code{\link{SpatialGridDataFrame}}, depending on the input, containing the calculated statistics. 
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' @seealso \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}
+#' 
+#' @examples 
+#'  library(medfate)
+#'  # Load plot data and species parameters from medfate
+#'  data(examplepointslandscape)
+#'  data(SpParamsMED)
+#' 
+#'  # Apply summary function
+#'  y <- spatialForestSummary(examplepointslandscape,summary.forest, SpParamsMED)
+#'  head(y@data)
+#'  # Plot basal area
+#'  spplot(y["BA"])
+#'  
+#' @name spatialForestSummary
+setMethod("spatialForestSummary", signature("SpatialPointsLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialPointsSummary(object, "forestlist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
+setMethod("spatialForestSummary", signature("SpatialPixelsLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialPixelsSummary(object, "forestlist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
+setMethod("spatialForestSummary", signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialGridSummary(object, "forestlist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
+setMethod("spatialSoilSummary", signature("SpatialPointsLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialPointsSummary(object, "soillist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
+setMethod("spatialSoilSummary", signature("SpatialPixelsLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialPixelsSummary(object, "soillist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
+setMethod("spatialSoilSummary", signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
+  return(.spatialGridSummary(object, "soillist", summaryFunction, ...))
+})
+#' @name spatialForestSummary
 setMethod("spatialModelInputSummary", signature("SpatialPointsLandscape"), function(object, summaryFunction, ...) {
   return(.spatialPointsSummary(object, "xlist", summaryFunction, ...))
 })
+#' @name spatialForestSummary
 setMethod("spatialModelInputSummary", signature("SpatialPixelsLandscape"), function(object, summaryFunction, ...) {
   return(.spatialPixelsSummary(object, "xlist", summaryFunction, ...))
 })
+#' @name spatialForestSummary
 setMethod("spatialModelInputSummary", signature("SpatialGridLandscape"), function(object, summaryFunction, ...) {
   return(.spatialGridSummary(object, "xlist", summaryFunction, ...))
 })

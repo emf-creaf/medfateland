@@ -1,3 +1,19 @@
+#' Build SpatialPixelsTopography for watersheds
+#'
+#' Defines objects \code{\link{SpatialPixelsTopography-class}} for watersheds whose boundaries 
+#' are specified in a \code{\link{SpatialPolygons-class}} object.
+#' 
+#' @param boundaries An object \code{\link{SpatialPolygons-class}} or \code{\link{SpatialPolygonsDataFrame-class}} containing the boundaries of the watershed.
+#' @param grid An object \code{\link{GridTopology-class}} containing the grid definition.
+#' @param topo An object \code{\link{SpatialGridTopography-class}} containing the topographic features at appropriate resolution
+#' @param proj4string Projection string (i.e. \code{\link{CRS}}) corresponding to the grid definition.
+#' @param merge A boolean flag to indicate wether polygons should be merged.
+#' 
+#' @returns A list of objects \code{\link{SpatialPixelsTopography-class}}, each one describing the topography of the watershed. If \code{merge = TRUE} or the number of polygons is one, a single \code{\link{SpatialPixelsTopography-class}} object.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' @seealso \code{\link{SpatialPixelsTopography}}
 buildWatershedTopography<-function(boundaries, grid, topo, proj4string, merge = FALSE) {
   b = as(boundaries, "SpatialPolygons")
   cat(paste("Number of watersheds: ", length(b),"\n"))

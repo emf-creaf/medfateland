@@ -7,6 +7,8 @@
 updateState(x, y)
 }
 \arguments{
+\item{x}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.}
+
 \item{y}{The object resulting of a simulation previously carried on \code{x}.}
 }
 \value{

@@ -2,7 +2,7 @@
 #' 
 #' Updates the state of a spatial object 'x' according to the final state in simulation outcome 'y' 
 #' 
-#' @param x An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}}
+#' @param x An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
 #' @param y The object resulting of a simulation previously carried on \code{x}.
 #' 
 #' @return An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}} with modified state variables.
