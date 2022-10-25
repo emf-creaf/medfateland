@@ -1,6 +1,5 @@
 .f_spatial<-function(xi, meteo, dates, model, sp_class,
                      SpParams, localControl, CO2ByYear = numeric(0), 
-                     keepResults = TRUE,
                      summaryFunction = NULL, summaryArgs = NULL){
   f = xi$forest
   s = xi$soil
@@ -60,7 +59,6 @@
   } else {
     s = NULL
   }
-  if(!keepResults)  res = NULL
   if(model=="fordyn"){
     fs_i = res$ForestStructures
     f_out = fs_i[[length(fs_i)]]
@@ -211,12 +209,17 @@
     cl<-parallel::makeCluster(numCores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model, sp_class = sp_class,
-                                             SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, keepResults = keepResults,
+                                             SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear,
                                              summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
+      if(!is.null(reslist_parallel[[i]]$result)) {
+        if(model=="spwb") xlist[[i]] = reslist_parallel[[i]]$result$spwbOutput
+        else if(model=="growth") xlist[[i]] = reslist_parallel[[i]]$result$growthOutput
+        else if(model=="fordyn") xlist[[i]] = reslist_parallel[[i]]$result$NextInputObject
+      }
       if(keepResults && !is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
       if(!is.null(reslist_parallel[[i]]$summary)) summarylist[[i]] = reslist_parallel[[i]]$summary
       if(model=="fordyn" && !is.null(reslist_parallel[[i]]$forest_out)) forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
@@ -240,6 +243,11 @@
                       meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs)
+      if(!is.null(sim_out$result)) {
+        if(model=="spwb") xlist[[i]] = sim_out$result$spwbOutput
+        else if(model=="growth") xlist[[i]] = sim_out$result$growthOutput
+        else if(model=="fordyn") xlist[[i]] = sim_out$result$NextInputObject
+      }
       if(keepResults && !is.null(sim_out$result)) resultlist[[i]] = sim_out$result
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
       if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
