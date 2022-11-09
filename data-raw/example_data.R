@@ -6,9 +6,9 @@ examplewatershed@proj4string = crs
 usethis::use_data(examplewatershed, overwrite = T)
 
 #Example SpatialPointsLandscape
-ifn3 = readRDS("/home/miquel/OneDrive/Datasets/IFN/Products/IFN3/Rdata/forestlist_roots_IFN3_Catalunya.rds")
-ifn3_soils = readRDS("/home/miquel/OneDrive/Datasets/IFN/Products/Soils/soillist_cat_ifn23_unique_mod.rds")
-ifn3_topo = readRDS("/home/miquel/OneDrive/Datasets/IFN/Products/Topography/IFN23_spt_cat_unique_ETRS89H31.rds")
+ifn3 = readRDS("/home/miquel/OneDrive/EMFProducts/MEDFATE_Initialisation/IFN/Products/IFN3/Rdata/forestlist_roots_IFN3_Catalunya.rds")
+ifn3_topo = readRDS("/home/miquel/OneDrive/EMFProducts/MEDFATE_Initialisation/IFN/Products/Topography/IFN23_spt_cat_unique_ETRS89H31.rds")
+ifn3_soils = readRDS("/home/miquel/OneDrive/EMFProducts/MEDFATE_Initialisation/IFN/Products/Soils/soillist_cat_ifn23_unique_mod.rds")
 spt = ifn3_topo[1001:1100,] #40 IFN stands
 codes = rownames(spt@coords)
 spt@coords = 1000*round(spt@coords/1000) #Decrease resolution to 1km
@@ -19,6 +19,15 @@ for(i in 1:length(ifn3)) {
   ifn3[[i]]$treeData = ifn3[[i]]$treeData[,1:6]
   ifn3[[i]] = forest_mergeTrees(ifn3[[i]])
 }
+epl = sf::st_as_sf(spt)
+epl = epl[,c(4,1:3)]
+epl$lct = lct
+epl$forest = ifn3
+epl$soil = ifn3_soils[codes]
+epl$managementunit = NA
+epl$managementarguments = NA
+epl$representedarea = NA
+
 examplepointslandscape = SpatialPointsLandscape(spt= spt, lct = lct, forestlist = ifn3[codes], soillist = ifn3_soils[codes])
 crs <- CRS(SRS_string = "EPSG:25831")
 comment(crs)<-gsub("°", "º", comment(crs)) # Replace non-ASCII character

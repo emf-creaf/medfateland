@@ -8,9 +8,10 @@ fordynscenario(
   y,
   SpParams,
   meteo,
+  volumeFunction,
+  managementScenario,
   localControl = defaultControl(),
   dates = NULL,
-  managementScenario = NULL,
   CO2ByYear = numeric(0),
   parallelize = FALSE,
   numCores = detectCores() - 1,
@@ -26,11 +27,13 @@ Management units should be defined in this object.}
 
 \item{meteo}{Meteorology data (see \code{\link{fordynspatial}}).}
 
+\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume corresponding to each tree cohort.}
+
+\item{managementScenario}{A list defining the management scenario (see \code{\link{createManagementScenario}})}
+
 \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 
 \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
-
-\item{managementScenario}{A list defining the management scenario (i.e. year-by-year wood demand, management arguments and management function by management unit)}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 

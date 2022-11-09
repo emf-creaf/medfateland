@@ -174,15 +174,15 @@
     }
   }
 
-  # Replicate management function and arguments if they have length 1
+  # Replicate management arguments if they have length 1
   if(model %in% c("fordyn")) {
-    if(!is.null(managementFunction)) {
-      if(length(managementFunction)==1) managementFunction = rep(managementFunction, n)
-      if(length(managementFunction != n)) stop("Wrong length of management function")
-    }
     if(!is.null(managementArgs)) {
-      if(length(managementArgs)==1) managementArgs = rep(managementArgs, n)
-      if(length(managementArgs != n)) stop("Wrong length of management arguments")
+      if(length(managementArgs)==1) {
+        ml = vector("list", n)
+        for(i in 1:n) ml[[i]] = managementArgs
+        managementArgs = ml
+      }
+      if(length(managementArgs != n)) stop("Wrong length of management argument vector")
     }
   }
   
@@ -194,16 +194,14 @@
         
     XI = vector("list", n)
     for(i in 1:n) {
-      mf = NULL
-      if(!is.null(managementFunction)) mf = managementFunction[i]
       ma = NULL
-      if(!is.null(managementArgs)) ma = managementArgs[i]
+      if(!is.null(managementArgs)) ma = managementArgs[[i]]
       XI[[i]] = list(i = i, 
                      id = names(forestlist)[i], 
                      spt = spt[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
-                     managementFunction = mf, managementArgs = ma)
+                     managementFunction = managementFunction, managementArgs = ma)
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
@@ -229,16 +227,14 @@
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      mf = NULL
-      if(!is.null(managementFunction)) mf = managementFunction[i]
       ma = NULL
-      if(!is.null(managementArgs)) ma = managementArgs[i]
+      if(!is.null(managementArgs)) ma = managementArgs[[i]]
       xi = list(i = i, 
                 id = names(forestlist)[i],
                 spt = spt[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
-                managementFunction = mf, managementArgs = ma)
+                managementFunction = managementFunction, managementArgs = ma)
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
@@ -285,7 +281,8 @@
 #' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
-#' @param managementArgs A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}).
+#' @param managementArgs A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}) or a vector
+#' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources: 
 #' \enumerate{

@@ -85,7 +85,8 @@ fordynspatial(
 
 \item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}).}
 
-\item{managementArgs}{A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}).}
+\item{managementArgs}{A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}) or a vector
+of such lists, one per spatial unit.}
 }
 \value{
 A list of class of the same name as the function called, also inheriting from a summary class (\code{summaryspatial}), containing four elements:
