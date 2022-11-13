@@ -17,6 +17,7 @@ export(buildWatershedTopography,
        spwbspatial, growthspatial, fordynspatial,
        spwbspatial_day, growthspatial_day,
        shinyplotland,
+       SFLandscape,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland,
        fordynscenario,
@@ -24,7 +25,7 @@ export(buildWatershedTopography,
 
 useDynLib(medfateland, .registration = TRUE)
 
-exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
+exportClasses(SFLandscape, SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
 exportMethods("[", show, getLandscapeVariable, getLandscapeLayer, 
               spatialForestSummary, spatialSoilSummary, spatialModelInputSummary,
               plot, spplot, head, tail)

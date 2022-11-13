@@ -16,17 +16,21 @@ lct = rep("wildland", length(codes))
 names(lct) = codes
 ifn3 = ifn3[codes]
 for(i in 1:length(ifn3)) {
+  ifn3[[i]]$ID = NULL
+  ifn3[[i]]$patchsize = NULL
   ifn3[[i]]$treeData = ifn3[[i]]$treeData[,1:6]
   ifn3[[i]] = forest_mergeTrees(ifn3[[i]])
 }
 epl = sf::st_as_sf(spt)
-epl = epl[,c(4,1:3)]
-epl$lct = lct
-epl$forest = ifn3
-epl$soil = ifn3_soils[codes]
+epl$id = row.names(epl)
+row.names(epl)<-NULL
+epl = epl[,c(4,5,1:3)]
+epl$landcovertype = lct
 epl$managementunit = NA
 epl$managementarguments = NA
 epl$representedarea = NA
+exampleSFLandscape = SFLandscape(epl, ifn3, ifn3_soils[codes])
+usethis::use_data(exampleSFLandscape, overwrite = T)
 
 examplepointslandscape = SpatialPointsLandscape(spt= spt, lct = lct, forestlist = ifn3[codes], soillist = ifn3_soils[codes])
 crs <- CRS(SRS_string = "EPSG:25831")

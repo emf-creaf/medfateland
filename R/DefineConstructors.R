@@ -167,6 +167,41 @@ SpatialPixelsLandscape<-function(spxt, lct, forestlist, soillist) {
   return(spxl)
 }
 
+
+SFLandscape<-function(sf, forestlist, soillist) {
+  #check input
+  if(!inherits(sf,"sf")) 
+    stop("'sf' has to be of class 'sf'.")
+  if(!inherits(forestlist,"list")) 
+    stop("'forestlist' has to be a list of 'forest' objects.")
+  if(!inherits(soillist,"list")) 
+    stop("'soillist' has to be a list of 'soil' objects.")
+  
+  nsoil = length(soillist)
+  nforest = length(forestlist)
+  if(nsoil != nrow(sf)) stop("Number of soil elements has to be the same as the number of rows in 'sf'")
+  if(nforest != nrow(sf)) stop("Number of 'forest' elements has to be the same as the number of rows in 'sf'")
+  for(i in 1:nsoil) {
+    s = soillist[[i]]
+    if(inherits(s, "data.frame")) {
+      soillist[[i]] = soil(s)
+    } else if(inherits(s, "soil")) {
+      soillist[[i]] = s
+    } else {
+      stop(paste0("Wrong input soil class for",i,"\n"))
+    }
+  }
+  names(soillist) = NULL
+  names(forestlist) = NULL
+  xlist = vector("list", nsoil)
+  sflnds = new("SFLandscape",
+             sf = sf,
+             forestlist = forestlist, 
+             soillist = soillist,
+             xlist = xlist)
+  return(sflnds)
+}
+
 #' Defines a distributed watershed
 #'
 #' Function to initialize an object of \code{\link{DistributedWatershed-class}}.

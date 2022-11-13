@@ -75,6 +75,20 @@ setClass("SpatialPixelsLandscape",
          slots=list(lct="character", forestlist="list", soillist = "list", xlist = "list"),
          contains="SpatialPixelsTopography")
 
+
+#' Class \code{"SFLandscape"}
+#' 
+#' An S4 class that represents a landscape configuration over a set of simple features.
+#' 
+#' @param sf Object of class "sf" containing coordinates, topography, etc of every simple feature.
+#' @param forestlist Object of class \code{"list"} containing a set of \code{\link{forest}} objects.
+#' @param soillist Object of class \code{"list"} containing a set of \code{\link{soil}} objects.
+#' @param xlist Object of class \code{"list"} containing a set of spwb or growth model input objects.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+setClass("SFLandscape",
+         slots=list(sf="sf", forestlist="list", soillist = "list", xlist = "list"))
+
 #' Class \code{"DistributedWatershed"}
 #' 
 #' An S4 class that represents a landscape configuration over a grid of coordinates.

@@ -67,7 +67,9 @@
 }
 
 .checkmodelinputs<-function(y, meteo) {
-  if(!inherits(y,"SpatialPointsLandscape") && !inherits(y,"SpatialPixelsLandscape") && !inherits(y,"SpatialGridLandscape")) stop("'y' has to be of class 'SpatialPointsLandscape', 'SpatialPixelsLandscape' or 'SpatialGridLandscape'.")
+  if(!inherits(y, "SFLandscape") && !inherits(y,"SpatialPointsLandscape") && 
+     !inherits(y,"SpatialPixelsLandscape") && !inherits(y,"SpatialGridLandscape")) 
+    stop("'y' has to be of class 'SFLandscape', 'SpatialPointsLandscape', 'SpatialPixelsLandscape' or 'SpatialGridLandscape'.")
   if(inherits(y, "SpatialGridLandscape")) {
     if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
       stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
@@ -112,17 +114,29 @@
     sp_class = "SpatialPixels"
   } else if(inherits(y, "SpatialPoints")) {
     sp_class = "SpatialPoints"
+  } else if(inherits(y, "SFLandscape")) {
+    sp_class = "sf"
   }
   
-  spts = as(y,"SpatialPoints")
-  topo = y@data
-  spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
-  longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
-  latitude = longlat@coords[,2]
-  elevation = y@data$elevation
-  slope = y@data$slope
-  aspect = y@data$aspect
-
+  if(inherits(y, "Spatial")) {
+    spts = as(y,"SpatialPoints")
+    topo = y@data
+    spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
+    longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
+    latitude = longlat@coords[,2]
+    elevation = y@data$elevation
+    slope = y@data$slope
+    aspect = y@data$aspect
+  } else {
+    spts = as(as(y@sf, "Spatial"),"SpatialPoints")
+    spt = SpatialPointsTopography(spts, y@sf$elevation, y@sf$slope, y@sf$aspect)
+    longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
+    latitude = longlat@coords[,2]
+    elevation = y@sf$elevation
+    slope = y@sf$slope
+    aspect = y@sf$aspect
+  }
+  
   localControl$verbose = FALSE
 
   forestlist = y@forestlist
@@ -250,12 +264,23 @@
     }
   }
   if(model=="fordyn") {
-    res = list(sp = as(y, sp_class), 
-               xlist = xlist, forestlist = forestlist_out,
-               resultlist = resultlist, summarylist = summarylist)
+    if(sp_class == "sf") {
+      res = list(sf = y@sf, 
+                 xlist = xlist, forestlist = forestlist_out,
+                 resultlist = resultlist, summarylist = summarylist)
+    } else {
+      res = list(sp = as(y, sp_class), 
+                 xlist = xlist, forestlist = forestlist_out,
+                 resultlist = resultlist, summarylist = summarylist)
+    }
   } else {
-    res = list(sp = as(y, sp_class), 
-               xlist = xlist, resultlist = resultlist, summarylist = summarylist)
+    if(sp_class == "sf") {
+      res = list(sf = y@sf, 
+                 xlist = xlist, resultlist = resultlist, summarylist = summarylist)
+    } else {
+      res = list(sp = as(y, sp_class), 
+                 xlist = xlist, resultlist = resultlist, summarylist = summarylist)
+    }
   }
   
   class(res) = c(paste0(model, "spatial"), "summaryspatial","list")
