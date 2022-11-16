@@ -18,6 +18,7 @@ reference:
   - starts_with("example")
   - starts_with("Distributed")
   - starts_with("Spatial")
+  - sp_to_sf
 
 - title: Summary/extract functions for spatial classes
   desc:  Forest and soil summary functions for spatial classes
@@ -29,6 +30,7 @@ reference:
   desc:  Defaults for model inputs
   contents:
   - defaultWatershedCorrectionFactors
+  - create_management_scenario
 
 - title: Simulation
   desc:  Simulation model functions
