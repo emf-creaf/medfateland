@@ -54,29 +54,14 @@
                             parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                             progress = TRUE) {
   
-  if(inherits(y, "SpatialGrid")) {
-    sp_class = "SpatialGrid"
-  } else if(inherits(y, "SpatialPixels")) {
-    sp_class = "SpatialPixels"
-  } else if(inherits(y, "SpatialPoints")) {
-    sp_class = "SpatialPoints"
-  }
   
-  spts = as(y,"SpatialPoints")
-  topo = y@data
-  spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
-  longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
-  latitude = longlat@coords[,2]
-  elevation = y@data$elevation
-  slope = y@data$slope
-  aspect = y@data$aspect
-
+  latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+  
   localControl$verbose = FALSE
-
-  forestlist = y@forestlist
-  soillist  = y@soillist
-  xlist  = y@xlist
-
+  
+  forestlist = y$forest
+  soillist  = y$soil
+  xlist  = y$state
 
   n = length(forestlist)
   resultlist = vector("list",n)
@@ -130,9 +115,9 @@
     XI = vector("list", n)
     for(i in 1:n) {
       XI[[i]] = list(i = i, 
-                     id = names(forestlist)[i], 
-                     spt = spt[i], x = xlist[[i]],
-                     latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+                     id = y$id[i], 
+                     point = sf::st_geometry(y)[i], x = xlist[[i]],
+                     latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
@@ -149,42 +134,43 @@
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      xi = list(i = i, id = names(forestlist)[i],
-                spt = spt[i], x = xlist[[i]],
-                latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i])
+      xi = list(i = i, id = y$id[i],
+                spt = sf::st_geometry(y)[i], x = xlist[[i]],
+                latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
       resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model, sp_class = sp_class)
     }
   }
-
-  res = list(sp = as(y, sp_class), 
-             xlist = xlist, resultlist = resultlist)
-  class(res) = c(paste0(model, "spatial", "_day"),"list")
-  return(res)
+  res = sf::st_sf(geometry=sf::st_geometry(y))
+  res$state = xlist
+  res$result = resultlist
+  return(sf::st_as_sf(tibble::as_tibble(res)))
 }
 
 #' One-day simulation for spatially-distributed forest stands
 #' 
-#' Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, for a set of forest stands distributed in specific locations and a given date. 
+#' Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, 
+#' for a set of forest stands distributed in specific locations and a given date. 
 #' No spatial processes are simulated.
 #'
-#' @param y An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
-#' @param meteo Meteorology data (see \code{\link{spwbspatial}}).
+#' @param y An object of class \code{\link{sf}} with landscape information.
+#' @param meteo Meteorology data (see \code{\link{spwb_spatial}}).
 #' @param date A string with the date to be simulated.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param localControl A list of local model control parameters (see \code{\link{defaultControl}}).
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param numCores Integer with the number of cores to be used for parallel computation.
-#' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param chunk.size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
-#' @returns A list of class of the same name as the function called containing three elements:
+#' @returns An object of class \code{\link{sf}} the same name as the function called containing three elements:
 #' \itemize{
-#'   \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
-#'   \item{\code{xlist}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
-#'   \item{\code{resultlist}: A list of model output for each simulated stand.}
+#'   \item{\code{geometry}: Spatial geometry.}
+#'   \item{\code{state}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
+#'   \item{\code{result}: A list of model output for each simulated stand.}
 #' }
 #' 
-#' @details Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbspatial}}
+#' @details Simulation functions accept different formats for meteorological input (parameter \code{meteo}) 
+#' as described in \code{\link{spwb_spatial}}
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
@@ -192,20 +178,22 @@
 #' 
 #' @examples 
 #' \dontrun{
-#'   #Load example watershed (inherits from SpatialPixelsLandscape)
-#'   data("examplepointslandscape")
+#' #Load example landscape data
+#' data("examplepointslandscape")
 #'   
-#'   #Load example meteo data frame from package meteoland
-#'   data("examplemeteo")
+#' # Transform example to 'sf' 
+#' y = sp_to_sf(examplepointslandscape)
+#'
+#' #Load example meteo data frame from package meteoland
+#' data("examplemeteo")
 #'   
-#'   #Load default medfate parameters
-#'   data("SpParamsMED")
+#' #Load default medfate parameters
+#' data("SpParamsMED")
 #'   
-#'   #Perform simulation
-#'   date = "2001-03-01"
-#'   res = spwbspatial_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
+#' #Perform simulation
+#' date = "2001-03-01"
+#' res = spwb_spatial_day(y, examplemeteo, date, SpParamsMED)
 #' }
-#' 
 #' @name spwb_spatial_day
 spwb_spatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {

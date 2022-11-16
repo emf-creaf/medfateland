@@ -1,8 +1,11 @@
 #' Class \code{"SpatialPointsLandscape"}
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
 #' An S4 class that represents a set of forest stands along with their spatial location
 #' 
-#' @param data Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.
+#' @param data Object of class "data.frame" containing elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.
 #' @param coords Object of class \code{"matrix"} with spatial coordinates.
 #' @param bbox Object of class \code{"matrix"} with the boundary box.
 #' @param proj4string Object of class \code{"CRS"} with the projection string.
@@ -23,6 +26,9 @@ setClass("SpatialPointsLandscape",
          contains="SpatialPointsTopography")
 
 #' Class \code{"SpatialGridLandscape"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' 
 #' An S4 class that represents a landscape configuration over a grid of coordinates.
 #' 
@@ -48,6 +54,9 @@ setClass("SpatialGridLandscape",
          contains="SpatialGridTopography")
 
 #' Class \code{"SpatialPixelsLandscape"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' 
 #' An S4 class that represents a landscape configuration over an (incomplete) grid of coordinates.
 #' 
@@ -77,6 +86,9 @@ setClass("SpatialPixelsLandscape",
 
 
 #' Class \code{"DistributedWatershed"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' 
 #' An S4 class that represents a landscape configuration over a grid of coordinates.
 #' 

@@ -30,9 +30,9 @@ growth_spatial_day(
 )
 }
 \arguments{
-\item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.}
+\item{y}{An object of class \code{\link{sf}} with landscape information.}
 
-\item{meteo}{Meteorology data (see \code{\link{spwbspatial}}).}
+\item{meteo}{Meteorology data (see \code{\link{spwb_spatial}}).}
 
 \item{date}{A string with the date to be simulated.}
 
@@ -44,41 +44,45 @@ growth_spatial_day(
 
 \item{numCores}{Integer with the number of cores to be used for parallel computation.}
 
-\item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
+\item{chunk.size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
 \value{
-A list of class of the same name as the function called containing three elements:
+An object of class \code{\link{sf}} the same name as the function called containing three elements:
 \itemize{
-  \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
-  \item{\code{xlist}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
-  \item{\code{resultlist}: A list of model output for each simulated stand.}
+  \item{\code{geometry}: Spatial geometry.}
+  \item{\code{state}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
+  \item{\code{result}: A list of model output for each simulated stand.}
 }
 }
 \description{
-Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, for a set of forest stands distributed in specific locations and a given date. 
+Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, 
+for a set of forest stands distributed in specific locations and a given date. 
 No spatial processes are simulated.
 }
 \details{
-Simulation functions accept different formats for meteorological input (parameter \code{meteo}) as described in \code{\link{spwbspatial}}
+Simulation functions accept different formats for meteorological input (parameter \code{meteo}) 
+as described in \code{\link{spwb_spatial}}
 }
 \examples{
 \dontrun{
-  #Load example watershed (inherits from SpatialPixelsLandscape)
-  data("examplepointslandscape")
+#Load example landscape data
+data("examplepointslandscape")
   
-  #Load example meteo data frame from package meteoland
-  data("examplemeteo")
-  
-  #Load default medfate parameters
-  data("SpParamsMED")
-  
-  #Perform simulation
-  date = "2001-03-01"
-  res = spwbspatial_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
-}
+# Transform example to 'sf' 
+y = sp_to_sf(examplepointslandscape)
 
+#Load example meteo data frame from package meteoland
+data("examplemeteo")
+  
+#Load default medfate parameters
+data("SpParamsMED")
+  
+#Perform simulation
+date = "2001-03-01"
+res = spwb_spatial_day(y, examplemeteo, date, SpParamsMED)
+}
 }
 \seealso{
 \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwb_spatial}}

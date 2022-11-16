@@ -5,6 +5,8 @@
 \alias{DistributedWatershed-class}
 \title{Class \code{"DistributedWatershed"}}
 \description{
+`r lifecycle::badge("deprecated")`
+
 An S4 class that represents a landscape configuration over a grid of coordinates.
 }
 \section{Slots}{

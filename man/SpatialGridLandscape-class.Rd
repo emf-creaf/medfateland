@@ -5,6 +5,8 @@
 \alias{SpatialGridLandscape-class}
 \title{Class \code{"SpatialGridLandscape"}}
 \description{
+`r lifecycle::badge("deprecated")`
+
 An S4 class that represents a landscape configuration over a grid of coordinates.
 }
 \section{Slots}{

@@ -28,6 +28,8 @@
 \item{xlist}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
 }
 \description{
+`r lifecycle::badge("deprecated")`
+
 An S4 class that represents a landscape configuration over an (incomplete) grid of coordinates.
 }
 \examples{

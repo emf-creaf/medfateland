@@ -5,7 +5,7 @@
 \alias{SpatialPointsLandscape-class}
 \title{Class \code{"SpatialPointsLandscape"}}
 \arguments{
-\item{data}{Object of class "data.frame" containing the elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
+\item{data}{Object of class "data.frame" containing elevation (in m), slope (in degrees) and aspect (in degrees from North) of every cell.}
 
 \item{coords}{Object of class \code{"matrix"} with spatial coordinates.}
 
@@ -22,6 +22,8 @@
 \item{xlist}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
 }
 \description{
+`r lifecycle::badge("deprecated")`
+
 An S4 class that represents a set of forest stands along with their spatial location
 }
 \examples{
