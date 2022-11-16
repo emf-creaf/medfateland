@@ -19,11 +19,5 @@ An example of an object of \code{\link{SpatialPointsLandscape-class}} with data 
 \item{Forest structure and composition from the Third Spanish Forest Inventory (IFN3).}
 }
 }
-\seealso{ 
-\code{\link{SpatialPointsLandscape}}, \code{\link{SpatialPointsLandscape-class}}}
-\examples{
-data(examplepointslandscape)
-
-plot(examplepointslandscape)
-}
+\seealso{\code{\link{SpatialPointsLandscape-class}}}
 \keyword{datasets}

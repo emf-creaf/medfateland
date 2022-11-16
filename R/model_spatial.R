@@ -1,4 +1,4 @@
-.f_spatial<-function(xi, meteo, dates, model, sp_class,
+.f_spatial<-function(xi, meteo, dates, model,
                      SpParams, localControl, CO2ByYear = numeric(0), 
                      summaryFunction = NULL, summaryArgs = NULL){
   f = xi$forest
@@ -8,26 +8,26 @@
   f_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
-  else if(inherits(meteo, "character")) {
-    if(sp_class == "SpatialPoints") {
-      if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
-      else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
-    } else {
-      met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-    }
-    met = met@data[[1]]
-  }
-  else if(inherits(meteo,"SpatialPointsMeteorology")) {
-    met = meteo@data[[xi$i]]
-  } 
-  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-    met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-    met = met@data[[1]]
-  } 
-  else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
-    met = met@data[[1]]
-  }
+  # else if(inherits(meteo, "character")) {
+  #   if(sp_class == "SpatialPoints") {
+  #     if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
+  #     else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
+  #   } else {
+  #     met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+  #   }
+  #   met = met@data[[1]]
+  # }
+  # else if(inherits(meteo,"SpatialPointsMeteorology")) {
+  #   met = meteo@data[[xi$i]]
+  # } 
+  # else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+  #   met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+  #   met = met@data[[1]]
+  # } 
+  # else if(inherits(meteo, "MeteorologyInterpolationData")) {
+  #   met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
+  #   met = met@data[[1]]
+  # }
   if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -206,7 +206,7 @@
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                 managementFunction = managementFunction, managementArgs = y$managementarguments[[i]])
       sim_out = .f_spatial(xi = xi, 
-                      meteo = meteo, dates = dates, model = model, sp_class = sp_class,
+                      meteo = meteo, dates = dates, model = model,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs)
       if(!is.null(sim_out$result)) {
@@ -263,8 +263,8 @@
 #' @returns An object of class 'sf' containing four elements:
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
-#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
-#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{updateState}}).}
+#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_state}}).}
+#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_state}}).}
 #'   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
 #'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 #' }

@@ -447,7 +447,8 @@
 #' }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{plot.spwbland}}, \code{\link{spwb_day}},  \code{\link{growth_day}},\code{\link{spwbspatial}}, \code{\link{DistributedWatershed-class}}
+#' @seealso \code{\link{spwb_day}},  \code{\link{growth_day}},
+#' \code{\link{spwb_spatial}}
 #' 
 #' @examples 
 #' \dontrun{

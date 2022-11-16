@@ -89,8 +89,8 @@ of such lists, one per spatial unit.}
 An object of class 'sf' containing four elements:
 \itemize{
   \item{\code{geometry}: Spatial geometry.}
-  \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
-  \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{updateState}}).}
+  \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_state}}).}
+  \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_state}}).}
   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }

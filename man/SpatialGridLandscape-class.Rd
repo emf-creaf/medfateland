@@ -35,7 +35,7 @@ showClass("SpatialGridLandscape")
 
 }
 \seealso{
-\code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+\code{\link{forest}}, \code{\link{soil}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

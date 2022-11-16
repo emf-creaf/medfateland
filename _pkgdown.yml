@@ -23,10 +23,8 @@ reference:
 - title: Summary/extract functions for spatial classes
   desc:  Forest and soil summary functions for spatial classes
   contents:
-  - spatialForestSummary
-  - spatialSoilSummary
-  - getLandscapeLayer
-  - getLandscapeVariable
+  - landscape_summary
+  - extract_variables
 
 - title: Model inputs
   desc:  Defaults for model inputs
@@ -42,13 +40,11 @@ reference:
   - starts_with("growth")
   - starts_with("fordyn")
   - ends_with("_day")
-  - updateState
+  - update_state
 
 - title: Post-processing
   desc:  Plot and summary functions for simulation results
   contents: 
-  - starts_with("plot.summary")
-  - plot.spwbland
-  - plot.growthland
-  - starts_with("summary")
+  - starts_with("plot_summary")
+  - starts_with("simulation_summary")
   - shinyplot_land

@@ -71,7 +71,7 @@
   server <- function(input, output, session) {
     
     output$summary_plot <- renderPlot({
-      plotsummary(x, variable = input$plot_var, date = input$plot_date)
+      plot_summary(x, variable = input$plot_var, date = input$plot_date)
     })
   }
   shinyApp(ui = ui, server = server)

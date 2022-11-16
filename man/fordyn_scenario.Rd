@@ -20,16 +20,16 @@ fordyn_scenario(
 )
 }
 \arguments{
-\item{y}{An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+\item{y}{An object of class \code{\link{sf}} with landscape information.
 Management units should be defined in this object.}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
-\item{meteo}{Meteorology data (see \code{\link{fordynspatial}}).}
+\item{meteo}{Meteorology data (see \code{\link{fordyn_spatial}}).}
 
 \item{volumeFunction}{A function accepting a forest object as input and returning the wood volume corresponding to each tree cohort.}
 
-\item{managementScenario}{A list defining the management scenario (see \code{\link{createManagementScenario}})}
+\item{managementScenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
 
 \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 

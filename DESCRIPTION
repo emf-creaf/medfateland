@@ -12,11 +12,11 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes
 Depends: R (>= 3.4.0), sp, medfate (>= 2.7.6)
-Imports: ggplot2, sf, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), lifecycle, parallel, shiny
+Imports: ggplot2, sf, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), lifecycle, 
+    parallel, shiny, tibble
 Suggests: 
     knitr,
     rmarkdown,
-    rjson,
     testthat (>= 3.0.0)
 LinkingTo: Rcpp, meteoland, medfate
 Encoding: UTF-8

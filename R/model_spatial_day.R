@@ -1,26 +1,26 @@
-.f_spatial_day<-function(xi, meteo, date, model, sp_class){
+.f_spatial_day<-function(xi, meteo, date, model){
   x = xi$x
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
-  else if(inherits(meteo, "character")) {
-    if(sp_class == "SpatialPoints") {
-      met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
-    } else {
-      met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-    }
-    met = met@data[[1]]
-  }
-  else if(inherits(meteo,"SpatialPointsMeteorology")) {
-    met = meteo@data[[xi$i]]
-  } 
-  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-    met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-    met = met@data[[1]]
-  } 
-  else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
-    met = met@data[[1]]
-  }
+  # else if(inherits(meteo, "character")) {
+  #   if(sp_class == "SpatialPoints") {
+  #     met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
+  #   } else {
+  #     met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+  #   }
+  #   met = met@data[[1]]
+  # }
+  # else if(inherits(meteo,"SpatialPointsMeteorology")) {
+  #   met = meteo@data[[xi$i]]
+  # } 
+  # else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+  #   met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
+  #   met = met@data[[1]]
+  # } 
+  # else if(inherits(meteo, "MeteorologyInterpolationData")) {
+  #   met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
+  #   met = met@data[[1]]
+  # }
   tmin = met[date,"MinTemperature"]
   tmax = met[date,"MaxTemperature"]
   rhmin = met[date,"MinRelativeHumidity"]
@@ -122,7 +122,7 @@
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial_day, 
-                                             meteo = meteo, date = date, model = model, sp_class = sp_class,
+                                             meteo = meteo, date = date, model = model,
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
@@ -137,7 +137,7 @@
       xi = list(i = i, id = y$id[i],
                 spt = sf::st_geometry(y)[i], x = xlist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
-      resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model, sp_class = sp_class)
+      resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
     }
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))

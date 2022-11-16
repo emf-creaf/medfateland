@@ -16,7 +16,7 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' @seealso \code{\link{forest}}, \code{\link{soil}}
 #' 
 #' @examples 
 #' showClass("SpatialPointsLandscape")
@@ -43,7 +43,7 @@ setClass("SpatialPointsLandscape",
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' @seealso \code{\link{forest}}, \code{\link{soil}}
 #' 
 #' @examples 
 #' #Structure of the S4 object
@@ -74,7 +74,7 @@ setClass("SpatialGridLandscape",
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spatialForestSummary}}, \code{\link{forest}}, \code{\link{soil}}, \code{\link{getLandscapeLayer}}
+#' @seealso \code{\link{forest}}, \code{\link{soil}}
 #' 
 #' @examples 
 #' #Structure of the S4 object

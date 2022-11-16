@@ -11,7 +11,7 @@
 #'
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #'
-#' @seealso \code{\link{spwbland}}
+#' @seealso \code{\link{spwb_land}}
 #' 
 #' @examples defaultWatershedCorrectionFactors()
 defaultWatershedCorrectionFactors<-function() {

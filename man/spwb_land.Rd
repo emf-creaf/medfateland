@@ -124,7 +124,8 @@ res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "mont
 
 }
 \seealso{
-\code{\link{plot.spwbland}}, \code{\link{spwb_day}},  \code{\link{growth_day}},\code{\link{spwbspatial}}, \code{\link{DistributedWatershed-class}}
+\code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{spwb_spatial}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

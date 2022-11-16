@@ -21,7 +21,7 @@ Defines default values for correction factors used to modulate watershed hydraul
 defaultWatershedCorrectionFactors()
 }
 \seealso{
-\code{\link{spwbland}}
+\code{\link{spwb_land}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

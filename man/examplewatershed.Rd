@@ -30,11 +30,5 @@ Huscroft, J., Gleeson, T., Hartmann, J., \enc{Börker}{Borker}, J., 2018. Compil
 
 Shangguan, W., Hengl, T., Mendes de Jesus, J., Yuan, H., Dai, Y., 2017. Mapping the global depth to bedrock for land surface modeling. J. Adv. Model. Earth Syst. 9, 65–88. doi:10.1002/2016MS000686
 }
-\seealso{ 
-\code{\link{DistributedWatershed}}, \code{\link{SpatialPixelsLandscape-class}}}
-\examples{
-data(examplewatershed)
-
-plot(examplewatershed, "elevation")
-}
+\seealso{\code{\link{SpatialPixelsLandscape-class}}}
 \keyword{datasets}
