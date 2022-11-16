@@ -16,10 +16,10 @@
 #'
 #' @examples
 #'  # Creates default scenario with two management units
-#'  s = createManagementScenario(2)
-createManagementScenario<-function(numberOfUnits,
-                                   managementFunction = NULL, 
-                                   managementArguments = NULL) {
+#'  s = create_management_scenario(2)
+create_management_scenario<-function(numberOfUnits,
+                                     managementFunction = NULL, 
+                                     managementArguments = NULL) {
   
   if(is.null(managementFunction)) managementFunction = medfate::defaultManagementFunction
   if(is.null(managementArguments)) managementArguments = medfate::defaultManagementArguments()
@@ -33,6 +33,6 @@ createManagementScenario<-function(numberOfUnits,
   l <- list(managementFunction = managementFunction,
             managementUnits = managementUnits,
             annualDemandBySpecies = numeric(0))
-  class(l) <- c("ManagementScenario", "list")
+  class(l) <- c("management_scenario", "list")
   return(l)
 }

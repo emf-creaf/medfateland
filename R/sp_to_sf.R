@@ -8,7 +8,9 @@
 #' 
 sp_to_sf<-function(y) {
   epl = sf::st_as_sf(as(y, "SpatialPoints"))
-  epl$id = row.names(coordinates(y))
+  ids = row.names(coordinates(y))
+  epl$id = 1:nrow(epl)
+  if(!is.null(ids)) epl$id = ids
   row.names(epl)<-NULL
   epl$elevation = y@data$elevation
   epl$slope = y@data$slope

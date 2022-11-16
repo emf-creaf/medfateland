@@ -41,7 +41,7 @@ landscape_summary<-function(object, name, summaryFunction, ..., unlist = FALSE) 
   for(i in 1:length(l)) {
     if(!l_isnull[i]) sm[[i]] = do.call(summaryFunction, args=list(object=l[[i]],...))
   }
-  res = sf::st_sf(geometry=sf::st_geometry(y))
+  res = sf::st_sf(geometry=sf::st_geometry(object))
   if(!unlist) {
     res$summary = sm
   } else {

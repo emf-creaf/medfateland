@@ -9,7 +9,7 @@ importFrom(Rcpp, evalCpp)
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
-export(createManagementScenario,
+export(create_management_scenario,
        defaultWatershedCorrectionFactors,
        extract_variables,
        plot_variable,
