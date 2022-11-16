@@ -273,7 +273,7 @@
 #' 
 #' @seealso 
 #' \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
-#' \code{\link{summary_spatial}} , \code{\link{plot_summary}}, \code{\link{update_state}}
+#' \code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_state}}
 #' 
 #' @examples
 #' \dontrun{

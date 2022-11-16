@@ -28,7 +28,7 @@ the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}})
 will already contain the summaries.
 }
 \seealso{
-\code{\link{spwb_spatial}}, \code{\link{summary_spatial}}
+\code{\link{spwb_spatial}}, \code{\link{simulation_summary}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
