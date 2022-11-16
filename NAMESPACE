@@ -1,7 +1,6 @@
 import(sp)
 import(sf)
 import(ggplot2)
-import(spdep)
 import(methods)
 import(meteoland)
 import(medfate)
@@ -10,8 +9,7 @@ importFrom(Rcpp, evalCpp)
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
-export(buildWatershedTopography,
-       createManagementScenario,
+export(createManagementScenario,
        defaultWatershedCorrectionFactors,
        extract_variables,
        plot_variable,
@@ -23,8 +21,6 @@ export(buildWatershedTopography,
        landscape_summary,
        shinyplot_land,
        sp_to_sf,
-       SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
-       DistributedWatershed,
        fordyn_scenario,
        update_state)
 
