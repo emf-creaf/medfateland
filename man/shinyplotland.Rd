@@ -7,7 +7,7 @@
 shinyplotland(x, SpParams = NULL)
 }
 \arguments{
-\item{x}{The object containing information to be drawn (see details).}
+\item{x}{The object of class 'sf' containing information to be drawn (see details).}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
 }
@@ -21,7 +21,7 @@ Creates a shiny app with interactive plots for spatial inputs and simulation res
 Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
 
   \emph{Spatial inputs}:
-    This is the case if the user supplies an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}. Allowed plots are the same as in \code{\link{getLandscapeLayer}}.
+    This is the case if the user supplies an object of class \code{\link{sf}} with simulation inputs.
     
   \emph{Simulation result summaries}:
     This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.

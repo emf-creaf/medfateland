@@ -131,7 +131,7 @@ dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 res = spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
   
 # Generate summaries (these could have also been specified when calling 'spwbspatial')
-res_sum = summary_spatial(res, summaryFunction = summary.spwb, freq="month")
+res_sum = simulation_summary(res, summaryFunction = summary.spwb, freq="month")
 
 # Plot summaries
 plot_summary(res_sum, "Transpiration", "2001-03-01")

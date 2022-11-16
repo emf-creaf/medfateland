@@ -2,9 +2,12 @@
 % Please edit documentation in R/extract_variables.R
 \name{extract_variables}
 \alias{extract_variables}
+\alias{plot_variable}
 \title{Landscape variables}
 \usage{
 extract_variables(x, vars = "landcovertype", SpParams = NULL, ...)
+
+plot_variable(x, variable = "landcovertype", SpParams = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with the appropriate columns.}
@@ -14,6 +17,8 @@ extract_variables(x, vars = "landcovertype", SpParams = NULL, ...)
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
 
 \item{...}{Additional arguments (not used).}
+
+\item{variable}{A string with the name of the variables to draw (see details).}
 }
 \value{
 An object of class \code{\link{sf}} with the desired variables.
@@ -79,7 +84,7 @@ y = sp_to_sf(examplepointslandscape)
 # for all forest stands
 extract_variables(y, vars = c("basalarea", "leafareaindex"),
                   SpParams = SpParamsMED)
-
+                  
 }
 \seealso{
 \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplotland}}

@@ -2,11 +2,11 @@
   return(c( "Elevation (m)" = "elevation", 
             "Slope (degrees)" = "slope", 
             "Aspect (degrees)" = "aspect", 
-            "Land cover type" ="landcovertype"))
+            "Land cover type" = "landcovertype"))
 }
 .getLandscapeTopographyVar<-function(obj, variable) {
   if(variable=="landcovertype") {
-    varplot = factor(obj$lct)
+    varplot = obj$landcovertype
   } else if(variable=="elevation") {
     varplot = obj$elevation
   } else if(variable=="slope") {
@@ -21,11 +21,11 @@
   return(c("Texture (first layer)" = "texture1", 
            "Texture (second layer)" = "texture2", 
            "Texture (third layer)" ="texture3",
-           "Total water extractable volume (mm)" = "SoilVolExtract",
-           "Total water volume at saturation (mm)" = "SoilVolSAT",
-           "Total water volume at field capacity (mm)" = "SoilVolFC",
-           "Total water volume at wilting point (mm)" = "SoilVolWP",
-           "Current total water volume (mm)" = "SoilVolCurr",
+           "Total water extractable volume (mm)" = "soilvolextract",
+           "Total water volume at saturation (mm)" = "soilvolsat",
+           "Total water volume at field capacity (mm)" = "soilvolfc",
+           "Total water volume at wilting point (mm)" = "soilvolwp",
+           "Current total water volume (mm)" = "soilvolcurr",
            "Soil moisture (first layer)" = "theta1",
            "Soil moisture (second layer)" = "theta2",
            "Soil moisture (third layer)" = "theta3",
@@ -34,7 +34,7 @@
            "Water potential (third layer)" = "psi3"))
 }
 .getLandscapeSoilVar<-function(obj, variable) {
-  n = length(obj@soillist)
+  n = length(obj$soil)
   varplot = rep(NA, n)
   for(i in 1:n) {
     s = obj$soil[[i]]
@@ -161,6 +161,7 @@
 #' 
 #' @param x An object of class \code{\link{sf}} with the appropriate columns.
 #' @param vars A string vector with the name of the variables to extract (see details).
+#' @param variable A string with the name of the variables to draw (see details).
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
 #' @param ... Additional arguments (not used).
 #' 
@@ -227,11 +228,20 @@
 #' # for all forest stands
 #' extract_variables(y, vars = c("basalarea", "leafareaindex"),
 #'                   SpParams = SpParamsMED)
-#' 
+#'                   
+#' @name extract_variables
 extract_variables<-function(x, vars = "landcovertype", SpParams = NULL, ...) {
   df = sf::st_sf(geometry = sf::st_geometry(x))
   for(var in vars) {
     df[[var]] = .getLandscapeVar(x, var, SpParams, ...)
   }
   return(sf::st_as_sf(tibble::as_tibble(df)))
+}
+
+#' @rdname extract_variables
+plot_variable<-function(x, variable = "landcovertype", SpParams = NULL, ...){
+  df = extract_variables(x, vars= variable, SpParams = SpParams)
+  g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+
+     theme_bw()
+  g
 }

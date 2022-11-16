@@ -20,8 +20,8 @@
 #' 
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{plot_summary}}
 #' 
-#' @name summary_spatial
-summary_spatial<-function(object, summaryFunction, ...) {
+#' @name simulation_summary
+simulation_summary<-function(object, summaryFunction, ...) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")
   if(!("result" %in% names(object))) stop("Column 'result' must be defined in 'object'.")
   n = length(object$result)
