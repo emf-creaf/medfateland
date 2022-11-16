@@ -14,27 +14,23 @@ export(buildWatershedTopography,
        createManagementScenario,
        defaultWatershedCorrectionFactors,
        DistributedWatershed,
-       spwbspatial, growthspatial, fordynspatial,
-       spwbspatial_day, growthspatial_day,
+       extract_variables,
+       plot_summary,
+       spwb_spatial, growth_spatial, fordyn_spatial,
+       spwb_spatial_day, growth_spatial_day,
        shinyplotland,
        sp_to_sf,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        spwbland, growthland,
+       summary_spatial,
        fordynscenario,
-       updateState)
+       update_state)
 
 useDynLib(medfateland, .registration = TRUE)
 
-exportClasses(SFLandscape, SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
-exportMethods("[", show, getLandscapeVariable, getLandscapeLayer, 
-              spatialForestSummary, spatialSoilSummary, spatialModelInputSummary,
-              plot, spplot, head, tail)
+exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
+exportMethods("[", show, 
+              spatialForestSummary, spatialSoilSummary, spatialModelInputSummary)
 
 S3method(plot,spwbland)
 S3method(plot,growthland)
-
-S3method(plot,summaryspatial)
-
-S3method(summary,spwbspatial)
-S3method(summary,growthspatial)
-S3method(summary,fordynspatial)

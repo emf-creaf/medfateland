@@ -66,92 +66,62 @@
   return(list(result = res, summary = s, forest_out = f_out))
 }
 
-.checkmodelinputs<-function(y, meteo) {
-  if(!inherits(y, "SFLandscape") && !inherits(y,"SpatialPointsLandscape") && 
-     !inherits(y,"SpatialPixelsLandscape") && !inherits(y,"SpatialGridLandscape")) 
-    stop("'y' has to be of class 'SFLandscape', 'SpatialPointsLandscape', 'SpatialPixelsLandscape' or 'SpatialGridLandscape'.")
-  if(inherits(y, "SpatialGridLandscape")) {
-    if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialGridMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } else if(inherits(y, "SpatialPixelsLandscape")) {
-    if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialPixelsMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } else if(inherits(y, "SpatialPointsLandscape")) {
-    if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
-      stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
-    if(inherits(meteo,"SpatialPointsMeteorology")) {
-      ycoords = coordinates(y)
-      mcoords = coordinates(meteo)
-      if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
-    }
-  } 
+.check_model_inputs<-function(y, meteo) {
+  if(!inherits(y, "sf")) stop("'y' has to be an object of class 'sf'.")
+  if(!all(c("elevation","slope","aspect") %in% names(y))) stop("Columns 'elevation', 'slope' and 'aspect' must be defined.")
+  if(!("forest" %in% names(y))) stop("Column 'forest' must be defined.")
+  if(!("soil" %in% names(y))) stop("Column 'soil' must be defined.")
+  # if(inherits(y, "SpatialGridLandscape")) {
+  #   if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
+  #     stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
+  #   if(inherits(meteo,"SpatialGridMeteorology")) {
+  #     ycoords = coordinates(y)
+  #     mcoords = coordinates(meteo)
+  #     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  #   }
+  # } else if(inherits(y, "SpatialPixelsLandscape")) {
+  #   if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
+  #     stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
+  #   if(inherits(meteo,"SpatialPixelsMeteorology")) {
+  #     ycoords = coordinates(y)
+  #     mcoords = coordinates(meteo)
+  #     if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  #   }
+  # } else if(inherits(y, "SpatialPointsLandscape")) {
+  #   if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
+  #     stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
+  #   if(inherits(meteo,"SpatialPointsMeteorology")) {
+  #     ycoords = coordinates(y)
+  #     mcoords = coordinates(meteo)
+  #     if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
+  #   }
+  # } 
   if(inherits(meteo, "character")) {
     if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
   }
 }
 
-.modelspatial<-function(y, SpParams, meteo, model = "spwb",
+.model_spatial<-function(y, SpParams, meteo, model = "spwb",
                         localControl = defaultControl(), dates = NULL,
-                        managementFunction = NULL, managementArgs = NULL,
+                        managementFunction = NULL,
                         CO2ByYear = numeric(0), keepResults = TRUE,
                         summaryFunction=NULL, summaryArgs=NULL,
                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
                         progress = TRUE) {
   
-  if(inherits(y, "SpatialGrid")) {
-    sp_class = "SpatialGrid"
-  } else if(inherits(y, "SpatialPixels")) {
-    sp_class = "SpatialPixels"
-  } else if(inherits(y, "SpatialPoints")) {
-    sp_class = "SpatialPoints"
-  } else if(inherits(y, "SFLandscape")) {
-    sp_class = "sf"
-  }
-  
-  if(inherits(y, "Spatial")) {
-    spts = as(y,"SpatialPoints")
-    topo = y@data
-    spt = SpatialPointsTopography(spts, topo$elevation, topo$slope, topo$aspect)
-    longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
-    latitude = longlat@coords[,2]
-    elevation = y@data$elevation
-    slope = y@data$slope
-    aspect = y@data$aspect
-  } else {
-    spts = as(as(y@sf, "Spatial"),"SpatialPoints")
-    spt = SpatialPointsTopography(spts, y@sf$elevation, y@sf$slope, y@sf$aspect)
-    longlat = spTransform(spts,CRS(SRS_string = "EPSG:4326"))
-    latitude = longlat@coords[,2]
-    elevation = y@sf$elevation
-    slope = y@sf$slope
-    aspect = y@sf$aspect
-  }
-  
+  latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+
   localControl$verbose = FALSE
 
-  forestlist = y@forestlist
-  soillist  = y@soillist
-  xlist  = y@xlist
-
+  forestlist = y$forest
+  soillist  = y$soil
+  xlist  = y$state
+  managementArgs = y$managementarguments
 
   n = length(forestlist)
   resultlist = vector("list",n)
   summarylist = vector("list",n)
-  names(resultlist) = names(forestlist)
-  names(summarylist) = names(forestlist)
   forestlist_out = vector("list",n)
-  names(forestlist_out) = names(forestlist)
-  
 
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
@@ -188,18 +158,6 @@
     }
   }
 
-  # Replicate management arguments if they have length 1
-  if(model %in% c("fordyn")) {
-    if(!is.null(managementArgs)) {
-      if(length(managementArgs)==1) {
-        ml = vector("list", n)
-        for(i in 1:n) ml[[i]] = managementArgs
-        managementArgs = ml
-      }
-      if(length(managementArgs != n)) stop("Wrong length of management argument vector")
-    }
-  }
-  
   if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations:\n"))
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
@@ -211,18 +169,18 @@
       ma = NULL
       if(!is.null(managementArgs)) ma = managementArgs[[i]]
       XI[[i]] = list(i = i, 
-                     id = names(forestlist)[i], 
-                     spt = spt[i],
+                     id = y$id[i], 
+                     point = sf::st_geometry(y)[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
-                     latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
-                     managementFunction = managementFunction, managementArgs = ma)
+                     latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
+                     managementFunction = managementFunction, managementArgs = y$managementarguments[[i]])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
     cl<-parallel::makeCluster(numCores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
-                                             meteo = meteo, dates = dates, model = model, sp_class = sp_class,
+                                             meteo = meteo, dates = dates, model = model,
                                              SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear,
-                                             summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                                             summaryFunction = summaryFunction, 
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
@@ -241,14 +199,12 @@
     if(progress) pb = txtProgressBar(0, n, style=3)
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
-      ma = NULL
-      if(!is.null(managementArgs)) ma = managementArgs[[i]]
       xi = list(i = i, 
-                id = names(forestlist)[i],
-                spt = spt[i],
+                id = y$id[i],
+                point = sf::st_geometry(y)[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
-                latitude = latitude[i], elevation = elevation[i], slope= slope[i], aspect = aspect[i],
-                managementFunction = managementFunction, managementArgs = ma)
+                latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
+                managementFunction = managementFunction, managementArgs = y$managementarguments[[i]])
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model, sp_class = sp_class,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
@@ -263,28 +219,12 @@
       if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
     }
   }
-  if(model=="fordyn") {
-    if(sp_class == "sf") {
-      res = list(sf = y@sf, 
-                 xlist = xlist, forestlist = forestlist_out,
-                 resultlist = resultlist, summarylist = summarylist)
-    } else {
-      res = list(sp = as(y, sp_class), 
-                 xlist = xlist, forestlist = forestlist_out,
-                 resultlist = resultlist, summarylist = summarylist)
-    }
-  } else {
-    if(sp_class == "sf") {
-      res = list(sf = y@sf, 
-                 xlist = xlist, resultlist = resultlist, summarylist = summarylist)
-    } else {
-      res = list(sp = as(y, sp_class), 
-                 xlist = xlist, resultlist = resultlist, summarylist = summarylist)
-    }
-  }
-  
-  class(res) = c(paste0(model, "spatial"), "summaryspatial","list")
-  return(res)
+  res = sf::st_sf(geometry=sf::st_geometry(y))
+  res$state = xlist
+  if(model=="fordyn") res$forest = forestlist_out
+  res$result = resultlist
+  res$summary = summarylist
+  return(sf::st_as_sf(tibble::as_tibble(res)))
 }
 
 #' Simulations for spatially-distributed forest stands
@@ -292,7 +232,7 @@
 #' Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. 
 #' No spatial processes are simulated.
 #' 
-#' @param y An object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}.
+#' @param y An object of class \code{\link{sf}}.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details).
 #' @param localControl A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
@@ -306,7 +246,6 @@
 #' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
-#' @param managementArgs A list of arguments to be passed to the managementFunction (see \code{\link{fordyn}}) or a vector
 #' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources: 
@@ -321,69 +260,74 @@
 #'  In the case of (3) weather maps are read for each day. 
 #'  Finally, in the case of (4) spatial variation of weather is not considered.
 #'  
-#' @returns A list of class of the same name as the function called, also inheriting from a summary class (\code{summaryspatial}), containing four elements:
+#' @returns An object of class 'sf' containing four elements:
 #' \itemize{
-#'   \item{\code{sp}: An object with spatial information (of \code{SpatialPoints-class}, \code{SpatialPixels-class} or \code{SpatialGrid-class}).}
-#'   \item{\code{xlist}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
-#'   \item{\code{forestlist}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynpoints}, \code{fordynpixels} and \code{fordyngrid}), to be used in subsequent simulations (see \code{\link{updateState}}).}
-#'   \item{\code{resultlist}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
-#'   \item{\code{summarylist}: A list of model output summaries for each simulated stand (if \code{summaryFunction} is not \code{NULL}).}
+#'   \item{\code{geometry}: Spatial geometry.}
+#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{updateState}}).}
+#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{updateState}}).}
+#'   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+#'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 #' }
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwbspatial_day}}, \code{\link{summary.spwbspatial}} , \code{\link{plot.summaryspatial}}, \code{\link{updateState}}
+#' @seealso 
+#' \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
+#' \code{\link{summary_spatial}} , \code{\link{plot_summary}}, \code{\link{update_state}}
 #' 
 #' @examples
-#'  \dontrun{
-#'   # Load example watershed (inherits from SpatialPixelsLandscape)
-#'   data("examplepointslandscape")
+#' \dontrun{
+#' # Load example landscape data
+#' data("examplepointslandscape")
 #'   
-#'   # Load example meteo data frame from package meteoland
-#'   data("examplemeteo")
+#' # Transform example to 'sf' 
+#' y = sp_to_sf(examplepointslandscape)
 #'   
-#'   # Load default medfate parameters
-#'   data("SpParamsMED")
+#' # Load example meteo data frame from package meteoland
+#' data("examplemeteo")
 #'   
-#'   # Perform simulation
-#'   dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-#'   res = spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, dates = dates)
+#' # Load default medfate parameters
+#' data("SpParamsMED")
 #'   
-#'   # Generate summaries (these could have also been specified when calling 'spwbspatial')
-#'   res_sum = summary(res, summaryFunction = summary.spwb, freq="month")
+#' # Perform simulation
+#' dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+#' res = spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
 #'   
-#'   # Plot summaries
-#'   plot(res_sum, "Transpiration", "2001-03-01")
-#'  }
+#' # Generate summaries (these could have also been specified when calling 'spwbspatial')
+#' res_sum = summary_spatial(res, summaryFunction = summary.spwb, freq="month")
 #' 
-#' @name spwbspatial
-spwbspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
+#' # Plot summaries
+#' plot_summary(res_sum, "Transpiration", "2001-03-01")
+#' }
+#' 
+#' @name spwb_spatial
+spwb_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                      parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs(y, meteo)
-  .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
+  .check_model_inputs(y, meteo)
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
                 CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                 parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 
-#' @rdname spwbspatial
-growthspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
+#' @rdname spwb_spatial
+growth_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs(y, meteo)
-  .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
+  .check_model_inputs(y, meteo)
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
                 CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                 parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
 
-#' @rdname spwbspatial
-fordynspatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
-                       managementFunction = NULL, managementArgs = NULL,
+#' @rdname spwb_spatial
+fordyn_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
+                       managementFunction = NULL,
                        CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs(y, meteo)
-  .modelspatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
-                managementFunction = managementFunction, managementArgs = managementArgs,
+  .check_model_inputs(y, meteo)
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
+                managementFunction = managementFunction,
                 CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
                 parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }

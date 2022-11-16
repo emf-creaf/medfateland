@@ -24,10 +24,10 @@ Only run this function in interactive mode. The shiny app can be used to display
     This is the case if the user supplies an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}. Allowed plots are the same as in \code{\link{getLandscapeLayer}}.
     
   \emph{Simulation result summaries}:
-    This is the case if the user supplies an object of class \code{\link{summaryspatial}}. Available plots depend on the summary function used to create the result summaries.
+    This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
 }
 \seealso{
-\code{\link{plot.summaryspatial}}, \code{\link{getLandscapeLayer}}
+\code{\link{plotsummary}}, \code{\link{getLandscapeLayer}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

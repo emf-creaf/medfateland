@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.0.0
+- Major restructuring to work with 'sf' instead of 'sp'
+
 # Version 0.5.0
 - Reduction of package functions to 'spatial' functions
 - New function 'fordynscenario'

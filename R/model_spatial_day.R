@@ -48,7 +48,7 @@
   return(res)
 }
 
-.modelspatial_day<-function(y, meteo, date, model = "spwb", 
+.model_spatial_day<-function(y, meteo, date, model = "spwb", 
                             SpParams, 
                             localControl = defaultControl(),
                             parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
@@ -188,7 +188,7 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwbspatial}}
+#' @seealso \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwb_spatial}}
 #' 
 #' @examples 
 #' \dontrun{
@@ -206,17 +206,17 @@
 #'   res = spwbspatial_day(examplepointslandscape, examplemeteo, date, SpParamsMED)
 #' }
 #' 
-#' @name spwbspatial_day
-spwbspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
+#' @name spwb_spatial_day
+spwb_spatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs(y, meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
+  .check_model_inputs(y, meteo)
+  .model_spatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
                     parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }
-#' @rdname spwbspatial_day
-growthspatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
+#' @rdname spwb_spatial_day
+growth_spatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
                            parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
-  .checkmodelinputs(y, meteo)
-  .modelspatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
+  .check_model_inputs(y, meteo)
+  .model_spatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
                     parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
 }

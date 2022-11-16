@@ -9,9 +9,9 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{spwbspatial}}, \code{\link{spwbspatial_day}}, \code{\link{spwbland}}
+#' @seealso \code{\link{spwb_spatial}}, \code{\link{spwb_spatial_day}}, \code{\link{spwb_land}}
 #' 
-updateState<-function(x, y) {
+update_state<-function(x, y) {
   if(!inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape"))) stop("'x' should be of class 'SpatialPointsLandscape', 'SpatialPixelsLandscape' or 'SpatialGridLandscape' ")
   if(!inherits(y, c("spwbspatial", "growthspatial", "fordynspatial",
                     "spwbspatial_day", "growthspatial_day")))  

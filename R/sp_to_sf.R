@@ -16,10 +16,13 @@ sp_to_sf<-function(y) {
   epl$landcovertype = y@lct
   forest_list = y@forestlist
   soil_list = y@soillist
+  x_list = y@xlist
   names(forest_list) = NULL
   names(soil_list) = NULL
+  names(x_list) = NULL
   epl$forest = forest_list
   epl$soil = soil_list
+  epl$state = x_list
   if(inherits(y,"DistributedWatershed")) {
     epl$waterOrder = y@waterOrder
     epl$waterQ = y@waterQ

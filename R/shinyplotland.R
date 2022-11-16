@@ -40,8 +40,10 @@
   shinyApp(ui = ui, server = server)
 }
 .shinyplot_results<-function(x) {
-  vars = colnames(x$summarylist[[1]])
-  dates = rownames(x$summarylist[[1]])
+  not_null <- which(!unlist(lapply(x$summary, is.null)))
+  print(not_null)
+  vars = colnames(x$summary[[not_null[1]]])
+  dates = rownames(x$summary[[not_null[1]]])
   if(inherits(x, c("spwbland", "growthland"))) {
     vars = c("DailyRunoff", vars)
   }
@@ -69,7 +71,7 @@
   server <- function(input, output, session) {
     
     output$summary_plot <- renderPlot({
-      plot(x, variable = input$plot_var, date = input$plot_date)
+      plotsummary(x, variable = input$plot_var, date = input$plot_date)
     })
   }
   shinyApp(ui = ui, server = server)
@@ -88,18 +90,22 @@
 #'     This is the case if the user supplies an object of class \code{\link{SpatialPointsLandscape-class}}, \code{\link{SpatialPixelsLandscape-class}} or \code{\link{SpatialGridLandscape-class}}. Allowed plots are the same as in \code{\link{getLandscapeLayer}}.
 #'     
 #'   \emph{Simulation result summaries}:
-#'     This is the case if the user supplies an object of class \code{\link{summaryspatial}}. Available plots depend on the summary function used to create the result summaries.
+#'     This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
 #'     
 #' @return An object that represents the shiny app 
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{plot.summaryspatial}}, \code{\link{getLandscapeLayer}}
+#' @seealso \code{\link{plotsummary}}, \code{\link{getLandscapeLayer}}
 shinyplotland<-function(x, SpParams = NULL) {
-  if(inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape")))
+  if(inherits(x, c("SpatialPointsLandscape", "SpatialPixelsLandscape", "SpatialGridLandscape"))) {
     return(.shinyplot_spatial(x, SpParams))
-  else if(inherits(x, c("summaryspatial")))
-    return(.shinyplot_results(x))
+  }
+  else if(inherits(x, "sf") && ("summary" %in% names(x))) {
+    not_null <- which(!unlist(lapply(x$summary, is.null)))
+    if(length(not_null)>0) return(.shinyplot_results(x))
+    else stop("Column 'summary' is NULL for all elements")
+  }
   else {
     stop("Wrong class type for 'x'")
   }
