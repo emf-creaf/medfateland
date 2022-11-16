@@ -77,7 +77,8 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 List watershedDay(String localModel,
                   CharacterVector lct, List xList, List soilList,
                   IntegerVector waterO, List queenNeigh, List waterQ,
-                  DataFrame bedrock, NumericVector aquifer, NumericVector snowpack,
+                  NumericVector depthtobedrock, NumericVector bedrockconductivity, NumericVector bedrockporosity,
+                  NumericVector aquifer, NumericVector snowpack,
                   List correctionFactors,
                   CharacterVector date,
                   DataFrame gridMeteo,
@@ -109,10 +110,6 @@ List watershedDay(String localModel,
   NumericVector wsVec = gridMeteo["WindSpeed"];
 
 
-  NumericVector DTB = bedrock["DepthToBedrock"]; //mm
-  NumericVector RockConductivity = bedrock["Conductivity"]; //m/day
-  NumericVector RockPorosity = bedrock["Porosity"]; //[0-1]
-
   //A1. Calculate soil and aquifer water table elevation (heads)
   if(progress) Rcout<<"+";
   NumericVector WTD(nX,NA_REAL); //Water table depth
@@ -126,7 +123,7 @@ List watershedDay(String localModel,
       WTD[i] = medfate::soil_waterTableDepth(soil, control["soilFunctions"]);
       SoilWaterTableElevation[i] = elevation[i]-(WTD[i]/1000.0);
     }
-    AquiferWaterTableElevation[i] = elevation[i]-(DTB[i]/1000.0) + (aquifer[i]/RockPorosity[i])/1000.0;
+    AquiferWaterTableElevation[i] = elevation[i]-(depthtobedrock[i]/1000.0) + (aquifer[i]/bedrockporosity[i])/1000.0;
   }
 
   //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
@@ -177,9 +174,9 @@ List watershedDay(String localModel,
   NumericVector baseflowInput(nX, 0.0);
   NumericVector baseflowOutput(nX, 0.0);
   for(int i=0;i<nX;i++){
-    double Kbaseflow = Rbaseflow*RockConductivity[i]; //m/day
+    double Kbaseflow = Rbaseflow*bedrockconductivity[i]; //m/day
     if(aquifer[i]>0) {
-      double T = ((Kbaseflow*DTB[i]*0.001)/n)*pow(1.0-((DTB[i] - (aquifer[i]/RockPorosity[i]))/DTB[i]),n); //Transmissivity in m2
+      double T = ((Kbaseflow*depthtobedrock[i]*0.001)/n)*pow(1.0-((depthtobedrock[i] - (aquifer[i]/bedrockporosity[i]))/depthtobedrock[i]),n); //Transmissivity in m2
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
       //water table slope between target and neighbours
       NumericVector qni(ni.size(), 0.0);
@@ -238,7 +235,7 @@ List watershedDay(String localModel,
   for(int i=0;i<nX;i++){
     double deltaA = 1000.0*((baseflowInput[i]-baseflowOutput[i])/cellArea); //change in moisture in mm (L/m2)
     aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
-    double DTAn = DTB[i] - (aquifer[i]/RockPorosity[i]); // New depth to aquifer (mm)
+    double DTAn = depthtobedrock[i] - (aquifer[i]/bedrockporosity[i]); // New depth to aquifer (mm)
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       List soil = Rcpp::as<Rcpp::List>(soilList[i]);
       double D = soil["SoilDepth"];
@@ -254,7 +251,7 @@ List watershedDay(String localModel,
         NumericVector Water_SAT = medfate::soil_waterSAT(soil, soilFunctions);
         int nlayers = dVec.length();
 
-        double deltaS = (D-DTAn)*RockPorosity[i]; //mm = l/m2 of water
+        double deltaS = (D-DTAn)*bedrockporosity[i]; //mm = l/m2 of water
         AquiferDischarge[i] = deltaS;
         aquifer[i] = aquifer[i] - deltaS; //Update aquifer to its maximum limit (soil depth)
         for(int l=(nlayers-1);l>=0;l--) { //Fill layers from bottom to top
@@ -270,8 +267,8 @@ List watershedDay(String localModel,
       }
 
     } else if(DTAn<0) { //Turn negative aquifer depth into surface flow
-      AquiferDischarge[i] += -DTAn*RockPorosity[i];
-      aquifer[i] = DTB[i]*RockPorosity[i];
+      AquiferDischarge[i] += -DTAn*bedrockporosity[i];
+      aquifer[i] = depthtobedrock[i]*bedrockporosity[i];
       SaturationExcess[i] = AquiferDischarge[i];
     }
   }
@@ -289,12 +286,12 @@ List watershedDay(String localModel,
       List soil = soilList[iCell];
       double Kdrain = soil["Kdrain"];
       double D = soil["SoilDepth"]; //Soil depth in mm
-      double DTA = DTB[i] - (aquifer[iCell]/RockPorosity[iCell]);
+      double DTA = depthtobedrock[i] - (aquifer[iCell]/bedrockporosity[iCell]);
       if(DTA < D) {
         soil["Kdrain"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
       } else {
-        soil["Kdrain"] = 1000.0*RockConductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
-        // Rcout<<Kdrain<< " "<<1000.0*RockConductivity[i]*Rdrain<<"\n";
+        soil["Kdrain"] = 1000.0*bedrockconductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
+        // Rcout<<Kdrain<< " "<<1000.0*bedrockconductivity[i]*Rdrain<<"\n";
       }
       //copy snowpack
       soil["SWE"] = snowpack[iCell];
@@ -364,11 +361,11 @@ List watershedDay(String localModel,
         Infiltration[iCell] = SaturationExcess[iCell]+Runon[iCell] + Snowmelt[iCell]+ Rain[iCell];
         DeepDrainage[iCell] = Infiltration[iCell];
         aquifer[iCell] += DeepDrainage[iCell];
-        double DTAn = DTB[iCell] - (aquifer[iCell]/RockPorosity[iCell]); // New depth to aquifer (mm)
+        double DTAn = depthtobedrock[iCell] - (aquifer[iCell]/bedrockporosity[iCell]); // New depth to aquifer (mm)
         if(DTAn<0.0) { //Turn excess into Runoff
-          Runoff[iCell] = aquifer[iCell] - (DTB[iCell]*RockPorosity[iCell]);
+          Runoff[iCell] = aquifer[iCell] - (depthtobedrock[iCell]*bedrockporosity[iCell]);
           DeepDrainage[iCell] = DeepDrainage[iCell] - Runoff[iCell];
-          aquifer[iCell] = DTB[iCell]*RockPorosity[iCell];
+          aquifer[iCell] = depthtobedrock[iCell]*bedrockporosity[iCell];
         }
       }
     }

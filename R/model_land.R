@@ -1,4 +1,4 @@
-.landSim<-function(landModel = "spwbland", 
+.landSim<-function(landModel = "spwb_land", 
                    y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
@@ -6,22 +6,15 @@
                    progress = TRUE) {
 
   #check input
-  if(!inherits(y, "DistributedWatershed")) stop("'y' has to be of class 'DistributedWatershed'.")
-  if(!inherits(meteo,"SpatialPixelsMeteorology") &&
-     !inherits(meteo,"data.frame") &&
-     !inherits(meteo, "MeteorologyInterpolationData"))
-    stop("'meteo' has to be of class 'SpatialPixelsMeteorology', 'MeteorologyInterpolationData' or 'data.frame'.")
+  if(!inherits(y, "sf")) stop("'y' has to be of class 'sf'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
-  if(landModel == "spwbland") localModel = "spwb"
-  else if(landModel=="growthland") localModel = "growth"
-  else if(landModel=="fordynland") localModel = "growth"
+  if(landModel == "spwb_land") localModel = "spwb"
+  else if(landModel=="growth_land") localModel = "growth"
+  else if(landModel=="fordyn_land") localModel = "growth"
   
-  sp = spTransform(as(y, "SpatialPoints"), CRS(SRS_string = "EPSG:4326"))
-  latitude = sp@coords[,2]
-  elevation = y@data$elevation
-  slope = y@data$slope
-  aspect = y@data$aspect
+  latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+
 
   if(inherits(meteo,"data.frame")) {
     oneMeteoCell = ("MinTemperature" %in% names(meteo))
@@ -40,21 +33,21 @@
   date.factor = cut(dates, breaks=summaryFreq)
   df.int = as.numeric(date.factor)
   nDays = length(dates)
-  nCells = length(y@forestlist)
-  isSoilCell = y@lct %in% c("wildland", "agriculture")
+  nCells = nrow(y)
+  isSoilCell = y$landcovertype %in% c("wildland", "agriculture")
   nSoil = sum(isSoilCell)
-  nWild = sum(y@lct %in% c("wildland"))
-  nAgri = sum(y@lct %in% c("agriculture"))
-  nRock = sum(y@lct %in% c("rock"))
-  nArti = sum(y@lct %in% c("artificial"))
-  nWater = sum(y@lct %in% c("water"))
+  nWild = sum(y$landcovertype %in% c("wildland"))
+  nAgri = sum(y$landcovertype %in% c("agriculture"))
+  nRock = sum(y$landcovertype %in% c("rock"))
+  nArti = sum(y$landcovertype %in% c("artificial"))
+  nWater = sum(y$landcovertype %in% c("water"))
   nSummary = sum(table(date.factor)>0)
   t.df = as.numeric(table(df.int))
 
   #Determine outlet cells (those without downhill neighbors)
-  outlets = which(unlist(lapply(y@waterQ, sum))==0)
+  outlets = which(unlist(lapply(y$waterQ, sum))==0)
 
-  patchsize = prod(y@grid@cellsize)
+  patchsize = sqrt(y$representedarea[1])
 
   #Print information area
   if(progress) {
@@ -69,13 +62,12 @@
     
     cat(paste0("Preparing ", localModel, " input...\n"))
   }
-
   for(i in 1:nCells) {
-    if(y@lct[i] %in% c("wildland", "agriculture")) {
-      f = y@forestlist[[i]]
-      s = y@soillist[[i]]
-      if(localModel=="spwb") y@xlist[[i]] = forest2spwbInput(f, s, SpParams, localControl)
-      else if(localModel=="growth") y@xlist[[i]] = forest2growthInput(f, s, SpParams, localControl)
+    if(y$landcovertype[i] %in% c("wildland", "agriculture")) {
+      f = y$forest[[i]]
+      s = y$soil[[i]]
+      if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, localControl)
+      else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, localControl)
     } 
   }
   if(progress) cat("done.\n\n")
@@ -130,7 +122,7 @@
                                     AquiferDischarge = rep(0, nSummary))
   
 
-  summary_function = function(object, model="SX") {
+  soil_summary_function = function(object, model="SX") {
     if(!inherits(object,"soil")) return(list(SWE=NA, Psi1=NA, SoilVol=NA, WTD=NA))
     list(SWE = object$SWE,
          Psi1 = soil_psi(object)[1],
@@ -138,9 +130,9 @@
          WTD = soil_waterTableDepth(object, model))
   }
   
-  initialSoilContent = mean(getLandscapeVariable(y, "SoilVolCurr"), na.rm=TRUE)
-  initialSnowContent = mean(getLandscapeVariable(y, "Snowpack"), na.rm=TRUE)
-  initialAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
+  initialSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
+  initialSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
+  initialAquiferContent = mean(extract_variables(y, "aquifervolume")$aquifervolume, na.rm=T)
   initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
   if(progress) {
@@ -151,6 +143,7 @@
     
     cat(paste0("\nPerforming daily simulations:\n"))
   }
+  
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
     if(progress) cat(".")
@@ -208,19 +201,20 @@
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed)
     ws_day = .watershedDay(localModel,
-                           y@lct, y@xlist, y@soillist,
-                           y@waterOrder, y@queenNeigh, y@waterQ,
-                           y@bedrock, y@aquifer, y@snowpack,
+                           y$landcovertype, y$state, y$soil,
+                           y$waterOrder, y$queenNeigh, y$waterQ,
+                           y$depthtobedrock, y$bedrockconductivity, y$bedrockporosity, 
+                           y$aquifer, y$snowpack,
                            correctionFactors,
                            datechar,
                            gridMeteo,
-                           latitude, elevation, slope, aspect,
+                           latitude, y$elevation, y$slope, y$aspect,
                            patchsize, progress)
     
     res_day = ws_day[["WatershedWaterBalance"]]
     
     if(progress) cat("+")
-    summary_day = spatialSoilSummary(y, summary_function, localControl$soilFunctions)
+    summary_day = spatialSoilSummary(y, soil_summary_function, localControl$soilFunctions)
     summary_df = summary_day@data
     ifactor = df.int[day]
     varsSum = c("Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
@@ -228,7 +222,7 @@
                 "AquiferDischarge", "SoilEvaporation", "Transpiration",
                 "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
     varsState = c("SWE", "Psi1", "SoilVol", "WTD")
-    DTAday = (y@bedrock$DepthToBedrock/1000.0) - (y@aquifer/y@bedrock$Porosity)/1000.0
+    DTAday = (y$depthtobedrock/1000.0) - (y$aquifer/y$bedrockporosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
         summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]
@@ -281,12 +275,10 @@
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   SoilLandscapeBalance$Precipitation = SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
   
-  finalSoilContent = mean(getLandscapeVariable(y, "SoilVolCurr"), na.rm=TRUE)
-  finalSnowContent = mean(getLandscapeVariable(y, "Snowpack"), na.rm=TRUE)
-  finalAquiferContent = mean(getLandscapeVariable(y, "AquiferVolume"), na.rm=T)
-  finalLandscapeContent = finalSoilContent*(nSoil/nCells)+finalAquiferContent+finalSnowContent
-  
-  
+  finalSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
+  finalSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
+  finalAquiferContent = mean(extract_variables(y, "aquifervolume")$aquifervolume, na.rm=T)
+  finalLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
 
   Precipitationsum = sum(LandscapeBalance$Precipitation, na.rm=T)
   Rainfallsum = sum(LandscapeBalance$Rain, na.rm=T)
@@ -375,23 +367,25 @@
     cat(paste0("\n------------ ",landModel," ------------\n"))
   }
 
-  l <- list(sp = as(y, "SpatialPixels"), 
-            xlist = y@xlist,
-            aquifer = y@aquifer,
-            snowpack = y@snowpack,
-            summarylist = summarylist,
+  res = sf::st_sf(geometry=sf::st_geometry(y))
+  res$state = y$state
+  res$aquifer = y$aquifer
+  res$snowpack = y$snowpack
+  res$summary = summarylist
+  return(sf::st_as_sf(tibble::as_tibble(res)))
+  
+  l <- list(sf = res,
             WatershedBalance = LandscapeBalance,
             WatershedSoilBalance = SoilLandscapeBalance,
             DailyRunoff = DailyRunoff)
-  class(l)<-c(landModel,"summarypixels","list")
   return(l)
 }
 
 #' Watershed simulations
 #' 
-#' Function \code{spwbland} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
+#' Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
 #' on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells. 
-#' Function \code{growthland} is similar, but includes daily local carbon balance and growth processes in grid cells, 
+#' Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells, 
 #' provided by \code{\link{growth_day}}.
 #' 
 #' @param y An object of class \code{\link{DistributedWatershed-class}}.
@@ -403,7 +397,7 @@
 #' @param correctionFactors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
 #'
-#' @details Functions \code{spwbland} and \code{growthland} require daily meteorological data over grid cells. The user may supply four different inputs:
+#' @details Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. The user may supply four different inputs:
 #'
 #' \enumerate{
 #'   \item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
@@ -416,7 +410,7 @@
 #'  In the case of (3) weather maps are read for each day. 
 #'  Finally, in the case of (4) spatial variation of weather is not considered.
 #'  
-#' @return Function \code{spwbland} list of class 'spwbland' with the following elements:
+#' @return Function \code{spwb_land} list of class 'spwb_land' with the following elements:
 #' \itemize{
 #'   \item{\code{sp}: An object of class \code{\link{SpatialPixels}}.}
 #'   \item{\code{xlist}: A list of model input objects for each simulated stand.}
@@ -457,32 +451,44 @@
 #' 
 #' @examples 
 #' \dontrun{
-#'   data("examplewatershed")
-#'   data("examplemeteo")
-#'   data("SpParamsMED")
-#'   dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
-#'   res = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+#' # Load example watershed data
+#' data("examplewatershed")
+#' 
+#' # Transform example to 'sf' 
+#' y = sp_to_sf(examplewatershed)
+#'   
+#' # Load example meteo data frame from package meteoland
+#' data("examplemeteo")
+#'   
+#' # Load default medfate parameters
+#' data("SpParamsMED")
+#'   
+#' # Set simulation period
+#' dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+#' 
+#' # Launch simulations
+#' res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
 #' }
 #' 
-#' @name spwbland
-spwbland<-function(y, SpParams, meteo, dates = NULL,
+#' @name spwb_land
+spwb_land<-function(y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
                    correctionFactors = defaultWatershedCorrectionFactors(),
                    progress = TRUE) {
-  return(.landSim("spwbland",
+  return(.landSim("spwb_land",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
                   summaryFreq = summaryFreq, 
                   localControl = localControl,
                   correctionFactors = correctionFactors, progress = progress))
 }
-#' @rdname spwbland
-growthland<-function(y, SpParams, meteo, dates = NULL,
+#' @rdname spwb_land
+growth_land<-function(y, SpParams, meteo, dates = NULL,
                    summaryFreq = "years",
                    localControl = medfate::defaultControl(),
                    correctionFactors = defaultWatershedCorrectionFactors(),
                    progress = TRUE) {
-  return(.landSim("growthland",
+  return(.landSim("growth_land",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
                   summaryFreq = summaryFreq, 
                   localControl = localControl,

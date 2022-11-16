@@ -96,7 +96,8 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{plotsummary}}, \code{\link{getLandscapeLayer}}
+#' @seealso \code{\link{plot_summary}}, \code{\link{extract_variables}}
+#' 
 shinyplotland<-function(x, SpParams = NULL) {
   if(inherits(x, "sf") && ("elevation" %in% names(x))) {
     return(.shinyplot_spatial(x, SpParams))

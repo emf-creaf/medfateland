@@ -13,22 +13,22 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExpo
 export(buildWatershedTopography,
        createManagementScenario,
        defaultWatershedCorrectionFactors,
-       DistributedWatershed,
        extract_variables,
        plot_variable,
        plot_summary,
        spwb_spatial, growth_spatial, fordyn_spatial,
        spwb_spatial_day, growth_spatial_day,
+       spwb_land, growth_land,
+       simulation_summary,
+       landscape_summary,
        shinyplotland,
        sp_to_sf,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
-       spwbland, growthland,
-       simulation_summary,
-       fordynscenario,
+       DistributedWatershed,
+       fordyn_scenario,
        update_state)
 
 useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
-exportMethods("[", show, 
-              spatialForestSummary, spatialSoilSummary, spatialModelInputSummary)
+exportMethods("[", show)

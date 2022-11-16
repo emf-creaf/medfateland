@@ -15,7 +15,7 @@
 #' @param numCores Integer with the number of cores to be used for parallel computation.
 #' @param chunk.size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
-fordynscenario<-function(y, SpParams, meteo, 
+fordyn_scenario<-function(y, SpParams, meteo, 
                          volumeFunction, managementScenario,
                          localControl = defaultControl(), dates = NULL,
                          CO2ByYear = numeric(0),
@@ -31,12 +31,12 @@ fordynscenario<-function(y, SpParams, meteo,
     # B.1 Determine which plots will be managed according to current demand
     
     # B.2 Call fordynspatial()
-    fds <-fordynspatial(y, SpParams, meteo = meteoYear, localControl = localControl, dates = datesYear,
-                        managementFunction = managementFunction, managementArgs = managementArgs,
+    fds <-fordyn_spatial(y, SpParams, meteo = meteoYear, localControl = localControl, dates = datesYear,
+                        managementFunction = managementFunction,
                         CO2ByYear = CO2ByYear, keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
                         parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
     # B.3 Update final state variables in y and retrieve fordyn tables
-    y = updateState(y, fds)
+    y = update_state(y, fds)
     
     # B.4 Update actual satisfied demand
   }

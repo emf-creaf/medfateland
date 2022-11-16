@@ -44,9 +44,10 @@
 #' @param date The date of the summary to be plotted.
 #' @param ... Additional parameters (passed to scale definition, such as \code{limits}).
 #' 
-#' @details Appropriate values for \code{x} can originate from calls to \code{\link{summaryspatial}}. 
+#' @details Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
 #' Alternatively, if summary functions were specified at the time of performing simulations, 
-#' the result of the simulation function (e.g. \code{\link{spwbspatial}}) will already contain the summaries.
+#' the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}}) 
+#' will already contain the summaries.
 #' 
 #' @return An object of class \code{\link{ggplot}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

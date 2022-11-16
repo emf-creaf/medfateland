@@ -33,9 +33,11 @@ sp_to_sf<-function(y) {
     epl$bedrockporosity = y@bedrock$Porosity
     epl$snowpack = y@snowpack
     epl$aquifer = y@aquifer
+    epl$representedarea = prod(y@grid@cellsize)
+  } else {
+    epl$representedarea = NA
   }
   epl$managementunit = NA
   epl$managementarguments = NA
-  epl$representedarea = NA
   return(sf::st_as_sf(tibble::as_tibble(epl)))
 }

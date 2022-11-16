@@ -27,19 +27,25 @@ We begin by loading an example dataset of 100 forest stands distributed on point
 data("examplepointslandscape")
 ```
 
-Using `plot()` functions for spatial landscape objects, we can draw maps of some variables using:
-
+We transform the data set to class *sf* because *sp* objects are deprecated from ver. 1.0.0 on.
 ```{r, fig.align='center', fig.width=7}
-plot(examplepointslandscape, "basalArea")
+y = sp_to_sf(examplepointslandscape)
+y
 ```
 
-The set of maps available can be known by inspecting the help of function `getLandscapeLayer()`. Alternatively, the package provides function `shinyplotland()` to display maps interactively.
+Using `plot_variable()` functions for spatial landscape objects, we can draw maps of some variables using:
+
+```{r, fig.align='center', fig.width=7}
+plot_variable(y, "basalarea")
+```
+
+The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplotland()` to display maps interactively.
 
 ## Simulations on a set of forest stands
 
-Package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call. This is done using functions `spwbspatial()`, `growthspatial()` and `fordynspatial()`, respectively. 
+Package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`, respectively. 
 
-As an example, we will use function `spwbspatial()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `Spatial_*_Landscape` as input.
+As an example, we will use function `spwb_spatial()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `sf` as input.
 
 ### Weather inputs and local control parameters
 
@@ -53,56 +59,55 @@ localControl = defaultControl()
 
 ### Calling the simulation function
 
-The call to `spwbspatial()` can be done as follows (here we restrict the dates for simplicity):
+The call to `spwb_spatial()` can be done as follows (here we restrict the dates for simplicity):
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
-res <- spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, 
+res <- spwb_spatial(y, SpParamsMED, examplemeteo, 
                   dates = dates, localControl = localControl,  progress = FALSE)
 ```
 
-Function `spwbspatial()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the `Spatial_*_Landscape` object.  Then it calls function `spwb()` for each forest stand and stores the result. The fact that we used `examplemeteo` as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function `spwbspatial()`).
+Function `spwb_spatial()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the `sf` landscape object.  Then it calls function `spwb()` for each forest stand and stores the result. The fact that we used `examplemeteo` as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function `spwb_spatial()`).
 
-The result of calling `spwbspatial()` is a list (whose class name is the same as the function name) with the following elements:
+The result of calling `spwb_spatial()` is an object of class `sf` with the following columns:
 
 ```{r}
 names(res)
 ```
 
-Element `sp` describes spatial information, vector `xlist` contains the `spwbInput` corresponding to each forest stand (which can be used in subsequent simulations), vector `resultlist` contains the output of `spwb()` function for each forest stand (i.e. its elements are objects of the S3 class `spwb`) and `summarylist` contains summaries (if requested, see below). 
+Element `geometry` contains the geometry given as input to simulations, vector `state` contains the `spwbInput` corresponding to each forest stand (which can be used in subsequent simulations), vector `result` contains the output of `spwb()` function for each forest stand (i.e. its elements are objects of the S3 class `spwb`) and `summary` contains summaries (if requested, see below). 
 
 ### Temporal summaries, plots and maps
 
-The structure of the output of `spwbspatial()` allows querying information for the simulation of any particular forest stand. For example, we may use function `plot.spwb()`, from package **medfate**, to display the simulation results on a particular plot:
+The structure of the output of `spwb_spatial()` allows querying information for the simulation of any particular forest stand. For example, we may use function `plot.spwb()`, from package **medfate**, to display the simulation results on a particular plot:
 ```{r, fig.width=7}
-plot(res$resultlist[[1]], "Evapotranspiration")
+plot(res$result[[1]], "Evapotranspiration")
 ```
 
 Similarly, if we want a monthly summary of water balance for the first stand, we can use function `summary.spwb()` from package **medfate**:
 
 ```{r}
-summary(res$resultlist[[1]], freq="months",FUN=sum, 
-        output="WaterBalance")
+summary(res$result[[1]], freq="months",FUN=sum, output="WaterBalance")
 ```
 
-However, a more convenient way of generating summaries is by calculating them on all forest stands in one step, using function `summary()` for objects of class `spwbspatial`:
+However, a more convenient way of generating summaries is by calculating them on all forest stands in one step, using function `simulation_summary()` on objects issued from simulations:
 
 ```{r}
-res_sum <- summary(res, summaryFunction = summary.spwb, 
-                   freq="months", output="WaterBalance")
+res_sum <- simulation_summary(res, summaryFunction = summary.spwb, 
+                              freq="months", output="WaterBalance")
 ```
-where the argument `summaryFunction` points to the function to be used to generate local summaries and the remaining arguments are those of the local summary function. The result of using `summary()` on an object `spwbspatial` is an object of class `summaryspatial` that contains two elements, the spatial information and the list of summaries for all stands:
+where the argument `summaryFunction` points to the function to be used to generate local summaries and the remaining arguments are those of the local summary function. The result of using `simulation_summary()` is again an object of class `sf` that contains the spatial geometry and the list of summaries for all stands:
 ```{r}
 names(res_sum)
 ```
-The summary for the first stand can now be accessed through the first element of `summarylist`:
+The summary for the first stand can now be accessed through the first element of `summary`:
 ```{r}
-res_sum$summarylist[[1]]
+res_sum$summary[[1]]
 ```
 
-Objects of class `summaryspatial` are handy because their `plot()` function allows us to display maps of temporal summaries:
+Summary objects are handy because their `plot_summary()` function allows us to display maps of summaries for specific dates:
 ```{r, fig.align='center', fig.width=7}
-plot(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
-plot(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
+plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
+plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
 To avoid displaying maps one by one, the package includes function `shinyplotland()` that allows displaying maps of temporal summaries interactively.
@@ -111,58 +116,58 @@ To avoid displaying maps one by one, the package includes function `shinyplotlan
 
 ### Simulation with integrated temporal summaries
 
-If one needs to save memory, it is possible with `spwbspatial()` to generate temporal summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of function `spwb()`. 
+If one needs to save memory, it is possible with `spwb_spatial()` to generate temporal summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of function `spwb()`. 
 
 For example the following code will keep temporal summaries of water balance components instead of simulation results: 
 
 ```{r, warning=FALSE}
-res_2 <- spwbspatial(examplepointslandscape, SpParamsMED, examplemeteo, 
+res_2 <- spwb_spatial(y, SpParamsMED, examplemeteo, 
                   dates = dates, localControl = localControl,                  
                   keepResults = FALSE, progress = FALSE,
                   summaryFunction = summary.spwb, summaryArgs = list(freq="months"))
 ```
 
-Parameter `keepResults = FALSE` tells `spwbspatial()` not to keep the simulation results of forest stands, whereas `summaryFunction = summary.spwb` tells `spwbspatial()` to perform and store summaries before discarding the results of any stand. 
+Parameter `keepResults = FALSE` tells `spwb_spatial()` not to keep the simulation results of forest stands, whereas `summaryFunction = summary.spwb` tells `spwb_spatial()` to perform and store summaries before discarding the results of any stand. 
 
 Now the temporal summaries are embedded in the simulation results, and can be directly accessed through the element `summarylist`:
 ```{r}
-res_2$summarylist[[1]]
+res_2$summary[[1]]
 ```
 
 And one can produce maps with summary results directly from the output of the simulation function:
 ```{r, fig.align='center', fig.width=7}
-plot(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
+plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
 ### Simulation in several steps
 
-The result of a simulation includes an element `xlist`, which stores the state of soil and stand variables at the end of the simiulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `updateState()`:
+The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_state()`:
 
 ```{r}
-y = updateState(examplepointslandscape, res)
+w = update_state(y, res)
 ```
 
-The resulting object `y` is the same as `examplepointslandscape` except for the state variables. For example we can compare the water potential in the first soil layer:
+The resulting object `w` is the same as `y` except for the state variables. For example we can compare the water potential in the first soil layer:
 
 ```{r, fig.align='center', fig.width=7}
-plot(examplepointslandscape, "psi1")
-plot(y, "psi1")
+plot_variable(y, "psi1")
+plot_variable(w, "psi1")
 ```
 
-By using `y` as input we can now simulate water balance in the set of stands for an extra month:
+By using `w` as input we can now simulate water balance in the set of stands for an extra month:
 
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-31"), by="day")
-res_3 <- spwbspatial(y, SpParamsMED, examplemeteo, 
-                    dates = dates, localControl = localControl, 
-                    summaryFunction = summary.spwb, summaryArgs = list(freq="months"),
-                    progress = FALSE)
+res_3 <- spwb_spatial(w, SpParamsMED, examplemeteo, 
+                      dates = dates, localControl = localControl, 
+                      summaryFunction = summary.spwb, summaryArgs = list(freq="months"),
+                      progress = FALSE)
 ```
 
 And display a map with the resulting month transpiration:
 
 ```{r, fig.align='center', fig.width=7}
-plot(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
+plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
 ```
 
 ## Simulation of watershed hydrology
