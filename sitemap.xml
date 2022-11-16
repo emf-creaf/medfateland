@@ -25,9 +25,6 @@
     <loc>/reference/DistributedWatershed-class.html</loc>
   </url>
   <url>
-    <loc>/reference/DistributedWatershed.html</loc>
-  </url>
-  <url>
     <loc>/reference/SpatialGridLandscape-class.html</loc>
   </url>
   <url>
@@ -37,10 +34,7 @@
     <loc>/reference/SpatialPointsLandscape-class.html</loc>
   </url>
   <url>
-    <loc>/reference/SpatialPointsLandscape.html</loc>
-  </url>
-  <url>
-    <loc>/reference/buildWatershedTopography.html</loc>
+    <loc>/reference/create_management_scenario.html</loc>
   </url>
   <url>
     <loc>/reference/defaultWatershedCorrectionFactors.html</loc>
@@ -52,36 +46,39 @@
     <loc>/reference/examplewatershed.html</loc>
   </url>
   <url>
-    <loc>/reference/getLandscapeLayer.html</loc>
+    <loc>/reference/extract_variables.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fordyn_scenario.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/modelspatial.html</loc>
+    <loc>/reference/landscape_summary.html</loc>
   </url>
   <url>
-    <loc>/reference/modelspatial_day.html</loc>
+    <loc>/reference/plot_summary.html</loc>
   </url>
   <url>
-    <loc>/reference/plot.spwbland.html</loc>
+    <loc>/reference/shinyplot_land.html</loc>
   </url>
   <url>
-    <loc>/reference/plot.summaryspatial.html</loc>
+    <loc>/reference/simulation_summary.html</loc>
   </url>
   <url>
-    <loc>/reference/shinyplotland.html</loc>
+    <loc>/reference/sp_to_sf.html</loc>
   </url>
   <url>
-    <loc>/reference/spatialForestSummary.html</loc>
+    <loc>/reference/spwb_land.html</loc>
   </url>
   <url>
-    <loc>/reference/spwbland.html</loc>
+    <loc>/reference/spwb_spatial.html</loc>
   </url>
   <url>
-    <loc>/reference/summary.spwbspatial.html</loc>
+    <loc>/reference/spwb_spatial_day.html</loc>
   </url>
   <url>
-    <loc>/reference/updateState.html</loc>
+    <loc>/reference/update_state.html</loc>
   </url>
 </urlset>
