@@ -214,8 +214,8 @@
     res_day = ws_day[["WatershedWaterBalance"]]
     
     if(progress) cat("+")
-    summary_day = spatialSoilSummary(y, soil_summary_function, localControl$soilFunctions)
-    summary_df = summary_day@data
+    summary_df = landscape_summary(y, "soil", soil_summary_function, localControl$soilFunctions, 
+                                   unlist = TRUE)
     ifactor = df.int[day]
     varsSum = c("Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
                 "Infiltration", "DeepDrainage", "SaturationExcess",
@@ -367,17 +367,17 @@
     cat(paste0("\n------------ ",landModel," ------------\n"))
   }
 
-  res = sf::st_sf(geometry=sf::st_geometry(y))
-  res$state = y$state
-  res$aquifer = y$aquifer
-  res$snowpack = y$snowpack
-  res$summary = summarylist
-  return(sf::st_as_sf(tibble::as_tibble(res)))
-  
-  l <- list(sf = res,
+  sf = sf::st_sf(geometry=sf::st_geometry(y))
+  sf$state = y$state
+  sf$aquifer = y$aquifer
+  sf$snowpack = y$snowpack
+  sf$summary = summarylist
+
+  l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
             WatershedBalance = LandscapeBalance,
             WatershedSoilBalance = SoilLandscapeBalance,
             DailyRunoff = DailyRunoff)
+  class(l)<-c(landModel, "list")
   return(l)
 }
 
@@ -388,7 +388,7 @@
 #' Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells, 
 #' provided by \code{\link{growth_day}}.
 #' 
-#' @param y An object of class \code{\link{DistributedWatershed-class}}.
+#' @param y An object of class \code{\link{sf}} containing watershed information.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.

@@ -87,7 +87,7 @@ extract_variables(y, vars = c("basalarea", "leafareaindex"),
                   
 }
 \seealso{
-\code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplotland}}
+\code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplot_land}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

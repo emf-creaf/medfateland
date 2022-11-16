@@ -4,7 +4,7 @@
 \alias{landscape_summary}
 \title{Forest and soil summaries over space}
 \usage{
-landscape_summary(object, name, summaryFunction, ...)
+landscape_summary(object, name, summaryFunction, ..., unlist = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{\link{sf}}.}
@@ -14,9 +14,13 @@ landscape_summary(object, name, summaryFunction, ...)
 \item{summaryFunction}{A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.}
 
 \item{...}{Additional arguments to the summary function.}
+
+\item{unlist}{Logical flag to try converting the summaries into different columns}
 }
 \value{
-An object of class \code{\link{sf}} containing the calculated statistics.
+An object of class \code{\link{sf}} containing the calculated statistics. 
+If \code{unlist = FALSE} column 'summary' is a list with summaries for each element. 
+If \code{unlist = TRUE} different columns are returned instead, one per variable given in the summary function.
 }
 \description{
 Functions to calculates a summary function for the forest or soil of all spatial elements 

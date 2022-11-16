@@ -28,7 +28,7 @@ growth_land(
 )
 }
 \arguments{
-\item{y}{An object of class \code{\link{DistributedWatershed-class}}.}
+\item{y}{An object of class \code{\link{sf}} containing watershed information.}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 

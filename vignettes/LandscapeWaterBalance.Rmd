@@ -39,7 +39,7 @@ Using `plot_variable()` functions for spatial landscape objects, we can draw map
 plot_variable(y, "basalarea")
 ```
 
-The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplotland()` to display maps interactively.
+The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot_land()` to display maps interactively.
 
 ## Simulations on a set of forest stands
 
@@ -110,7 +110,7 @@ plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
 plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
-To avoid displaying maps one by one, the package includes function `shinyplotland()` that allows displaying maps of temporal summaries interactively.
+To avoid displaying maps one by one, the package includes function `shinyplot_land()` that allows displaying maps of temporal summaries interactively.
 
 ## Advanced simulation features
 
@@ -175,11 +175,12 @@ plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
 Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. 
 
 ### Example data set
-To illustrate this kind of simulation, which is carried out using function `spwbland()`, we first load a small example watershed included with the package:
+To illustrate this kind of simulation, which is carried out using function `spwb_land()`, we first load a small example watershed included with the package, which we transform to `sf`:
 
 ```{r, warning=FALSE, fig.align="center", fig.width=7}
 data("examplewatershed")
-plot(examplewatershed, "elevation")
+y = sp_to_sf(examplewatershed)
+plot_variable(y, "elevation")
 ```
 
 ### Simulation function
@@ -187,18 +188,18 @@ As for the call to function `spwbspatial()` we will use the same weather (i.e. `
 
 ```{r, warning=FALSE}
 dates = seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws = spwbland(examplewatershed, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+res_ws = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
 ```
 
 Although simulations are performed using daily temporal steps, parameter `summaryFreq` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
 
 ### Summaries and plots
-Unlike `spwbspatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwbland()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
+Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
 ```{r}
-res_ws$summarylist[[1]]
+res_ws$sf$summary[[1]]
 ```
 
-Several plots can be drawn from the result of function `spwbland()` in a similar way as done for `spwbspatial()`. As an example we display a map of soil water volume for the simulated month:
+Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of soil water volume for the simulated month:
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot(res_ws, "SoilVol", "2001-01-01")
+plot_summary(res_ws$sf, "SoilVol", "2001-01-01")
 ```

@@ -21,7 +21,7 @@ export(buildWatershedTopography,
        spwb_land, growth_land,
        simulation_summary,
        landscape_summary,
-       shinyplotland,
+       shinyplot_land,
        sp_to_sf,
        SpatialPointsLandscape, SpatialPixelsLandscape, SpatialGridLandscape,
        DistributedWatershed,
@@ -31,4 +31,3 @@ export(buildWatershedTopography,
 useDynLib(medfateland, .registration = TRUE)
 
 exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
-exportMethods("[", show)

@@ -51,4 +51,4 @@ reference:
   - plot.spwbland
   - plot.growthland
   - starts_with("summary")
-  - shinyplotland
+  - shinyplot_land

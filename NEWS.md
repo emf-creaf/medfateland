@@ -29,7 +29,7 @@
 - New function 'growthland' and 'plot.growthland'
 - New summary functions 'summary.spwbpoints'....
 - New plotting functions 'plot.summarypoints', 'plot.summarypixels' and 'plot.summarygrid'
-- New function 'shinyplotland'
+- New function 'shinyplot_land'
 
 # Version 0.2.5
 - Update medfate 2.2
