@@ -1,5 +1,9 @@
 #Example watershed
-examplewatershed = readRDS(paste0("/home/miquel/OneDrive/Datasets/Hydrology/Products/DistributedWatersheds/CanVila_watershed_100m.rds")) 
+examplewatershed = readRDS(paste0("/home/miquel/OneDrive/EMFProducts/MEDFATE_Initialisation/Watersheds/Products/DistributedWatersheds/CanVila_watershed_100m.rds")) 
+for(i in 1:length(examplewatershed@forestlist)) {
+  examplewatershed@forestlist[[i]]$ID = NULL
+  examplewatershed@forestlist[[i]]$patchsize = NULL
+}
 crs <- CRS(SRS_string = "EPSG:32631")
 comment(crs)<-gsub("°", "º", comment(crs)) # Replace non-ASCII character
 examplewatershed@proj4string = crs
@@ -14,25 +18,18 @@ codes = rownames(spt@coords)
 spt@coords = 1000*round(spt@coords/1000) #Decrease resolution to 1km
 lct = rep("wildland", length(codes))
 names(lct) = codes
-ifn3 = ifn3[codes]
-for(i in 1:length(ifn3)) {
-  ifn3[[i]]$ID = NULL
-  ifn3[[i]]$patchsize = NULL
-  ifn3[[i]]$treeData = ifn3[[i]]$treeData[,1:6]
-  ifn3[[i]] = forest_mergeTrees(ifn3[[i]])
+forest_list = ifn3[codes]
+soil_list = ifn3_soils[codes]
+for(i in 1:length(forest_list)) {
+  forest_list[[i]]$ID = NULL
+  forest_list[[i]]$patchsize = NULL
+  forest_list[[i]]$treeData = forest_list[[i]]$treeData[,1:6]
+  forest_list[[i]] = medfate::forest_mergeTrees(forest_list[[i]])
+  soil_list[[i]] = soil(soil_list[[i]])
 }
-epl = sf::st_as_sf(spt)
-epl$id = row.names(epl)
-row.names(epl)<-NULL
-epl = epl[,c(4,5,1:3)]
-epl$landcovertype = lct
-epl$managementunit = NA
-epl$managementarguments = NA
-epl$representedarea = NA
-exampleSFLandscape = SFLandscape(epl, ifn3, ifn3_soils[codes])
-usethis::use_data(exampleSFLandscape, overwrite = T)
-
-examplepointslandscape = SpatialPointsLandscape(spt= spt, lct = lct, forestlist = ifn3[codes], soillist = ifn3_soils[codes])
+examplepointslandscape = SpatialPointsLandscape(spt= spt, lct = lct, 
+                                                forestlist = forest_list, 
+                                                soillist = forest_list)
 crs <- CRS(SRS_string = "EPSG:25831")
 comment(crs)<-gsub("°", "º", comment(crs)) # Replace non-ASCII character
 examplepointslandscape@proj4string <- crs
