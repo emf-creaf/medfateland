@@ -21,19 +21,17 @@ update_state<-function(x, y) {
   n = length(x$forest)
   if(!is.null(y$state)) {
     if(length(y$state)!=n) stop("'state' in 'y' does not have the same length as the elements in 'x'")
+    x$state = y$state
     for(i in 1:n) {
-      if(!is.null(y$state[[i]])) {
-        x$state[[i]] = y$state[[i]]
-        if("soil" %in% names(y$state[[i]])) x$soil[[i]] = y$state[[i]]$soil
+      if(!is.null(x$state[[i]])) {
+        if("soil" %in% names(x$state[[i]])) x$soil[[i]] = x$state[[i]]$soil
       }
     }
   }
   if("forest" %in% names(y)) {
     if(!is.null(y$forest)) {
       if(length(y$forest)!=n) stop("'forest`' in 'y' does not have the same length as the elements in 'x'")
-      for(i in 1:n) {
-        if(!is.null(y$forest[[i]]))  x$forest[[i]] = y$forest[[i]]
-      }
+      x$forest = y$forest
     }
   }
   if("aquifer" %in% names(y)) {

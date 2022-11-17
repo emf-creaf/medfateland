@@ -26,9 +26,9 @@ test_that("Can simulate three days over landscape",{
 #                                SpParams = SpParamsMED, progress = FALSE), "sf")
 # })
 
-test_that("Can simulate three days over landscape using new interpolator",{
-  interpolator = with_meteo(meteoland_meteo_example) |>
-    create_meteo_interpolator(params = defaultInterpolationParams())
-  expect_s3_class(spwb_spatial(ypts[1,], meteo = interpolator,
-                               SpParams = SpParamsMED, progress = FALSE), "sf")
-})
+# test_that("Can simulate three days over landscape using new interpolator",{
+#   interpolator = meteoland::with_meteo(meteoland_meteo_example) |>
+#     meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
+#   expect_s3_class(spwb_spatial(ypts[1,], meteo = interpolator,
+#                                SpParams = SpParamsMED, progress = FALSE), "sf")
+# })

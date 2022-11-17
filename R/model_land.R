@@ -183,7 +183,8 @@
         gridWindSpeed[iml] = meti$WindSpeed[1]
       }
     } else if(inherits(meteo,"stars")) {
-      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
+                        elevation = y$elevation, slope = y$slope, aspect = y$aspect)
       met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day])
       ml = tidyr::unnest(met, cols = "interpolated_data")
       gridMinTemperature = ml$MinTemperature
