@@ -173,15 +173,11 @@ of such lists, one per spatial unit.</p></dd>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Simulation functions  accept different formats for meteorological input (parameter <code>meteo</code>). The user may supply four kinds of weather sources:</p><ol><li><p>An object of <code>SpatialPixelsMeteorology-class</code>.</p></li>
-<li><p>An object of <code>MeteorologyInterpolationData-class</code>.</p></li>
-<li><p>A data frame with information regarding where to read meteorological data.</p></li>
-<li><p>A data frame with meteorological data common for all cells of the grid.</p></li>
-</ol><p>In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. 
- In the case of (2), interpolation of weather is done over each grid cell every simulated day. 
- In the case of (3) weather maps are read for each day. 
- Finally, in the case of (4) spatial variation of weather is not considered.</p>
-    </div>
+    <p>Simulation functions  accept different formats for meteorological input (parameter <code>meteo</code>). 
+The user may supply three kinds of weather sources:</p><ol><li><p>A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).</p></li>
+<li><p>DEPRECATED: An object of <code>SpatialPixelsMeteorology-class</code> or <code>SpatialGridMeteorology-class</code>. All the spatio-temporal variation of weather is already supplied by the user.</p></li>
+<li><p>DEPRECATED: An object of <code>MeteorologyInterpolationData-class</code>. Interpolation of weather is performed over each spatial unit every simulated day.</p></li>
+</ol></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code>spwb</code>, <code>growth</code>, <code>fordyn</code>, <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code>, 

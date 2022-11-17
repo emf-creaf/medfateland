@@ -117,12 +117,13 @@ provided by <code>growth_day</code>.</p>
     <h2>Value</h2>
     
 
-<p>Function <code>spwb_land</code> list of class 'spwb_land' with the following elements:</p><ul><li><p><code>sp</code>: An object of class <code>SpatialPixels</code>.</p></li>
-<li><p><code>xlist</code>: A list of model input objects for each simulated stand.</p></li>
+<p>Function <code>spwb_land</code> list of class 'spwb_land' with the following elements:</p><ul><li><p><code>sf</code>: An object of class <code>sf</code>, similar to the output of <code><a href="spwb_spatial.html">spwb_spatial</a></code>, 
+  with the following columns:
+    </p><ul><li><p><code>state</code>: A list of model input objects for each simulated stand.</p></li>
 <li><p><code>aquifer</code>: A numeric vector with the water volume in the aquifer of each cell.</p></li>
 <li><p><code>snowpack</code>: A numeric vector with the snowpack water equivalent volume of each cell.</p></li>
-<li><p><code>summarylist</code>: A list of cell summaries, containing the following variables:
-    </p><ul><li><p><code>Rain</code>: Rainfall (in mm).</p></li>
+<li><p><code>summary</code>: A list of cell summaries, containing the following variables:
+        </p><ul><li><p><code>Rain</code>: Rainfall (in mm).</p></li>
 <li><p><code>Snow</code>: Snowfall (in mm).</p></li>
 <li><p><code>Snowmelt</code>: Snow melt (in mm).</p></li>
 <li><p><code>Interception</code>: Rainfall interception (in mm).</p></li>
@@ -144,22 +145,20 @@ provided by <code>growth_day</code>.</p>
 <li><p><code>SoilVol</code>: Soil water volume integrated across vertical layers (in mm).</p></li>
 <li><p><code>WTD</code>: Water table depth (in mm from surface).</p></li>
 </ul></li>
+</ul></li>
 <li><p><code>WatershedBalance</code>: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).</p></li>
 <li><p><code>WatershedSoilBalance</code>: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.</p></li>
 <li><p><code>DailyRunoff</code>: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Functions <code>spwb_land</code> and <code>growth_land</code> require daily meteorological data over grid cells. The user may supply four different inputs:</p>
-<ol><li><p>An object of <code>SpatialPixelsMeteorology-class</code>.</p></li>
-<li><p>An object of <code>MeteorologyInterpolationData-class</code>.</p></li>
-<li><p>A data frame with information regarding where to read meteorological data.</p></li>
-<li><p>A data frame with meteorological data common for all cells of the grid.</p></li>
-</ol><p>In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. 
- In the case of (2), interpolation of weather is done over each grid cell every simulated day. 
- In the case of (3) weather maps are read for each day. 
- Finally, in the case of (4) spatial variation of weather is not considered.</p>
-    </div>
+    <p>Functions <code>spwb_land</code> and <code>growth_land</code> require daily meteorological data over grid cells. 
+The user may supply three different inputs:</p>
+<ol><li><p>A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).</p></li>
+<li><p>DEPRECATED: An object of <code>SpatialPixelsMeteorology-class</code> or <code>SpatialGridMeteorology-class</code>. 
+  All the spatio-temporal variation of weather is already supplied by the user.</p></li>
+<li><p>DEPRECATED: An object of <code>MeteorologyInterpolationData-class</code>. Interpolation of weather is performed over each spatial unit every simulated day.</p></li>
+</ol></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code>spwb_day</code>,  <code>growth_day</code>,
