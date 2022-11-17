@@ -2,7 +2,7 @@ Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Forest Simulation
 Version: 1.0.0
-Date: 2022-11-16
+Date: 2022-11-17
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -12,7 +12,7 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes
 Depends: R (>= 3.4.0), sp, medfate (>= 2.7.6)
-Imports: ggplot2, sf, methods, meteoland (>= 0.8.1), Rcpp (>= 0.12.12), lifecycle, 
+Imports: ggplot2, sf, methods, meteoland (>= 0.8.1), rlang, Rcpp (>= 0.12.12), lifecycle, 
     parallel, shiny, tibble
 Suggests: 
     knitr,

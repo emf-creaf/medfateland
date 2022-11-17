@@ -3,7 +3,8 @@
 #' Updates the state of a spatial object 'x' according to the final state in simulation outcome 'y' 
 #' 
 #' @param x An object of class \code{\link{sf}} with the corresponding landscape columns.
-#' @param y The object resulting of a simulation previously carried on \code{x}.
+#' @param y The object resulting of a simulation previously carried on \code{x} 
+#'    using \code{\link{spwb_spatial}}, \code{\link{growth_spatial}}, \code{\link{spwb_land}}, etc.
 #' 
 #' @return An object of class \code{\link{sf}} with modified state variables.
 #' 
@@ -13,7 +14,10 @@
 #' 
 update_state<-function(x, y) {
   if(!inherits(x, "sf")) stop("'x' should be of class 'sf' ")
-  if(!inherits(y, "sf")) stop("'y' should be of class 'sf'")
+  if(!inherits(y, "sf") && !inherits(y, "spwb_land") && !inherits(y, "growth_land")) stop("'y' should be of class 'sf', 'spwb_land', or 'growth_land'")
+  if(inherits(y, c("spwb_land", "growth_land"))) {
+    y = y$sf
+  }
   n = length(x$forest)
   if(!is.null(y$state)) {
     if(length(y$state)!=n) stop("'state' in 'y' does not have the same length as the elements in 'x'")
@@ -32,18 +36,16 @@ update_state<-function(x, y) {
       }
     }
   }
-  if(inherits(y, c("spwbland", "growthland"))) {
+  if("aquifer" %in% names(y)) {
     if(!is.null(y$aquifer)) {
       if(length(y$aquifer)!=n) stop("'aquifer`' in 'y' does not have the same length as the elements in 'x'")
-      for(i in 1:n) {
-        x@aquifer[i] = y$aquifer[i]
-      }
+      x$aquifer = y$aquifer
     }
+  }
+  if("snowpack" %in% names(y)) {
     if(!is.null(y$snowpack)) {
       if(length(y$snowpack)!=n) stop("'snowpack`' in 'y' does not have the same length as the elements in 'x'")
-      for(i in 1:n) {
-        x@snowpack[i] = y$snowpack[i]
-      }
+      x$snowpack = y$snowpack
     }
   }
   return(x)

@@ -5,15 +5,8 @@
             "Land cover type" = "landcovertype"))
 }
 .getLandscapeTopographyVar<-function(obj, variable) {
-  if(variable=="landcovertype") {
-    varplot = obj$landcovertype
-  } else if(variable=="elevation") {
-    varplot = obj$elevation
-  } else if(variable=="slope") {
-    varplot = obj$slope
-  } else if(variable=="aspect") {
-    varplot = obj$aspect
-  }
+  if(!(variable %in% names(obj))) stop(paste0("Object does not have a '", variable, "' column."))
+  varplot = obj[[variable]]
   return(varplot)
 }
 
@@ -34,6 +27,7 @@
            "Water potential (third layer)" = "psi3"))
 }
 .getLandscapeSoilVar<-function(obj, variable) {
+  if(!("soil" %in% names(obj))) stop("Object does not have a 'soil' column.")
   n = length(obj$soil)
   varplot = rep(NA, n)
   for(i in 1:n) {
@@ -123,6 +117,7 @@
   return(vars)
 }
 .getLandscapeForestStandVar<-function(obj, variable, SpParams = NULL) {
+  if(!("forest" %in% names(obj))) stop("Object does not have a 'forest' column.")
   n = length(obj$forest)
   varplot = rep(NA, n)
   for(i in 1:n) {
@@ -231,6 +226,7 @@
 #'                   
 #' @name extract_variables
 extract_variables<-function(x, vars = "landcovertype", SpParams = NULL, ...) {
+  if(!inherits(x, "sf")) stop("'x' has to be of class 'sf'")
   df = sf::st_sf(geometry = sf::st_geometry(x))
   for(var in vars) {
     df[[var]] = .getLandscapeVar(x, var, SpParams, ...)

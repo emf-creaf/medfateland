@@ -6,13 +6,13 @@ import(meteoland)
 import(medfate)
 import(shiny)
 importFrom(Rcpp, evalCpp)
+importFrom("rlang", "duplicate")
 importFrom("tibble", "as_tibble")
 importFrom("lifecycle","deprecated")
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
-export(create_management_scenario,
-       defaultWatershedCorrectionFactors,
+export(defaultWatershedCorrectionFactors,
        extract_variables,
        plot_variable,
        plot_summary,
@@ -23,7 +23,6 @@ export(create_management_scenario,
        landscape_summary,
        shinyplot_land,
        sp_to_sf,
-       fordyn_scenario,
        update_state)
 
 useDynLib(medfateland, .registration = TRUE)

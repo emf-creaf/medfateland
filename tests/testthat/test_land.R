@@ -12,3 +12,9 @@ test_that("Can simulate three days over landscape",{
   expect_s3_class(growth_land(yws, meteo = examplemeteo, dates = dates, summaryFreq = "month", 
                              SpParams = SpParamsMED, progress = FALSE), "growth_land")
 })
+
+
+# test_that("Can simulate three days over landscape using old interpolator",{
+#   expect_s3_class(spwb_land(yws, meteo = exampleinterpolationdata, dates = dates, summaryFreq = "month", 
+#                             SpParams = SpParamsMED, progress = FALSE), "spwb_land")
+# })

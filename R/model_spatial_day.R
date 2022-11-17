@@ -1,26 +1,18 @@
 .f_spatial_day<-function(xi, meteo, date, model){
-  x = xi$x
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
-  # else if(inherits(meteo, "character")) {
-  #   if(sp_class == "SpatialPoints") {
-  #     met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = date)
-  #   } else {
-  #     met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-  #   }
-  #   met = met@data[[1]]
-  # }
-  # else if(inherits(meteo,"SpatialPointsMeteorology")) {
-  #   met = meteo@data[[xi$i]]
-  # } 
-  # else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-  #   met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-  #   met = met@data[[1]]
-  # } 
-  # else if(inherits(meteo, "MeteorologyInterpolationData")) {
-  #   met = meteoland::interpolationpoints(meteo, xi$spt, dates=date, verbose=FALSE)
-  #   met = met@data[[1]]
-  # }
+  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+    met = met@data[[1]]
+  } 
+  else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+                                  elevation = xi$elevation, 
+                                  slope = xi$slope, 
+                                  aspect = xi$aspect)
+    met = meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
+    met = met@data[[1]]
+  }
   tmin = met[date,"MinTemperature"]
   tmax = met[date,"MaxTemperature"]
   rhmin = met[date,"MinRelativeHumidity"]
@@ -29,16 +21,16 @@
   wind = met[date,"WindSpeed"]
   prec = met[date,"Precipitation"]
   if(model=="spwb") {
-    if(inherits(x, "spwbInput")){
-      res<-medfate::spwb_day(x, date, 
+    if(inherits(xi$x, "spwbInput")){
+      res<-medfate::spwb_day(xi$x, date, 
                              tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
                              latitude = xi$latitude, elevation = xi$elevation,
                              slope = xi$slope, aspect = xi$aspect, prec = prec,
                              modifyInput = TRUE)
     } 
   } else if(model=="growth") {
-    if(inherits(x, "growthInput")) {
-      res<-medfate::growth_day(x, date, 
+    if(inherits(xi$x, "growthInput")) {
+      res<-medfate::growth_day(xi$x, date, 
                                tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
                                latitude = xi$latitude, elevation = xi$elevation,
                                slope = xi$slope, aspect = xi$aspect, prec = prec,
@@ -135,7 +127,7 @@
     for(i in 1:n) {
       if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, id = y$id[i],
-                spt = sf::st_geometry(y)[i], x = xlist[[i]],
+                point = sf::st_geometry(y)[i], x = xlist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
       resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
     }

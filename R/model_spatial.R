@@ -8,26 +8,18 @@
   f_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
-  # else if(inherits(meteo, "character")) {
-  #   if(sp_class == "SpatialPoints") {
-  #     if(length(meteo)==1) met = meteoland::readmeteorologypoints(meteo, stations = xi$id, dates = dates)
-  #     else met = meteoland::readmeteorologypoints(meteo, stations = xi$id)
-  #   } else {
-  #     met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-  #   }
-  #   met = met@data[[1]]
-  # }
-  # else if(inherits(meteo,"SpatialPointsMeteorology")) {
-  #   met = meteo@data[[xi$i]]
-  # } 
-  # else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-  #   met = meteoland::extractgridpoints(meteo, as(xi$spt, "SpatialPoints"))
-  #   met = met@data[[1]]
-  # } 
-  # else if(inherits(meteo, "MeteorologyInterpolationData")) {
-  #   met = meteoland::interpolationpoints(meteo, xi$spt, dates=dates, verbose=FALSE)
-  #   met = met@data[[1]]
-  # }
+  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+    met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+    met = met@data[[1]]
+  } 
+  else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+                                  elevation = xi$elevation, 
+                                  slope = xi$slope, 
+                                  aspect = xi$aspect)
+    met = meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
+    met = met@data[[1]]
+  }
   if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -248,17 +240,13 @@
 #' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
 #' 
-#' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources: 
+#' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
+#' The user may supply three kinds of weather sources: 
 #' \enumerate{
-#'   \item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
-#'   \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
-#'   \item{A data frame with information regarding where to read meteorological data.}
-#'   \item{A data frame with meteorological data common for all cells of the grid.}
+#'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+#'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
+#'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
 #'   }
-#'  In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. 
-#'  In the case of (2), interpolation of weather is done over each grid cell every simulated day. 
-#'  In the case of (3) weather maps are read for each day. 
-#'  Finally, in the case of (4) spatial variation of weather is not considered.
 #'  
 #' @returns An object of class 'sf' containing four elements:
 #' \itemize{

@@ -100,17 +100,13 @@ Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth
 No spatial processes are simulated.
 }
 \details{
-Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). The user may supply four kinds of weather sources: 
+Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
+The user may supply three kinds of weather sources: 
 \enumerate{
-  \item{An object of \code{\link{SpatialPixelsMeteorology-class}}.}
-  \item{An object of \code{\link{MeteorologyInterpolationData-class}}.}
-  \item{A data frame with information regarding where to read meteorological data.}
-  \item{A data frame with meteorological data common for all cells of the grid.}
+  \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+  \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
+  \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
   }
- In the case of (1), all the spatio-temporal variation of weather is already supplied by the user. 
- In the case of (2), interpolation of weather is done over each grid cell every simulated day. 
- In the case of (3) weather maps are read for each day. 
- Finally, in the case of (4) spatial variation of weather is not considered.
 }
 \examples{
 \dontrun{
