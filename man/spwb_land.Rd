@@ -93,10 +93,11 @@ provided by \code{\link{growth_day}}.
 }
 \details{
 Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. 
-The user may supply three different inputs:
+The user may supply four different inputs:
 
 \enumerate{
   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+  \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. 
   All the spatio-temporal variation of weather is already supplied by the user.}
   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}

@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.0.1
+- Adapting to new meteoland interpolation procedure
+
 # Version 1.0.0
 - Major restructuring to work with 'sf' instead of 'sp'
 

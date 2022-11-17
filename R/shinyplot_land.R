@@ -41,7 +41,6 @@
 }
 .shinyplot_results<-function(x) {
   not_null <- which(!unlist(lapply(x$summary, is.null)))
-  print(not_null)
   vars = colnames(x$summary[[not_null[1]]])
   dates = rownames(x$summary[[not_null[1]]])
   if(inherits(x, c("spwbland", "growthland"))) {

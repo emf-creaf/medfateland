@@ -20,12 +20,15 @@
 
 
   if(inherits(meteo,"data.frame")) {
-    oneMeteoCell = ("MinTemperature" %in% names(meteo))
     datesMeteo = as.Date(row.names(meteo))
   } else if(inherits(meteo, "MeteorologyInterpolationData")) {
     datesMeteo = meteo@dates
+  } else if(inherits(meteo, "SpatialGridMeteorology")) {
+    datesMeteo = meteo@dates
   } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
     datesMeteo = meteo@dates
+  } else if(inherits(meteo, "stars")) {
+    datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
   }
   if(is.null(dates)) {
     dates = datesMeteo
@@ -149,11 +152,11 @@
   
   if(inherits(meteo, "SpatialPixelsMeteorology") || inherits(meteo, "SpatialGridMeteorology")) {
     meteo = meteoland::extractgridpoints(meteo, as(sf::st_geometry(y), "Spatial"))
+    # now meteo is a SpatialPointsMeteorology
   }  
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
     if(progress) cat(".")
-    i = which(datesMeteo == dates[day]) #date index in meteo data
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
     if(inherits(meteo,"MeteorologyInterpolationData")) {
@@ -179,36 +182,39 @@
         gridRadiation[iml] = meti$Radiation[1]
         gridWindSpeed[iml] = meti$WindSpeed[1]
       }
-    } else if(inherits(meteo,"SpatialPointsMeteorology")) {
-      ml = meteo@data[[i]]
+    } else if(inherits(meteo,"stars")) {
+      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day])
+      ml = tidyr::unnest(met, cols = "interpolated_data")
       gridMinTemperature = ml$MinTemperature
       gridMaxTemperature = ml$MaxTemperature
       gridMinRelativeHumidity = ml$MinRelativeHumidity
       gridMaxRelativeHumidity = ml$MaxRelativeHumidity
       gridPrecipitation = ml$Precipitation
       gridRadiation = ml$Radiation
-      gridWindSpeed = ml$WindSpeed
-    } else {
-      if(!oneMeteoCell) { # Read meteo grid from file
-        f = paste(meteo$dir[i], meteo$filename[i],sep="/")
-        if(!file.exists(f)) stop(paste("Meteorology file '", f,"' does not exist!", sep=""))
-        ml = readmeteorologygrid(f)
-        gridMinTemperature = as.numeric(ml["MinTemperature"])
-        gridMaxTemperature = as.numeric(ml["MaxTemperature"])
-        gridMinRelativeHumidity = as.numeric(ml["MinRelativeHumidity"])
-        gridMaxRelativeHumidity = as.numeric(ml["MaxRelativeHumidity"])
-        gridPrecipitation = as.numeric(ml["Precipitation"])
-        gridRadiation = as.numeric(ml["Radiation"])
-        gridWindSpeed = as.numeric(ml["WindSpeed"])
-      } else { # repeat values for all cells
-        gridMinTemperature = rep(meteo[i,"MinTemperature"], nCells)
-        gridMaxTemperature = rep(meteo[i,"MaxTemperature"], nCells)
-        gridMinRelativeHumidity = rep(meteo[i,"MinRelativeHumidity"], nCells)
-        gridMaxRelativeHumidity = rep(meteo[i,"MaxRelativeHumidity"], nCells)
-        gridPrecipitation = rep(meteo[i,"Precipitation"], nCells)
-        gridRadiation = rep(meteo[i, "Radiation"], nCells)
-        gridWindSpeed = rep(meteo[i, "WindSpeed"], nCells)
+      gridWindSpeed = ml$WindSpeed      
+    } else if(inherits(meteo,"SpatialPointsMeteorology")) {
+      imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+      for(iml in 1:nCells) {
+        meti = meteo@data[[iml]]
+        gridMinTemperature[iml] = meti$MinTemperature[imeteo]
+        gridMaxTemperature[iml] = meti$MaxTemperature[imeteo]
+        gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[imeteo]
+        gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[imeteo]
+        gridPrecipitation[iml] = meti$Precipitation[imeteo]
+        gridRadiation[iml] = meti$Radiation[imeteo]
+        gridWindSpeed[iml] = meti$WindSpeed[imeteo]
       }
+    } else { # data frame
+      imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+      # repeat values for all cells
+      gridMinTemperature = rep(meteo[imeteo,"MinTemperature"], nCells)
+      gridMaxTemperature = rep(meteo[imeteo,"MaxTemperature"], nCells)
+      gridMinRelativeHumidity = rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
+      gridMaxRelativeHumidity = rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
+      gridPrecipitation = rep(meteo[imeteo,"Precipitation"], nCells)
+      gridRadiation = rep(meteo[imeteo, "Radiation"], nCells)
+      gridWindSpeed = rep(meteo[imeteo, "WindSpeed"], nCells)
     }
     gridRadiation[is.na(gridRadiation)] = mean(gridRadiation, na.rm=T)
     gridMeteo = data.frame(MinTemperature = gridMinTemperature, 
@@ -416,10 +422,11 @@
 #' @param progress Boolean flag to display progress information for simulations.
 #'
 #' @details Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. 
-#' The user may supply three different inputs:
+#' The user may supply four different inputs:
 #'
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
 #'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. 
 #'   All the spatio-temporal variation of weather is already supplied by the user.}
 #'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}

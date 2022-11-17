@@ -20,6 +20,14 @@
     met = meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
     met = met@data[[1]]
   }
+  else if(inherits(meteo, "stars")) {
+    pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+    met = meteoland::interpolate_data(pt_sf, meteo, dates = dates)
+    met = met$interpolated_data[[1]]
+    met = as.data.frame(met)
+    row.names(met) = met$dates
+    met$dates = NULL
+  }    
   if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -241,9 +249,10 @@
 #' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
-#' The user may supply three kinds of weather sources: 
+#' The user may supply four kinds of weather sources: 
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
 #'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
 #'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
 #'   }
