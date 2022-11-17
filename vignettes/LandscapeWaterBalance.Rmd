@@ -141,10 +141,10 @@ plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 
 ### Simulation in several steps
 
-The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_state()`:
+The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
 
 ```{r}
-w = update_state(y, res)
+w = update_landscape(y, res)
 ```
 
 The resulting object `w` is the same as `y` except for the state variables. For example we can compare the water potential in the first soil layer:

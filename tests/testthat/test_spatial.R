@@ -20,6 +20,12 @@ test_that("Can simulate three days over landscape",{
                              SpParams = SpParamsMED, progress = FALSE), "sf")
 })
 
+test_that("Can simulate one year with management",{
+  expect_s3_class(fordyn_spatial(ypts[1,], meteo = examplemeteo, 
+                               SpParams = SpParamsMED, progress = FALSE), "sf")
+})
+
+
 # test_that("Can simulate three days over landscape using old interpolator",{
 #   data("exampleinterpolationdata")
 #   expect_s3_class(spwb_spatial(ypts[1,], meteo = exampleinterpolationdata, 

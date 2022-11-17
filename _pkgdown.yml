@@ -41,7 +41,7 @@ reference:
   - starts_with("growth")
   - starts_with("fordyn")
   - ends_with("_day")
-  - update_state
+  - update_landscape
 
 - title: Post-processing
   desc:  Plot and summary functions for simulation results

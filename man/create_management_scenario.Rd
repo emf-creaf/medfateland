@@ -29,7 +29,6 @@ A list with the following structure:
 \description{
 Defines a management scenario with default values, to be modified by the user
 }
-\examples{
- # Creates default scenario with two management units
- s = create_management_scenario(2)
+\seealso{
+\code{\link{fordyn_scenario}}
 }

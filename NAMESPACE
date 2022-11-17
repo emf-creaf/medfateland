@@ -9,6 +9,7 @@ importFrom(Rcpp, evalCpp)
 importFrom("stars", "st_get_dimension_values")
 importFrom("rlang", "duplicate")
 importFrom("tidyr", "unnest")
+importFrom("dplyr", "bind_rows")
 importFrom("tibble", "as_tibble")
 importFrom("lifecycle","deprecated")
 importFrom("stats", "var")
@@ -25,7 +26,10 @@ export(defaultWatershedCorrectionFactors,
        landscape_summary,
        shinyplot_land,
        sp_to_sf,
-       update_state)
+       update_landscape,
+       create_management_scenario,
+       fordyn_tables,
+       fordyn_scenario)
 
 useDynLib(medfateland, .registration = TRUE)
 

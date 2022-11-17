@@ -89,8 +89,9 @@ of such lists, one per spatial unit.}
 An object of class 'sf' containing four elements:
 \itemize{
   \item{\code{geometry}: Spatial geometry.}
-  \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_state}}).}
-  \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_state}}).}
+  \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+  \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+  \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }
@@ -132,12 +133,29 @@ res_sum = simulation_summary(res, summaryFunction = summary.spwb, freq="month")
 
 # Plot summaries
 plot_summary(res_sum, "Transpiration", "2001-03-01")
+
+# Fordyn simulation for one year (one stand) without management
+res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
+
+# Add management arguments to all stands
+for(i in 1:nrow(y)) y$managementarguments[[i]] =  defaultManagementArguments()
+
+# Change thinning threshold for stand #1
+y$managementarguments[[1]]$thinningThreshold = 15
+
+# Fordyn simulation for one year (one stand) with management
+res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
+                     managementFunction = defaultManagementFunction)
+
+# Compare table of cuttings with vs. without management
+res_noman$result[[1]]$CutTreeTable
+res_man$result[[1]]$CutTreeTable
 }
 
 }
 \seealso{
 \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
-\code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_state}}
+\code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_landscape}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

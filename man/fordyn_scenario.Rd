@@ -27,7 +27,7 @@ Management units should be defined in this object.}
 
 \item{meteo}{Meteorology data (see \code{\link{fordyn_spatial}}).}
 
-\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume corresponding to each tree cohort.}
+\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.}
 
 \item{managementScenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
 
@@ -47,4 +47,45 @@ Management units should be defined in this object.}
 }
 \description{
 Evaluates forest dynamics over a landscape including climate and management scenarios
+}
+\examples{
+\dontrun{
+# Load example landscape data
+data("examplepointslandscape")
+  
+# Transform example to 'sf' 
+y = sp_to_sf(examplepointslandscape)
+
+# Load example meteo data frame from package meteoland
+data("examplemeteo")
+  
+#Prepare a two-year meteorological data with half precipitation during 
+#the second year
+meteo2001 = examplemeteo
+meteo2002 = examplemeteo
+meteo2002$Precipitation = meteo2002$Precipitation/2
+row.names(meteo2002) = seq(as.Date("2002-01-01"), 
+                         as.Date("2002-12-31"), by="day")
+meteo_01_02 = rbind(meteo2001, meteo2002)
+                         
+# Load default medfate parameters
+data("SpParamsMED")
+
+# Creates default scenario with two management units
+s = create_management_scenario(2)
+
+# Modify thinning threshold of the arguments of management unit #1
+s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
+
+# Subset 10 stands for computational simplicity
+y = y[1:10, ]
+
+# Assign two management units to stands
+y$managementunit[1:3] = 1 
+y$managementunit[4:10] = 2
+
+res = fordyn_scenario(y, SpParamsMED, meteo_01_02, 
+                      volumeFunction = NULL, managementScenario = s,
+                      parallelize = TRUE)
+}
 }

@@ -40,6 +40,6 @@ sp_to_sf<-function(y) {
     epl$representedarea = NA
   }
   epl$managementunit = NA
-  epl$managementarguments = NA
+  epl$managementarguments = vector("list", nrow(epl))
   return(sf::st_as_sf(tibble::as_tibble(epl)))
 }

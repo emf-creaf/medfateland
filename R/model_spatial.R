@@ -1,11 +1,14 @@
 .f_spatial<-function(xi, meteo, dates, model,
                      SpParams, localControl, CO2ByYear = numeric(0), 
+                     keepResults = TRUE,
                      summaryFunction = NULL, summaryArgs = NULL){
   f = xi$forest
   s = xi$soil
   x = xi$x
 
   f_out = NULL
+  m_out = NULL
+  x_out = NULL
   res = NULL
   if(inherits(meteo,"data.frame")) met = meteo
   else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
@@ -61,9 +64,16 @@
   }
   if(model=="fordyn"){
     fs_i = res$ForestStructures
-    f_out = fs_i[[length(fs_i)]]
+    f_out = res$NextForestObject
+    m_out = res$ManagementArgs
   }
-  return(list(result = res, summary = s, forest_out = f_out))
+  if(model=="spwb") x_out = res$spwbOutput
+  else if(model=="growth") x_out = res$growthOutput
+  else if(model=="fordyn") x_out = res$NextInputObject
+  
+  # Frees memory if detailed results are not required
+  if(!keepResults) res = NULL
+  return(list(result = res, summary = s, x_out = x_out, forest_out = f_out, management_out = m_out))
 }
 
 .check_model_inputs<-function(y, meteo) {
@@ -122,6 +132,7 @@
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   forestlist_out = vector("list",n)
+  managementlist_out = vector("list",n)
 
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
@@ -180,19 +191,19 @@
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
                                              SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear,
-                                             summaryFunction = summaryFunction, 
+                                             keepResults = keepResults,
+                                             summaryFunction = summaryFunction, summaryArgs = summaryArgs,
                                              chunk.size = chunk.size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
-      if(!is.null(reslist_parallel[[i]]$result)) {
-        if(model=="spwb") xlist[[i]] = reslist_parallel[[i]]$result$spwbOutput
-        else if(model=="growth") xlist[[i]] = reslist_parallel[[i]]$result$growthOutput
-        else if(model=="fordyn") xlist[[i]] = reslist_parallel[[i]]$result$NextInputObject
-      }
-      if(keepResults && !is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
+      if(!is.null(reslist_parallel[[i]]$x_out)) xlist[[i]] = reslist_parallel[[i]]$x_out
+      if(!is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
       if(!is.null(reslist_parallel[[i]]$summary)) summarylist[[i]] = reslist_parallel[[i]]$summary
-      if(model=="fordyn" && !is.null(reslist_parallel[[i]]$forest_out)) forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
+      if(model=="fordyn"){
+        if(!is.null(reslist_parallel[[i]]$forest_out)) forestlist_out[[i]] = reslist_parallel[[i]]$forest_out
+        if(!is.null(reslist_parallel[[i]]$management_out)) managementlist_out[[i]] = reslist_parallel[[i]]$management_out
+      }
     }
     if(progress) cat("\n")
   } else {
@@ -208,20 +219,24 @@
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model,
                       SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
+                      keepResults = keepResults,
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs)
-      if(!is.null(sim_out$result)) {
-        if(model=="spwb") xlist[[i]] = sim_out$result$spwbOutput
-        else if(model=="growth") xlist[[i]] = sim_out$result$growthOutput
-        else if(model=="fordyn") xlist[[i]] = sim_out$result$NextInputObject
-      }
-      if(keepResults && !is.null(sim_out$result)) resultlist[[i]] = sim_out$result
+      if(!is.null(sim_out$x_out)) xlist[[i]] = sim_out$x_out
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
-      if(model=="fordyn" && !is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
+      if(!is.null(sim_out$result)) resultlist[[i]] = sim_out$result
+      if(model=="fordyn"){
+        if(!is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
+        if(!is.null(sim_out$management_out)) managementlist_out[[i]] = sim_out$management_out
+      }
     }
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))
+  res$id = y$id
   res$state = xlist
-  if(model=="fordyn") res$forest = forestlist_out
+  if(model=="fordyn") {
+    res$forest = forestlist_out
+    res$managementarguments = managementlist_out
+  }
   res$result = resultlist
   res$summary = summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))
@@ -260,8 +275,9 @@
 #' @returns An object of class 'sf' containing four elements:
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
-#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_state}}).}
-#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_state}}).}
+#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
 #'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 #' }
@@ -270,7 +286,7 @@
 #' 
 #' @seealso 
 #' \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
-#' \code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_state}}
+#' \code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_landscape}}
 #' 
 #' @examples
 #' \dontrun{
@@ -295,6 +311,23 @@
 #' 
 #' # Plot summaries
 #' plot_summary(res_sum, "Transpiration", "2001-03-01")
+#' 
+#' # Fordyn simulation for one year (one stand) without management
+#' res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
+#' 
+#' # Add management arguments to all stands
+#' for(i in 1:nrow(y)) y$managementarguments[[i]] =  defaultManagementArguments()
+#' 
+#' # Change thinning threshold for stand #1
+#' y$managementarguments[[1]]$thinningThreshold = 15
+#' 
+#' # Fordyn simulation for one year (one stand) with management
+#' res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
+#'                      managementFunction = defaultManagementFunction)
+#' 
+#' # Compare table of cuttings with vs. without management
+#' res_noman$result[[1]]$CutTreeTable
+#' res_man$result[[1]]$CutTreeTable
 #' }
 #' 
 #' @name spwb_spatial

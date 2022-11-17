@@ -14,9 +14,7 @@
 #'      \item{\code{annualDemandBySpecies}: An empty (named) vector of annual wood demand (m3) by medfate species names}
 #'    }
 #'
-#' @examples
-#'  # Creates default scenario with two management units
-#'  s = create_management_scenario(2)
+#' @seealso \code{\link{fordyn_scenario}}
 create_management_scenario<-function(numberOfUnits,
                                      managementFunction = NULL, 
                                      managementArguments = NULL) {
