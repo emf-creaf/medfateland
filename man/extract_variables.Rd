@@ -27,50 +27,50 @@ An object of class \code{\link{sf}} with the desired variables.
 Extract or estimate variables from landscape objects (class 'sf').
 }
 \details{
-The following string values are available for \code{vars}. 
- \emph{Topography}:
-   \itemize{
-      \item{\code{"elevation"}:}{Elevation in m.}
-      \item{\code{"slope"}:}{Slope in degrees.} 
-      \item{\code{"aspect"}:}{Slope in degrees.} 
-      \item{\code{"landcovertype"}:}{Land cover type.}
-   }
-   
- \emph{Soil}:
-   \itemize{
-     \item{\code{"texture1"}:}{Texture class of the first soil layer.}
-     \item{\code{"texture2"}:}{Texture class of the second soil layer.} 
-     \item{\code{"texture3"}:}{Texture class of the third soil layer.} 
-     \item{\code{"soilvolextract"}:}{Total water extractable volume (mm).}
-     \item{\code{"soilvolsat"}:}{Total water volume at saturation (mm).}
-     \item{\code{"soilvolfc"}:}{Total water volume at field capacity (mm).}
-     \item{\code{"soilvolwp"}:}{Total water volume at wilting point (mm).}
-     \item{\code{"soilvolcurr"}:}{Current total water volume (mm).}
-   }
-   
- \emph{Watershed}:
-   \itemize{
-     \item{\code{"numneigh"}:}{Number of cell neighbours (integer).}
-     \item{\code{"waterorder"}:}{Cell order for lateral water transfer (integer).}
-     \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
-     \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
-     \item{\code{"depthTobedrock"}:}{Depth to bedrock (m).}
-     \item{\code{"bedrockporosity"}:}{Bedrock porosity.}
-     \item{\code{"bedrockconductivity"}:}{Bedrock conductivity.}
-     \item{\code{"aquiferelevation"}:}{Aquifer elevation over bedrock (m).}
-     \item{\code{"depthtoaquifer"}:}{Depth to aquifer (m).}
-     \item{\code{"aquifervolume"}:}{Aquifer volume (mm).}
-     \item{\code{"snowpack"}:}{Snowpack water equivalent (mm).}
-   }
+The following string values are available for \code{vars}.
+\emph{Topography}:
+\itemize{
+\item{\code{"elevation"}:}{Elevation in m.}
+\item{\code{"slope"}:}{Slope in degrees.}
+\item{\code{"aspect"}:}{Slope in degrees.}
+\item{\code{"landcovertype"}:}{Land cover type.}
+}
+
+\emph{Soil}:
+\itemize{
+\item{\code{"texture1"}:}{Texture class of the first soil layer.}
+\item{\code{"texture2"}:}{Texture class of the second soil layer.}
+\item{\code{"texture3"}:}{Texture class of the third soil layer.}
+\item{\code{"soilvolextract"}:}{Total water extractable volume (mm).}
+\item{\code{"soilvolsat"}:}{Total water volume at saturation (mm).}
+\item{\code{"soilvolfc"}:}{Total water volume at field capacity (mm).}
+\item{\code{"soilvolwp"}:}{Total water volume at wilting point (mm).}
+\item{\code{"soilvolcurr"}:}{Current total water volume (mm).}
+}
+
+\emph{Watershed}:
+\itemize{
+\item{\code{"numneigh"}:}{Number of cell neighbours (integer).}
+\item{\code{"waterorder"}:}{Cell order for lateral water transfer (integer).}
+\item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
+\item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
+\item{\code{"depthTobedrock"}:}{Depth to bedrock (m).}
+\item{\code{"bedrockporosity"}:}{Bedrock porosity.}
+\item{\code{"bedrockconductivity"}:}{Bedrock conductivity.}
+\item{\code{"aquiferelevation"}:}{Aquifer elevation over bedrock (m).}
+\item{\code{"depthtoaquifer"}:}{Depth to aquifer (m).}
+\item{\code{"aquifervolume"}:}{Aquifer volume (mm).}
+\item{\code{"snowpack"}:}{Snowpack water equivalent (mm).}
+}
 
 \emph{Forest stand}:
-   \itemize{
-     \item{\code{"basalarea"}:}{Basal area (m2/ha).}
-     \item{\code{"leafareaindex"}:}{Leaf area index (m2/m2).} 
-     \item{\code{"foliarbiomass"}:}{Foliar biomass (kg/m2).} 
-     \item{\code{"fuel"}:}{Fine live fuel (kg/m2).} 
-     \item{\code{"phytovolume"}:}{Shrub phytovolume (m3/m2).}
-   }
+\itemize{
+\item{\code{"basalarea"}:}{Basal area (m2/ha).}
+\item{\code{"leafareaindex"}:}{Leaf area index (m2/m2).}
+\item{\code{"foliarbiomass"}:}{Foliar biomass (kg/m2).}
+\item{\code{"fuel"}:}{Fine live fuel (kg/m2).}
+\item{\code{"phytovolume"}:}{Shrub phytovolume (m3/m2).}
+}
 }
 \examples{
 # Load data and species parameters from medfate

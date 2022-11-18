@@ -5,7 +5,7 @@
 \alias{DistributedWatershed-class}
 \title{Class \code{"DistributedWatershed"}}
 \description{
-`r lifecycle::badge("deprecated")`
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 An S4 class that represents a landscape configuration over a grid of coordinates.
 }

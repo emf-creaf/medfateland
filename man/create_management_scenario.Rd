@@ -15,16 +15,16 @@ create_management_scenario(
 
 \item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}). If NULL, function \code{\link{defaultManagementFunction}} will be taken.}
 
-\item{managementArguments}{A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults to be copied for all management units and can later be modified. 
+\item{managementArguments}{A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults to be copied for all management units and can later be modified.
 If NULL, the result of calling function \code{\link{defaultManagementArguments}} will be taken.}
 }
 \value{
 A list with the following structure:
-   \itemize{
-     \item{\code{managementFunction}: The supplied management function}
-     \item{\code{managementUnits}: A vector of length numberOfUnits, each with the supplied management arguments}
-     \item{\code{annualDemandBySpecies}: An empty (named) vector of annual wood demand (m3) by medfate species names}
-   }
+\itemize{
+\item{\code{managementFunction}: The supplied management function}
+\item{\code{managementUnits}: A vector of length numberOfUnits, each with the supplied management arguments}
+\item{\code{annualDemandBySpecies}: An empty (named) vector of annual wood demand (m3) by medfate species names}
+}
 }
 \description{
 Defines a management scenario with default values, to be modified by the user

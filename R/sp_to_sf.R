@@ -1,6 +1,6 @@
 #' sp to sf conversion
 #' 
-#' Converts objects of older classes to sf
+#' Converts objects of older (deprecated) classes to sf
 #' 
 #' @param y An object of class 'Spatial_*_Landscape' or 'DistributedWatershed'
 #' 

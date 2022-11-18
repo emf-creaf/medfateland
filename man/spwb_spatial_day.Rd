@@ -51,18 +51,18 @@ growth_spatial_day(
 \value{
 An object of class \code{\link{sf}} the same name as the function called containing three elements:
 \itemize{
-  \item{\code{geometry}: Spatial geometry.}
-  \item{\code{state}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
-  \item{\code{result}: A list of model output for each simulated stand.}
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{state}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
+\item{\code{result}: A list of model output for each simulated stand.}
 }
 }
 \description{
-Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, 
-for a set of forest stands distributed in specific locations and a given date. 
+Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}},
+for a set of forest stands distributed in specific locations and a given date.
 No spatial processes are simulated.
 }
 \details{
-Simulation functions accept different formats for meteorological input (parameter \code{meteo}) 
+Simulation functions accept different formats for meteorological input (parameter \code{meteo})
 as described in \code{\link{spwb_spatial}}
 }
 \examples{

@@ -13,5 +13,5 @@ sp_to_sf(y)
 An object of class 'sf'
 }
 \description{
-Converts objects of older classes to sf
+Converts objects of older (deprecated) classes to sf
 }

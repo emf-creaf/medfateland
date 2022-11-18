@@ -22,9 +22,9 @@ An object of class \code{\link{ggplot}}.
 Produces graphical output of the summaries of a simulation models
 }
 \details{
-Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
-Alternatively, if summary functions were specified at the time of performing simulations, 
-the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}}) 
+Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}.
+Alternatively, if summary functions were specified at the time of performing simulations,
+the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}})
 will already contain the summaries.
 }
 \seealso{

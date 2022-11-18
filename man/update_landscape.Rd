@@ -9,7 +9,7 @@ update_landscape(x, y)
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with the corresponding landscape columns.}
 
-\item{y}{The object resulting of a simulation previously carried on \code{x} 
+\item{y}{The object resulting of a simulation previously carried on \code{x}
 using \code{\link{spwb_spatial}}, \code{\link{growth_spatial}}, \code{\link{spwb_land}}, etc.}
 }
 \value{

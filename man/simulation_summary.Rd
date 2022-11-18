@@ -15,17 +15,17 @@ simulation_summary(object, summaryFunction, ...)
 }
 \value{
 An object of class \code{\link{sf}}, with the following two elements:
- \itemize{
-   \item{\code{geometry}: Spatial geometry.}
-   \item{\code{summary}: A list of model output summaries for each simulated location.}
- }
+\itemize{
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{summary}: A list of model output summaries for each simulated location.}
+}
 }
 \description{
 Creates spatial objects containing summaries of simulations
 }
 \details{
-The function supplied should take as input an object of local simulation function, i.e. \code{\link{spwb}}, \code{\link{growth}}, or \code{\link{fordyn}}. 
-The output should be a matrix with dates as rows and variables in columns. 
+The function supplied should take as input an object of local simulation function, i.e. \code{\link{spwb}}, \code{\link{growth}}, or \code{\link{fordyn}}.
+The output should be a matrix with dates as rows and variables in columns.
 An example of suitable function is \code{\link{summary.spwb}}.
 }
 \seealso{

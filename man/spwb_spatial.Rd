@@ -88,27 +88,27 @@ of such lists, one per spatial unit.}
 \value{
 An object of class 'sf' containing four elements:
 \itemize{
-  \item{\code{geometry}: Spatial geometry.}
-  \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-  \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-  \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-  \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
-  \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }
 }
 \description{
-Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. 
+Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations.
 No spatial processes are simulated.
 }
 \details{
-Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
-The user may supply four kinds of weather sources: 
+Simulation functions  accept different formats for meteorological input (parameter \code{meteo}).
+The user may supply four kinds of weather sources:
 \enumerate{
-  \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-  \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
-  \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
-  \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
-  }
+\item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+\item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
+\item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
+\item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
+}
 }
 \examples{
 \dontrun{
@@ -154,7 +154,7 @@ res_man$result[[1]]$CutTreeTable
 
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
+\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}},
 \code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_landscape}}
 }
 \author{

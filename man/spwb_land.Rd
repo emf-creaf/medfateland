@@ -47,61 +47,61 @@ growth_land(
 \value{
 Function \code{spwb_land} list of class 'spwb_land' with the following elements:
 \itemize{
-  \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}}, 
-  with the following columns:
-    \itemize{
-       \item{\code{state}: A list of model input objects for each simulated stand.}
-       \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
-       \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
-       \item{\code{summary}: A list of cell summaries, containing the following variables:
-        \itemize{
-          \item{\code{Rain}: Rainfall (in mm).}
-          \item{\code{Snow}: Snowfall (in mm).}
-          \item{\code{Snowmelt}: Snow melt (in mm).}
-          \item{\code{Interception}: Rainfall interception (in mm).}
-          \item{\code{NetRain}: Net rain, i.e. throughfall, (in mm).}
-          \item{\code{Runon}: The amount of water imported from other cells via surface runoff (in mm).}
-          \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
-          \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
-          \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
-          \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-          \item{\code{AquiferDischarge}: The amount of water that reaches deepest soil layer from a saturated aquifer (in mm).}
-          \item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
-          \item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
-          \item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
-          \item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
-          \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
-          \item{\code{Transpiration}: Plant transpiration (in mm).}
-          \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
-          \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
-          \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
-          \item{\code{WTD}: Water table depth (in mm from surface).}
-        }
-      }
-    }
-  }
-  \item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
-  \item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-  \item{\code{DailyRunoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+\item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}},
+with the following columns:
+\itemize{
+\item{\code{state}: A list of model input objects for each simulated stand.}
+\item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
+\item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
+\item{\code{summary}: A list of cell summaries, containing the following variables:
+\itemize{
+\item{\code{Rain}: Rainfall (in mm).}
+\item{\code{Snow}: Snowfall (in mm).}
+\item{\code{Snowmelt}: Snow melt (in mm).}
+\item{\code{Interception}: Rainfall interception (in mm).}
+\item{\code{NetRain}: Net rain, i.e. throughfall, (in mm).}
+\item{\code{Runon}: The amount of water imported from other cells via surface runoff (in mm).}
+\item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+\item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
+\item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+\item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
+\item{\code{AquiferDischarge}: The amount of water that reaches deepest soil layer from a saturated aquifer (in mm).}
+\item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
+\item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
+\item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
+\item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
+\item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
+\item{\code{Transpiration}: Plant transpiration (in mm).}
+\item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
+\item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
+\item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
+\item{\code{WTD}: Water table depth (in mm from surface).}
+}
+}
+}
+}
+\item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+\item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
+\item{\code{DailyRunoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 }
 }
 \description{
-Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
-on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells. 
-Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells, 
+Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
+on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.
+Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells,
 provided by \code{\link{growth_day}}.
 }
 \details{
-Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. 
+Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells.
 The user may supply four different inputs:
 
 \enumerate{
-  \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-  \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
-  \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. 
-  All the spatio-temporal variation of weather is already supplied by the user.}
-  \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
-  }
+\item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
+\item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
+\item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}.
+All the spatio-temporal variation of weather is already supplied by the user.}
+\item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
+}
 }
 \examples{
 \dontrun{

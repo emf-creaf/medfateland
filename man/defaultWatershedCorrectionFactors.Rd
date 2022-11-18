@@ -8,11 +8,11 @@ defaultWatershedCorrectionFactors()
 }
 \value{
 A list with the following items:
- \itemize{
-   \item{\code{Rdrain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
-   \item{\code{Rinterflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-   \item{\code{Rbaseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
- }
+\itemize{
+\item{\code{Rdrain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
+\item{\code{Rinterflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
+\item{\code{Rbaseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+}
 }
 \description{
 Defines default values for correction factors used to modulate watershed hydraulic parameters

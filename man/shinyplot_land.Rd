@@ -18,13 +18,13 @@ An object that represents the shiny app
 Creates a shiny app with interactive plots for spatial inputs and simulation results
 }
 \details{
-Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
+Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results.
 
-  \emph{Spatial inputs}:
-    This is the case if the user supplies an object of class \code{\link{sf}} with simulation inputs.
-    
-  \emph{Simulation result summaries}:
-    This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
+\emph{Spatial inputs}:
+This is the case if the user supplies an object of class \code{\link{sf}} with simulation inputs.
+
+\emph{Simulation result summaries}:
+This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
 }
 \seealso{
 \code{\link{plot_summary}}, \code{\link{extract_variables}}

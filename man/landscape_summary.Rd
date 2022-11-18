@@ -18,12 +18,12 @@ landscape_summary(object, name, summaryFunction, ..., unlist = FALSE)
 \item{unlist}{Logical flag to try converting the summaries into different columns}
 }
 \value{
-An object of class \code{\link{sf}} containing the calculated statistics. 
-If \code{unlist = FALSE} column 'summary' is a list with summaries for each element. 
+An object of class \code{\link{sf}} containing the calculated statistics.
+If \code{unlist = FALSE} column 'summary' is a list with summaries for each element.
 If \code{unlist = TRUE} different columns are returned instead, one per variable given in the summary function.
 }
 \description{
-Functions to calculates a summary function for the forest or soil of all spatial elements 
+Functions to calculates a summary function for the forest or soil of all spatial elements
 in an object of class \code{\link{sf}} containing landscape information.
 }
 \examples{

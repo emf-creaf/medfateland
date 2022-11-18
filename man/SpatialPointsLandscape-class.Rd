@@ -22,7 +22,7 @@
 \item{xlist}{Object of class \code{"list"} containing a set of spwb or growth model input objects.}
 }
 \description{
-`r lifecycle::badge("deprecated")`
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 An S4 class that represents a set of forest stands along with their spatial location
 }
