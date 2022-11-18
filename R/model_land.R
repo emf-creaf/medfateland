@@ -185,7 +185,7 @@
     } else if(inherits(meteo,"stars")) {
       pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
                         elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day])
+      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
       ml = tidyr::unnest(met, cols = "interpolated_data")
       gridMinTemperature = ml$MinTemperature
       gridMaxTemperature = ml$MaxTemperature

@@ -18,3 +18,11 @@ test_that("Can simulate three days over landscape",{
 #   expect_s3_class(spwb_land(yws, meteo = exampleinterpolationdata, dates = dates, summaryFreq = "month", 
 #                             SpParams = SpParamsMED, progress = FALSE), "spwb_land")
 # })
+
+
+# test_that("Can simulate three days over landscape using new interpolator",{
+#   interpolator = meteoland::with_meteo(meteoland_meteo_example) |>
+#     meteoland::create_meteo_interpolator(params = defaultInterpolationParams(), verbose = FALSE)
+#   expect_s3_class(spwb_land(yws, meteo = interpolator, summaryFreq = "month",
+#                             SpParams = SpParamsMED, progress = FALSE), "spwb_land")
+# })

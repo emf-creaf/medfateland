@@ -31,10 +31,10 @@ test_that("Can simulate one year with management",{
 #   expect_s3_class(spwb_spatial(ypts[1,], meteo = exampleinterpolationdata, 
 #                                SpParams = SpParamsMED, progress = FALSE), "sf")
 # })
-
+# 
 # test_that("Can simulate three days over landscape using new interpolator",{
 #   interpolator = meteoland::with_meteo(meteoland_meteo_example) |>
-#     meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
+#     meteoland::create_meteo_interpolator(params = defaultInterpolationParams(), verbose = FALSE)
 #   expect_s3_class(spwb_spatial(ypts[1,], meteo = interpolator,
 #                                SpParams = SpParamsMED, progress = FALSE), "sf")
 # })

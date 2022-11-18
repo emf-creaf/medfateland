@@ -15,7 +15,7 @@
   }
   else if(inherits(meteo, "stars")) {
     pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-    met = meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date))
+    met = meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
     met = met$interpolated_data[[1]]
     met = as.data.frame(met)
     row.names(met) = met$dates
