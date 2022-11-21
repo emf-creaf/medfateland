@@ -393,6 +393,7 @@
   }
 
   sf = sf::st_sf(geometry=sf::st_geometry(y))
+  sf$id = y$id
   sf$state = y$state
   sf$aquifer = y$aquifer
   sf$snowpack = y$snowpack
@@ -439,6 +440,7 @@
 #'   with the following columns:
 #'     \itemize{
 #'        \item{\code{state}: A list of model input objects for each simulated stand.}
+#'        \item{\code{id}: Stand id, taken from the input.}
 #'        \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 #'        \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 #'        \item{\code{summary}: A list of cell summaries, containing the following variables:

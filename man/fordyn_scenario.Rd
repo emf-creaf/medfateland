@@ -13,6 +13,8 @@ fordyn_scenario(
   localControl = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
+  summaryFunction = NULL,
+  summaryArgs = NULL,
   parallelize = FALSE,
   numCores = detectCores() - 1,
   chunk.size = NULL,
@@ -37,6 +39,10 @@ Management units should be defined in this object.}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
+\item{summaryFunction}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).}
+
+\item{summaryArgs}{List with additional arguments for the summary function.}
+
 \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
 
 \item{numCores}{Integer with the number of cores to be used for parallel computation.}
@@ -44,6 +50,27 @@ Management units should be defined in this object.}
 \item{chunk.size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+}
+\value{
+An list of class 'fordyn_scenario' with the following elements:
+\itemize{
+\item{An object of class 'sf' containing four elements:
+\itemize{
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Stand id, taken from the input.}
+\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{treetable}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+\item{\code{shrubtable}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+\item{\code{deadtreetable}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+\item{\code{deadshrubtable}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+\item{\code{cuttreetable}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+\item{\code{cutshrubtable}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
+}
+}
+}
 }
 \description{
 Evaluates forest dynamics over a landscape including climate and management scenarios
@@ -88,4 +115,10 @@ res = fordyn_scenario(y, SpParamsMED, meteo_01_02,
                       volumeFunction = NULL, managementScenario = s,
                       parallelize = TRUE)
 }
+}
+\seealso{
+\code{\link{fordyn_spatial}}
+}
+\author{
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

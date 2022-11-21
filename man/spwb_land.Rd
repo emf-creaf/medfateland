@@ -51,6 +51,7 @@ Function \code{spwb_land} list of class 'spwb_land' with the following elements:
 with the following columns:
 \itemize{
 \item{\code{state}: A list of model input objects for each simulated stand.}
+\item{\code{id}: Stand id, taken from the input.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 \item{\code{summary}: A list of cell summaries, containing the following variables:

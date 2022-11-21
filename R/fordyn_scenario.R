@@ -12,10 +12,36 @@
 #' @param managementScenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
+#' @param summaryFunction An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
+#' @param summaryArgs List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param numCores Integer with the number of cores to be used for parallel computation.
 #' @param chunk.size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
+#' 
+#' @returns An list of class 'fordyn_scenario' with the following elements:
+#'  \itemize{
+#'    \item{An object of class 'sf' containing four elements:
+#'      \itemize{
+#'        \item{\code{geometry}: Spatial geometry.}
+#'        \item{\code{id}: Stand id, taken from the input.}
+#'        \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{treetable}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+#'        \item{\code{shrubtable}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+#'        \item{\code{deadtreetable}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+#'        \item{\code{deadshrubtable}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+#'        \item{\code{cuttreetable}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+#'        \item{\code{cutshrubtable}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+#'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
+#'      }
+#'    }
+#'  }
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{fordyn_spatial}}
 #' 
 #' @examples 
 #' \dontrun{
@@ -60,11 +86,11 @@
 fordyn_scenario<-function(y, SpParams, meteo, 
                          volumeFunction, managementScenario,
                          localControl = defaultControl(), dates = NULL,
-                         CO2ByYear = numeric(0),
+                         CO2ByYear = numeric(0), summaryFunction=NULL, summaryArgs=NULL,
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE){
   
   management_function = managementScenario$managementFunction
-  
+  n = nrow(y)
   
   
   if(inherits(meteo,"data.frame")) {
@@ -86,15 +112,28 @@ fordyn_scenario<-function(y, SpParams, meteo,
   }
   
   # Define summary function (to save memory)
-  table_selection<-function(object, ...) {object[c("TreeTable", "CutTreeTable", "ShrubTable", "CutShrubTable")]}
+  table_selection<-function(object, summaryFunction, summaryArgs, ...) {
+    l = object[c("TreeTable", "ShrubTable",
+             "DeadTreeTable", "DeadTreeTable", 
+             "CutTreeTable", "CutShrubTable")]
+    if(!is.null(summaryFunction)) {
+      argList = list(object=object)
+      if(!is.null(summaryArgs)) argList = c(argList, summaryArgs)
+      l[["summary"]] = do.call(summaryFunction, args=argList)
+    }
+    return(l)
+  }
   
   # A.1 Initialize management arguments according to unit
-  for(i in 1:nrow(y)) {
+  for(i in 1:n) {
     y$managementarguments[[i]] = managementScenario$managementUnits[[y$managementunit[i]]]$managementArgs
   }
   
   # A.2 Determine number of years to process
   years = unique(sort(as.numeric(format(dates, "%Y"))))
+  
+
+  summary_list = vector("list", n)
   # B. Year loop
   if(progress) cat("SIMULATIONS: \n")
   for(yi in 1:length(years)) {
@@ -107,17 +146,26 @@ fordyn_scenario<-function(y, SpParams, meteo,
     # B.2 Call fordynspatial()
     fds <-fordyn_spatial(y, SpParams, meteo = meteo, localControl = localControl, dates = datesYear,
                         managementFunction = management_function,
-                        CO2ByYear = CO2ByYear, keepResults = FALSE, summaryFunction=table_selection, summaryArgs=NULL,
+                        CO2ByYear = CO2ByYear, keepResults = FALSE, summaryFunction=table_selection, 
+                        summaryArgs=list(summaryFunction = summaryFunction, summaryArgs = summaryArgs),
                         parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, 
                         progress = progress)
     
     # B.3 Update final state variables in y and retrieve fordyn tables
     y = update_landscape(y, fds) # This updates forest, soil, growthInput and managementarguments
-    fds$result = fds$summary # Move summary into results
-    
+    # Move summary into results
+    fds$result = fds$summary 
+    # Retrieve user-defined summaries (if existing)
+    for(i in 1:n){
+      if(yi==1) summary_list[[i]] = fds$result[[i]]$summary
+      else summary_list[[i]] = rbind(summary_list[[i]], fds$result[[i]]$summary)
+    }
+    # Retrieve tree tables
     if(yi==1) {
       tree_table = fordyn_tables(fds, "TreeTable")
       shrub_table = fordyn_tables(fds, "ShrubTable")
+      dead_tree_table = fordyn_tables(fds, "DeadTreeTable")
+      dead_shrub_table = fordyn_tables(fds, "DeadShrubTable")
       cut_tree_table = fordyn_tables(fds, "CutTreeTable")
       cut_shrub_table = fordyn_tables(fds, "CutShrubTable")
     } else {
@@ -125,23 +173,42 @@ fordyn_scenario<-function(y, SpParams, meteo,
       tree_table = dplyr::bind_rows(tree_table, tt_i[tt_i$Step==1,])
       st_i = fordyn_tables(fds, "ShrubTable")
       shrub_table = dplyr::bind_rows(shrub_table, st_i[st_i$Step==1,])
+      dead_tree_table = dplyr::bind_rows(dead_tree_table, fordyn_tables(fds, "DeadTreeTable"))
+      dead_shrub_table = dplyr::bind_rows(dead_shrub_table, fordyn_tables(fds, "DeadShrubTable"))
       cut_tree_table = dplyr::bind_rows(cut_tree_table, fordyn_tables(fds, "CutTreeTable"))
       cut_shrub_table = dplyr::bind_rows(cut_shrub_table, fordyn_tables(fds, "CutShrubTable"))
     }
-    
-    # for(i in 1:nrow(y)) print(fds$result[[i]]$CutTreeTable)
     # B.4 Update actual satisfied demand
   }
   if(progress) cat("ARRANGING OUTPUT: \n")
-  tree_table = tree_table[,names(tree_table)!="Step"]
-  shrub_table = shrub_table[,names(shrub_table)!="Step"]
-  cut_tree_table = cut_tree_table[,names(cut_tree_table)!="Step"]
-  cut_shrub_table = cut_shrub_table[,names(cut_shrub_table)!="Step"]
-  l = list(final_landscape = y,
-           TreeTable = tree_table,
-           ShrubTable = shrub_table,
-           CutTreeTable = cut_tree_table,
-           CutShrubTable = cut_shrub_table)
+  tree_tables = vector("list", n)
+  shrub_tables = vector("list", n)
+  dead_tree_tables = vector("list", n)
+  dead_shrub_tables = vector("list", n)
+  cut_tree_tables = vector("list", n)
+  cut_shrub_tables = vector("list", n)
+  for(i in 1:n) {
+    tree_tables[[i]] = tree_table[tree_table$id==y$id[i], ]
+    shrub_tables[[i]] = shrub_table[shrub_table$id==y$id[i], ]
+    dead_tree_tables[[i]] = dead_tree_table[dead_tree_table$id==y$id[i], ]
+    dead_shrub_tables[[i]] = dead_shrub_table[dead_shrub_table$id==y$id[i], ]
+    cut_tree_tables[[i]] = cut_tree_table[cut_tree_table$id==y$id[i], ]
+    cut_shrub_tables[[i]] = cut_shrub_table[cut_shrub_table$id==y$id[i], ]
+  }
+  sf = sf::st_sf(geometry=sf::st_geometry(y))
+  sf$id = fds$id
+  sf$state = fds$state
+  sf$forest = fds$forest
+  sf$managementarguments = fds$managementarguments
+  sf$treetable = tree_tables
+  sf$shrubtable = shrub_tables
+  sf$deadtreetable = dead_tree_tables
+  sf$deadshrubtable = dead_shrub_tables
+  sf$cuttreetable = cut_tree_tables
+  sf$cutshrubtable = cut_shrub_tables
+  sf$summary = summary_list
+  
+  l = list(sf = sf::st_as_sf(tibble::as_tibble(sf)))
   class(l)<-c("fordyn_scenario", "list")
   return(l)
 }

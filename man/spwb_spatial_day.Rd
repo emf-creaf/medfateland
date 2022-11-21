@@ -52,6 +52,7 @@ growth_spatial_day(
 An object of class \code{\link{sf}} the same name as the function called containing three elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Stand id, taken from the input.}
 \item{\code{state}: A list of model input objects for each simulated stand, to be used in subsequent simulations.}
 \item{\code{result}: A list of model output for each simulated stand.}
 }
