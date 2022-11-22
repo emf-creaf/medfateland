@@ -1,4 +1,3 @@
-
 #' Scenario of forest dynamics
 #' 
 #' Evaluates forest dynamics over a landscape including climate and management scenarios
@@ -9,6 +8,7 @@
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
 #' @param localControl A list of local model control parameters (see \code{\link{defaultControl}}).
 #' @param volumeFunction A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+#' If NULL, the default volume function is used (not recommended!).
 #' @param managementScenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
@@ -41,7 +41,7 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{fordyn_spatial}}
+#' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}
 #' 
 #' @examples 
 #' \dontrun{
@@ -72,6 +72,9 @@
 #' # Modify thinning threshold of the arguments of management unit #1
 #' s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
 #' 
+#' # Define demand on a species basis
+#' s$annualDemandBySpecies = c("Quercus ilex" = 1000, "Pinus nigra" = 2000)
+#' 
 #' # Subset 10 stands for computational simplicity
 #' y = y[1:10, ]
 #'
@@ -79,19 +82,42 @@
 #' y$managementunit[1:3] = 1 
 #' y$managementunit[4:10] = 2
 #' 
+#' # Assume that each stand represents 1km2 = 100 ha
+#' y$representedarea = 100
+#' 
+#' # Launch simulation scenario
 #' res = fordyn_scenario(y, SpParamsMED, meteo_01_02, 
 #'                       volumeFunction = NULL, managementScenario = s,
 #'                       parallelize = TRUE)
 #'}
+#'
 fordyn_scenario<-function(y, SpParams, meteo, 
-                         volumeFunction, managementScenario,
+                         managementScenario,
+                         volumeFunction = NULL,
                          localControl = defaultControl(), dates = NULL,
                          CO2ByYear = numeric(0), summaryFunction=NULL, summaryArgs=NULL,
                          parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE){
   
-  management_function = managementScenario$managementFunction
-  n = nrow(y)
+  .check_model_inputs(y, meteo)
   
+  demand_based <- (sum(managementScenario$annualDemandBySpecies) > 0)
+  
+  if(demand_based) {
+    cat("Demand-based management scenario:\n")
+    spp_demand = managementScenario$annualDemandBySpecies
+    print(spp_demand)
+    if(is.null(volumeFunction)) {
+      cat("Using default volume function\n")
+      volumeFunction = "defaultVolumeFunction"
+    } 
+  } else {
+    cat("Bottom-up management scenario\n")
+  }
+
+  n = nrow(y)
+  nspp = nrow(SpParams)
+  
+  if(any(is.na(y$representedarea))) stop("Column 'representedarea' cannot include missing values")
   
   if(inherits(meteo,"data.frame")) {
     datesMeteo = as.Date(row.names(meteo))
@@ -123,6 +149,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
     }
     return(l)
   }
+
   
   # A.1 Initialize management arguments according to unit
   for(i in 1:n) {
@@ -142,10 +169,33 @@ fordyn_scenario<-function(y, SpParams, meteo,
     datesYear = dates[as.numeric(format(dates, "%Y")) == year]
 
     # B.1 Determine which plots will be managed according to current demand
-
-    # B.2 Call fordynspatial()
+    if(demand_based) {
+      vol_species = matrix(0, n, nspp) 
+      colnames(vol_species) = SpParams$Name
+      rownames(vol_species) = y$id
+      final_cuts = rep(FALSE, n)
+      for(i in 1:n) {
+        man_args <- y$managementarguments[[i]] 
+        f <- y$forest[[i]]
+        if(!is.null(man_args)) {
+          if((man_args$type=="regular") && (man_args$finalPreviousStage > 0)) final_cuts[i] = TRUE
+          man <- do.call(what = managementScenario$managementFunction, 
+                         args = list(x = f, args=man_args))
+          ctd <- f$treeData
+          ctd$N <- man$N_tree_cut
+          vols_i <- sum(do.call(what = volumeFunction, args = list(x = ctd)))*y$representedarea[i]
+          nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
+          vol_species[i, nsp_i] = vols_i
+        }
+      }
+      vol_spp_target = vol_species[,names(spp_demand)]
+      print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
+    }
+    
+    
+    # B.2 Call fordyn_spatial()
     fds <-fordyn_spatial(y, SpParams, meteo = meteo, localControl = localControl, dates = datesYear,
-                        managementFunction = management_function,
+                        managementFunction = managementScenario$managementFunction,
                         CO2ByYear = CO2ByYear, keepResults = FALSE, summaryFunction=table_selection, 
                         summaryArgs=list(summaryFunction = summaryFunction, summaryArgs = summaryArgs),
                         parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, 
@@ -153,12 +203,16 @@ fordyn_scenario<-function(y, SpParams, meteo,
     
     # B.3 Update final state variables in y and retrieve fordyn tables
     y = update_landscape(y, fds) # This updates forest, soil, growthInput and managementarguments
+    # For those plots that were not managed but have prescriptions in a demand-based scenario, increase the variable years since thinning
+    
     # Move summary into results
     fds$result = fds$summary 
     # Retrieve user-defined summaries (if existing)
-    for(i in 1:n){
-      if(yi==1) summary_list[[i]] = fds$result[[i]]$summary
-      else summary_list[[i]] = rbind(summary_list[[i]], fds$result[[i]]$summary)
+    if(!is.null(summaryFunction)) {
+      for(i in 1:n){
+        if(yi==1) summary_list[[i]] = fds$result[[i]]$summary
+        else summary_list[[i]] = rbind(summary_list[[i]], fds$result[[i]]$summary)
+      }
     }
     # Retrieve tree tables
     if(yi==1) {

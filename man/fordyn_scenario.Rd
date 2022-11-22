@@ -8,8 +8,8 @@ fordyn_scenario(
   y,
   SpParams,
   meteo,
-  volumeFunction,
   managementScenario,
+  volumeFunction = NULL,
   localControl = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
@@ -29,9 +29,10 @@ Management units should be defined in this object.}
 
 \item{meteo}{Meteorology data (see \code{\link{fordyn_spatial}}).}
 
-\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.}
-
 \item{managementScenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
+
+\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+If NULL, the default volume function is used (not recommended!).}
 
 \item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 
@@ -104,6 +105,9 @@ s = create_management_scenario(2)
 # Modify thinning threshold of the arguments of management unit #1
 s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
 
+# Define demand on a species basis
+s$annualDemandBySpecies = c("Quercus ilex" = 1000, "Pinus nigra" = 2000)
+
 # Subset 10 stands for computational simplicity
 y = y[1:10, ]
 
@@ -111,13 +115,18 @@ y = y[1:10, ]
 y$managementunit[1:3] = 1 
 y$managementunit[4:10] = 2
 
+# Assume that each stand represents 1km2 = 100 ha
+y$representedarea = 100
+
+# Launch simulation scenario
 res = fordyn_scenario(y, SpParamsMED, meteo_01_02, 
                       volumeFunction = NULL, managementScenario = s,
                       parallelize = TRUE)
 }
+
 }
 \seealso{
-\code{\link{fordyn_spatial}}
+\code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
