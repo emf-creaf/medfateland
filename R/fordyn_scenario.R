@@ -66,14 +66,11 @@
 #' # Load default medfate parameters
 #' data("SpParamsMED")
 #' 
-#' # Creates default scenario with two management units
-#' s = create_management_scenario(2)
+#' # Creates default scenario with two management units and demand by species
+#' s = create_management_scenario(2,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 #' 
 #' # Modify thinning threshold of the arguments of management unit #1
 #' s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
-#' 
-#' # Define demand on a species basis
-#' s$annualDemandBySpecies = c("Quercus ilex" = 1000, "Pinus nigra" = 2000)
 #' 
 #' # Subset 10 stands for computational simplicity
 #' y = y[1:10, ]

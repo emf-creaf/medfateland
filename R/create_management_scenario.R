@@ -3,6 +3,7 @@
 #' Defines a management scenario with default values, to be modified by the user
 #'
 #' @param numberOfUnits Number of management units. Each management unit represents a group of forest stands following the same silvicultural model.
+#' @param annualDemandBySpecies A vector of annual wood demand (m3) by medfate species names. If empty, the scenario is not demand-based.
 #' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}). If NULL, function \code{\link{defaultManagementFunction}} will be taken.
 #' @param managementArguments A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults to be copied for all management units and can later be modified. 
 #'   If NULL, the result of calling function \code{\link{defaultManagementArguments}} will be taken.
@@ -11,11 +12,18 @@
 #'    \itemize{
 #'      \item{\code{managementFunction}: The supplied management function}
 #'      \item{\code{managementUnits}: A vector of length numberOfUnits, each with the supplied management arguments}
-#'      \item{\code{annualDemandBySpecies}: An empty (named) vector of annual wood demand (m3) by medfate species names}
+#'      \item{\code{annualDemandBySpecies}: A vector of annual wood demand (m3) by medfate species names}
 #'    }
 #'
 #' @seealso \code{\link{fordyn_scenario}}
+#' 
+#' @examples 
+#' 
+#' # A scenario with three management units and demand for two species
+#' s = create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+#' 
 create_management_scenario<-function(numberOfUnits,
+                                     annualDemandBySpecies = numeric(0),
                                      managementFunction = NULL, 
                                      managementArguments = NULL) {
   
@@ -28,9 +36,9 @@ create_management_scenario<-function(numberOfUnits,
     mu = list(managementArgs = managementArguments)
     managementUnits[[i]] = mu
   }
-  l <- list(managementFunction = managementFunction,
+  l <- list(annualDemandBySpecies = annualDemandBySpecies,
             managementUnits = managementUnits,
-            annualDemandBySpecies = numeric(0))
+            managementFunction = managementFunction)
   class(l) <- c("management_scenario", "list")
   return(l)
 }
