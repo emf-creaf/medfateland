@@ -37,6 +37,9 @@
     <loc>/reference/create_management_scenario.html</loc>
   </url>
   <url>
+    <loc>/reference/defaultVolumeFunction.html</loc>
+  </url>
+  <url>
     <loc>/reference/defaultWatershedCorrectionFactors.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>/reference/landscape_summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/medfateland-package.html</loc>
   </url>
   <url>
     <loc>/reference/plot_summary.html</loc>
@@ -79,6 +85,6 @@
     <loc>/reference/spwb_spatial_day.html</loc>
   </url>
   <url>
-    <loc>/reference/update_state.html</loc>
+    <loc>/reference/update_landscape.html</loc>
   </url>
 </urlset>
