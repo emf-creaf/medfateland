@@ -60,8 +60,8 @@ No spatial processes are simulated.</p>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  summaryFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  summaryArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -76,8 +76,8 @@ No spatial processes are simulated.</p>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  summaryFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  summaryArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -93,8 +93,8 @@ No spatial processes are simulated.</p>
 <span>  managementFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  summaryFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  summaryArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summary_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -132,11 +132,11 @@ No spatial processes are simulated.</p>
 <dd><p>Boolean flag to indicate that point/cell simulation results are to be returned (set to <code>FALSE</code> and use summary functions for large data sets).</p></dd>
 
 
-<dt>summaryFunction</dt>
+<dt>summary_function</dt>
 <dd><p>An appropriate function to calculate summaries (e.g., <code>summary.spwb</code>).</p></dd>
 
 
-<dt>summaryArgs</dt>
+<dt>summary_arguments</dt>
 <dd><p>List with additional arguments for the summary function.</p></dd>
 
 
@@ -171,7 +171,7 @@ of such lists, one per spatial unit.</p></dd>
 <li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>result</code>: A list of model output for each simulated stand (if <code>keep_results = TRUE</code>).</p></li>
-<li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summaryFunction</code> was not <code>NULL</code>).</p></li>
+<li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>).</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -211,7 +211,7 @@ The user may supply four kinds of weather sources:</p><ol><li><p>A data frame wi
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">spwb_spatial</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Generate summaries (these could have also been specified when calling 'spwbspatial')</span></span></span>
-<span class="r-in"><span><span class="va">res_sum</span> <span class="op">=</span> <span class="fu"><a href="simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, freq<span class="op">=</span><span class="st">"month"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_sum</span> <span class="op">=</span> <span class="fu"><a href="simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, freq<span class="op">=</span><span class="st">"month"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot summaries</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span><span class="op">)</span></span></span>

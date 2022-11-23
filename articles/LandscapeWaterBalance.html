@@ -205,9 +205,9 @@ calculating them on all forest stands in one step, using function
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> on objects issued from
 simulations:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, </span>
+<code class="sourceCode R"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, </span>
 <span>                              freq<span class="op">=</span><span class="st">"months"</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></span></code></pre></div>
-<p>where the argument <code>summaryFunction</code> points to the
+<p>where the argument <code>summary_function</code> points to the
 function to be used to generate local summaries and the remaining
 arguments are those of the local summary function. The result of using
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> is again an object of class
@@ -262,10 +262,10 @@ balance components instead of simulation results:</p>
 <code class="sourceCode R"><span><span class="va">res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,                  </span>
 <span>                  keep_results <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                  summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, summaryArgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                  summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Parameter <code>keep_results = FALSE</code> tells
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> not to keep the simulation results of forest
-stands, whereas <code>summaryFunction = summary.spwb</code> tells
+stands, whereas <code>summary_function = summary.spwb</code> tells
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> to perform and store summaries before
 discarding the results of any stand.</p>
 <p>Now the temporal summaries are embedded in the simulation results,
@@ -318,7 +318,7 @@ the set of stands for an extra month:</p>
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">w</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                      dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>, </span>
-<span>                      summaryFunction <span class="op">=</span> <span class="va">summary.spwb</span>, summaryArgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span>,</span>
+<span>                      summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And display a map with the resulting month transpiration:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
