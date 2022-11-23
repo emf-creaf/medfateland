@@ -6,27 +6,34 @@
 \usage{
 create_management_scenario(
   numberOfUnits,
-  annualDemandBySpecies = numeric(0),
-  managementFunction = NULL,
+  annualDemandBySpecies = NULL,
+  extractionRateByYear = NULL,
   managementArguments = NULL
 )
 }
 \arguments{
 \item{numberOfUnits}{Number of management units. Each management unit represents a group of forest stands following the same silvicultural model.}
 
-\item{annualDemandBySpecies}{A vector of annual wood demand (m3) by medfate species names. If empty, the scenario is not demand-based.}
+\item{annualDemandBySpecies}{A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
+If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
+to a different year.}
 
-\item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}). If NULL, function \code{\link{defaultManagementFunction}} will be taken.}
+\item{extractionRateByYear}{A vector of extraction rates (\\%) per year of the simulation, starting at the second year. If specified,
+the annual demand by species will be applied for the first year of the simulation, but it will be rescaled for the remaining
+years according to the growth observed and the desired extraction rates.}
 
-\item{managementArguments}{A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults to be copied for all management units and can later be modified.
-If NULL, the result of calling function \code{\link{defaultManagementArguments}} will be taken.}
+\item{managementArguments}{A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults
+copied for all management units and can later be modified. If NULL, the result of calling function
+\code{\link{defaultManagementArguments}} will be taken.}
 }
 \value{
 A list with the following structure:
 \itemize{
-\item{\code{managementFunction}: The supplied management function}
+\item{\code{scenarioType}: Either 'bottom-up' (no demand is specified), 'input_demand' (annual species demand is specified), or
+'input_rate' when extraction rates are also supplied.}
 \item{\code{managementUnits}: A vector of length numberOfUnits, each with the supplied management arguments}
-\item{\code{annualDemandBySpecies}: A vector of annual wood demand (m3) by medfate species names}
+\item{\code{volumeDemandBySpecies}: A vector of annual wood demand (m3) by species (for scenarioType 'bottom-up' or 'input_demand'.}
+\item{\code{extractionRateByYear}: A vector of extraction rate values per year.}
 }
 }
 \description{
@@ -34,10 +41,15 @@ Defines a management scenario with default values, to be modified by the user
 }
 \examples{
 
-# A scenario with three management units and demand for two species
-s = create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+# A scenario with three management units and annual demand for two species
+s1 = create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 
+# A scenario like the former, but with total annual demand changing as a function of
+# prescribed extraction rates (second and third years)
+s2 = create_management_scenario(3,  
+        c("Quercus ilex" = 1000, "Pinus nigra" = 2000),
+        c("2002" = 30, "2003" = 50))
 }
 \seealso{
-\code{\link{fordyn_scenario}}
+\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}
 }

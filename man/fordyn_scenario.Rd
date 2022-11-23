@@ -55,7 +55,7 @@ If NULL, the default volume function is used (not recommended!).}
 \value{
 An list of class 'fordyn_scenario' with the following elements:
 \itemize{
-\item{An object of class 'sf' containing four elements:
+\item{\code{sf}: An object of class 'sf' containing four elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand id, taken from the input.}
@@ -71,10 +71,15 @@ An list of class 'fordyn_scenario' with the following elements:
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }
 }
+\item{\code{volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
 }
 }
 \description{
 Evaluates forest dynamics over a landscape including climate and management scenarios
+}
+\details{
+Management is implemented using the \code{\link{defaultManagementFunction}} in medfate,
+meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
 }
 \examples{
 \dontrun{
@@ -91,16 +96,22 @@ data("examplemeteo")
 #the second year
 meteo2001 = examplemeteo
 meteo2002 = examplemeteo
+meteo2003 = examplemeteo
+
+# Induce drought in year 2002
 meteo2002$Precipitation = meteo2002$Precipitation/2
-row.names(meteo2002) = seq(as.Date("2002-01-01"), 
-                         as.Date("2002-12-31"), by="day")
-meteo_01_02 = rbind(meteo2001, meteo2002)
+
+# Bind data and redefine row names (dates)
+meteo_01_03 = rbind(meteo2001, meteo2002, meteo2003)
+row.names(meteo_01_03) = seq(as.Date("2001-01-01"), 
+                             as.Date("2003-12-31"), by="day")
                          
 # Load default medfate parameters
 data("SpParamsMED")
 
-# Creates default scenario with two management units and demand by species
-s = create_management_scenario(2,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+# Creates scenario with two management units and annual demand for two species 
+s = create_management_scenario(2,  
+                               c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 
 # Modify thinning threshold of the arguments of management unit #1
 s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
@@ -116,7 +127,7 @@ y$managementunit[4:10] = 2
 y$representedarea = 100
 
 # Launch simulation scenario
-res = fordyn_scenario(y, SpParamsMED, meteo_01_02, 
+res = fordyn_scenario(y, SpParamsMED, meteo_01_03, 
                       volumeFunction = NULL, managementScenario = s,
                       parallelize = TRUE)
 }
