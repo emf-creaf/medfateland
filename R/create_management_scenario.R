@@ -6,7 +6,7 @@
 #' @param annual_demand_by_species A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
 #'                   If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
 #'                   to a different year.
-#' @param extraction_rate_by_year A vector of extraction rates (\%) per year of the simulation, starting at the second year. If specified,
+#' @param extraction_rate_by_year A vector of extraction rates (%) per year of the simulation, starting at the second year. If specified,
 #'                   the annual demand by species will be applied for the first year of the simulation, but it will be rescaled for the remaining
 #'                   years according to the growth observed and the desired extraction rates.
 #' @param management_arguments A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults 

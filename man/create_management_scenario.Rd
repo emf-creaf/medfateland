@@ -18,7 +18,7 @@ create_management_scenario(
 If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
 to a different year.}
 
-\item{extraction_rate_by_year}{A vector of extraction rates (\\%) per year of the simulation, starting at the second year. If specified,
+\item{extraction_rate_by_year}{A vector of extraction rates (\%) per year of the simulation, starting at the second year. If specified,
 the annual demand by species will be applied for the first year of the simulation, but it will be rescaled for the remaining
 years according to the growth observed and the desired extraction rates.}
 

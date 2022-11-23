@@ -14,8 +14,8 @@ spwb_spatial(
   dates = NULL,
   CO2ByYear = numeric(0),
   keep_results = TRUE,
-  summaryFunction = NULL,
-  summaryArgs = NULL,
+  summary_function = NULL,
+  summary_arguments = NULL,
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
@@ -30,8 +30,8 @@ growth_spatial(
   dates = NULL,
   CO2ByYear = numeric(0),
   keep_results = TRUE,
-  summaryFunction = NULL,
-  summaryArgs = NULL,
+  summary_function = NULL,
+  summary_arguments = NULL,
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
@@ -47,8 +47,8 @@ fordyn_spatial(
   managementFunction = NULL,
   CO2ByYear = numeric(0),
   keep_results = TRUE,
-  summaryFunction = NULL,
-  summaryArgs = NULL,
+  summary_function = NULL,
+  summary_arguments = NULL,
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
@@ -70,9 +70,9 @@ fordyn_spatial(
 
 \item{keep_results}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
 
-\item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
+\item{summary_function}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
 
-\item{summaryArgs}{List with additional arguments for the summary function.}
+\item{summary_arguments}{List with additional arguments for the summary function.}
 
 \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
 
@@ -94,7 +94,7 @@ An object of class 'sf' containing four elements:
 \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
-\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
+\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 }
 }
 \description{
@@ -130,7 +130,7 @@ dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 res = spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
   
 # Generate summaries (these could have also been specified when calling 'spwbspatial')
-res_sum = simulation_summary(res, summaryFunction = summary.spwb, freq="month")
+res_sum = simulation_summary(res, summary_function = summary.spwb, freq="month")
 
 # Plot summaries
 plot_summary(res_sum, "Transpiration", "2001-03-01")

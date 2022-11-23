@@ -4,12 +4,12 @@
 \alias{simulation_summary}
 \title{Summarizes spatial simulation results}
 \usage{
-simulation_summary(object, summaryFunction, ...)
+simulation_summary(object, summary_function, ...)
 }
 \arguments{
 \item{object}{An object of class 'sf' simulation results (e.g. the result of calling \code{\link{spwb_spatial}}).}
 
-\item{summaryFunction}{The summary function to be executed on simulation results (see details).}
+\item{summary_function}{The summary function to be executed on simulation results (see details).}
 
 \item{...}{Additional parameters to the summary function.}
 }

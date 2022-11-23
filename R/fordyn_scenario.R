@@ -12,8 +12,8 @@
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param summaryFunction An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
-#' @param summaryArgs List with additional arguments for the summary function.
+#' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
+#' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
@@ -37,7 +37,7 @@
 #'        \item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
 #'        \item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
 #'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
-#'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
+#'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 #'      }
 #'    }
 #'    \item{\code{volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
@@ -102,7 +102,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
                          management_scenario,
                          volume_function = NULL,
                          local_control = defaultControl(), dates = NULL,
-                         CO2ByYear = numeric(0), summaryFunction=NULL, summaryArgs=NULL,
+                         CO2ByYear = numeric(0), summary_function=NULL, summary_arguments=NULL,
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
   
   .check_model_inputs(y, meteo)
@@ -170,14 +170,14 @@ fordyn_scenario<-function(y, SpParams, meteo,
   }
   
   # Define summary function (to save memory)
-  table_selection<-function(object, summaryFunction, summaryArgs, ...) {
+  table_selection<-function(object, summary_function, summary_arguments, ...) {
     l = object[c("TreeTable", "ShrubTable",
              "DeadTreeTable", "DeadTreeTable", 
              "CutTreeTable", "CutShrubTable")]
-    if(!is.null(summaryFunction)) {
+    if(!is.null(summary_function)) {
       argList = list(object=object)
-      if(!is.null(summaryArgs)) argList = c(argList, summaryArgs)
-      l[["summary"]] = do.call(summaryFunction, args=argList)
+      if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
+      l[["summary"]] = do.call(summary_function, args=argList)
     }
     return(l)
   }
@@ -237,8 +237,8 @@ fordyn_scenario<-function(y, SpParams, meteo,
     # B.2 Call fordyn_spatial()
     fds <-fordyn_spatial(y, SpParams, meteo = meteo, local_control = local_control, dates = datesYear,
                         managementFunction = "defaultManagementFunction",
-                        CO2ByYear = CO2ByYear, keep_results = FALSE, summaryFunction=table_selection, 
-                        summaryArgs=list(summaryFunction = summaryFunction, summaryArgs = summaryArgs),
+                        CO2ByYear = CO2ByYear, keep_results = FALSE, summary_function=table_selection, 
+                        summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
                         progress = progress)
     
@@ -249,7 +249,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
     # Move summary into results
     fds$result = fds$summary 
     # Retrieve user-defined summaries (if existing)
-    if(!is.null(summaryFunction)) {
+    if(!is.null(summary_function)) {
       for(i in 1:n){
         if(yi==1) summary_list[[i]] = fds$result[[i]]$summary
         else summary_list[[i]] = rbind(summary_list[[i]], fds$result[[i]]$summary)

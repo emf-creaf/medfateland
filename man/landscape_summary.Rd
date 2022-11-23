@@ -4,14 +4,14 @@
 \alias{landscape_summary}
 \title{Forest and soil summaries over space}
 \usage{
-landscape_summary(object, name, summaryFunction, ..., unlist = FALSE)
+landscape_summary(object, name, summary_function, ..., unlist = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{\link{sf}}.}
 
 \item{name}{A string of the element to summarize: "forest", "soil" or "state".}
 
-\item{summaryFunction}{A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.}
+\item{summary_function}{A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.}
 
 \item{...}{Additional arguments to the summary function.}
 
