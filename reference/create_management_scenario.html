@@ -51,32 +51,32 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_management_scenario</span><span class="op">(</span></span>
-<span>  <span class="va">numberOfUnits</span>,</span>
-<span>  annualDemandBySpecies <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  extractionRateByYear <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  managementArguments <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="va">num_units</span>,</span>
+<span>  annual_demand_by_species <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extraction_rate_by_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  management_arguments <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>numberOfUnits</dt>
+    <dl><dt>num_units</dt>
 <dd><p>Number of management units. Each management unit represents a group of forest stands following the same silvicultural model.</p></dd>
 
 
-<dt>annualDemandBySpecies</dt>
+<dt>annual_demand_by_species</dt>
 <dd><p>A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
 If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
 to a different year.</p></dd>
 
 
-<dt>extractionRateByYear</dt>
+<dt>extraction_rate_by_year</dt>
 <dd><p>A vector of extraction rates (\<!-- %) per year of the simulation, starting at the second year. If specified, -->
 the annual demand by species will be applied for the first year of the simulation, but it will be rescaled for the remaining
 years according to the growth observed and the desired extraction rates.</p></dd>
 
 
-<dt>managementArguments</dt>
+<dt>management_arguments</dt>
 <dd><p>A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults
 copied for all management units and can later be modified. If NULL, the result of calling function
 <code>defaultManagementArguments</code> will be taken.</p></dd>
@@ -86,11 +86,11 @@ copied for all management units and can later be modified. If NULL, the result o
     <h2>Value</h2>
     
 
-<p>A list with the following structure:</p><ul><li><p><code>scenarioType</code>: Either 'bottom-up' (no demand is specified), 'input_demand' (annual species demand is specified), or
+<p>A list with the following structure:</p><ul><li><p><code>scenario_type</code>: Either 'bottom-up' (no demand is specified), 'input_demand' (annual species demand is specified), or
 'input_rate' when extraction rates are also supplied.</p></li>
-<li><p><code>managementUnits</code>: A vector of length numberOfUnits, each with the supplied management arguments</p></li>
-<li><p><code>volumeDemandBySpecies</code>: A vector of annual wood demand (m3) by species (for scenarioType 'bottom-up' or 'input_demand'.</p></li>
-<li><p><code>extractionRateByYear</code>: A vector of extraction rate values per year.</p></li>
+<li><p><code>units</code>: A vector of length <code>num_units</code>, each with the supplied management arguments</p></li>
+<li><p><code>annual_demand_by_species</code>: A vector of annual wood demand (m3) by species (for scenario_type 'bottom-up' or 'input_demand'.</p></li>
+<li><p><code>extraction_rate_by_year</code>: A vector of extraction rate values per year.</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>

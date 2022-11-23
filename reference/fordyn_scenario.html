@@ -54,16 +54,16 @@
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  <span class="va">meteo</span>,</span>
-<span>  <span class="va">managementScenario</span>,</span>
-<span>  volumeFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">management_scenario</span>,</span>
+<span>  volume_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  summaryFunction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summaryArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>  chunk.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -83,16 +83,16 @@ Management units should be defined in this object.</p></dd>
 <dd><p>Meteorology data (see <code><a href="spwb_spatial.html">fordyn_spatial</a></code>).</p></dd>
 
 
-<dt>managementScenario</dt>
+<dt>management_scenario</dt>
 <dd><p>A list defining the management scenario (see <code><a href="create_management_scenario.html">create_management_scenario</a></code>)</p></dd>
 
 
-<dt>volumeFunction</dt>
+<dt>volume_function</dt>
 <dd><p>A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 If NULL, the default volume function is used (not recommended!).</p></dd>
 
 
-<dt>localControl</dt>
+<dt>local_control</dt>
 <dd><p>A list of local model control parameters (see <code>defaultControl</code>).</p></dd>
 
 
@@ -116,11 +116,11 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 <dd><p>Boolean flag to try parallelization (will use all clusters minus one).</p></dd>
 
 
-<dt>numCores</dt>
+<dt>num_cores</dt>
 <dd><p>Integer with the number of cores to be used for parallel computation.</p></dd>
 
 
-<dt>chunk.size</dt>
+<dt>chunk_size</dt>
 <dd><p>Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).</p></dd>
 
 
@@ -137,13 +137,13 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 <li><p><code>id</code>: Stand id, taken from the input.</p></li>
 <li><p><code>state</code>: A list of <code>spwbInput</code> or <code>growthInput</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>managementarguments</code>: A list of management arguments for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>treetable</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>
-<li><p><code>shrubtable</code>: A list of data frames for each simulated stand, containing the living shrub at each time step.</p></li>
-<li><p><code>deadtreetable</code>: A list of data frames for each simulated stand, containing the dead trees at each time step.</p></li>
-<li><p><code>deadshrubtable</code>: A list of data frames for each simulated stand, containing the dead shrub at each time step.</p></li>
-<li><p><code>cuttreetable</code>: A list of data frames for each simulated stand, containing the cut trees at each time step.</p></li>
-<li><p><code>cutshrubtable</code>: A list of data frames for each simulated stand, containing the cut shrub at each time step.</p></li>
+<li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<li><p><code>tree_table</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>
+<li><p><code>shrub_table</code>: A list of data frames for each simulated stand, containing the living shrub at each time step.</p></li>
+<li><p><code>dead_tree_table</code>: A list of data frames for each simulated stand, containing the dead trees at each time step.</p></li>
+<li><p><code>dead_shrub_table</code>: A list of data frames for each simulated stand, containing the dead shrub at each time step.</p></li>
+<li><p><code>cut_tree_table</code>: A list of data frames for each simulated stand, containing the cut trees at each time step.</p></li>
+<li><p><code>cut_shrub_table</code>: A list of data frames for each simulated stand, containing the cut shrub at each time step.</p></li>
 <li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summaryFunction</code> was not <code>NULL</code>).</p></li>
 </ul></li>
 <li><p><code>volumes</code>: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.</p></li>
@@ -196,21 +196,21 @@ meaning that management parameters need to follow the structure of <code>default
 <span class="r-in"><span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quercus ilex"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Modify thinning threshold of the arguments of management unit #1</span></span></span>
-<span class="r-in"><span><span class="va">s</span><span class="op">$</span><span class="va">managementUnits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">managementArgs</span><span class="op">$</span><span class="va">thinningThreshold</span> <span class="op">=</span> <span class="fl">15</span></span></span>
+<span class="r-in"><span><span class="va">s</span><span class="op">$</span><span class="va">units</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thinningThreshold</span> <span class="op">=</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Subset 10 stands for computational simplicity</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assign two management units to stands</span></span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">managementunit</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">=</span> <span class="fl">1</span> </span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">managementunit</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">management_unit</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">=</span> <span class="fl">1</span> </span></span>
+<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">management_unit</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assume that each stand represents 1km2 = 100 ha</span></span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">representedarea</span> <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch simulation scenario</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">meteo_01_03</span>, </span></span>
-<span class="r-in"><span>                      volumeFunction <span class="op">=</span> <span class="cn">NULL</span>, managementScenario <span class="op">=</span> <span class="va">s</span>,</span></span>
+<span class="r-in"><span>                      volume_function <span class="op">=</span> <span class="cn">NULL</span>, management_scenario <span class="op">=</span> <span class="va">s</span>,</span></span>
 <span class="r-in"><span>                      parallelize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>

@@ -59,10 +59,10 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">meteo</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>  chunk.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -71,10 +71,10 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">meteo</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  localControl <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  numCores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>  chunk.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -97,7 +97,7 @@ No spatial processes are simulated.</p>
 <dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
-<dt>localControl</dt>
+<dt>local_control</dt>
 <dd><p>A list of local model control parameters (see <code>defaultControl</code>).</p></dd>
 
 
@@ -105,11 +105,11 @@ No spatial processes are simulated.</p>
 <dd><p>Boolean flag to try parallelization (will use all clusters minus one).</p></dd>
 
 
-<dt>numCores</dt>
+<dt>num_cores</dt>
 <dd><p>Integer with the number of cores to be used for parallel computation.</p></dd>
 
 
-<dt>chunk.size</dt>
+<dt>chunk_size</dt>
 <dd><p>Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).</p></dd>
 
 
