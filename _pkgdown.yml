@@ -29,7 +29,8 @@ reference:
 - title: Model inputs
   desc:  Defaults for model inputs
   contents:
-  - defaultWatershedCorrectionFactors
+  - default_watershed_correction_factors
+  - default_volume_function
   - create_management_scenario
 
 - title: Simulation

@@ -6,17 +6,17 @@
 #'    Management units should be defined in this object.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
-#' @param localControl A list of local model control parameters (see \code{\link{defaultControl}}).
-#' @param volumeFunction A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+#' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
+#' @param volume_function A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 #' If NULL, the default volume function is used (not recommended!).
-#' @param managementScenario A list defining the management scenario (see \code{\link{create_management_scenario}})
+#' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summaryFunction An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
 #' @param summaryArgs List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
-#' @param numCores Integer with the number of cores to be used for parallel computation.
-#' @param chunk.size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param num_cores Integer with the number of cores to be used for parallel computation.
+#' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
 #' @details Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
@@ -30,13 +30,13 @@
 #'        \item{\code{id}: Stand id, taken from the input.}
 #'        \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'        \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'        \item{\code{treetable}: A list of data frames for each simulated stand, containing the living trees at each time step.}
-#'        \item{\code{shrubtable}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
-#'        \item{\code{deadtreetable}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
-#'        \item{\code{deadshrubtable}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
-#'        \item{\code{cuttreetable}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
-#'        \item{\code{cutshrubtable}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+#'        \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+#'        \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+#'        \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+#'        \item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+#'        \item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+#'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 #'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 #'      }
 #'    }
@@ -80,42 +80,42 @@
 #'                                c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 #' 
 #' # Modify thinning threshold of the arguments of management unit #1
-#' s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
+#' s$units[[1]]$thinningThreshold = 15
 #' 
 #' # Subset 10 stands for computational simplicity
 #' y = y[1:10, ]
 #'
 #' # Assign two management units to stands
-#' y$managementunit[1:3] = 1 
-#' y$managementunit[4:10] = 2
+#' y$management_unit[1:3] = 1 
+#' y$management_unit[4:10] = 2
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
-#' y$representedarea = 100
+#' y$represented_area = 100
 #' 
 #' # Launch simulation scenario
 #' res = fordyn_scenario(y, SpParamsMED, meteo_01_03, 
-#'                       volumeFunction = NULL, managementScenario = s,
+#'                       volume_function = NULL, management_scenario = s,
 #'                       parallelize = TRUE)
 #'}
 #'
 fordyn_scenario<-function(y, SpParams, meteo, 
-                         managementScenario,
-                         volumeFunction = NULL,
-                         localControl = defaultControl(), dates = NULL,
+                         management_scenario,
+                         volume_function = NULL,
+                         local_control = defaultControl(), dates = NULL,
                          CO2ByYear = numeric(0), summaryFunction=NULL, summaryArgs=NULL,
-                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE){
+                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
   
   .check_model_inputs(y, meteo)
 
   
   cat("SCENARIO PARAMETERS:\n")
-  cat(paste0("   Scenario type: ", managementScenario$scenarioType,"\n"))
+  cat(paste0("   Scenario type: ", management_scenario$scenario_type,"\n"))
   
   spp_demand = rep(0, nrow(SpParams))
   names(spp_demand) = SpParams$Name
-  if(managementScenario$scenarioType != "bottom-up"){
-    spp_demand[names(managementScenario$annualDemandBySpecies)] = managementScenario$annualDemandBySpecies
-    if(managementScenario$scenarioType == "input_demand"){
+  if(management_scenario$scenario_type != "bottom-up"){
+    spp_demand[names(management_scenario$annual_demand_by_species)] = management_scenario$annual_demand_by_species
+    if(management_scenario$scenario_type == "input_demand"){
       cat(paste0("   Demand:\n"))
       if(is.vector(spp_demand)) {
         for(i in 1:length(spp_demand)) {
@@ -123,8 +123,8 @@ fordyn_scenario<-function(y, SpParams, meteo,
         }
       }
     }
-    if(managementScenario$scenarioType == "input_rate"){
-      extraction_rate = managementScenario$extractionRateByYear
+    if(management_scenario$scenario_type == "input_rate"){
+      extraction_rate = management_scenario$extraction_rate_by_year
       cat(paste0("   Initial demand:\n"))
       if(is.vector(spp_demand)) {
         for(i in 1:length(spp_demand)) {
@@ -137,9 +137,9 @@ fordyn_scenario<-function(y, SpParams, meteo,
       }
     }
   } 
-  if(is.null(volumeFunction)) {
+  if(is.null(volume_function)) {
     cat("   Default volume function\n")
-    volumeFunction = "defaultVolumeFunction"
+    volume_function = "default_volume_function"
   } else {
     cat("   User-defined volume function\n")
   }
@@ -149,7 +149,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
   n = nrow(y)
   nspp = nrow(SpParams)
   
-  if(any(is.na(y$representedarea))) stop("Column 'representedarea' cannot include missing values")
+  if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
   
   if(inherits(meteo,"data.frame")) {
     datesMeteo = as.Date(row.names(meteo))
@@ -185,7 +185,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
   
   # A.1 Initialize management arguments according to unit
   for(i in 1:n) {
-    y$managementarguments[[i]] = managementScenario$managementUnits[[y$managementunit[i]]]$managementArgs
+    y$management_arguments[[i]] = management_scenario$units[[y$management_unit[i]]]
   }
   
   # A.2 Determine number of years to process
@@ -210,13 +210,13 @@ fordyn_scenario<-function(y, SpParams, meteo,
     target[,yi] = spp_demand_year
     
     # B.1 Determine which plots will be managed according to current demand
-    if(managementScenario$scenarioType != "bottom-up") {
+    if(management_scenario$scenario_type != "bottom-up") {
       vol_species = matrix(0, n, nspp) 
       colnames(vol_species) = SpParams$Name
       rownames(vol_species) = y$id
       final_cuts = rep(FALSE, n)
       for(i in 1:n) {
-        man_args <- y$managementarguments[[i]] 
+        man_args <- y$management_arguments[[i]] 
         f <- y$forest[[i]]
         if(!is.null(man_args)) {
           if((man_args$type=="regular") && (man_args$finalPreviousStage > 0)) final_cuts[i] = TRUE
@@ -224,7 +224,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
                          args = list(x = f, args=man_args))
           ctd <- f$treeData
           ctd$N <- man$N_tree_cut
-          vols_i <- sum(do.call(what = volumeFunction, args = list(x = ctd)))*y$representedarea[i]
+          vols_i <- sum(do.call(what = volume_function, args = list(x = ctd)))*y$represented_area[i]
           nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
           vol_species[i, nsp_i] = vols_i
         }
@@ -235,15 +235,15 @@ fordyn_scenario<-function(y, SpParams, meteo,
     
     
     # B.2 Call fordyn_spatial()
-    fds <-fordyn_spatial(y, SpParams, meteo = meteo, localControl = localControl, dates = datesYear,
+    fds <-fordyn_spatial(y, SpParams, meteo = meteo, local_control = local_control, dates = datesYear,
                         managementFunction = "defaultManagementFunction",
-                        CO2ByYear = CO2ByYear, keepResults = FALSE, summaryFunction=table_selection, 
+                        CO2ByYear = CO2ByYear, keep_results = FALSE, summaryFunction=table_selection, 
                         summaryArgs=list(summaryFunction = summaryFunction, summaryArgs = summaryArgs),
-                        parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, 
+                        parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
                         progress = progress)
     
     # B.3 Update final state variables in y and retrieve fordyn tables
-    y = update_landscape(y, fds) # This updates forest, soil, growthInput and managementarguments
+    y = update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
     # For those plots that were not managed but have prescriptions in a demand-based scenario, increase the variable years since thinning
     
     # Move summary into results
@@ -276,13 +276,13 @@ fordyn_scenario<-function(y, SpParams, meteo,
     # B.4 Store actual extraction
     for(i in 1:n){
       f = y$forest[[i]]
-      vols_i <- sum(do.call(what = volumeFunction, 
-                            args = list(x = fds$result[[i]]$CutTreeTable)))*y$representedarea[i]
+      vols_i <- sum(do.call(what = volume_function, 
+                            args = list(x = fds$result[[i]]$CutTreeTable)))*y$represented_area[i]
       nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
       extracted[nsp_i, yi] <- extracted[nsp_i, yi] + vols_i
     }
     # B.5 Update actual satisfied demand
-    if(managementScenario$scenarioType != "bottom-up") {
+    if(management_scenario$scenario_type != "bottom-up") {
       # recalculate offset for next year
       offset_demand = target[, yi] - extracted[,yi]
     }
@@ -306,27 +306,27 @@ fordyn_scenario<-function(y, SpParams, meteo,
   sf$id = fds$id
   sf$state = fds$state
   sf$forest = fds$forest
-  sf$managementarguments = fds$managementarguments
-  sf$treetable = tree_tables
-  sf$shrubtable = shrub_tables
-  sf$deadtreetable = dead_tree_tables
-  sf$deadshrubtable = dead_shrub_tables
-  sf$cuttreetable = cut_tree_tables
-  sf$cutshrubtable = cut_shrub_tables
+  sf$management_arguments = fds$management_arguments
+  sf$tree_table = tree_tables
+  sf$shrub_table = shrub_tables
+  sf$dead_tree_table = dead_tree_tables
+  sf$dead_shrub_table = dead_shrub_tables
+  sf$cut_tree_table = cut_tree_tables
+  sf$cut_shrub_table = cut_shrub_tables
   sf$summary = summary_list
   
   # Volumes extracted
   extractSums = rowSums(extracted, na.rm=TRUE)
   extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0,])
-  names(extracted) <- c("Species", as.character(years))
+  names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
   target = data.frame(Name = SpParams$Name[extractSums>0], target[extractSums>0,])
-  names(target) <- c("Species", as.character(years))
+  names(target) <- c("species", as.character(years))
   row.names(target) <- NULL
-  extracted_pv <- tidyr::pivot_longer(extracted, as.character(2001:2003), names_to="Year", values_to = "Extracted")
-  target_pv <- tidyr::pivot_longer(target, as.character(2001:2003), names_to="Year", values_to = "Target")
-  if(managementScenario$scenarioType != "bottom-up") {
-    volumes <- dplyr::full_join(target_pv, extracted_pv, by=c("Species", "Year"))
+  extracted_pv <- tidyr::pivot_longer(extracted, as.character(2001:2003), names_to="year", values_to = "extracted")
+  target_pv <- tidyr::pivot_longer(target, as.character(2001:2003), names_to="year", values_to = "target")
+  if(management_scenario$scenario_type != "bottom-up") {
+    volumes <- dplyr::full_join(target_pv, extracted_pv, by=c("species", "year"))
   } else {
     volumes = extracted_pv
   }

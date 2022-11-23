@@ -5,9 +5,9 @@
 \alias{plot_variable}
 \title{Landscape variables}
 \usage{
-extract_variables(x, vars = "landcovertype", SpParams = NULL, ...)
+extract_variables(x, vars = "land_cover_type", SpParams = NULL, ...)
 
-plot_variable(x, variable = "landcovertype", SpParams = NULL, ...)
+plot_variable(x, variable = "land_cover_type", SpParams = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with the appropriate columns.}
@@ -33,7 +33,7 @@ The following string values are available for \code{vars}.
 \item{\code{"elevation"}:}{Elevation in m.}
 \item{\code{"slope"}:}{Slope in degrees.}
 \item{\code{"aspect"}:}{Slope in degrees.}
-\item{\code{"landcovertype"}:}{Land cover type.}
+\item{\code{"land_cover_type"}:}{Land cover type.}
 }
 
 \emph{Soil}:
@@ -50,26 +50,26 @@ The following string values are available for \code{vars}.
 
 \emph{Watershed}:
 \itemize{
-\item{\code{"numneigh"}:}{Number of cell neighbours (integer).}
-\item{\code{"waterorder"}:}{Cell order for lateral water transfer (integer).}
+\item{\code{"num_neigh"}:}{Number of cell neighbours (integer).}
+\item{\code{"water_order"}:}{Cell order for lateral water transfer (integer).}
 \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
 \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
-\item{\code{"depthTobedrock"}:}{Depth to bedrock (m).}
-\item{\code{"bedrockporosity"}:}{Bedrock porosity.}
-\item{\code{"bedrockconductivity"}:}{Bedrock conductivity.}
-\item{\code{"aquiferelevation"}:}{Aquifer elevation over bedrock (m).}
-\item{\code{"depthtoaquifer"}:}{Depth to aquifer (m).}
-\item{\code{"aquifervolume"}:}{Aquifer volume (mm).}
+\item{\code{"depth_to_bedrock"}:}{Depth to bedrock (m).}
+\item{\code{"bedrock_porosity"}:}{Bedrock porosity.}
+\item{\code{"bedrock_conductivity"}:}{Bedrock conductivity.}
+\item{\code{"aquifer_elevation"}:}{Aquifer elevation over bedrock (m).}
+\item{\code{"depth_to_aquifer"}:}{Depth to aquifer (m).}
+\item{\code{"aquifer_volume"}:}{Aquifer volume (mm).}
 \item{\code{"snowpack"}:}{Snowpack water equivalent (mm).}
 }
 
 \emph{Forest stand}:
 \itemize{
-\item{\code{"basalarea"}:}{Basal area (m2/ha).}
-\item{\code{"leafareaindex"}:}{Leaf area index (m2/m2).}
-\item{\code{"foliarbiomass"}:}{Foliar biomass (kg/m2).}
+\item{\code{"basal_area"}:}{Basal area (m2/ha).}
+\item{\code{"leaf_area_index"}:}{Leaf area index (m2/m2).}
+\item{\code{"foliar_biomass"}:}{Foliar biomass (kg/m2).}
 \item{\code{"fuel"}:}{Fine live fuel (kg/m2).}
-\item{\code{"phytovolume"}:}{Shrub phytovolume (m3/m2).}
+\item{\code{"shrub_volume"}:}{Shrub shrub_volume (m3/m2).}
 }
 }
 \examples{
@@ -82,7 +82,7 @@ y = sp_to_sf(examplepointslandscape)
  
 # Calculate basal area and leaf area index
 # for all forest stands
-extract_variables(y, vars = c("basalarea", "leafareaindex"),
+extract_variables(y, vars = c("basal_area", "leaf_area_index"),
                   SpParams = SpParamsMED)
                   
 }

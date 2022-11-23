@@ -1,8 +1,8 @@
 .landSim<-function(landModel = "spwb_land", 
                    y, SpParams, meteo, dates = NULL,
-                   summaryFreq = "years",
-                   localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   summary_frequency = "years",
+                   local_control = medfate::defaultControl(),
+                   correction_factors = default_watershed_correction_factors(),
                    progress = TRUE) {
 
   #check input
@@ -36,24 +36,24 @@
     if(sum(dates %in% datesMeteo)<length(dates))
       stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
-  date.factor = cut(dates, breaks=summaryFreq)
+  date.factor = cut(dates, breaks=summary_frequency)
   df.int = as.numeric(date.factor)
   nDays = length(dates)
   nCells = nrow(y)
-  isSoilCell = y$landcovertype %in% c("wildland", "agriculture")
+  isSoilCell = y$land_cover_type %in% c("wildland", "agriculture")
   nSoil = sum(isSoilCell)
-  nWild = sum(y$landcovertype %in% c("wildland"))
-  nAgri = sum(y$landcovertype %in% c("agriculture"))
-  nRock = sum(y$landcovertype %in% c("rock"))
-  nArti = sum(y$landcovertype %in% c("artificial"))
-  nWater = sum(y$landcovertype %in% c("water"))
+  nWild = sum(y$land_cover_type %in% c("wildland"))
+  nAgri = sum(y$land_cover_type %in% c("agriculture"))
+  nRock = sum(y$land_cover_type %in% c("rock"))
+  nArti = sum(y$land_cover_type %in% c("artificial"))
+  nWater = sum(y$land_cover_type %in% c("water"))
   nSummary = sum(table(date.factor)>0)
   t.df = as.numeric(table(df.int))
 
   #Determine outlet cells (those without downhill neighbors)
   outlets = which(unlist(lapply(y$waterQ, sum))==0)
 
-  patchsize = sqrt(y$representedarea[1])
+  patchsize = sqrt(y$represented_area[1])
 
   #Print information area
   if(progress) {
@@ -69,11 +69,11 @@
     cat(paste0("Preparing ", localModel, " input...\n"))
   }
   for(i in 1:nCells) {
-    if(y$landcovertype[i] %in% c("wildland", "agriculture")) {
+    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
       f = y$forest[[i]]
       s = y$soil[[i]]
-      if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, localControl)
-      else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, localControl)
+      if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, local_control)
+      else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, local_control)
     } 
   }
   if(progress) cat("done.\n\n")
@@ -138,7 +138,7 @@
   
   initialSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
   initialSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
-  initialAquiferContent = mean(extract_variables(y, "aquifervolume")$aquifervolume, na.rm=T)
+  initialAquiferContent = mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
   initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
   if(progress) {
@@ -226,11 +226,11 @@
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed)
     ws_day = .watershedDay(localModel,
-                           y$landcovertype, y$state, y$soil,
+                           y$land_cover_type, y$state, y$soil,
                            y$waterOrder, y$queenNeigh, y$waterQ,
-                           y$depthtobedrock, y$bedrockconductivity, y$bedrockporosity, 
+                           y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
                            y$aquifer, y$snowpack,
-                           correctionFactors,
+                           correction_factors,
                            datechar,
                            gridMeteo,
                            latitude, y$elevation, y$slope, y$aspect,
@@ -239,7 +239,7 @@
     res_day = ws_day[["WatershedWaterBalance"]]
     
     if(progress) cat("+")
-    summary_df = landscape_summary(y, "soil", soil_summary_function, localControl$soilFunctions, 
+    summary_df = landscape_summary(y, "soil", soil_summary_function, local_control$soilFunctions, 
                                    unlist = TRUE)
     ifactor = df.int[day]
     varsSum = c("Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
@@ -247,7 +247,7 @@
                 "AquiferDischarge", "SoilEvaporation", "Transpiration",
                 "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
     varsState = c("SWE", "Psi1", "SoilVol", "WTD")
-    DTAday = (y$depthtobedrock/1000.0) - (y$aquifer/y$bedrockporosity)/1000.0
+    DTAday = (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
         summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]
@@ -302,7 +302,7 @@
   
   finalSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
   finalSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
-  finalAquiferContent = mean(extract_variables(y, "aquifervolume")$aquifervolume, na.rm=T)
+  finalAquiferContent = mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
   finalLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
 
   Precipitationsum = sum(LandscapeBalance$Precipitation, na.rm=T)
@@ -400,9 +400,9 @@
   sf$summary = summarylist
 
   l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
-            WatershedBalance = LandscapeBalance,
-            WatershedSoilBalance = SoilLandscapeBalance,
-            DailyRunoff = DailyRunoff)
+            watershed_balance = LandscapeBalance,
+            watershed_soil_balance = SoilLandscapeBalance,
+            daily_runoff = DailyRunoff)
   class(l)<-c(landModel, "list")
   return(l)
 }
@@ -418,9 +418,9 @@
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
-#' @param summaryFreq Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
-#' @param localControl A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
-#' @param correctionFactors A list of watershed correction factors for hydraulic parameters.
+#' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
+#' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
+#' @param correction_factors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
 #'
 #' @details Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. 
@@ -470,9 +470,9 @@
 #'       }
 #'     }
 #'   }
-#'   \item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
-#'   \item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-#'   \item{\code{DailyRunoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+#'   \item{\code{watershed_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+#'   \item{\code{watershed_soil_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
+#'   \item{\code{daily_runoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 #' }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
@@ -497,30 +497,30 @@
 #' dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 #' 
 #' # Launch simulations
-#' res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+#' res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 #' }
 #' 
 #' @name spwb_land
 spwb_land<-function(y, SpParams, meteo, dates = NULL,
-                   summaryFreq = "years",
-                   localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   summary_frequency = "years",
+                   local_control = medfate::defaultControl(),
+                   correction_factors = default_watershed_correction_factors(),
                    progress = TRUE) {
   return(.landSim("spwb_land",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
-                  summaryFreq = summaryFreq, 
-                  localControl = localControl,
-                  correctionFactors = correctionFactors, progress = progress))
+                  summary_frequency = summary_frequency, 
+                  local_control = local_control,
+                  correction_factors = correction_factors, progress = progress))
 }
 #' @rdname spwb_land
 growth_land<-function(y, SpParams, meteo, dates = NULL,
-                   summaryFreq = "years",
-                   localControl = medfate::defaultControl(),
-                   correctionFactors = defaultWatershedCorrectionFactors(),
+                   summary_frequency = "years",
+                   local_control = medfate::defaultControl(),
+                   correction_factors = default_watershed_correction_factors(),
                    progress = TRUE) {
   return(.landSim("growth_land",
                   y = y, SpParams = SpParams, meteo = meteo, dates = dates,
-                  summaryFreq = summaryFreq, 
-                  localControl = localControl,
-                  correctionFactors = correctionFactors, progress = progress))
+                  summary_frequency = summary_frequency, 
+                  local_control = local_control,
+                  correction_factors = correction_factors, progress = progress))
 }

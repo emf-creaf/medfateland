@@ -10,9 +10,9 @@ spwb_land(
   SpParams,
   meteo,
   dates = NULL,
-  summaryFreq = "years",
-  localControl = medfate::defaultControl(),
-  correctionFactors = defaultWatershedCorrectionFactors(),
+  summary_frequency = "years",
+  local_control = medfate::defaultControl(),
+  correction_factors = default_watershed_correction_factors(),
   progress = TRUE
 )
 
@@ -21,9 +21,9 @@ growth_land(
   SpParams,
   meteo,
   dates = NULL,
-  summaryFreq = "years",
-  localControl = medfate::defaultControl(),
-  correctionFactors = defaultWatershedCorrectionFactors(),
+  summary_frequency = "years",
+  local_control = medfate::defaultControl(),
+  correction_factors = default_watershed_correction_factors(),
   progress = TRUE
 )
 }
@@ -36,11 +36,11 @@ growth_land(
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
 
-\item{summaryFreq}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
+\item{summary_frequency}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
 
-\item{localControl}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
+\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
-\item{correctionFactors}{A list of watershed correction factors for hydraulic parameters.}
+\item{correction_factors}{A list of watershed correction factors for hydraulic parameters.}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
@@ -81,9 +81,9 @@ with the following columns:
 }
 }
 }
-\item{\code{WatershedBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
-\item{\code{WatershedSoilBalance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-\item{\code{DailyRunoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+\item{\code{watershed_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+\item{\code{watershed_soil_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
+\item{\code{daily_runoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 }
 }
 \description{
@@ -122,7 +122,7 @@ data("SpParamsMED")
 dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 # Launch simulations
-res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summaryFreq = "month")
+res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 }
 
 }

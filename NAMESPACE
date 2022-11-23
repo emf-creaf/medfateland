@@ -15,8 +15,8 @@ importFrom("lifecycle","deprecated")
 importFrom("stats", "var")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
-export(defaultWatershedCorrectionFactors,
-       defaultVolumeFunction,
+export(default_watershed_correction_factors,
+       default_volume_function,
        extract_variables,
        plot_variable,
        plot_summary,

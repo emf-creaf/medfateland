@@ -28,7 +28,7 @@ update_landscape<-function(x, y) {
     }
   } 
   if("forest" %in% names(y)) x$forest = y$forest
-  if("managementarguments" %in% names(y)) x$managementarguments = y$managementarguments
+  if("management_arguments" %in% names(y)) x$management_arguments = y$management_arguments
   if("aquifer" %in% names(y)) x$aquifer = y$aquifer
   if("snowpack" %in% names(y)) x$snowpack = y$snowpack
   return(x)

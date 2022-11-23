@@ -1,6 +1,6 @@
 .f_spatial<-function(xi, meteo, dates, model,
-                     SpParams, localControl, CO2ByYear = numeric(0), 
-                     keepResults = TRUE,
+                     SpParams, local_control, CO2ByYear = numeric(0), 
+                     keep_results = TRUE,
                      summaryFunction = NULL, summaryArgs = NULL){
   f = xi$forest
   s = xi$soil
@@ -48,7 +48,7 @@
     } 
   } else if(model=="fordyn") {
     if(inherits(f, "forest") && inherits(s, "soil")) {
-      try({res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = localControl,
+      try({res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = local_control,
                            latitude = xi$latitude, elevation = xi$elevation,
                            slope = xi$slope, aspect = xi$aspect,
                            CO2ByYear = CO2ByYear,
@@ -72,7 +72,7 @@
   else if(model=="fordyn") x_out = res$NextInputObject
   
   # Frees memory if detailed results are not required
-  if(!keepResults) res = NULL
+  if(!keep_results) res = NULL
   return(list(result = res, summary = s, x_out = x_out, forest_out = f_out, management_out = m_out))
 }
 
@@ -112,21 +112,21 @@
 }
 
 .model_spatial<-function(y, SpParams, meteo, model = "spwb",
-                        localControl = defaultControl(), dates = NULL,
+                        local_control = defaultControl(), dates = NULL,
                         managementFunction = NULL,
-                        CO2ByYear = numeric(0), keepResults = TRUE,
+                        CO2ByYear = numeric(0), keep_results = TRUE,
                         summaryFunction=NULL, summaryArgs=NULL,
-                        parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
+                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                         progress = TRUE) {
   
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
-  localControl$verbose = FALSE
+  local_control$verbose = FALSE
 
   forestlist = y$forest
   soillist  = y$soil
   xlist  = y$state
-  managementArgs = y$managementarguments
+  managementArgs = y$management_arguments
 
   n = length(forestlist)
   resultlist = vector("list",n)
@@ -157,9 +157,9 @@
         s = soillist[[i]]
         if(inherits(f, "forest") && inherits(s, "soil")) {
           if(model=="spwb") {
-            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, localControl)
+            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
           } else if(model=="growth") {
-            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, localControl)
+            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
           }
         }
       }
@@ -173,7 +173,7 @@
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
     
-    if(is.null(chunk.size)) chunk.size = floor(n/numCores)
+    if(is.null(chunk_size)) chunk_size = floor(n/num_cores)
         
     XI = vector("list", n)
     for(i in 1:n) {
@@ -184,16 +184,16 @@
                      point = sf::st_geometry(y)[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
-                     managementFunction = managementFunction, managementArgs = y$managementarguments[[i]])
+                     managementFunction = managementFunction, managementArgs = y$management_arguments[[i]])
     }
-    if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
-    cl<-parallel::makeCluster(numCores)
+    if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
+    cl<-parallel::makeCluster(num_cores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
-                                             SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear,
-                                             keepResults = keepResults,
+                                             SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear,
+                                             keep_results = keep_results,
                                              summaryFunction = summaryFunction, summaryArgs = summaryArgs,
-                                             chunk.size = chunk.size)
+                                             chunk.size = chunk_size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
@@ -215,11 +215,11 @@
                 point = sf::st_geometry(y)[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
-                managementFunction = managementFunction, managementArgs = y$managementarguments[[i]])
+                managementFunction = managementFunction, managementArgs = y$management_arguments[[i]])
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model,
-                      SpParams = SpParams, localControl = localControl, CO2ByYear = CO2ByYear, 
-                      keepResults = keepResults,
+                      SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
+                      keep_results = keep_results,
                       summaryFunction = summaryFunction, summaryArgs = summaryArgs)
       if(!is.null(sim_out$x_out)) xlist[[i]] = sim_out$x_out
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
@@ -235,7 +235,7 @@
   res$state = xlist
   if(model=="fordyn") {
     res$forest = forestlist_out
-    res$managementarguments = managementlist_out
+    res$management_arguments = managementlist_out
   }
   res$result = resultlist
   res$summary = summarylist
@@ -250,15 +250,15 @@
 #' @param y An object of class \code{\link{sf}}.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details).
-#' @param localControl A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
+#' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param keepResults Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
+#' @param keep_results Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
 #' @param summaryFunction An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
 #' @param summaryArgs List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
-#' @param numCores Integer with the number of cores to be used for parallel computation.
-#' @param chunk.size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param num_cores Integer with the number of cores to be used for parallel computation.
+#' @param chunk_size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
@@ -278,8 +278,8 @@
 #'   \item{\code{id}: Stand id, taken from the input.}
 #'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+#'   \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
 #'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 #' }
 #' 
@@ -317,10 +317,10 @@
 #' res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
 #' 
 #' # Add management arguments to all stands
-#' for(i in 1:nrow(y)) y$managementarguments[[i]] =  defaultManagementArguments()
+#' for(i in 1:nrow(y)) y$management_arguments[[i]] =  defaultManagementArguments()
 #' 
 #' # Change thinning threshold for stand #1
-#' y$managementarguments[[1]]$thinningThreshold = 15
+#' y$management_arguments[[1]]$thinningThreshold = 15
 #' 
 #' # Fordyn simulation for one year (one stand) with management
 #' res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
@@ -332,33 +332,33 @@
 #' }
 #' 
 #' @name spwb_spatial
-spwb_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
-                     CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
-                     parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
+spwb_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
+                     CO2ByYear = numeric(0), keep_results = TRUE, summaryFunction=NULL, summaryArgs=NULL,
+                     parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", localControl = localControl, dates = dates,
-                CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
-                parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
+                CO2ByYear = CO2ByYear, keep_results = keep_results, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 
 #' @rdname spwb_spatial
-growth_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
-                       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
-                       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
+growth_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
+                       CO2ByYear = numeric(0), keep_results = TRUE, summaryFunction=NULL, summaryArgs=NULL,
+                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", localControl = localControl, dates = dates,
-                CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
-                parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
+                CO2ByYear = CO2ByYear, keep_results = keep_results, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 
 #' @rdname spwb_spatial
-fordyn_spatial<-function(y, SpParams, meteo, localControl = defaultControl(), dates = NULL,
+fordyn_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
                        managementFunction = NULL,
-                       CO2ByYear = numeric(0), keepResults = TRUE, summaryFunction=NULL, summaryArgs=NULL,
-                       parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
+                       CO2ByYear = numeric(0), keep_results = TRUE, summaryFunction=NULL, summaryArgs=NULL,
+                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", localControl = localControl, dates = dates,
+  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
                 managementFunction = managementFunction,
-                CO2ByYear = CO2ByYear, keepResults = keepResults, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
-                parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
+                CO2ByYear = CO2ByYear, keep_results = keep_results, summaryFunction = summaryFunction, summaryArgs = summaryArgs, 
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }

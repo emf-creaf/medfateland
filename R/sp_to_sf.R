@@ -15,7 +15,7 @@ sp_to_sf<-function(y) {
   epl$elevation = y@data$elevation
   epl$slope = y@data$slope
   epl$aspect = y@data$aspect
-  epl$landcovertype = y@lct
+  epl$land_cover_type = y@lct
   forest_list = y@forestlist
   soil_list = y@soillist
   x_list = y@xlist
@@ -30,16 +30,16 @@ sp_to_sf<-function(y) {
     epl$waterQ = y@waterQ
     epl$queenNeigh = y@queenNeigh
     epl$channel = y@channel
-    epl$depthtobedrock = y@bedrock$DepthToBedrock
-    epl$bedrockconductivity = y@bedrock$Conductivity
-    epl$bedrockporosity = y@bedrock$Porosity
+    epl$depth_to_bedrock = y@bedrock$DepthToBedrock
+    epl$bedrock_conductivity = y@bedrock$Conductivity
+    epl$bedrock_porosity = y@bedrock$Porosity
     epl$snowpack = y@snowpack
     epl$aquifer = y@aquifer
-    epl$representedarea = prod(y@grid@cellsize)
+    epl$represented_area = prod(y@grid@cellsize)
   } else {
-    epl$representedarea = NA
+    epl$represented_area = NA
   }
-  epl$managementunit = NA
-  epl$managementarguments = vector("list", nrow(epl))
+  epl$management_unit = NA
+  epl$management_arguments = vector("list", nrow(epl))
   return(sf::st_as_sf(tibble::as_tibble(epl)))
 }

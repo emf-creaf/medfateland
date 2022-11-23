@@ -2,7 +2,7 @@
   return(c( "Elevation (m)" = "elevation", 
             "Slope (degrees)" = "slope", 
             "Aspect (degrees)" = "aspect", 
-            "Land cover type" = "landcovertype"))
+            "Land cover type" = "land_cover_type"))
 }
 .getLandscapeTopographyVar<-function(obj, variable) {
   if(!(variable %in% names(obj))) stop(paste0("Object does not have a '", variable, "' column."))
@@ -53,22 +53,22 @@
 }
 
 .getAllowedWatershedVars <-function(){
-  return(c("Number of cell neighbours" = "numneigh", 
-           "Cell order for lateral water transfer" = "waterorder", 
+  return(c("Number of cell neighbours" = "num_neigh", 
+           "Cell order for lateral water transfer" = "water_order", 
            "Water outlet (binary)" = "outlets", 
            "Water channel (binary)" = "channel",
-           "Depth to bedrock (m)" = "depthtobedrock",
-           "Bedrock porosity" = "bedrockporosity", 
-           "Bedrock conductivity" = "bedrockconductivity",
-           "Aquifer elevation (m)" = "aquiferelevation", 
-           "Depth to aquifer (m)" = "depthtoaquifer",
-           "Aquifer volume (mm)" = "aquifervolume", 
+           "Depth to bedrock (m)" = "depth_to_bedrock",
+           "Bedrock porosity" = "bedrock_porosity", 
+           "Bedrock conductivity" = "bedrock_conductivity",
+           "Aquifer elevation (m)" = "aquifer_elevation", 
+           "Depth to aquifer (m)" = "depth_to_aquifer",
+           "Aquifer volume (mm)" = "aquifer_volume", 
            "Snowpack water equivalent (mm)" = "snowpack"))
 }
 .getLandscapeWatershedVar<-function(obj, variable) {
-  if(variable=="numneigh") {
+  if(variable=="num_neigh") {
     varplot = sapply(obj$queenNeigh,"length")
-  } else if(variable=="waterorder") {
+  } else if(variable=="water_order") {
     wo = obj$waterOrder
     varplot = 1:length(wo)
     varplot[wo] = 1:length(wo)
@@ -78,27 +78,27 @@
     varplot[outlets] = TRUE
   } else if(variable=="channel") {
     varplot = obj$channel
-  } else if(variable =="depthtobedrock") {
-    varplot = obj$depthtobedrock/1000.0  # in m
-  } else if(variable =="bedrockporosity") {
-    varplot = obj$bedrockporosity
-  } else if(variable =="bedrockconductivity") {
-    varplot = obj$bedrockconductivity
-  } else if(variable =="aquifervolume") {
+  } else if(variable =="depth_to_bedrock") {
+    varplot = obj$depth_to_bedrock/1000.0  # in m
+  } else if(variable =="bedrock_porosity") {
+    varplot = obj$bedrock_porosity
+  } else if(variable =="bedrock_conductivity") {
+    varplot = obj$bedrock_conductivity
+  } else if(variable =="aquifer_volume") {
     varplot = obj$aquifer
-  } else if(variable =="aquiferelevation") {
-    DTB = obj$depthtobedrock
+  } else if(variable =="aquifer_elevation") {
+    DTB = obj$depth_to_bedrock
     aquifer = obj$aquifer
-    RockPorosity = obj$bedrockporosity
+    RockPorosity = obj$bedrock_porosity
     elevation = obj$elevation
     varplot = elevation - (DTB/1000.0) + (aquifer/RockPorosity)/1000.0 # in m
     varplot[RockPorosity==0.0] = elevation[RockPorosity==0.0]
   } else if(variable=="snowpack") {
     varplot = obj$snowpack
-  } else if(variable =="depthtoaquifer") {
-    DTB = obj$depthtobedrock
+  } else if(variable =="depth_to_aquifer") {
+    DTB = obj$depth_to_bedrock
     aquifer = obj$aquifer
-    RockPorosity = obj$bedrockporosity
+    RockPorosity = obj$bedrock_porosity
     varplot = (DTB/1000.0) - (aquifer/RockPorosity)/1000.0
     varplot[RockPorosity==0.0] = DTB[RockPorosity==0.0]/1000
   }
@@ -106,13 +106,13 @@
 }
 
 .getAllowedForestStandVars <-function(SpParams = NULL) {
-  vars <- c("Basal area (m2/ha)"="basalarea")
+  vars <- c("Basal area (m2/ha)"="basal_area")
   if(!is.null(SpParams)) {
     vars <- c(vars,
-              "Leaf area index (m2/m2)" = "leafareaindex", 
-              "Foliar biomass (kg/m2)" = "foliarbiomass", 
+              "Leaf area index (m2/m2)" = "leaf_area_index", 
+              "Foliar biomass (kg/m2)" = "foliar_biomass", 
               "Fine live fuel (kg/m2)" = "fuel", 
-              "Shrub phytovolume (m3/m2)" = "phytovolume")
+              "Shrub shrub_volume (m3/m2)" = "shrub_volume")
   }
   return(vars)
 }
@@ -123,11 +123,11 @@
   for(i in 1:n) {
     f = obj$forest[[i]]
     if(inherits(f,"forest")) {
-      if(variable=="basalarea") varplot[i] = stand_basalArea(f)
-      else if(variable=="leafareaindex") varplot[i] = stand_LAI(f, SpParams)
-      else if(variable=="foliarbiomass") varplot[i] = stand_foliarBiomass(f, SpParams)
+      if(variable=="basal_area") varplot[i] = stand_basalArea(f)
+      else if(variable=="leaf_area_index") varplot[i] = stand_LAI(f, SpParams)
+      else if(variable=="foliar_biomass") varplot[i] = stand_foliarBiomass(f, SpParams)
       else if(variable=="fuel") varplot[i] = stand_fuel(f, SpParams)
-      else if(variable=="phytovolume") varplot[i] = stand_phytovolume(f, SpParams)
+      else if(variable=="shrub_volume") varplot[i] = stand_phytovolume(f, SpParams)
     }
   }
   return(varplot)
@@ -136,7 +136,7 @@
 .getAllowedVars <-function(y, SpParams = NULL) {
   vars = character(0)
   vars = c(vars, .getAllowedTopographyVars(),.getAllowedSoilVars(),.getAllowedForestStandVars(SpParams))
-  if("depthtobedrock" %in% names(y)) {
+  if("depth_to_bedrock" %in% names(y)) {
     vars = c(vars, .getAllowedWatershedVars())
   }
   return(vars)
@@ -166,7 +166,7 @@
 #'       \item{\code{"elevation"}:}{Elevation in m.}
 #'       \item{\code{"slope"}:}{Slope in degrees.} 
 #'       \item{\code{"aspect"}:}{Slope in degrees.} 
-#'       \item{\code{"landcovertype"}:}{Land cover type.}
+#'       \item{\code{"land_cover_type"}:}{Land cover type.}
 #'    }
 #'    
 #'  \emph{Soil}:
@@ -183,26 +183,26 @@
 #'    
 #'  \emph{Watershed}:
 #'    \itemize{
-#'      \item{\code{"numneigh"}:}{Number of cell neighbours (integer).}
-#'      \item{\code{"waterorder"}:}{Cell order for lateral water transfer (integer).}
+#'      \item{\code{"num_neigh"}:}{Number of cell neighbours (integer).}
+#'      \item{\code{"water_order"}:}{Cell order for lateral water transfer (integer).}
 #'      \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
 #'      \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
-#'      \item{\code{"depthTobedrock"}:}{Depth to bedrock (m).}
-#'      \item{\code{"bedrockporosity"}:}{Bedrock porosity.}
-#'      \item{\code{"bedrockconductivity"}:}{Bedrock conductivity.}
-#'      \item{\code{"aquiferelevation"}:}{Aquifer elevation over bedrock (m).}
-#'      \item{\code{"depthtoaquifer"}:}{Depth to aquifer (m).}
-#'      \item{\code{"aquifervolume"}:}{Aquifer volume (mm).}
+#'      \item{\code{"depth_to_bedrock"}:}{Depth to bedrock (m).}
+#'      \item{\code{"bedrock_porosity"}:}{Bedrock porosity.}
+#'      \item{\code{"bedrock_conductivity"}:}{Bedrock conductivity.}
+#'      \item{\code{"aquifer_elevation"}:}{Aquifer elevation over bedrock (m).}
+#'      \item{\code{"depth_to_aquifer"}:}{Depth to aquifer (m).}
+#'      \item{\code{"aquifer_volume"}:}{Aquifer volume (mm).}
 #'      \item{\code{"snowpack"}:}{Snowpack water equivalent (mm).}
 #'    }
 #'
 #' \emph{Forest stand}:
 #'    \itemize{
-#'      \item{\code{"basalarea"}:}{Basal area (m2/ha).}
-#'      \item{\code{"leafareaindex"}:}{Leaf area index (m2/m2).} 
-#'      \item{\code{"foliarbiomass"}:}{Foliar biomass (kg/m2).} 
+#'      \item{\code{"basal_area"}:}{Basal area (m2/ha).}
+#'      \item{\code{"leaf_area_index"}:}{Leaf area index (m2/m2).} 
+#'      \item{\code{"foliar_biomass"}:}{Foliar biomass (kg/m2).} 
 #'      \item{\code{"fuel"}:}{Fine live fuel (kg/m2).} 
-#'      \item{\code{"phytovolume"}:}{Shrub phytovolume (m3/m2).}
+#'      \item{\code{"shrub_volume"}:}{Shrub shrub_volume (m3/m2).}
 #'    }
 #'
 #' @returns An object of class \code{\link{sf}} with the desired variables.
@@ -221,11 +221,11 @@
 #'  
 #' # Calculate basal area and leaf area index
 #' # for all forest stands
-#' extract_variables(y, vars = c("basalarea", "leafareaindex"),
+#' extract_variables(y, vars = c("basal_area", "leaf_area_index"),
 #'                   SpParams = SpParamsMED)
 #'                   
 #' @name extract_variables
-extract_variables<-function(x, vars = "landcovertype", SpParams = NULL, ...) {
+extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
   if(!inherits(x, "sf")) stop("'x' has to be of class 'sf'")
   df = sf::st_sf(geometry = sf::st_geometry(x))
   for(var in vars) {
@@ -235,7 +235,7 @@ extract_variables<-function(x, vars = "landcovertype", SpParams = NULL, ...) {
 }
 
 #' @rdname extract_variables
-plot_variable<-function(x, variable = "landcovertype", SpParams = NULL, ...){
+plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, ...){
   df = extract_variables(x, vars= variable, SpParams = SpParams)
   g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+
      theme_bw()

@@ -5,12 +5,13 @@
 #endif
 using namespace Rcpp;
 
+
 List watershedDay(String localModel,
                   CharacterVector lct, List xList, List soilList,
                   IntegerVector waterO, List queenNeigh, List waterQ,
-                  NumericVector depthtobedrock, NumericVector bedrockconductivity, NumericVector bedrockporosity,
+                  NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,
                   NumericVector aquifer, NumericVector snowpack,
-                  List correctionFactors,
+                  List correction_factors,
                   CharacterVector date,
                   DataFrame gridMeteo,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,

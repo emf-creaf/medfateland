@@ -10,15 +10,15 @@ spwb_spatial(
   y,
   SpParams,
   meteo,
-  localControl = defaultControl(),
+  local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
-  keepResults = TRUE,
+  keep_results = TRUE,
   summaryFunction = NULL,
   summaryArgs = NULL,
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -26,15 +26,15 @@ growth_spatial(
   y,
   SpParams,
   meteo,
-  localControl = defaultControl(),
+  local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
-  keepResults = TRUE,
+  keep_results = TRUE,
   summaryFunction = NULL,
   summaryArgs = NULL,
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -42,16 +42,16 @@ fordyn_spatial(
   y,
   SpParams,
   meteo,
-  localControl = defaultControl(),
+  local_control = defaultControl(),
   dates = NULL,
   managementFunction = NULL,
   CO2ByYear = numeric(0),
-  keepResults = TRUE,
+  keep_results = TRUE,
   summaryFunction = NULL,
   summaryArgs = NULL,
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 }
@@ -62,13 +62,13 @@ fordyn_spatial(
 
 \item{meteo}{Input meteorological data (see section details).}
 
-\item{localControl}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
+\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{keepResults}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
+\item{keep_results}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
 
 \item{summaryFunction}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
 
@@ -76,9 +76,9 @@ fordyn_spatial(
 
 \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
 
-\item{numCores}{Integer with the number of cores to be used for parallel computation.}
+\item{num_cores}{Integer with the number of cores to be used for parallel computation.}
 
-\item{chunk.size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
+\item{chunk_size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
@@ -92,8 +92,8 @@ An object of class 'sf' containing four elements:
 \item{\code{id}: Stand id, taken from the input.}
 \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{result}: A list of model output for each simulated stand (if \code{keepResults = TRUE}).}
+\item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }
 }
@@ -139,10 +139,10 @@ plot_summary(res_sum, "Transpiration", "2001-03-01")
 res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
 
 # Add management arguments to all stands
-for(i in 1:nrow(y)) y$managementarguments[[i]] =  defaultManagementArguments()
+for(i in 1:nrow(y)) y$management_arguments[[i]] =  defaultManagementArguments()
 
 # Change thinning threshold for stand #1
-y$managementarguments[[1]]$thinningThreshold = 15
+y$management_arguments[[1]]$thinningThreshold = 15
 
 # Fordyn simulation for one year (one stand) with management
 res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,

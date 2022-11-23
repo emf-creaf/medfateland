@@ -9,6 +9,6 @@
 #'    \item{Output should be a numeric vector of length equal to the number of tree records in 'x'}
 #'  }
 #' 
-defaultVolumeFunction<-function(x){
+default_volume_function<-function(x){
   return((1/3) * pi * (x$DBH/200)^2 * (x$Height/100) * x$N) #m3/ha
 }

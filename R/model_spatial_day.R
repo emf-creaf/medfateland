@@ -51,14 +51,14 @@
 
 .model_spatial_day<-function(y, meteo, date, model = "spwb", 
                             SpParams, 
-                            localControl = defaultControl(),
-                            parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL,
+                            local_control = defaultControl(),
+                            parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                             progress = TRUE) {
   
   
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
   
-  localControl$verbose = FALSE
+  local_control$verbose = FALSE
   
   forestlist = y$forest
   soillist  = y$soil
@@ -94,9 +94,9 @@
         s = soillist[[i]]
         if(inherits(f, "forest") && inherits(s, "soil")) {
           if(model=="spwb") {
-            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, localControl)
+            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
           } else if(model=="growth") {
-            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, localControl)
+            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
           }
         }
       }
@@ -111,7 +111,7 @@
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
     
-    if(is.null(chunk.size)) chunk.size = floor(n/numCores)
+    if(is.null(chunk_size)) chunk_size = floor(n/num_cores)
     
     XI = vector("list", n)
     for(i in 1:n) {
@@ -120,11 +120,11 @@
                      point = sf::st_geometry(y)[i], x = xlist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
     }
-    if(progress) cat(paste0("  ii) Parallel computation (cores = ", numCores, ", chunk size = ", chunk.size,")\n"))
-    cl<-parallel::makeCluster(numCores)
+    if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
+    cl<-parallel::makeCluster(num_cores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial_day, 
                                              meteo = meteo, date = date, model = model,
-                                             chunk.size = chunk.size)
+                                             chunk.size = chunk_size)
     parallel::stopCluster(cl)
     if(progress) cat(" iii) Retrieval\n")
     for(i in 1:n) {
@@ -158,10 +158,10 @@
 #' @param meteo Meteorology data (see \code{\link{spwb_spatial}}).
 #' @param date A string with the date to be simulated.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param localControl A list of local model control parameters (see \code{\link{defaultControl}}).
+#' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
-#' @param numCores Integer with the number of cores to be used for parallel computation.
-#' @param chunk.size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param num_cores Integer with the number of cores to be used for parallel computation.
+#' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
 #' @returns An object of class \code{\link{sf}} the same name as the function called containing three elements:
@@ -198,16 +198,16 @@
 #' res = spwb_spatial_day(y, examplemeteo, date, SpParamsMED)
 #' }
 #' @name spwb_spatial_day
-spwb_spatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                         parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
+spwb_spatial_day<-function(y, meteo, date, SpParams, local_control = defaultControl(),
+                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
-  .model_spatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, localControl = localControl, 
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
+  .model_spatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, local_control = local_control, 
+                    parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 #' @rdname spwb_spatial_day
-growth_spatial_day<-function(y, meteo, date, SpParams, localControl = defaultControl(),
-                           parallelize = FALSE, numCores = detectCores()-1, chunk.size = NULL, progress = TRUE) {
+growth_spatial_day<-function(y, meteo, date, SpParams, local_control = defaultControl(),
+                           parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
-  .model_spatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, localControl = localControl,
-                    parallelize = parallelize, numCores = numCores, chunk.size = chunk.size, progress = progress)
+  .model_spatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, local_control = local_control,
+                    parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }

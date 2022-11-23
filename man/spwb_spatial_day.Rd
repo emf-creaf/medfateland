@@ -10,10 +10,10 @@ spwb_spatial_day(
   meteo,
   date,
   SpParams,
-  localControl = defaultControl(),
+  local_control = defaultControl(),
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -22,10 +22,10 @@ growth_spatial_day(
   meteo,
   date,
   SpParams,
-  localControl = defaultControl(),
+  local_control = defaultControl(),
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 }
@@ -38,13 +38,13 @@ growth_spatial_day(
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
-\item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
+\item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 
 \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
 
-\item{numCores}{Integer with the number of cores to be used for parallel computation.}
+\item{num_cores}{Integer with the number of cores to be used for parallel computation.}
 
-\item{chunk.size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
+\item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 }

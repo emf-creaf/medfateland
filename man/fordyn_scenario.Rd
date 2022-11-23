@@ -8,16 +8,16 @@ fordyn_scenario(
   y,
   SpParams,
   meteo,
-  managementScenario,
-  volumeFunction = NULL,
-  localControl = defaultControl(),
+  management_scenario,
+  volume_function = NULL,
+  local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
   summaryFunction = NULL,
   summaryArgs = NULL,
   parallelize = FALSE,
-  numCores = detectCores() - 1,
-  chunk.size = NULL,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 }
@@ -29,12 +29,12 @@ Management units should be defined in this object.}
 
 \item{meteo}{Meteorology data (see \code{\link{fordyn_spatial}}).}
 
-\item{managementScenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
+\item{management_scenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
 
-\item{volumeFunction}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+\item{volume_function}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 If NULL, the default volume function is used (not recommended!).}
 
-\item{localControl}{A list of local model control parameters (see \code{\link{defaultControl}}).}
+\item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 
 \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
 
@@ -46,9 +46,9 @@ If NULL, the default volume function is used (not recommended!).}
 
 \item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
 
-\item{numCores}{Integer with the number of cores to be used for parallel computation.}
+\item{num_cores}{Integer with the number of cores to be used for parallel computation.}
 
-\item{chunk.size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
+\item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
@@ -61,13 +61,13 @@ An list of class 'fordyn_scenario' with the following elements:
 \item{\code{id}: Stand id, taken from the input.}
 \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{managementarguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{treetable}: A list of data frames for each simulated stand, containing the living trees at each time step.}
-\item{\code{shrubtable}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
-\item{\code{deadtreetable}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
-\item{\code{deadshrubtable}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
-\item{\code{cuttreetable}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
-\item{\code{cutshrubtable}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+\item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+\item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+\item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+\item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+\item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+\item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summaryFunction} was not \code{NULL}).}
 }
 }
@@ -114,21 +114,21 @@ s = create_management_scenario(2,
                                c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 
 # Modify thinning threshold of the arguments of management unit #1
-s$managementUnits[[1]]$managementArgs$thinningThreshold = 15
+s$units[[1]]$thinningThreshold = 15
 
 # Subset 10 stands for computational simplicity
 y = y[1:10, ]
 
 # Assign two management units to stands
-y$managementunit[1:3] = 1 
-y$managementunit[4:10] = 2
+y$management_unit[1:3] = 1 
+y$management_unit[4:10] = 2
 
 # Assume that each stand represents 1km2 = 100 ha
-y$representedarea = 100
+y$represented_area = 100
 
 # Launch simulation scenario
 res = fordyn_scenario(y, SpParamsMED, meteo_01_03, 
-                      volumeFunction = NULL, managementScenario = s,
+                      volume_function = NULL, management_scenario = s,
                       parallelize = TRUE)
 }
 
