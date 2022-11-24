@@ -111,7 +111,7 @@ data("SpParamsMED")
 
 # Creates scenario with two management units and annual demand for two species 
 s = create_management_scenario(2,  
-                               c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+                               c("Quercus faginea" = 100, "Pinus nigra" = 500))
 
 # Modify thinning threshold of the arguments of management unit #1
 s$units[[1]]$thinningThreshold = 15
@@ -119,9 +119,10 @@ s$units[[1]]$thinningThreshold = 15
 # Subset 10 stands for computational simplicity
 y = y[1:10, ]
 
-# Assign two management units to stands
+# Assign two management units to stands (stand 10 does not have management)
 y$management_unit[1:3] = 1 
-y$management_unit[4:10] = 2
+y$management_unit[4:9] = 2
+y$management_unit[10] = NA
 
 # Assume that each stand represents 1km2 = 100 ha
 y$represented_area = 100

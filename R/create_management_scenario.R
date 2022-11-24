@@ -15,10 +15,12 @@
 #'
 #' @return A list with the following structure:
 #'    \itemize{
-#'      \item{\code{scenario_type}: Either 'bottom-up' (no demand is specified), 'input_demand' (annual species demand is specified), or 
+#'      \item{\code{scenario_type}: Either 'bottom-up' (no demand is specified), 
+#'            'input_demand' (annual species demand is specified), or 
 #'            'input_rate' when extraction rates are also supplied.}
 #'      \item{\code{units}: A vector of length \code{num_units}, each with the supplied management arguments}
-#'      \item{\code{annual_demand_by_species}: A vector of annual wood demand (m3) by species (for scenario_type 'bottom-up' or 'input_demand'.}
+#'      \item{\code{annual_demand_by_species}: A vector of annual wood demand (m3) by species 
+#'            (for scenario_type 'bottom-up' or 'input_demand').}
 #'      \item{\code{extraction_rate_by_year}: A vector of extraction rate values per year.}
 #'    }
 #'

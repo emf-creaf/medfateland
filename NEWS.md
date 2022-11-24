@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.1.0
+- New function 'fordyn_scenario'
+
 # Version 1.0.1
 - Adapting to new meteoland interpolation procedure
 

@@ -77,7 +77,7 @@
 #' 
 #' # Creates scenario with two management units and annual demand for two species 
 #' s = create_management_scenario(2,  
-#'                                c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+#'                                c("Quercus faginea" = 100, "Pinus nigra" = 500))
 #' 
 #' # Modify thinning threshold of the arguments of management unit #1
 #' s$units[[1]]$thinningThreshold = 15
@@ -85,9 +85,10 @@
 #' # Subset 10 stands for computational simplicity
 #' y = y[1:10, ]
 #'
-#' # Assign two management units to stands
+#' # Assign two management units to stands (stand 10 does not have management)
 #' y$management_unit[1:3] = 1 
-#' y$management_unit[4:10] = 2
+#' y$management_unit[4:9] = 2
+#' y$management_unit[10] = NA
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
 #' y$represented_area = 100
@@ -107,7 +108,34 @@ fordyn_scenario<-function(y, SpParams, meteo,
   
   .check_model_inputs(y, meteo)
 
+  # A.1 Check inputs
+  n = nrow(y)
+  nspp = nrow(SpParams)
   
+  if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
+  
+  
+  if(inherits(meteo,"data.frame")) {
+    datesMeteo = as.Date(row.names(meteo))
+  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+    datesMeteo = meteo@dates
+  } else if(inherits(meteo, "SpatialGridMeteorology")) {
+    datesMeteo = meteo@dates
+  } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
+    datesMeteo = meteo@dates
+  } else if(inherits(meteo, "stars")) {
+    datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
+  }
+  if(is.null(dates)) {
+    dates = datesMeteo
+  } else {
+    if(sum(dates %in% datesMeteo)<length(dates))
+      stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
+  }
+  # Determine number of years to process
+  years = unique(sort(as.numeric(format(dates, "%Y"))))
+  
+  # A.2 Scenario parameters
   cat("SCENARIO PARAMETERS:\n")
   cat(paste0("   Scenario type: ", management_scenario$scenario_type,"\n"))
   
@@ -137,37 +165,26 @@ fordyn_scenario<-function(y, SpParams, meteo,
       }
     }
   } 
+  # Initialize management arguments according to unit
+  for(i in 1:n) {
+    if(!is.na(y$management_unit[i])) y$management_arguments[[i]] = management_scenario$units[[y$management_unit[i]]]
+  }
+  managed = !is.na(y$management_unit)
+  units = sort(unique(y$management_unit), na.last = TRUE)
+  cat(paste0("   Management units:\n"))
+  for(i in 1:length(units)) {
+    if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), " stands in management unit ", units[i], "\n"))
+    else cat(paste0("     ", sum(is.na(y$management_unit)), " stands without management\n"))
+  }
   if(is.null(volume_function)) {
     cat("   Default volume function\n")
     volume_function = "default_volume_function"
   } else {
     cat("   User-defined volume function\n")
   }
-  
   cat("\n")
-
-  n = nrow(y)
-  nspp = nrow(SpParams)
   
-  if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
   
-  if(inherits(meteo,"data.frame")) {
-    datesMeteo = as.Date(row.names(meteo))
-  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "SpatialGridMeteorology")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "stars")) {
-    datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
-  }
-  if(is.null(dates)) {
-    dates = datesMeteo
-  } else {
-    if(sum(dates %in% datesMeteo)<length(dates))
-      stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
-  }
   
   # Define summary function (to save memory)
   table_selection<-function(object, summary_function, summary_arguments, ...) {
@@ -183,15 +200,6 @@ fordyn_scenario<-function(y, SpParams, meteo,
   }
 
   
-  # A.1 Initialize management arguments according to unit
-  for(i in 1:n) {
-    y$management_arguments[[i]] = management_scenario$units[[y$management_unit[i]]]
-  }
-  
-  # A.2 Determine number of years to process
-  years = unique(sort(as.numeric(format(dates, "%Y"))))
-  
-
   offset_demand = rep(0, nspp)
   names(offset_demand) = SpParams$Name
   extracted = matrix(0, nspp, length(years))
@@ -209,43 +217,75 @@ fordyn_scenario<-function(y, SpParams, meteo,
     spp_demand_year = spp_demand + offset_demand
     target[,yi] = spp_demand_year
     
+    
     # B.1 Determine which plots will be managed according to current demand
+    managed_step = managed # by default, manage all plots that have
     if(management_scenario$scenario_type != "bottom-up") {
       vol_species = matrix(0, n, nspp) 
       colnames(vol_species) = SpParams$Name
       rownames(vol_species) = y$id
       final_cuts = rep(FALSE, n)
       for(i in 1:n) {
-        man_args <- y$management_arguments[[i]] 
-        f <- y$forest[[i]]
-        if(!is.null(man_args)) {
+        if(managed[i]) {
+          man_args <- y$management_arguments[[i]] 
+          f <- y$forest[[i]]
           if((man_args$type=="regular") && (man_args$finalPreviousStage > 0)) final_cuts[i] = TRUE
           man <- do.call(what = "defaultManagementFunction", 
                          args = list(x = f, args=man_args))
           ctd <- f$treeData
           ctd$N <- man$N_tree_cut
-          vols_i <- sum(do.call(what = volume_function, args = list(x = ctd)))*y$represented_area[i]
+          vols_i <- do.call(what = volume_function, args = list(x = ctd))*y$represented_area[i]
           nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
-          vol_species[i, nsp_i] = vols_i
+          vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+          vol_species[i, names(vol_sp_i)] = vol_sp_i
         }
       }
       vol_spp_target = vol_species[,names(spp_demand)]
       # print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
+      # Set all plots not in final cuts to non-management
+      no_final = which(!final_cuts)
+      managed_step[no_final] = FALSE 
+      to_cut = integer(0)
+      # For each species set to true
+      for(j in 1:length(spp_demand_year)) {
+        vol_spp_j = vol_spp_target[,j]
+        if(spp_demand_year[j]>0) {
+          # cat(paste0("Species ", names(spp_demand_year)[j], " Target ", spp_demand_year[j],"\n"))
+          o = order(vol_spp_j, decreasing = TRUE)
+          vol_cum_sorted_j <- cumsum(sort(vol_spp_j, decreasing = TRUE))
+          vol_cum_j <- vol_spp_j
+          vol_cum_j[o] <- vol_cum_sorted_j
+          sel_cut_j <- (vol_cum_j < spp_demand_year[j])
+          sel_cut_j[o[1]] = TRUE # Set plot with highest volume value to TRUE
+          sel_cut_j[vol_spp_j==0] = FALSE # Set plots without volume to FALSE
+          # print(cbind(vol_spp_j, vol_cum_j, sel_cut_j))
+          managed_step[no_final[sel_cut_j]] = TRUE # Set selected plots to TRUE
+        }
+      }
+      cat(paste0("  Stands to be managed: ", sum(managed_step), " (", sum(final_cuts) , " because of final cuts)\n"))
     }
-    
+    prev_management_args = y$management_arguments
+    y$management_arguments[managed & (!managed_step)] = list(NULL) # Deactivates management on plots that were not selected
     
     # B.2 Call fordyn_spatial()
+    if(progress) cat(paste0("  Calling fordyn_spatial...\n"))
     fds <-fordyn_spatial(y, SpParams, meteo = meteo, local_control = local_control, dates = datesYear,
-                        managementFunction = "defaultManagementFunction",
+                        management_function = "defaultManagementFunction",
                         CO2ByYear = CO2ByYear, keep_results = FALSE, summary_function=table_selection, 
                         summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
-                        progress = progress)
+                        progress = FALSE)
     
     # B.3 Update final state variables in y and retrieve fordyn tables
     y = update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
-    # For those plots that were not managed but have prescriptions in a demand-based scenario, increase the variable years since thinning
-    
+    # For those plots that were not managed but have prescriptions in a demand-based scenario, 
+    # copy back management arguments and increase the variable years since thinning
+    y$management_arguments[managed & (!managed_step)] <- prev_management_args[managed & (!managed_step)]
+    for(i in 1:n){
+      if(managed[i] && (!managed_step[i])){
+        if(!is.na(y$management_arguments[[i]]$yearsSinceThinning)) y$management_arguments[[i]]$yearsSinceThinning = y$management_arguments[[i]]$yearsSinceThinning + 1
+      }
+    }
     # Move summary into results
     fds$result = fds$summary 
     # Retrieve user-defined summaries (if existing)
@@ -275,19 +315,25 @@ fordyn_scenario<-function(y, SpParams, meteo,
     }
     # B.4 Store actual extraction
     for(i in 1:n){
-      f = y$forest[[i]]
-      vols_i <- sum(do.call(what = volume_function, 
-                            args = list(x = fds$result[[i]]$CutTreeTable)))*y$represented_area[i]
-      nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
-      extracted[nsp_i, yi] <- extracted[nsp_i, yi] + vols_i
+      ctt <- fds$result[[i]]$CutTreeTable
+      vols_i <- do.call(what = volume_function, 
+                        args = list(x = ctt))*y$represented_area[i]
+      nsp_i <- medfate::species_characterParameter(ctt$Species, SpParams, "Name")
+      vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+      extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
     }
     # B.5 Update actual satisfied demand
     if(management_scenario$scenario_type != "bottom-up") {
       # recalculate offset for next year
       offset_demand = target[, yi] - extracted[,yi]
+      df = data.frame(target = target[, yi], extracted = extracted[,yi])
+      if(progress) cat(paste0("  Target (m3): ", round(sum(target[,yi])), 
+                              "  Extracted (m3): ", round(sum(extracted[,yi])),"\n"))
     }
+    if(progress) cat("\n")
   }
   if(progress) cat("ARRANGING OUTPUT: \n")
+  if(progress) cat(" Tree/shrub tables\n")
   tree_tables = vector("list", n)
   shrub_tables = vector("list", n)
   dead_tree_tables = vector("list", n)
@@ -316,6 +362,7 @@ fordyn_scenario<-function(y, SpParams, meteo,
   sf$summary = summary_list
   
   # Volumes extracted
+  if(progress) cat(" Extracted volumes\n")
   extractSums = rowSums(extracted, na.rm=TRUE)
   extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0,])
   names(extracted) <- c("species", as.character(years))

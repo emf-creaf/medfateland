@@ -1,7 +1,7 @@
 .f_spatial<-function(xi, meteo, dates, model,
                      SpParams, local_control, CO2ByYear = numeric(0), 
                      keep_results = TRUE,
-                     summary_function = NULL, summary_arguments = NULL){
+                     management_function = NULL, summary_function = NULL, summary_arguments = NULL){
   f = xi$forest
   s = xi$soil
   x = xi$x
@@ -48,11 +48,14 @@
     } 
   } else if(model=="fordyn") {
     if(inherits(f, "forest") && inherits(s, "soil")) {
+      mf = management_function
+      ma = xi$management_args
+      if(is.null(ma)) mf = NULL
       try({res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = local_control,
                            latitude = xi$latitude, elevation = xi$elevation,
                            slope = xi$slope, aspect = xi$aspect,
                            CO2ByYear = CO2ByYear,
-                           management_function = xi$managementFunction, management_args = xi$managementArgs)})
+                           management_function = mf, management_args = ma)})
     }
   } 
   if(!is.null(summary_function) && !is.null(res)){
@@ -113,8 +116,8 @@
 
 .model_spatial<-function(y, SpParams, meteo, model = "spwb",
                         local_control = defaultControl(), dates = NULL,
-                        managementFunction = NULL,
                         CO2ByYear = numeric(0), keep_results = TRUE,
+                        management_function = NULL, 
                         summary_function=NULL, summary_arguments=NULL,
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                         progress = TRUE) {
@@ -126,7 +129,7 @@
   forestlist = y$forest
   soillist  = y$soil
   xlist  = y$state
-  managementArgs = y$management_arguments
+  managementlist = y$management_arguments
 
   n = length(forestlist)
   resultlist = vector("list",n)
@@ -177,14 +180,12 @@
         
     XI = vector("list", n)
     for(i in 1:n) {
-      ma = NULL
-      if(!is.null(managementArgs)) ma = managementArgs[[i]]
       XI[[i]] = list(i = i, 
                      id = y$id[i], 
                      point = sf::st_geometry(y)[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
-                     managementFunction = managementFunction, managementArgs = y$management_arguments[[i]])
+                     management_args = managementlist[[i]])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
     cl<-parallel::makeCluster(num_cores)
@@ -192,6 +193,7 @@
                                              meteo = meteo, dates = dates, model = model,
                                              SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear,
                                              keep_results = keep_results,
+                                             management_function = management_function, 
                                              summary_function = summary_function, summary_arguments = summary_arguments,
                                              chunk.size = chunk_size)
     parallel::stopCluster(cl)
@@ -215,11 +217,12 @@
                 point = sf::st_geometry(y)[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
-                managementFunction = managementFunction, managementArgs = y$management_arguments[[i]])
+                management_args = managementlist[[i]])
       sim_out = .f_spatial(xi = xi, 
                       meteo = meteo, dates = dates, model = model,
                       SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
                       keep_results = keep_results,
+                      management_function = management_function, 
                       summary_function = summary_function, summary_arguments = summary_arguments)
       if(!is.null(sim_out$x_out)) xlist[[i]] = sim_out$x_out
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
@@ -260,7 +263,7 @@
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
-#' @param managementFunction A function that implements forest management actions (see \code{\link{fordyn}}).
+#' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
@@ -324,7 +327,7 @@
 #' 
 #' # Fordyn simulation for one year (one stand) with management
 #' res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
-#'                      managementFunction = defaultManagementFunction)
+#'                      management_function = defaultManagementFunction)
 #' 
 #' # Compare table of cuttings with vs. without management
 #' res_noman$result[[1]]$CutTreeTable
@@ -353,12 +356,12 @@ growth_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), d
 
 #' @rdname spwb_spatial
 fordyn_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
-                       managementFunction = NULL,
-                       CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
+                       CO2ByYear = numeric(0), keep_results = TRUE, 
+                       management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
   .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
-                managementFunction = managementFunction,
-                CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
+                CO2ByYear = CO2ByYear, keep_results = keep_results, 
+                management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }

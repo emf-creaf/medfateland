@@ -44,9 +44,9 @@ fordyn_spatial(
   meteo,
   local_control = defaultControl(),
   dates = NULL,
-  managementFunction = NULL,
   CO2ByYear = numeric(0),
   keep_results = TRUE,
+  management_function = NULL,
   summary_function = NULL,
   summary_arguments = NULL,
   parallelize = FALSE,
@@ -82,7 +82,7 @@ fordyn_spatial(
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
-\item{managementFunction}{A function that implements forest management actions (see \code{\link{fordyn}}).
+\item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
 }
 \value{
@@ -146,7 +146,7 @@ y$management_arguments[[1]]$thinningThreshold = 15
 
 # Fordyn simulation for one year (one stand) with management
 res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
-                     managementFunction = defaultManagementFunction)
+                     management_function = defaultManagementFunction)
 
 # Compare table of cuttings with vs. without management
 res_noman$result[[1]]$CutTreeTable
