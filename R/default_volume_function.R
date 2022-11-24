@@ -2,6 +2,8 @@
 #' 
 #' Example function for estimating wood volume (in m3/ha) from a tree table. 
 #' 
+#' @param x A data frame with columns 'DBH', 'Height' and 'N'
+#' 
 #' @details Users should define their own functions taking into account that:
 #'  \itemize{
 #'    \item{Input should be named 'x' and consist of a tree table with columns 'DBH' (cm), 'Height' (cm),

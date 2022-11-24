@@ -6,6 +6,9 @@
 \usage{
 default_volume_function(x)
 }
+\arguments{
+\item{x}{A data frame with columns 'DBH', 'Height' and 'N'}
+}
 \description{
 Example function for estimating wood volume (in m3/ha) from a tree table.
 }

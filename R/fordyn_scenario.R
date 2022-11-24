@@ -259,9 +259,11 @@ fordyn_scenario<-function(y, SpParams, meteo,
           nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
           vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
           vol_species[i, names(vol_sp_i)] = vol_sp_i
+          # DECREASE TARGET according to FINAL CUTS
+          if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_species[i,, drop=FALSE]
         }
       }
-      vol_spp_target = vol_species[,names(spp_demand)]
+      vol_spp_target = vol_species
       # print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
       # Set all plots not in final cuts to non-management
       no_final = which(!final_cuts)
