@@ -98,9 +98,6 @@ meteo2001 = examplemeteo
 meteo2002 = examplemeteo
 meteo2003 = examplemeteo
 
-# Induce drought in year 2002
-meteo2002$Precipitation = meteo2002$Precipitation/2
-
 # Bind data and redefine row names (dates)
 meteo_01_03 = rbind(meteo2001, meteo2002, meteo2003)
 row.names(meteo_01_03) = seq(as.Date("2001-01-01"), 
@@ -109,20 +106,12 @@ row.names(meteo_01_03) = seq(as.Date("2001-01-01"),
 # Load default medfate parameters
 data("SpParamsMED")
 
-# Creates scenario with two management units and annual demand for two species 
-s = create_management_scenario(2,  
-                               c("Quercus faginea" = 100, "Pinus nigra" = 500))
+# Creates scenario with one management unit and annual demand for P. nigra 
+s = create_management_scenario(1, c("Pinus nigra" = 2300))
 
-# Modify thinning threshold of the arguments of management unit #1
-s$units[[1]]$thinningThreshold = 15
 
-# Subset 10 stands for computational simplicity
-y = y[1:10, ]
-
-# Assign two management units to stands (stand 10 does not have management)
-y$management_unit[1:3] = 1 
-y$management_unit[4:9] = 2
-y$management_unit[10] = NA
+# Assign management unit to stands (stand 100 does not have management)
+y$management_unit[1:99] = 1 
 
 # Assume that each stand represents 1km2 = 100 ha
 y$represented_area = 100
