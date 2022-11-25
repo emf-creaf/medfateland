@@ -175,13 +175,14 @@ fordyn_scenario<-function(y, SpParams, meteo,
   } 
   # Initialize management arguments according to unit
   for(i in 1:n) {
-    if(!is.na(y$management_unit[i])) y$management_arguments[[i]] = management_scenario$units[[y$management_unit[i]]]
+    if(!is.na(y$management_unit[i])) y$management_arguments[[i]] = as.list(management_scenario$units[y$management_unit[i],])
   }
   managed = !is.na(y$management_unit)
   units = sort(unique(y$management_unit), na.last = TRUE)
   cat(paste0("  Management units:\n"))
   for(i in 1:length(units)) {
-    if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), " stands in unit ", units[i], "\n"))
+    if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), 
+                                    " stands in unit [", row.names(management_scenario$units)[i],"]\n"))
     else cat(paste0("     ", sum(is.na(y$management_unit)), " stands without prescriptions\n"))
   }
   if(is.null(volume_function)) {

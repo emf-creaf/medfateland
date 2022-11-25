@@ -12,7 +12,7 @@ create_management_scenario(
 )
 }
 \arguments{
-\item{units}{Number of management units. Each management unit represents a group of forest stands following the same silvicultural model.}
+\item{units}{Number of management units. Alternatively, a data frame with management options (in columns) for a set of units (in rows). Options not specified witl be taken from defaults.}
 
 \item{annual_demand_by_species}{A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
 If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
@@ -32,14 +32,17 @@ A list with the following structure:
 \item{\code{scenario_type}: Either 'bottom-up' (no demand is specified),
 'input_demand' (annual species demand is specified), or
 'input_rate' when extraction rates are also supplied.}
-\item{\code{units}: A named list of length the number of units, where each element has management arguments}
 \item{\code{annual_demand_by_species}: A vector of annual wood demand (m3) by species
 (for scenario_type 'bottom-up' or 'input_demand').}
 \item{\code{extraction_rate_by_year}: A vector of extraction rate values per year.}
+\item{\code{units}: A data frame with as many rows as units and management arguments as columns.}
 }
 }
 \description{
 Defines a management scenario with default values, to be modified by the user
+}
+\details{
+Each management unit represents a group of forest stands following the same silvicultural model.
 }
 \examples{
 
@@ -51,6 +54,12 @@ s1 = create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 200
 s2 = create_management_scenario(3,  
         c("Quercus ilex" = 1000, "Pinus nigra" = 2000),
         c("2002" = 30, "2003" = 50))
+        
+# A scenario with as many management units as rows in 'defaultPrescriptionsBySpecies'
+# and not based on demand
+data("defaultPrescriptionsBySpecies")
+s3 = create_management_scenario(defaultPrescriptionsBySpecies)
+
 }
 \seealso{
 \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}
