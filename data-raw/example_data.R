@@ -34,3 +34,7 @@ crs <- CRS(SRS_string = "EPSG:25831")
 comment(crs)<-gsub("°", "º", comment(crs)) # Replace non-ASCII character
 examplepointslandscape@proj4string <- crs
 usethis::use_data(examplepointslandscape, overwrite = T)
+
+
+defaultPrescriptionsBySpecies<-openxlsx::read.xlsx("data-raw/DefaultPrescriptionsBySpecies.xlsx")
+usethis::use_data(defaultPrescriptionsBySpecies, overwrite = TRUE)
