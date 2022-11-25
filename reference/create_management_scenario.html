@@ -51,17 +51,17 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_management_scenario</span><span class="op">(</span></span>
-<span>  <span class="va">num_units</span>,</span>
+<span>  <span class="va">units</span>,</span>
 <span>  annual_demand_by_species <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  extraction_rate_by_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  management_arguments <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  default_management_arguments <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>num_units</dt>
-<dd><p>Number of management units. Each management unit represents a group of forest stands following the same silvicultural model.</p></dd>
+    <dl><dt>units</dt>
+<dd><p>Number of management units. Alternatively, a data frame with management options (in columns) for a set of units (in rows). Options not specified witl be taken from defaults.</p></dd>
 
 
 <dt>annual_demand_by_species</dt>
@@ -76,7 +76,7 @@ the annual demand by species will be applied for the first year of the simulatio
 years according to the growth observed and the desired extraction rates.</p></dd>
 
 
-<dt>management_arguments</dt>
+<dt>default_management_arguments</dt>
 <dd><p>A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults
 copied for all management units and can later be modified. If NULL, the result of calling function
 <code>defaultManagementArguments</code> will be taken.</p></dd>
@@ -89,11 +89,15 @@ copied for all management units and can later be modified. If NULL, the result o
 <p>A list with the following structure:</p><ul><li><p><code>scenario_type</code>: Either 'bottom-up' (no demand is specified),
 'input_demand' (annual species demand is specified), or
 'input_rate' when extraction rates are also supplied.</p></li>
-<li><p><code>units</code>: A vector of length <code>num_units</code>, each with the supplied management arguments</p></li>
 <li><p><code>annual_demand_by_species</code>: A vector of annual wood demand (m3) by species
 (for scenario_type 'bottom-up' or 'input_demand').</p></li>
 <li><p><code>extraction_rate_by_year</code>: A vector of extraction rate values per year.</p></li>
+<li><p><code>units</code>: A data frame with as many rows as units and management arguments as columns.</p></li>
 </ul></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Each management unit represents a group of forest stands following the same silvicultural model.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="fordyn_scenario.html">fordyn_scenario</a></code>, <code>defaultManagementFunction</code></p></div>
@@ -110,6 +114,12 @@ copied for all management units and can later be modified. If NULL, the result o
 <span class="r-in"><span><span class="va">s2</span> <span class="op">=</span> <span class="fu">create_management_scenario</span><span class="op">(</span><span class="fl">3</span>,  </span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quercus ilex"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">30</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        </span></span>
+<span class="r-in"><span><span class="co"># A scenario with as many management units as rows in 'defaultPrescriptionsBySpecies'</span></span></span>
+<span class="r-in"><span><span class="co"># and not based on demand</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"defaultPrescriptionsBySpecies"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s3</span> <span class="op">=</span> <span class="fu">create_management_scenario</span><span class="op">(</span><span class="va">defaultPrescriptionsBySpecies</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
