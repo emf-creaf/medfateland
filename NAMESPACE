@@ -29,7 +29,6 @@ export(default_watershed_correction_factors,
        sp_to_sf,
        update_landscape,
        create_management_scenario,
-       fordyn_tables,
        fordyn_scenario)
 
 useDynLib(medfateland, .registration = TRUE)

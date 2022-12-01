@@ -323,21 +323,21 @@ fordyn_scenario<-function(y, SpParams, meteo,
     }
     # Retrieve tree tables
     if(yi==1) {
-      tree_table = fordyn_tables(fds, "TreeTable")
-      shrub_table = fordyn_tables(fds, "ShrubTable")
-      dead_tree_table = fordyn_tables(fds, "DeadTreeTable")
-      dead_shrub_table = fordyn_tables(fds, "DeadShrubTable")
-      cut_tree_table = fordyn_tables(fds, "CutTreeTable")
-      cut_shrub_table = fordyn_tables(fds, "CutShrubTable")
+      tree_table = .fordyn_tables(fds, "TreeTable")
+      shrub_table = .fordyn_tables(fds, "ShrubTable")
+      dead_tree_table = .fordyn_tables(fds, "DeadTreeTable")
+      dead_shrub_table = .fordyn_tables(fds, "DeadShrubTable")
+      cut_tree_table = .fordyn_tables(fds, "CutTreeTable")
+      cut_shrub_table = .fordyn_tables(fds, "CutShrubTable")
     } else {
-      tt_i = fordyn_tables(fds, "TreeTable")
+      tt_i = .fordyn_tables(fds, "TreeTable")
       tree_table = dplyr::bind_rows(tree_table, tt_i[tt_i$Step==1,])
-      st_i = fordyn_tables(fds, "ShrubTable")
+      st_i = .fordyn_tables(fds, "ShrubTable")
       shrub_table = dplyr::bind_rows(shrub_table, st_i[st_i$Step==1,])
-      dead_tree_table = dplyr::bind_rows(dead_tree_table, fordyn_tables(fds, "DeadTreeTable"))
-      dead_shrub_table = dplyr::bind_rows(dead_shrub_table, fordyn_tables(fds, "DeadShrubTable"))
-      cut_tree_table = dplyr::bind_rows(cut_tree_table, fordyn_tables(fds, "CutTreeTable"))
-      cut_shrub_table = dplyr::bind_rows(cut_shrub_table, fordyn_tables(fds, "CutShrubTable"))
+      dead_tree_table = dplyr::bind_rows(dead_tree_table, .fordyn_tables(fds, "DeadTreeTable"))
+      dead_shrub_table = dplyr::bind_rows(dead_shrub_table, .fordyn_tables(fds, "DeadShrubTable"))
+      cut_tree_table = dplyr::bind_rows(cut_tree_table, .fordyn_tables(fds, "CutTreeTable"))
+      cut_shrub_table = dplyr::bind_rows(cut_shrub_table, .fordyn_tables(fds, "CutShrubTable"))
     }
     # B.4 Store actual extraction
     for(i in 1:n){
