@@ -32,6 +32,7 @@ reference:
   - default_watershed_correction_factors
   - default_volume_function
   - create_management_scenario
+  - defaultPrescriptionsBySpecies
 
 - title: Simulation
   desc:  Simulation model functions
