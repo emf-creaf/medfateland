@@ -8,7 +8,7 @@
 #' @aliases defaultPrescriptionsBySpecies
 #' @docType data
 #' @source
-#'   Mario Beltran Barba. Forest Science and Technology Centre of Catalonia (CTFC)
+#'   Mario Beltrán & Míriam Piqué. Forest Science and Technology Centre of Catalonia (CTFC)
 #' @keywords data
 #' 
 #' @seealso \code{\link{create_management_scenario}},\code{\link{defaultManagementArguments}}

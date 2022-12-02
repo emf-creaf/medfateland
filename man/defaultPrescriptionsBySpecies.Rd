@@ -5,7 +5,7 @@
 \alias{defaultPrescriptionsBySpecies}
 \title{Default prescriptions by species}
 \source{
-Mario Beltran Barba. Forest Science and Technology Centre of Catalonia (CTFC)
+Mario Beltrán & Míriam Piqué. Forest Science and Technology Centre of Catalonia (CTFC)
 }
 \description{
 Default management prescriptions by species, defined according current practices in Catalonia (NE Spain)
