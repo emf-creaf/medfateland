@@ -4,6 +4,7 @@
 
 # Version 1.1.0
 - New function 'fordyn_scenario'
+- Allowing for a column called 'meteo' in input 'sf' objects
 
 # Version 1.0.1
 - Adapting to new meteoland interpolation procedure
