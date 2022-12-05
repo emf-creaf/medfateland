@@ -14,6 +14,7 @@ Default management prescriptions by species, defined according current practices
 A data frame with 27 species (or species groups) in rows and management parameters in columns (defined in \code{\link{defaultManagementArguments}})
 }
 \seealso{
-\code{\link{create_management_scenario}},\code{\link{defaultManagementArguments}}
+\code{\link{create_management_scenario}}, \code{\link{defaultManagementArguments}},
+\code{\link{fordyn_scenario}}
 }
 \keyword{data}

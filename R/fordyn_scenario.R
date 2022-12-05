@@ -18,8 +18,20 @@
 #' 
 #' Evaluates forest dynamics over a landscape including climate and management scenarios
 #'
-#' @param y An object of class \code{\link{sf}} with landscape information.
-#'    Management units should be defined in this object.
+#' @param sf An object of class \code{\link{sf}} with the following columns:
+#'   \itemize{
+#'     \item{\code{geometry}: Spatial geometry.}
+#'     \item{\code{id}: Stand identifiers.}
+#'     \item{\code{elevation}: Elevation above sea level (in m).}
+#'     \item{\code{slope}: Slope (in degrees).}
+#'     \item{\code{aspect}: Aspect (in degrees).}
+#'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
+#'     \item{\code{soil}: Objects of class \code{\link{soil}}.}
+#'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+#'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
+#'     \item{\code{management_unit}: Management unit corresponding to each stand.}
+#'     \item{\code{represented_area}: Area represented by each stand (in hectares).}
+#'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
 #' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
@@ -69,16 +81,15 @@
 #' data("examplepointslandscape")
 #'   
 #' # Transform example to 'sf' 
-#' y <- sp_to_sf(examplepointslandscape)
+#' pts_sf <- sp_to_sf(examplepointslandscape)
 #'
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   
 #' #Prepare a three-year meteorological data 
 #' meteo_01_03 <- rbind(examplemeteo, examplemeteo, examplemeteo)
-#' # Redefine row names (dates)
-#' row.names(meteo_01_03) = seq(as.Date("2001-01-01"), 
-#'                              as.Date("2003-12-31"), by="day")
+#' row.names(meteo_01_03) <- seq(as.Date("2001-01-01"), 
+#'                               as.Date("2003-12-31"), by="day")
 #'                          
 #' # Load default medfate parameters
 #' data("SpParamsMED")
@@ -86,25 +97,26 @@
 #' # Creates scenario with one management unit and annual demand for P. nigra 
 #' scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 #' 
-#'
-#' # Assign management unit to stands (stand 100 does not have management)
-#' y$management_unit[1:99] <- 1 
+#' # Assign management unit to all stands
+#' pts_sf$management_unit <- 1 
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
-#' y$represented_area <- 100
+#' pts_sf$represented_area <- 100
 #' 
 #' # Launch simulation scenario
-#' res <- fordyn_scenario(y, SpParamsMED, meteo_01_03, 
+#' res <- fordyn_scenario(pts_sf, SpParamsMED, meteo = meteo_01_03, 
 #'                        volume_function = NULL, management_scenario = scen,
 #'                        parallelize = TRUE)
 #'}
 #'
-fordyn_scenario<-function(y, SpParams, meteo = NULL, 
+fordyn_scenario<-function(sf, SpParams, meteo = NULL, 
                          management_scenario,
                          volume_function = NULL,
                          local_control = defaultControl(), dates = NULL,
                          CO2ByYear = numeric(0), summary_function=NULL, summary_arguments=NULL,
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
+  
+  y <- sf
   
   .check_model_inputs(y, meteo)
 
@@ -112,6 +124,9 @@ fordyn_scenario<-function(y, SpParams, meteo = NULL,
   n = nrow(y)
   nspp = nrow(SpParams)
 
+  if(!("represented_area" %in% names(y))) stop("Column 'represented_area' must be defined in 'y'")
+  if(!("management_unit" %in% names(y))) stop("Column 'management_unit' must be defined in 'y'")
+  
   if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
   
   scenario_type = match.arg(management_scenario$scenario_type, c("bottom-up", "input_rate", "input_demand"))
@@ -178,9 +193,12 @@ fordyn_scenario<-function(y, SpParams, meteo = NULL,
       }
     }
   } 
-  # Initialize management arguments according to unit
+  # Initialize missing management arguments according to unit
+  if(!("management_arguments" %in% names(y))) y$management_arguments = vector("list", n)
   for(i in 1:n) {
-    if(!is.na(y$management_unit[i])) y$management_arguments[[i]] = as.list(management_scenario$units[y$management_unit[i],])
+    if(!is.na(y$management_unit[i])) {
+      if(is.null(y$management_arguments[[i]])) y$management_arguments[[i]] = as.list(management_scenario$units[y$management_unit[i],])
+    }
   }
   managed = !is.na(y$management_unit)
   units = sort(unique(y$management_unit), na.last = TRUE)
@@ -252,6 +270,7 @@ fordyn_scenario<-function(y, SpParams, meteo = NULL,
       colnames(vol_species) = SpParams$Name
       rownames(vol_species) = y$id
       final_cuts = rep(FALSE, n)
+      # print(sum(unlist(lapply(y$management_arguments, FUN = is.null))))
       for(i in 1:n) {
         if(managed[i]) {
           man_args <- y$management_arguments[[i]] 
@@ -409,10 +428,10 @@ fordyn_scenario<-function(y, SpParams, meteo = NULL,
     cut_shrub_tables[[i]] = cut_shrub_table[cut_shrub_table$id==y$id[i], ]
   }
   sf = sf::st_sf(geometry=sf::st_geometry(y))
-  sf$id = fds$id
-  sf$state = fds$state
-  sf$forest = fds$forest
-  sf$management_arguments = fds$management_arguments
+  sf$id = y$id
+  sf$state = y$state
+  sf$forest = y$forest
+  sf$management_arguments = y$management_arguments
   sf$tree_table = tree_tables
   sf$shrub_table = shrub_tables
   sf$dead_tree_table = dead_tree_tables

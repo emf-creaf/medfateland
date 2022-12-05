@@ -6,8 +6,8 @@
 \title{One-day simulation for spatially-distributed forest stands}
 \usage{
 spwb_spatial_day(
-  y,
-  meteo,
+  sf,
+  meteo = NULL,
   date,
   SpParams,
   local_control = defaultControl(),
@@ -18,8 +18,8 @@ spwb_spatial_day(
 )
 
 growth_spatial_day(
-  y,
-  meteo,
+  sf,
+  meteo = NULL,
   date,
   SpParams,
   local_control = defaultControl(),
@@ -30,7 +30,7 @@ growth_spatial_day(
 )
 }
 \arguments{
-\item{y}{An object of class \code{\link{sf}} with landscape information.}
+\item{sf}{An object of class \code{\link{sf}} with landscape information (see \code{\link{spwb_spatial}}).}
 
 \item{meteo}{Meteorology data (see \code{\link{spwb_spatial}}).}
 
@@ -63,8 +63,7 @@ for a set of forest stands distributed in specific locations and a given date.
 No spatial processes are simulated.
 }
 \details{
-Simulation functions accept different formats for meteorological input (parameter \code{meteo})
-as described in \code{\link{spwb_spatial}}
+Simulation functions accept different formats for meteorological input (described in \code{\link{spwb_spatial}}).
 }
 \examples{
 \dontrun{
@@ -72,7 +71,7 @@ as described in \code{\link{spwb_spatial}}
 data("examplepointslandscape")
   
 # Transform example to 'sf' 
-y = sp_to_sf(examplepointslandscape)
+pts_sf <- sp_to_sf(examplepointslandscape)
 
 #Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -81,8 +80,8 @@ data("examplemeteo")
 data("SpParamsMED")
   
 #Perform simulation
-date = "2001-03-01"
-res = spwb_spatial_day(y, examplemeteo, date, SpParamsMED)
+date <- "2001-03-01"
+res <- spwb_spatial_day(pts_sf, examplemeteo, date, SpParamsMED)
 }
 }
 \seealso{

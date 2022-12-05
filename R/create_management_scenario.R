@@ -26,7 +26,7 @@
 #'      \item{\code{units}: A data frame with as many rows as units and management arguments as columns.}
 #'    }
 #'
-#' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}
+#' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
 #' 
 #' @examples 
 #' 

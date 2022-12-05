@@ -13,6 +13,7 @@
 #' @return An object of class \code{\link{sf}}, with the following two elements:
 #'  \itemize{
 #'    \item{\code{geometry}: Spatial geometry.}
+#'    \item{\code{id}: Stand id, taken from the input.}
 #'    \item{\code{summary}: A list of model output summaries for each simulated location.}
 #'  }
 #'
@@ -24,16 +25,17 @@
 simulation_summary<-function(object, summary_function, ...) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")
   if(!("result" %in% names(object))) stop("Column 'result' must be defined in 'object'.")
-  n = length(object$result)
-  summarylist = vector("list", n)
+  n <- length(object$result)
+  summarylist <- vector("list", n)
   for(i in 1:n) {
     if(!is.null(object$result[[i]])) {
-      argList = list(object=object$result[[i]],...)
-      summarylist[[i]] = do.call(summary_function, args=argList)
+      argList <- list(object=object$result[[i]],...)
+      summarylist[[i]] <- do.call(summary_function, args=argList)
     }
   }
-  res = sf::st_sf(geometry = sf::st_geometry(object))
-  res$summary = summarylist
-  res = sf::st_as_sf(tibble::as_tibble(res))
+  res <- sf::st_sf(geometry = sf::st_geometry(object))
+  if("id" %in% names(object)) res$id <- object$id
+  res$summary <- summarylist
+  res <- sf::st_as_sf(tibble::as_tibble(res))
   return(res)
 }

@@ -1,26 +1,31 @@
 .f_spatial_day<-function(xi, meteo, date, model){
   res = NULL
-  if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
-  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-    met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-    met = met@data[[1]]
+  if(!is.null(meteo)) {
+    if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
+    else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+      met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+      met = met@data[[1]]
+    } 
+    else if(inherits(meteo, "MeteorologyInterpolationData")) {
+      spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+                                    elevation = xi$elevation, 
+                                    slope = xi$slope, 
+                                    aspect = xi$aspect)
+      met = meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
+      met = met@data[[1]]
+    }
+    else if(inherits(meteo, "stars")) {
+      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met = meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
+      met = met$interpolated_data[[1]]
+      met = as.data.frame(met)
+      row.names(met) = met$dates
+      met$dates = NULL
+    }    
   } 
-  else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
-                                  elevation = xi$elevation, 
-                                  slope = xi$slope, 
-                                  aspect = xi$aspect)
-    met = meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
-    met = met@data[[1]]
+  else {
+    met = xi$meteo  
   }
-  else if(inherits(meteo, "stars")) {
-    pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-    met = meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
-    met = met$interpolated_data[[1]]
-    met = as.data.frame(met)
-    row.names(met) = met$dates
-    met$dates = NULL
-  }    
   
   tmin = met[date,"MinTemperature"]
   tmax = met[date,"MaxTemperature"]
@@ -69,7 +74,11 @@
   summarylist = vector("list",n)
   names(resultlist) = names(forestlist)
   names(summarylist) = names(forestlist)
-  
+  if("meteo" %in% names(y)) {
+    meteolist = y$meteo
+  } else {
+    meteolist = vector("list",n)
+  }
 
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
@@ -118,6 +127,7 @@
       XI[[i]] = list(i = i, 
                      id = y$id[i], 
                      point = sf::st_geometry(y)[i], x = xlist[[i]],
+                     meteo = meteolist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
@@ -137,6 +147,7 @@
       if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, id = y$id[i],
                 point = sf::st_geometry(y)[i], x = xlist[[i]],
+                meteo = meteolist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
       resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
     }
@@ -154,7 +165,7 @@
 #' for a set of forest stands distributed in specific locations and a given date. 
 #' No spatial processes are simulated.
 #'
-#' @param y An object of class \code{\link{sf}} with landscape information.
+#' @param sf An object of class \code{\link{sf}} with landscape information (see \code{\link{spwb_spatial}}).
 #' @param meteo Meteorology data (see \code{\link{spwb_spatial}}).
 #' @param date A string with the date to be simulated.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
@@ -172,8 +183,7 @@
 #'   \item{\code{result}: A list of model output for each simulated stand.}
 #' }
 #' 
-#' @details Simulation functions accept different formats for meteorological input (parameter \code{meteo}) 
-#' as described in \code{\link{spwb_spatial}}
+#' @details Simulation functions accept different formats for meteorological input (described in \code{\link{spwb_spatial}}).
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
@@ -185,7 +195,7 @@
 #' data("examplepointslandscape")
 #'   
 #' # Transform example to 'sf' 
-#' y = sp_to_sf(examplepointslandscape)
+#' pts_sf <- sp_to_sf(examplepointslandscape)
 #'
 #' #Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -194,20 +204,20 @@
 #' data("SpParamsMED")
 #'   
 #' #Perform simulation
-#' date = "2001-03-01"
-#' res = spwb_spatial_day(y, examplemeteo, date, SpParamsMED)
+#' date <- "2001-03-01"
+#' res <- spwb_spatial_day(pts_sf, examplemeteo, date, SpParamsMED)
 #' }
 #' @name spwb_spatial_day
-spwb_spatial_day<-function(y, meteo, date, SpParams, local_control = defaultControl(),
+spwb_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(y, meteo)
-  .model_spatial_day(y=y, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, local_control = local_control, 
+  .check_model_inputs(sf, meteo)
+  .model_spatial_day(y=sf, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, local_control = local_control, 
                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 #' @rdname spwb_spatial_day
-growth_spatial_day<-function(y, meteo, date, SpParams, local_control = defaultControl(),
+growth_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                            parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(y, meteo)
-  .model_spatial_day(y=y, meteo = meteo, date = date, model = "growth", SpParams = SpParams, local_control = local_control,
+  .check_model_inputs(sf, meteo)
+  .model_spatial_day(y=sf, meteo = meteo, date = date, model = "growth", SpParams = SpParams, local_control = local_control,
                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }

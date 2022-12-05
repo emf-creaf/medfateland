@@ -6,7 +6,7 @@
 \title{Watershed simulations}
 \usage{
 spwb_land(
-  y,
+  sf,
   SpParams,
   meteo = NULL,
   dates = NULL,
@@ -17,7 +17,7 @@ spwb_land(
 )
 
 growth_land(
-  y,
+  sf,
   SpParams,
   meteo = NULL,
   dates = NULL,
@@ -28,7 +28,7 @@ growth_land(
 )
 }
 \arguments{
-\item{y}{An object of class \code{\link{sf}} containing watershed information.}
+\item{sf}{An object of class \code{\link{sf}} containing watershed information.}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
@@ -98,7 +98,7 @@ provided by \code{\link{growth_day}}.
 data("examplewatershed")
 
 # Transform example to 'sf' 
-y <- sp_to_sf(examplewatershed)
+ws_sf <- sp_to_sf(examplewatershed)
   
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -110,7 +110,7 @@ data("SpParamsMED")
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 # Launch simulations
-res <- spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+res <- spwb_land(ws_sf, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 }
 
 }

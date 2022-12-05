@@ -62,5 +62,5 @@ scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
 
 }
 \seealso{
-\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}
+\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
 }

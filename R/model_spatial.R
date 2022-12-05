@@ -136,15 +136,25 @@
   local_control$verbose = FALSE
 
   forestlist = y$forest
-  soillist  = y$soil
-  xlist  = y$state
-  managementlist = y$management_arguments
   n = length(forestlist)
+  
+  soillist  = y$soil
+  if("state" %in% names(y)) {
+    xlist  = y$state
+  } else {
+    xlist = vector("list",n)
+  }
+  if("management_arguments" %in% names(y)) {
+    managementlist  = y$management_arguments
+  } else {
+    managementlist = vector("list",n)
+  }
   if("meteo" %in% names(y)) {
     meteolist = y$meteo
   } else {
     meteolist = vector("list",n)
   }
+  
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   forestlist_out = vector("list",n)
@@ -249,14 +259,14 @@
     }
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))
-  res$id = y$id
-  res$state = xlist
+  res$id <- y$id
+  res$state <- xlist
   if(model=="fordyn") {
-    res$forest = forestlist_out
-    res$management_arguments = managementlist_out
+    res$forest <- forestlist_out
+    if(!is.null(management_function)) res$management_arguments <- managementlist_out
   }
-  res$result = resultlist
-  res$summary = summarylist
+  if(keep_results) res$result <- resultlist
+  if(!is.null(summary_function)) res$summary <- summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))
 }
 
@@ -265,7 +275,19 @@
 #' Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. 
 #' No spatial processes are simulated.
 #' 
-#' @param y An object of class \code{\link{sf}}.
+#' @param sf An object of class \code{\link{sf}} with the following columns:
+#'   \itemize{
+#'     \item{\code{geometry}: Spatial geometry.}
+#'     \item{\code{id}: Stand identifiers.}
+#'     \item{\code{elevation}: Elevation above sea level (in m).}
+#'     \item{\code{slope}: Slope (in degrees).}
+#'     \item{\code{aspect}: Aspect (in degrees).}
+#'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
+#'     \item{\code{soil}: Objects of class \code{\link{soil}}.}
+#'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+#'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
+#'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}
+#'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
@@ -285,7 +307,7 @@
 #' The user may supply four kinds of weather sources: 
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
+#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package \code{\link{meteoland}}.}
 #'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
 #'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
 #'   }
@@ -297,8 +319,8 @@
 #'   \item{\code{geometry}: Spatial geometry.}
 #'   \item{\code{id}: Stand id, taken from the input.}
 #'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in function \code{fordyn_spatial} if management function was supplied), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'   \item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
 #'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 #' }
@@ -315,7 +337,7 @@
 #' data("examplepointslandscape")
 #'   
 #' # Transform example to 'sf' 
-#' y <- sp_to_sf(examplepointslandscape)
+#' pts_sf <- sp_to_sf(examplepointslandscape)
 #'   
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -325,7 +347,7 @@
 #'   
 #' # Perform simulation
 #' dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-#' res <- spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
+#' res <- spwb_spatial(pts_sf, SpParamsMED, examplemeteo, dates = dates)
 #'   
 #' # Generate summaries (these could have also been specified when calling 'spwbspatial')
 #' res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month")
@@ -334,17 +356,18 @@
 #' plot_summary(res_sum, "Transpiration", "2001-03-01")
 #' 
 #' # Fordyn simulation for one year (one stand) without management
-#' res_noman <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
+#' res_noman <- fordyn_spatial(pts_sf[1,], SpParamsMED, examplemeteo)
 #' 
 #' # Add management arguments to all stands
-#' for(i in 1:nrow(y)) y$management_arguments[[i]] <- defaultManagementArguments()
+#' pts_sf$management_arguments <- vector("list", nrow(pts_sf))
+#' for(i in 1:nrow(pts_sf)) pts_sf$management_arguments[[i]] <- defaultManagementArguments()
 #' 
 #' # Change thinning threshold for stand #1
-#' y$management_arguments[[1]]$thinningThreshold <- 15
+#' pts_sf$management_arguments[[1]]$thinningThreshold <- 15
 #' 
 #' # Fordyn simulation for one year (one stand) with management
-#' res_man <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
-#'                      management_function = defaultManagementFunction)
+#' res_man <- fordyn_spatial(pts_sf[1,], SpParamsMED, examplemeteo,
+#'                           management_function = defaultManagementFunction)
 #' 
 #' # Compare table of cuttings with vs. without management
 #' res_noman$result[[1]]$CutTreeTable
@@ -352,32 +375,32 @@
 #' }
 #' 
 #' @name spwb_spatial
-spwb_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
+spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
+  .check_model_inputs(sf, meteo)
+  .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 
 #' @rdname spwb_spatial
-growth_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
+growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
+  .check_model_inputs(sf, meteo)
+  .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 
 #' @rdname spwb_spatial
-fordyn_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
+fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(y, meteo)
-  .model_spatial(y=y, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
+  .check_model_inputs(sf, meteo)
+  .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, 
                 management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)

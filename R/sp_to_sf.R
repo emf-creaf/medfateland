@@ -36,10 +36,6 @@ sp_to_sf<-function(y) {
     epl$snowpack = y@snowpack
     epl$aquifer = y@aquifer
     epl$represented_area = prod(y@grid@cellsize)
-  } else {
-    epl$represented_area = NA
-  }
-  epl$management_unit = NA
-  epl$management_arguments = vector("list",nrow(epl))
+  } 
   return(sf::st_as_sf(tibble::as_tibble(epl)))
 }

@@ -11,5 +11,6 @@
 #'   Mario Beltrán & Míriam Piqué. Forest Science and Technology Centre of Catalonia (CTFC)
 #' @keywords data
 #' 
-#' @seealso \code{\link{create_management_scenario}},\code{\link{defaultManagementArguments}}
+#' @seealso \code{\link{create_management_scenario}}, \code{\link{defaultManagementArguments}},
+#' \code{\link{fordyn_scenario}}
 NULL

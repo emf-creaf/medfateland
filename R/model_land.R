@@ -444,7 +444,7 @@
 #' Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells, 
 #' provided by \code{\link{growth_day}}.
 #' 
-#' @param y An object of class \code{\link{sf}} containing watershed information.
+#' @param sf An object of class \code{\link{sf}} containing watershed information.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}}).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
@@ -504,7 +504,7 @@
 #' data("examplewatershed")
 #' 
 #' # Transform example to 'sf' 
-#' y <- sp_to_sf(examplewatershed)
+#' ws_sf <- sp_to_sf(examplewatershed)
 #'   
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -516,29 +516,29 @@
 #' dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 #' 
 #' # Launch simulations
-#' res <- spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+#' res <- spwb_land(ws_sf, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 #' }
 #' 
 #' @name spwb_land
-spwb_land<-function(y, SpParams, meteo= NULL, dates = NULL,
+spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),
                    progress = TRUE) {
   return(.landSim("spwb_land",
-                  y = y, SpParams = SpParams, meteo = meteo, dates = dates,
+                  y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
                   correction_factors = correction_factors, progress = progress))
 }
 #' @rdname spwb_land
-growth_land<-function(y, SpParams, meteo = NULL, dates = NULL,
+growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),
                    progress = TRUE) {
   return(.landSim("growth_land",
-                  y = y, SpParams = SpParams, meteo = meteo, dates = dates,
+                  y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
                   correction_factors = correction_factors, progress = progress))

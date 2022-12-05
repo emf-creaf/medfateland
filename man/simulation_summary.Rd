@@ -17,6 +17,7 @@ simulation_summary(object, summary_function, ...)
 An object of class \code{\link{sf}}, with the following two elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Stand id, taken from the input.}
 \item{\code{summary}: A list of model output summaries for each simulated location.}
 }
 }
