@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2022-12-01</h4>
+            <h4 data-toc-skip class="date">2022-12-05</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -85,7 +85,7 @@ distributed on points in the landscape:</p>
 <p>We transform the data set to class <em>sf</em> because <em>sp</em>
 objects are deprecated from ver. 1.0.0 on.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="../reference/sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span>
 <span><span class="va">y</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 100 features and 11 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -140,7 +140,7 @@ stands):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span>
-<span><span class="va">local_control</span> <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">local_control</span> <span class="op">&lt;-</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="calling-the-simulation-function">Calling the simulation function<a class="anchor" aria-label="anchor" href="#calling-the-simulation-function"></a>
@@ -148,7 +148,7 @@ stands):</p>
 <p>The call to <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> can be done as follows (here
 we restrict the dates for simplicity):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-28"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-28"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> first initializes model inputs
@@ -302,7 +302,7 @@ update the state variables in spatial object with their values at the
 end of the simulation, using function
 <code><a href="../reference/update_landscape.html">update_landscape()</a></code>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">w</span> <span class="op">=</span> <span class="fu"><a href="../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p>The resulting object <code>w</code> is the same as <code>y</code>
 except for the state variables. For example we can compare the water
 potential in the first soil layer:</p>
@@ -315,10 +315,10 @@ potential in the first soil layer:</p>
 <p>By using <code>w</code> as input we can now simulate water balance in
 the set of stands for an extra month:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">w</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                      dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>, </span>
-<span>                      summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span>,</span>
+<span>                      summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="st">"months"</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And display a map with the resulting month transpiration:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
@@ -342,7 +342,7 @@ watershed included with the package, which we transform to
 <code>sf</code>:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplewatershed"</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="../reference/sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplewatershed</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplewatershed</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y</span>, <span class="st">"elevation"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -354,8 +354,8 @@ the same weather (i.e. <code>examplemeteo</code>) across the watershed.
 To speed up calculations we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> for a
 single month.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
-<span><span class="va">res_ws</span> <span class="op">=</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
+<span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## ------------ spwb_land ------------</span></span>
 <span><span class="co">## Grid cells: 66, patchsize: 100 m2, area: 0.66 ha</span></span>

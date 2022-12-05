@@ -53,7 +53,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fordyn_scenario</span><span class="op">(</span></span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  <span class="va">meteo</span>,</span>
+<span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">management_scenario</span>,</span>
 <span>  volume_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -169,19 +169,14 @@ meaning that management parameters need to follow the structure of <code>default
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplepointslandscape"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Transform example to 'sf' </span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load example meteo data frame from package meteoland</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
-<span class="r-in"><span><span class="co">#Prepare a two-year meteorological data with half precipitation during </span></span></span>
-<span class="r-in"><span><span class="co">#the second year</span></span></span>
-<span class="r-in"><span><span class="va">meteo2001</span> <span class="op">=</span> <span class="va">examplemeteo</span></span></span>
-<span class="r-in"><span><span class="va">meteo2002</span> <span class="op">=</span> <span class="va">examplemeteo</span></span></span>
-<span class="r-in"><span><span class="va">meteo2003</span> <span class="op">=</span> <span class="va">examplemeteo</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Bind data and redefine row names (dates)</span></span></span>
-<span class="r-in"><span><span class="va">meteo_01_03</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">meteo2001</span>, <span class="va">meteo2002</span>, <span class="va">meteo2003</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Prepare a three-year meteorological data </span></span></span>
+<span class="r-in"><span><span class="va">meteo_01_03</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">examplemeteo</span>, <span class="va">examplemeteo</span>, <span class="va">examplemeteo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Redefine row names (dates)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">meteo_01_03</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>                             <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2003-12-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>                         </span></span>
@@ -189,19 +184,19 @@ meaning that management parameters need to follow the structure of <code>default
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Creates scenario with one management unit and annual demand for P. nigra </span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">=</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assign management unit to stands (stand 100 does not have management)</span></span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">management_unit</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">]</span> <span class="op">=</span> <span class="fl">1</span> </span></span>
+<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">management_unit</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span> </span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assume that each stand represents 1km2 = 100 ha</span></span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch simulation scenario</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">meteo_01_03</span>, </span></span>
-<span class="r-in"><span>                      volume_function <span class="op">=</span> <span class="cn">NULL</span>, management_scenario <span class="op">=</span> <span class="va">s</span>,</span></span>
-<span class="r-in"><span>                      parallelize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">meteo_01_03</span>, </span></span>
+<span class="r-in"><span>                       volume_function <span class="op">=</span> <span class="cn">NULL</span>, management_scenario <span class="op">=</span> <span class="va">scen</span>,</span></span>
+<span class="r-in"><span>                       parallelize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

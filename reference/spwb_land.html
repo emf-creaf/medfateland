@@ -59,7 +59,7 @@ provided by <code>growth_day</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">spwb_land</span><span class="op">(</span></span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  <span class="va">meteo</span>,</span>
+<span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_frequency <span class="op">=</span> <span class="st">"years"</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -70,7 +70,7 @@ provided by <code>growth_day</code>.</p>
 <span><span class="fu">growth_land</span><span class="op">(</span></span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  <span class="va">meteo</span>,</span>
+<span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_frequency <span class="op">=</span> <span class="st">"years"</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -90,7 +90,7 @@ provided by <code>growth_day</code>.</p>
 
 
 <dt>meteo</dt>
-<dd><p>Input meteorological data (see section details).</p></dd>
+<dd><p>Input meteorological data (see <code><a href="spwb_spatial.html">spwb_spatial</a></code>).</p></dd>
 
 
 <dt>dates</dt>
@@ -151,16 +151,6 @@ with the following columns:
 <li><p><code>watershed_soil_balance</code>: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.</p></li>
 <li><p><code>daily_runoff</code>: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.</p></li>
 </ul></div>
-    <div id="details">
-    <h2>Details</h2>
-    <p>Functions <code>spwb_land</code> and <code>growth_land</code> require daily meteorological data over grid cells.
-The user may supply four different inputs:</p>
-<ol><li><p>A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).</p></li>
-<li><p>An object of class <code><a href="https://rdrr.io/r/graphics/stars.html" class="external-link">stars</a></code> with interpolation data, created by package meteoland.</p></li>
-<li><p>DEPRECATED: An object of <code>SpatialPixelsMeteorology-class</code> or <code>SpatialGridMeteorology-class</code>.
-All the spatio-temporal variation of weather is already supplied by the user.</p></li>
-<li><p>DEPRECATED: An object of <code>MeteorologyInterpolationData-class</code>. Interpolation of weather is performed over each spatial unit every simulated day.</p></li>
-</ol></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code>spwb_day</code>,  <code>growth_day</code>,
@@ -178,7 +168,7 @@ All the spatio-temporal variation of weather is already supplied by the user.</p
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplewatershed"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Transform example to 'sf' </span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplewatershed</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplewatershed</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Load example meteo data frame from package meteoland</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span></span>
@@ -187,10 +177,10 @@ All the spatio-temporal variation of weather is already supplied by the user.</p
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Set simulation period</span></span></span>
-<span class="r-in"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch simulations</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
