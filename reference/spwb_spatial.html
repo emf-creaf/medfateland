@@ -53,7 +53,7 @@ No spatial processes are simulated.</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">spwb_spatial</span><span class="op">(</span></span>
-<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -69,7 +69,7 @@ No spatial processes are simulated.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">growth_spatial</span><span class="op">(</span></span>
-<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -85,7 +85,7 @@ No spatial processes are simulated.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fordyn_spatial</span><span class="op">(</span></span>
-<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -104,8 +104,18 @@ No spatial processes are simulated.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>y</dt>
-<dd><p>An object of class <code>sf</code>.</p></dd>
+    <dl><dt>sf</dt>
+<dd><p>An object of class <code>sf</code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
+<li><p><code>id</code>: Stand identifiers.</p></li>
+<li><p><code>elevation</code>: Elevation above sea level (in m).</p></li>
+<li><p><code>slope</code>: Slope (in degrees).</p></li>
+<li><p><code>aspect</code>: Aspect (in degrees).</p></li>
+<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
+<li><p><code>soil</code>: Objects of class <code>soil</code>.</p></li>
+<li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
+<li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
+<li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_spatial</code> only).</p></li>
+</ul></dd>
 
 
 <dt>SpParams</dt>
@@ -168,8 +178,8 @@ of such lists, one per spatial unit.</p></dd>
 <p>An object of class 'sf' containing four elements:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand id, taken from the input.</p></li>
 <li><p><code>state</code>: A list of <code>spwbInput</code> or <code>growthInput</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in function <code>fordyn_spatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in function <code>fordyn_spatial</code> if management function was supplied), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>result</code>: A list of model output for each simulated stand (if <code>keep_results = TRUE</code>).</p></li>
 <li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>).</p></li>
 </ul></div>
@@ -177,7 +187,7 @@ of such lists, one per spatial unit.</p></dd>
     <h2>Details</h2>
     <p>Simulation functions  accept different formats for meteorological input (parameter <code>meteo</code>).
 The user may supply four kinds of weather sources:</p><ol><li><p>A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).</p></li>
-<li><p>An object of class <code><a href="https://rdrr.io/r/graphics/stars.html" class="external-link">stars</a></code> with interpolation data, created by package meteoland.</p></li>
+<li><p>An object of class <code><a href="https://rdrr.io/r/graphics/stars.html" class="external-link">stars</a></code> with interpolation data, created by package <code>meteoland</code>.</p></li>
 <li><p>DEPRECATED: An object of <code>SpatialPixelsMeteorology-class</code> or <code>SpatialGridMeteorology-class</code>. All the spatio-temporal variation of weather is already supplied by the user.</p></li>
 <li><p>DEPRECATED: An object of <code>MeteorologyInterpolationData-class</code>. Interpolation of weather is performed over each spatial unit every simulated day.</p></li>
 </ol><p>Alternatively, the user may leave parameter <code>meteo = NULL</code> and specify a weather data frame for each element of <code>y</code>
@@ -200,7 +210,7 @@ in a column named 'meteo'.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplepointslandscape"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Transform example to 'sf' </span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pts_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Load example meteo data frame from package meteoland</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span></span>
@@ -210,7 +220,7 @@ in a column named 'meteo'.</p>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Perform simulation</span></span></span>
 <span class="r-in"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-15"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial</span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial</span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Generate summaries (these could have also been specified when calling 'spwbspatial')</span></span></span>
 <span class="r-in"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, freq<span class="op">=</span><span class="st">"month"</span><span class="op">)</span></span></span>
@@ -219,17 +229,18 @@ in a column named 'meteo'.</p>
 <span class="r-in"><span><span class="fu"><a href="plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fordyn simulation for one year (one stand) without management</span></span></span>
-<span class="r-in"><span><span class="va">res_noman</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_noman</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">pts_sf</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add management arguments to all stands</span></span></span>
-<span class="r-in"><span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="va">y</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">defaultManagementArguments</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pts_sf</span><span class="op">$</span><span class="va">management_arguments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">pts_sf</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">pts_sf</span><span class="op">)</span><span class="op">)</span> <span class="va">pts_sf</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">defaultManagementArguments</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Change thinning threshold for stand #1</span></span></span>
-<span class="r-in"><span><span class="va">y</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thinningThreshold</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
+<span class="r-in"><span><span class="va">pts_sf</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thinningThreshold</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fordyn simulation for one year (one stand) with management</span></span></span>
-<span class="r-in"><span><span class="va">res_man</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>,</span></span>
-<span class="r-in"><span>                     management_function <span class="op">=</span> <span class="va">defaultManagementFunction</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_man</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">pts_sf</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>,</span></span>
+<span class="r-in"><span>                          management_function <span class="op">=</span> <span class="va">defaultManagementFunction</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compare table of cuttings with vs. without management</span></span></span>
 <span class="r-in"><span><span class="va">res_noman</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">CutTreeTable</span></span></span>
