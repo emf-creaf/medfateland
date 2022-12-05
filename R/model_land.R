@@ -19,16 +19,25 @@
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
 
-  if(inherits(meteo,"data.frame")) {
-    datesMeteo = as.Date(row.names(meteo))
-  } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "SpatialGridMeteorology")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
-    datesMeteo = meteo@dates
-  } else if(inherits(meteo, "stars")) {
-    datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
+  if(!is.null(meteo)) {
+    if(inherits(meteo,"data.frame")) {
+      datesMeteo = as.Date(row.names(meteo))
+    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
+      datesMeteo = meteo@dates
+    } else if(inherits(meteo, "SpatialGridMeteorology")) {
+      datesMeteo = meteo@dates
+    } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
+      datesMeteo = meteo@dates
+    } else if(inherits(meteo, "stars")) {
+      datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
+    }
+  } else {
+    if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
+    datesMeteo = as.Date(row.names(y$meteo[[1]]))
+    # check that all items have same dates
+    for(i in 1:nrow(y)) {
+      if(!all(as.Date(row.names(y$meteo[[i]]))==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
+    }
   }
   if(is.null(dates)) {
     dates = datesMeteo
@@ -159,45 +168,75 @@
     if(progress) cat(".")
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
-    if(inherits(meteo,"MeteorologyInterpolationData")) {
-      spt = SpatialPointsTopography(as(sf::st_geometry(y), "Spatial"), 
-                                    elevation = y$elevation, 
-                                    slope = y$slope, 
-                                    aspect = y$aspect)
-      ml = interpolationpoints(meteo, spt, dates[day], verbose = FALSE)
-      gridMinTemperature = rep(NA, nCells)
-      gridMaxTemperature = rep(NA, nCells)
-      gridMinRelativeHumidity = rep(NA, nCells)
-      gridMaxRelativeHumidity = rep(NA, nCells)
-      gridPrecipitation = rep(NA, nCells)
-      gridRadiation = rep(NA, nCells)
-      gridWindSpeed = rep(NA, nCells)
-      for(iml in 1:nCells) {
-        meti = ml@data[[iml]]
-        gridMinTemperature[iml] = meti$MinTemperature[1]
-        gridMaxTemperature[iml] = meti$MaxTemperature[1]
-        gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[1]
-        gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[1]
-        gridPrecipitation[iml] = meti$Precipitation[1]
-        gridRadiation[iml] = meti$Radiation[1]
-        gridWindSpeed[iml] = meti$WindSpeed[1]
+    
+    gridMinTemperature = rep(NA, nCells)
+    gridMaxTemperature = rep(NA, nCells)
+    gridMinRelativeHumidity = rep(NA, nCells)
+    gridMaxRelativeHumidity = rep(NA, nCells)
+    gridPrecipitation = rep(NA, nCells)
+    gridRadiation = rep(NA, nCells)
+    gridWindSpeed = rep(NA, nCells)
+    
+    if(!is.null(meteo)) {
+      if(inherits(meteo,"MeteorologyInterpolationData")) {
+        spt = SpatialPointsTopography(as(sf::st_geometry(y), "Spatial"), 
+                                      elevation = y$elevation, 
+                                      slope = y$slope, 
+                                      aspect = y$aspect)
+        ml = interpolationpoints(meteo, spt, dates[day], verbose = FALSE)
+        for(iml in 1:nCells) {
+          meti = ml@data[[iml]]
+          gridMinTemperature[iml] = meti$MinTemperature[1]
+          gridMaxTemperature[iml] = meti$MaxTemperature[1]
+          gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[1]
+          gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[1]
+          gridPrecipitation[iml] = meti$Precipitation[1]
+          gridRadiation[iml] = meti$Radiation[1]
+          gridWindSpeed[iml] = meti$WindSpeed[1]
+        }
+      } 
+      else if(inherits(meteo,"stars")) {
+        pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
+                          elevation = y$elevation, slope = y$slope, aspect = y$aspect)
+        met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
+        ml = tidyr::unnest(met, cols = "interpolated_data")
+        gridMinTemperature = ml$MinTemperature
+        gridMaxTemperature = ml$MaxTemperature
+        gridMinRelativeHumidity = ml$MinRelativeHumidity
+        gridMaxRelativeHumidity = ml$MaxRelativeHumidity
+        gridPrecipitation = ml$Precipitation
+        gridRadiation = ml$Radiation
+        gridWindSpeed = ml$WindSpeed      
+      } 
+      else if(inherits(meteo,"SpatialPointsMeteorology")) {
+        imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+        for(iml in 1:nCells) {
+          meti = meteo@data[[iml]]
+          gridMinTemperature[iml] = meti$MinTemperature[imeteo]
+          gridMaxTemperature[iml] = meti$MaxTemperature[imeteo]
+          gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[imeteo]
+          gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[imeteo]
+          gridPrecipitation[iml] = meti$Precipitation[imeteo]
+          gridRadiation[iml] = meti$Radiation[imeteo]
+          gridWindSpeed[iml] = meti$WindSpeed[imeteo]
+        }
+      } 
+      else { # data frame
+        imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+        # repeat values for all cells
+        gridMinTemperature = rep(meteo[imeteo,"MinTemperature"], nCells)
+        gridMaxTemperature = rep(meteo[imeteo,"MaxTemperature"], nCells)
+        gridMinRelativeHumidity = rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
+        gridMaxRelativeHumidity = rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
+        gridPrecipitation = rep(meteo[imeteo,"Precipitation"], nCells)
+        gridRadiation = rep(meteo[imeteo, "Radiation"], nCells)
+        gridWindSpeed = rep(meteo[imeteo, "WindSpeed"], nCells)
       }
-    } else if(inherits(meteo,"stars")) {
-      pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
-                        elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
-      ml = tidyr::unnest(met, cols = "interpolated_data")
-      gridMinTemperature = ml$MinTemperature
-      gridMaxTemperature = ml$MaxTemperature
-      gridMinRelativeHumidity = ml$MinRelativeHumidity
-      gridMaxRelativeHumidity = ml$MaxRelativeHumidity
-      gridPrecipitation = ml$Precipitation
-      gridRadiation = ml$Radiation
-      gridWindSpeed = ml$WindSpeed      
-    } else if(inherits(meteo,"SpatialPointsMeteorology")) {
+    } 
+    else {
       imeteo = which(datesMeteo == dates[day]) #date index in meteo data
       for(iml in 1:nCells) {
-        meti = meteo@data[[iml]]
+        meti = y$meteo[[iml]]
         gridMinTemperature[iml] = meti$MinTemperature[imeteo]
         gridMaxTemperature[iml] = meti$MaxTemperature[imeteo]
         gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[imeteo]
@@ -206,17 +245,8 @@
         gridRadiation[iml] = meti$Radiation[imeteo]
         gridWindSpeed[iml] = meti$WindSpeed[imeteo]
       }
-    } else { # data frame
-      imeteo = which(datesMeteo == dates[day]) #date index in meteo data
-      # repeat values for all cells
-      gridMinTemperature = rep(meteo[imeteo,"MinTemperature"], nCells)
-      gridMaxTemperature = rep(meteo[imeteo,"MaxTemperature"], nCells)
-      gridMinRelativeHumidity = rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
-      gridMaxRelativeHumidity = rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
-      gridPrecipitation = rep(meteo[imeteo,"Precipitation"], nCells)
-      gridRadiation = rep(meteo[imeteo, "Radiation"], nCells)
-      gridWindSpeed = rep(meteo[imeteo, "WindSpeed"], nCells)
     }
+    
     gridRadiation[is.na(gridRadiation)] = mean(gridRadiation, na.rm=T)
     gridMeteo = data.frame(MinTemperature = gridMinTemperature, 
                            MaxTemperature = gridMaxTemperature,
@@ -416,23 +446,12 @@
 #' 
 #' @param y An object of class \code{\link{sf}} containing watershed information.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param meteo Input meteorological data (see section details).
+#' @param meteo Input meteorological data (see \code{\link{spwb_spatial}}).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
-#'
-#' @details Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells. 
-#' The user may supply four different inputs:
-#'
-#' \enumerate{
-#'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
-#'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. 
-#'   All the spatio-temporal variation of weather is already supplied by the user.}
-#'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
-#'   }
 #'  
 #' @return Function \code{spwb_land} list of class 'spwb_land' with the following elements:
 #' \itemize{
@@ -485,7 +504,7 @@
 #' data("examplewatershed")
 #' 
 #' # Transform example to 'sf' 
-#' y = sp_to_sf(examplewatershed)
+#' y <- sp_to_sf(examplewatershed)
 #'   
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -494,14 +513,14 @@
 #' data("SpParamsMED")
 #'   
 #' # Set simulation period
-#' dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+#' dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 #' 
 #' # Launch simulations
-#' res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+#' res <- spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 #' }
 #' 
 #' @name spwb_land
-spwb_land<-function(y, SpParams, meteo, dates = NULL,
+spwb_land<-function(y, SpParams, meteo= NULL, dates = NULL,
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),
@@ -513,7 +532,7 @@ spwb_land<-function(y, SpParams, meteo, dates = NULL,
                   correction_factors = correction_factors, progress = progress))
 }
 #' @rdname spwb_land
-growth_land<-function(y, SpParams, meteo, dates = NULL,
+growth_land<-function(y, SpParams, meteo = NULL, dates = NULL,
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),

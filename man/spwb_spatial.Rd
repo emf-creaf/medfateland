@@ -9,7 +9,7 @@
 spwb_spatial(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
@@ -25,7 +25,7 @@ spwb_spatial(
 growth_spatial(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
@@ -41,7 +41,7 @@ growth_spatial(
 fordyn_spatial(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
@@ -60,7 +60,7 @@ fordyn_spatial(
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
-\item{meteo}{Input meteorological data (see section details).}
+\item{meteo}{Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
@@ -110,6 +110,8 @@ The user may supply four kinds of weather sources:
 \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
 \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
 }
+Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
+in a column named 'meteo'.
 }
 \examples{
 \dontrun{
@@ -117,7 +119,7 @@ The user may supply four kinds of weather sources:
 data("examplepointslandscape")
   
 # Transform example to 'sf' 
-y = sp_to_sf(examplepointslandscape)
+y <- sp_to_sf(examplepointslandscape)
   
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -126,26 +128,26 @@ data("examplemeteo")
 data("SpParamsMED")
   
 # Perform simulation
-dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-res = spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
+dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+res <- spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
   
 # Generate summaries (these could have also been specified when calling 'spwbspatial')
-res_sum = simulation_summary(res, summary_function = summary.spwb, freq="month")
+res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month")
 
 # Plot summaries
 plot_summary(res_sum, "Transpiration", "2001-03-01")
 
 # Fordyn simulation for one year (one stand) without management
-res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
+res_noman <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
 
 # Add management arguments to all stands
-for(i in 1:nrow(y)) y$management_arguments[[i]] =  defaultManagementArguments()
+for(i in 1:nrow(y)) y$management_arguments[[i]] <- defaultManagementArguments()
 
 # Change thinning threshold for stand #1
-y$management_arguments[[1]]$thinningThreshold = 15
+y$management_arguments[[1]]$thinningThreshold <- 15
 
 # Fordyn simulation for one year (one stand) with management
-res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
+res_man <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
                      management_function = defaultManagementFunction)
 
 # Compare table of cuttings with vs. without management

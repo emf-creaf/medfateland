@@ -31,18 +31,18 @@
 #' @examples 
 #' 
 #' # A scenario with three management units and annual demand for two species
-#' s1 = create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+#' scen_1 <- create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 #' 
 #' # A scenario like the former, but with total annual demand changing as a function of
 #' # prescribed extraction rates (second and third years)
-#' s2 = create_management_scenario(3,  
-#'         c("Quercus ilex" = 1000, "Pinus nigra" = 2000),
-#'         c("2002" = 30, "2003" = 50))
+#' scen_2 <- create_management_scenario(3,  
+#'            c("Quercus ilex" = 1000, "Pinus nigra" = 2000),
+#'            c("2002" = 30, "2003" = 50))
 #'         
 #' # A scenario with as many management units as rows in 'defaultPrescriptionsBySpecies'
 #' # and not based on demand
 #' data("defaultPrescriptionsBySpecies")
-#' s3 = create_management_scenario(defaultPrescriptionsBySpecies)
+#' scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
 #' 
 create_management_scenario<-function(units,
                                      annual_demand_by_species = NULL,

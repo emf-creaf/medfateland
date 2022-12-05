@@ -10,27 +10,32 @@
   m_out = NULL
   x_out = NULL
   res = NULL
-  if(inherits(meteo,"data.frame")) met = meteo
-  else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-    met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-    met = met@data[[1]]
-  } 
-  else if(inherits(meteo, "MeteorologyInterpolationData")) {
-    spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
-                                  elevation = xi$elevation, 
-                                  slope = xi$slope, 
-                                  aspect = xi$aspect)
-    met = meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
-    met = met@data[[1]]
+  
+  if(!is.null(meteo)) {
+    if(inherits(meteo,"data.frame")) met = meteo
+    else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
+      met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+      met = met@data[[1]]
+    } 
+    else if(inherits(meteo, "MeteorologyInterpolationData")) {
+      spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+                                    elevation = xi$elevation, 
+                                    slope = xi$slope, 
+                                    aspect = xi$aspect)
+      met = meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
+      met = met@data[[1]]
+    }
+    else if(inherits(meteo, "stars")) {
+      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
+      met = met$interpolated_data[[1]]
+      met = as.data.frame(met)
+      row.names(met) = met$dates
+      met$dates = NULL
+    }    
+  } else { # If weather was supplied as part of 'xi' list
+    met = xi$meteo
   }
-  else if(inherits(meteo, "stars")) {
-    pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-    met = meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
-    met = met$interpolated_data[[1]]
-    met = as.data.frame(met)
-    row.names(met) = met$dates
-    met$dates = NULL
-  }    
   if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -109,8 +114,12 @@
   #     if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
   #   }
   # } 
-  if(inherits(meteo, "character")) {
-    if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
+  if(!is.null(meteo)) {
+    if(inherits(meteo, "character")) {
+      if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
+    }
+  } else {
+    if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
   }
 }
 
@@ -130,8 +139,12 @@
   soillist  = y$soil
   xlist  = y$state
   managementlist = y$management_arguments
-
   n = length(forestlist)
+  if("meteo" %in% names(y)) {
+    meteolist = y$meteo
+  } else {
+    meteolist = vector("list",n)
+  }
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   forestlist_out = vector("list",n)
@@ -184,6 +197,7 @@
                      id = y$id[i], 
                      point = sf::st_geometry(y)[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
+                     meteo = meteolist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                      management_args = managementlist[[i]])
     }
@@ -216,6 +230,7 @@
                 id = y$id[i],
                 point = sf::st_geometry(y)[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
+                meteo = meteolist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                 management_args = managementlist[[i]])
       sim_out = .f_spatial(xi = xi, 
@@ -252,7 +267,7 @@
 #' 
 #' @param y An object of class \code{\link{sf}}.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param meteo Input meteorological data (see section details).
+#' @param meteo Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
@@ -274,7 +289,9 @@
 #'   \item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. All the spatio-temporal variation of weather is already supplied by the user.}
 #'   \item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
 #'   }
-#'  
+#' Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
+#' in a column named 'meteo'.
+#' 
 #' @returns An object of class 'sf' containing four elements:
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
@@ -298,7 +315,7 @@
 #' data("examplepointslandscape")
 #'   
 #' # Transform example to 'sf' 
-#' y = sp_to_sf(examplepointslandscape)
+#' y <- sp_to_sf(examplepointslandscape)
 #'   
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -307,26 +324,26 @@
 #' data("SpParamsMED")
 #'   
 #' # Perform simulation
-#' dates = seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-#' res = spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
+#' dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
+#' res <- spwb_spatial(y, SpParamsMED, examplemeteo, dates = dates)
 #'   
 #' # Generate summaries (these could have also been specified when calling 'spwbspatial')
-#' res_sum = simulation_summary(res, summary_function = summary.spwb, freq="month")
+#' res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month")
 #' 
 #' # Plot summaries
 #' plot_summary(res_sum, "Transpiration", "2001-03-01")
 #' 
 #' # Fordyn simulation for one year (one stand) without management
-#' res_noman = fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
+#' res_noman <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo)
 #' 
 #' # Add management arguments to all stands
-#' for(i in 1:nrow(y)) y$management_arguments[[i]] =  defaultManagementArguments()
+#' for(i in 1:nrow(y)) y$management_arguments[[i]] <- defaultManagementArguments()
 #' 
 #' # Change thinning threshold for stand #1
-#' y$management_arguments[[1]]$thinningThreshold = 15
+#' y$management_arguments[[1]]$thinningThreshold <- 15
 #' 
 #' # Fordyn simulation for one year (one stand) with management
-#' res_man = fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
+#' res_man <- fordyn_spatial(y[1,], SpParamsMED, examplemeteo,
 #'                      management_function = defaultManagementFunction)
 #' 
 #' # Compare table of cuttings with vs. without management
@@ -335,7 +352,7 @@
 #' }
 #' 
 #' @name spwb_spatial
-spwb_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
+spwb_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
@@ -345,7 +362,7 @@ spwb_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dat
 }
 
 #' @rdname spwb_spatial
-growth_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
+growth_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .check_model_inputs(y, meteo)
@@ -355,7 +372,7 @@ growth_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), d
 }
 
 #' @rdname spwb_spatial
-fordyn_spatial<-function(y, SpParams, meteo, local_control = defaultControl(), dates = NULL,
+fordyn_spatial<-function(y, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {

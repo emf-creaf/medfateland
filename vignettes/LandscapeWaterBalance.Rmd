@@ -29,7 +29,7 @@ data("examplepointslandscape")
 
 We transform the data set to class *sf* because *sp* objects are deprecated from ver. 1.0.0 on.
 ```{r, fig.align='center', fig.width=7}
-y = sp_to_sf(examplepointslandscape)
+y <- sp_to_sf(examplepointslandscape)
 y
 ```
 
@@ -54,14 +54,14 @@ As before, we need meteorological data, species parameters and control parameter
 ```{r}
 data("examplemeteo")
 data("SpParamsMED")
-local_control = defaultControl()
+local_control <- defaultControl()
 ```
 
 ### Calling the simulation function
 
 The call to `spwb_spatial()` can be done as follows (here we restrict the dates for simplicity):
 ```{r, warning=FALSE}
-dates = seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
 res <- spwb_spatial(y, SpParamsMED, examplemeteo, 
                   dates = dates, local_control = local_control,  progress = FALSE)
 ```
@@ -144,7 +144,7 @@ plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
 
 ```{r}
-w = update_landscape(y, res)
+w <- update_landscape(y, res)
 ```
 
 The resulting object `w` is the same as `y` except for the state variables. For example we can compare the water potential in the first soil layer:
@@ -157,10 +157,10 @@ plot_variable(w, "psi1")
 By using `w` as input we can now simulate water balance in the set of stands for an extra month:
 
 ```{r, warning=FALSE}
-dates = seq(as.Date("2001-03-01"), as.Date("2001-03-31"), by="day")
+dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-31"), by="day")
 res_3 <- spwb_spatial(w, SpParamsMED, examplemeteo, 
                       dates = dates, local_control = local_control, 
-                      summary_function = summary.spwb, summary_arguments = list(freq="months"),
+                      summary_function = summary.spwb, summary_arguments = list(freq = "months"),
                       progress = FALSE)
 ```
 
@@ -179,7 +179,7 @@ To illustrate this kind of simulation, which is carried out using function `spwb
 
 ```{r, warning=FALSE, fig.align="center", fig.width=7}
 data("examplewatershed")
-y = sp_to_sf(examplewatershed)
+y <- sp_to_sf(examplewatershed)
 plot_variable(y, "elevation")
 ```
 
@@ -187,8 +187,8 @@ plot_variable(y, "elevation")
 As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.
 
 ```{r, warning=FALSE}
-dates = seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
+res_ws <- spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 ```
 
 Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 

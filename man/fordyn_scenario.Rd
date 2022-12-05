@@ -7,7 +7,7 @@
 fordyn_scenario(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   management_scenario,
   volume_function = NULL,
   local_control = defaultControl(),
@@ -87,19 +87,14 @@ meaning that management parameters need to follow the structure of \code{\link{d
 data("examplepointslandscape")
   
 # Transform example to 'sf' 
-y = sp_to_sf(examplepointslandscape)
+y <- sp_to_sf(examplepointslandscape)
 
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   
-#Prepare a two-year meteorological data with half precipitation during 
-#the second year
-meteo2001 = examplemeteo
-meteo2002 = examplemeteo
-meteo2003 = examplemeteo
-
-# Bind data and redefine row names (dates)
-meteo_01_03 = rbind(meteo2001, meteo2002, meteo2003)
+#Prepare a three-year meteorological data 
+meteo_01_03 <- rbind(examplemeteo, examplemeteo, examplemeteo)
+# Redefine row names (dates)
 row.names(meteo_01_03) = seq(as.Date("2001-01-01"), 
                              as.Date("2003-12-31"), by="day")
                          
@@ -107,19 +102,19 @@ row.names(meteo_01_03) = seq(as.Date("2001-01-01"),
 data("SpParamsMED")
 
 # Creates scenario with one management unit and annual demand for P. nigra 
-s = create_management_scenario(1, c("Pinus nigra" = 2300))
+scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 
 
 # Assign management unit to stands (stand 100 does not have management)
-y$management_unit[1:99] = 1 
+y$management_unit[1:99] <- 1 
 
 # Assume that each stand represents 1km2 = 100 ha
-y$represented_area = 100
+y$represented_area <- 100
 
 # Launch simulation scenario
-res = fordyn_scenario(y, SpParamsMED, meteo_01_03, 
-                      volume_function = NULL, management_scenario = s,
-                      parallelize = TRUE)
+res <- fordyn_scenario(y, SpParamsMED, meteo_01_03, 
+                       volume_function = NULL, management_scenario = scen,
+                       parallelize = TRUE)
 }
 
 }

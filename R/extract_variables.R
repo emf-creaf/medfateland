@@ -217,7 +217,7 @@
 #' data(SpParamsMED)
 #'   
 #' # Transform example to 'sf' 
-#' y = sp_to_sf(examplepointslandscape)
+#' y <- sp_to_sf(examplepointslandscape)
 #'  
 #' # Calculate basal area and leaf area index
 #' # for all forest stands

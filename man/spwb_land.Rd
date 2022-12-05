@@ -8,7 +8,7 @@
 spwb_land(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   dates = NULL,
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
@@ -19,7 +19,7 @@ spwb_land(
 growth_land(
   y,
   SpParams,
-  meteo,
+  meteo = NULL,
   dates = NULL,
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
@@ -32,7 +32,7 @@ growth_land(
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
-\item{meteo}{Input meteorological data (see section details).}
+\item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}}).}
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
 
@@ -92,25 +92,13 @@ on grid cells of a watershed while accounting for overland runoff, subsurface fl
 Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells,
 provided by \code{\link{growth_day}}.
 }
-\details{
-Functions \code{spwb_land} and \code{growth_land} require daily meteorological data over grid cells.
-The user may supply four different inputs:
-
-\enumerate{
-\item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-\item{An object of class \code{\link{stars}} with interpolation data, created by package meteoland.}
-\item{DEPRECATED: An object of \code{\link{SpatialPixelsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}.
-All the spatio-temporal variation of weather is already supplied by the user.}
-\item{DEPRECATED: An object of \code{\link{MeteorologyInterpolationData-class}}. Interpolation of weather is performed over each spatial unit every simulated day.}
-}
-}
 \examples{
 \dontrun{
 # Load example watershed data
 data("examplewatershed")
 
 # Transform example to 'sf' 
-y = sp_to_sf(examplewatershed)
+y <- sp_to_sf(examplewatershed)
   
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -119,10 +107,10 @@ data("examplemeteo")
 data("SpParamsMED")
   
 # Set simulation period
-dates = seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 # Launch simulations
-res = spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+res <- spwb_land(y, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 }
 
 }
