@@ -14,6 +14,11 @@ ifn3 <- readRDS("/home/miquel/OneDrive/EMFProducts/MEDFATE_Initialisation/IFN/Pr
 original_coords <- sf::read_sf("/home/miquel/OneDrive/EMFDatasets/ForestInventories/IFN/Products/Coordinates/IFN3_cat_original_ETRS89H31.gpkg")
 ifn3$land_cover_type <- "wildland"
 example_ifn <- ifn3[1001:1100, c("geom","id", "elevation", "slope", "aspect", "land_cover_type", "soil", "forest")]
+example_ifn$forest <- lapply(example_ifn$forest, function(x){
+  x$treeData$OrdenIf2 <- NULL
+  x$treeData$OrdenIf3 <- NULL
+  return(x)
+  })
 sf::st_geometry(example_ifn) <- sf::st_geometry(original_coords[1001:1100,])
 usethis::use_data(example_ifn, overwrite = T)
 
