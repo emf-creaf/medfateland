@@ -65,11 +65,14 @@
   
   local_control$verbose = FALSE
   
+  n <- nrow(y)
   forestlist = y$forest
   soillist  = y$soil
-  xlist  = y$state
-
-  n = length(forestlist)
+  if("state" %in% names(y)) {
+    xlist  = y$state
+  } else {
+    xlist <- vector("list", n)
+  }
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   names(resultlist) = names(forestlist)
@@ -85,7 +88,7 @@
     for(i in 1:n) {
       f = forestlist[[i]]
       s = soillist[[i]]
-      if(inherits(f, "forest") && inherits(s, "soil")) {
+      if(inherits(f, "forest") && inherits(s, c("soil","data.frame"))) {
         init[i] = TRUE
         x = xlist[[i]]
         if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
@@ -101,6 +104,9 @@
         i = w_init[w]
         f = forestlist[[i]]
         s = soillist[[i]]
+        if(inherits(s, "data.frame")){
+          s = soil(s)
+        }
         if(inherits(f, "forest") && inherits(s, "soil")) {
           if(model=="spwb") {
             xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
