@@ -52,6 +52,9 @@
                            CO2ByYear = CO2ByYear)})
     } 
   } else if(model=="fordyn") {
+    if(inherits(s, "data.frame")) {
+      s <- soil(s)
+    }
     if(inherits(f, "forest") && inherits(s, "soil")) {
       mf = management_function
       ma = xi$management_args
@@ -165,7 +168,7 @@
     for(i in 1:n) {
       f = forestlist[[i]]
       s = soillist[[i]]
-      if(inherits(f, "forest") && inherits(s, "soil")) {
+      if(inherits(f, "forest") && inherits(s, c("soil", "data.frame"))) {
         init[i] = TRUE
         x = xlist[[i]]
         if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
@@ -181,6 +184,9 @@
         i = w_init[w]
         f = forestlist[[i]]
         s = soillist[[i]]
+        if(inherits(s, "data.frame")) {
+          s <- soil(s)
+        }
         if(inherits(f, "forest") && inherits(s, "soil")) {
           if(model=="spwb") {
             xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
@@ -283,7 +289,7 @@
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
 #'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
-#'     \item{\code{soil}: Objects of class \code{\link{soil}}.}
+#'     \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}

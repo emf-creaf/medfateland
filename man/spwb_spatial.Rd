@@ -64,7 +64,7 @@ fordyn_spatial(
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
 \item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{soil}: Objects of class \code{\link{soil}}.}
+\item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}
