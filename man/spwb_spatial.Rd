@@ -128,10 +128,7 @@ in a column named 'meteo'.
 \examples{
 \dontrun{
 # Load example landscape data
-data("examplepointslandscape")
-  
-# Transform example to 'sf' 
-pts_sf <- sp_to_sf(examplepointslandscape)
+data("example_ifn")
   
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -141,7 +138,7 @@ data("SpParamsMED")
   
 # Perform simulation
 dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-res <- spwb_spatial(pts_sf, SpParamsMED, examplemeteo, dates = dates)
+res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, dates = dates)
   
 # Generate summaries (these could have also been specified when calling 'spwbspatial')
 res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month")
@@ -150,17 +147,17 @@ res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month"
 plot_summary(res_sum, "Transpiration", "2001-03-01")
 
 # Fordyn simulation for one year (one stand) without management
-res_noman <- fordyn_spatial(pts_sf[1,], SpParamsMED, examplemeteo)
+res_noman <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo)
 
 # Add management arguments to all stands
-pts_sf$management_arguments <- vector("list", nrow(pts_sf))
-for(i in 1:nrow(pts_sf)) pts_sf$management_arguments[[i]] <- defaultManagementArguments()
+example_ifn$management_arguments <- vector("list", nrow(example_ifn))
+for(i in 1:nrow(example_ifn)) example_ifn$management_arguments[[i]] <- defaultManagementArguments()
 
 # Change thinning threshold for stand #1
-pts_sf$management_arguments[[1]]$thinningThreshold <- 15
+example_ifn$management_arguments[[1]]$thinningThreshold <- 15
 
 # Fordyn simulation for one year (one stand) with management
-res_man <- fordyn_spatial(pts_sf[1,], SpParamsMED, examplemeteo,
+res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
                           management_function = defaultManagementFunction)
 
 # Compare table of cuttings with vs. without management

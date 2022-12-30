@@ -198,10 +198,7 @@
 #' @examples 
 #' \dontrun{
 #' #Load example landscape data
-#' data("examplepointslandscape")
-#'   
-#' # Transform example to 'sf' 
-#' pts_sf <- sp_to_sf(examplepointslandscape)
+#' data("example_ifn")
 #'
 #' #Load example meteo data frame from package meteoland
 #' data("examplemeteo")
@@ -211,7 +208,7 @@
 #'   
 #' #Perform simulation
 #' date <- "2001-03-01"
-#' res <- spwb_spatial_day(pts_sf, examplemeteo, date, SpParamsMED)
+#' res <- spwb_spatial_day(example_ifn, examplemeteo, date, SpParamsMED)
 #' }
 #' @name spwb_spatial_day
 spwb_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),

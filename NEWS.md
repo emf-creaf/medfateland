@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.1.1
+- Compliance with medfate 2.9.0
+
 # Version 1.1.0
 - New function 'fordyn_scenario'
 - Allowing for a column called 'meteo' in input 'sf' objects

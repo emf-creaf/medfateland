@@ -96,11 +96,8 @@ meaning that management parameters need to follow the structure of \code{\link{d
 \examples{
 \dontrun{
 # Load example landscape data
-data("examplepointslandscape")
+data("example_ifn")
   
-# Transform example to 'sf' 
-pts_sf <- sp_to_sf(examplepointslandscape)
-
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   
@@ -116,13 +113,13 @@ data("SpParamsMED")
 scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 
 # Assign management unit to all stands
-pts_sf$management_unit <- 1 
+example_ifn$management_unit <- 1 
 
 # Assume that each stand represents 1km2 = 100 ha
-pts_sf$represented_area <- 100
+example_ifn$represented_area <- 100
 
 # Launch simulation scenario
-res <- fordyn_scenario(pts_sf, SpParamsMED, meteo = meteo_01_03, 
+res <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_03, 
                        volume_function = NULL, management_scenario = scen,
                        parallelize = TRUE)
 }

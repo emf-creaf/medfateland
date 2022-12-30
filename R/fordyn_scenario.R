@@ -78,11 +78,8 @@
 #' @examples 
 #' \dontrun{
 #' # Load example landscape data
-#' data("examplepointslandscape")
+#' data("example_ifn")
 #'   
-#' # Transform example to 'sf' 
-#' pts_sf <- sp_to_sf(examplepointslandscape)
-#'
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   
@@ -98,13 +95,13 @@
 #' scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 #' 
 #' # Assign management unit to all stands
-#' pts_sf$management_unit <- 1 
+#' example_ifn$management_unit <- 1 
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
-#' pts_sf$represented_area <- 100
+#' example_ifn$represented_area <- 100
 #' 
 #' # Launch simulation scenario
-#' res <- fordyn_scenario(pts_sf, SpParamsMED, meteo = meteo_01_03, 
+#' res <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_03, 
 #'                        volume_function = NULL, management_scenario = scen,
 #'                        parallelize = TRUE)
 #'}
@@ -275,17 +272,19 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         if(managed[i]) {
           man_args <- y$management_arguments[[i]] 
           f <- y$forest[[i]]
-          if((man_args$type=="regular") && (man_args$finalPreviousStage > 0)) final_cuts[i] = TRUE
-          man <- do.call(what = "defaultManagementFunction", 
-                         args = list(x = f, args=man_args))
-          ctd <- f$treeData
-          ctd$N <- man$N_tree_cut
-          vols_i <- do.call(what = volume_function, args = list(x = ctd))*y$represented_area[i]
-          nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
-          vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
-          vol_species[i, names(vol_sp_i)] = vol_sp_i
-          # DECREASE TARGET according to FINAL CUTS
-          if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_species[i,, drop=FALSE]
+          if(nrow(f$treeData)>0) {
+            if((man_args$type=="regular") && (man_args$finalPreviousStage > 0)) final_cuts[i] = TRUE
+            man <- do.call(what = "defaultManagementFunction", 
+                           args = list(x = f, args=man_args))
+            ctd <- f$treeData
+            ctd$N <- man$N_tree_cut
+            vols_i <- do.call(what = volume_function, args = list(x = ctd))*y$represented_area[i]
+            nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
+            vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+            vol_species[i, names(vol_sp_i)] = vol_sp_i
+            # DECREASE TARGET according to FINAL CUTS
+            if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_species[i,, drop=FALSE]
+          }
         }
       }
       vol_spp_target = vol_species
@@ -366,11 +365,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # B.4 Store actual extraction
     for(i in 1:n){
       ctt <- fds$result[[i]]$CutTreeTable
-      vols_i <- do.call(what = volume_function, 
-                        args = list(x = ctt))*y$represented_area[i]
-      nsp_i <- medfate::species_characterParameter(ctt$Species, SpParams, "Name")
-      vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
-      extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
+      if(!is.null(ctt)) {
+        vols_i <- do.call(what = volume_function, 
+                          args = list(x = ctt))*y$represented_area[i]
+        nsp_i <- medfate::species_characterParameter(ctt$Species, SpParams, "Name")
+        vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+        extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
+      }
     }
     # B.5 Update extraction rates and actual satisfied demand
     final_volume_target_spp = .standingVolume(y, target_spp_names, SpParams, volume_function)
