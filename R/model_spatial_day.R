@@ -61,9 +61,10 @@
                             progress = TRUE) {
   
   
-  latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+  latitude <- sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+  date <- as.character(date)
   
-  local_control$verbose = FALSE
+  local_control$verbose <- FALSE
   
   n <- nrow(y)
   forestlist = y$forest
