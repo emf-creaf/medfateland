@@ -19,7 +19,7 @@ No spatial processes are simulated."><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -143,10 +143,7 @@ No spatial processes are simulated.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co">#Load example landscape data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplepointslandscape"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span><span class="co"># Transform example to 'sf' </span></span></span>
-<span class="r-in"><span><span class="va">pts_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplepointslandscape</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ifn"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Load example meteo data frame from package meteoland</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span></span>
@@ -156,7 +153,7 @@ No spatial processes are simulated.</p>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co">#Perform simulation</span></span></span>
 <span class="r-in"><span><span class="va">date</span> <span class="op">&lt;-</span> <span class="st">"2001-03-01"</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial_day</span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">examplemeteo</span>, <span class="va">date</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial_day</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">examplemeteo</span>, <span class="va">date</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
@@ -172,7 +169,7 @@ No spatial processes are simulated.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
