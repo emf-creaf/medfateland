@@ -14,7 +14,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "README-")
   
 ## Introduction
 
-The R package **medfateland** has been designed to extend the capabilities of package **medfate** to the landscape level. It allows running the stand-level models available in medfate on points and cells within landscape. More importantly, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   
+The R package **medfateland** has been designed to extend the capabilities of package **medfate** to the landscape level. It allows running the stand-level models available in medfate on points and cells within landscape, including the possibility of parallelization. Additionally, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   
 
 
 ## Package installation
@@ -22,16 +22,9 @@ The R package **medfateland** has been designed to extend the capabilities of pa
 Since both packages evolve together, installing **medfateland** normally requires an up-to-date version of **medfate**. The package is not available from CRAN because it is still under active development. Beta versions of package **medfateland** can be installed from GitHub as follows:
 
 ```{r installation, eval = FALSE}
-devtools::install_github("emf-creaf/medfateland")
+remotes::install_github("emf-creaf/medfateland")
 ```
 
-As with **medfate**, one may force the installation of package vignettes for **medfateland**, by using: 
-
-```{r medfateland installation vignettes, eval = FALSE}
-devtools::install_github("emf-creaf/medfateland", 
-                         build_opts = c("--no-resave-data", "--no-manual"),
-                         build_vignettes = TRUE)
-```
 
 ## Documentation
 
