@@ -143,6 +143,35 @@ And one can produce maps with summary results directly from the output of the si
 plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
+The possibility of running a summary function after the simulation of each stand is not limited to `summary.spwb()`. Users can define their own summary functions, provided the first argument is `object`, which will contain the result of the simulation (i.e., the result of calling `spwb()`, `growth()` or `fordyn()`). For example, the following function calls `droughtStress()`:
+
+```{r}
+f_stress <- function(object, ...) {
+  return(droughtStress(object, ..., draw = FALSE))
+}
+```
+
+Now we can call again `spwb_spatial`:
+```{r, warning=FALSE}
+res_3 <- spwb_spatial(pts_sf, SpParamsMED, examplemeteo, 
+                  dates = dates, local_control = local_control,                  
+                  keep_results = FALSE, progress = FALSE,
+                  summary_function = f_stress, 
+                  summary_arguments = list(index = "ADS", freq = "months", bySpecies=TRUE))
+```
+
+The drought stress summary of stand #1 is:
+```{r}
+res_3$summary[[1]]
+```
+
+And we can draw a map with the monthly drought stress of *Quercus ilex* across space using:
+
+```{r, fig.align='center', fig.width=7}
+plot_summary(res_3, "Quercus ilex", "2001-02-01")
+```
+
+
 ### Simulation in several steps
 
 The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
