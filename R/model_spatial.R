@@ -56,10 +56,17 @@
       s <- soil(s)
     }
     if(inherits(f, "forest") && inherits(s, "soil")) {
-      mf = management_function
-      ma = xi$management_args
+      mf <- management_function
+      ma <- xi$management_args
+      if(!is.null(x)) { #If there is a previous state, combine it with f so that state variables are no reinitialized
+        f_in <- list(NextForestObject = f,
+                     NextInputObject = x)
+        class(f_in) <- c("fordyn", "list")
+      } else { # Otherwise use the input object (this implies initialization of state variables)
+        f_in <- f
+      }
       if(is.null(ma)) mf = NULL
-      try({res<-medfate::fordyn(forest = f, soil = s, SpParams = SpParams, meteo=met, control = local_control,
+      try({res<-medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
                            latitude = xi$latitude, elevation = xi$elevation,
                            slope = xi$slope, aspect = xi$aspect,
                            CO2ByYear = CO2ByYear,
