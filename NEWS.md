@@ -5,6 +5,7 @@
 # Version 1.1.1
 - Compliance with medfate 2.9.0
 - Allowing the use of an input state in fordyn_spatial simulations
+- Simulation errors, when occurring, are now stored in 'result'
 
 # Version 1.1.0
 - New function 'fordyn_scenario'

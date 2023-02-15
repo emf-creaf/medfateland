@@ -102,11 +102,11 @@ An object of class 'sf' containing four elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand id, taken from the input.}
-\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
 \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in function \code{fordyn_spatial} if management function was supplied), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
-\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
+\item{\code{result}: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if \code{keep_results = FALSE}.}
+\item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}), with NULL values whenever simulation errors occurred.}
 }
 }
 \description{

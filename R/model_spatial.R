@@ -2,54 +2,64 @@
                      SpParams, local_control, CO2ByYear = numeric(0), 
                      keep_results = TRUE,
                      management_function = NULL, summary_function = NULL, summary_arguments = NULL){
-  f = xi$forest
-  s = xi$soil
-  x = xi$x
+  f <- xi$forest
+  s <- xi$soil
+  x <- xi$x
 
-  f_out = NULL
-  m_out = NULL
-  x_out = NULL
-  res = NULL
+  f_out <- NULL
+  m_out <- NULL
+  x_out <- NULL
+  res <- NULL
+  summary <- NULL
   
   if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) met = meteo
+    if(inherits(meteo,"data.frame")) met <- meteo
     else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-      met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-      met = met@data[[1]]
+      met <- meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+      met <- met@data[[1]]
     } 
     else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+      spt <- SpatialPointsTopography(as(xi$point, "Spatial"), 
                                     elevation = xi$elevation, 
                                     slope = xi$slope, 
                                     aspect = xi$aspect)
-      met = meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
-      met = met@data[[1]]
+      met <- meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
+      met <- met@data[[1]]
     }
     else if(inherits(meteo, "stars")) {
-      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met = meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
-      met = met$interpolated_data[[1]]
-      met = as.data.frame(met)
+      pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
+      met <- met$interpolated_data[[1]]
+      met <- as.data.frame(met)
       row.names(met) = met$dates
       met$dates = NULL
     }    
   } else { # If weather was supplied as part of 'xi' list
-    met = xi$meteo
+    met <- xi$meteo
   }
-  if(!is.null(dates)) met = met[as.character(dates),,drop =FALSE] #subset dates
+  if(!is.null(dates)) met <- met[as.character(dates),,drop =FALSE] #subset dates
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
-      try({res<-medfate::spwb(x, meteo=met,
+      res <- tryCatch({
+          medfate::spwb(x, meteo=met,
                          latitude = xi$latitude, elevation = xi$elevation,
                          slope = xi$slope, aspect = xi$aspect,
-                         CO2ByYear = CO2ByYear)})
+                         CO2ByYear = CO2ByYear)
+        }, error = function(e) {
+          simpleError(e$message,"spwb")
+        })
     } 
   } else if(model=="growth") {
     if(inherits(x, "growthInput")) {
-      try({res<-medfate::growth(x, meteo=met,
-                           latitude = xi$latitude, elevation = xi$elevation,
-                           slope = xi$slope, aspect = xi$aspect,
-                           CO2ByYear = CO2ByYear)})
+      res <-tryCatch({
+        medfate::growth(x, meteo=met,
+                        latitude = xi$latitude, elevation = xi$elevation,
+                        slope = xi$slope, aspect = xi$aspect,
+                        CO2ByYear = CO2ByYear)
+      },
+      error = function(e){
+        simpleError(e$message,"growth")
+      })
     } 
   } else if(model=="fordyn") {
     if(inherits(s, "data.frame")) {
@@ -66,32 +76,36 @@
         f_in <- f
       }
       if(is.null(ma)) mf = NULL
-      try({res<-medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
-                           latitude = xi$latitude, elevation = xi$elevation,
-                           slope = xi$slope, aspect = xi$aspect,
-                           CO2ByYear = CO2ByYear,
-                           management_function = mf, management_args = ma)})
+      res <- tryCatch({
+        medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
+                        latitude = xi$latitude, elevation = xi$elevation,
+                        slope = xi$slope, aspect = xi$aspect,
+                        CO2ByYear = CO2ByYear,
+                        management_function = mf, management_args = ma)
+      },
+      error = function(e){
+        simpleError(e$message,"fordyn")
+      })
     }
   } 
-  if(!is.null(summary_function) && !is.null(res)){
-    argList = list(object=res)
-    if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
-    s = do.call(summary_function, args=argList)
-  } else {
-    s = NULL
+  if(!is.null(res) && !inherits(res, "error")) {
+    if(!is.null(summary_function)){
+      argList <- list(object=res)
+      if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
+      summary <- do.call(summary_function, args=argList)
+    }
+    if(model=="fordyn"){
+      fs_i <- res$ForestStructures
+      f_out <- res$NextForestObject
+      m_out <- res$ManagementArgs
+    }
+    if(model=="spwb") x_out <- res$spwbOutput
+    else if(model=="growth") x_out <- res$growthOutput
+    else if(model=="fordyn") x_out <- res$NextInputObject
+    # Frees memory if detailed results are not required
+    if(!keep_results) res <- NULL
   }
-  if(model=="fordyn"){
-    fs_i = res$ForestStructures
-    f_out = res$NextForestObject
-    m_out = res$ManagementArgs
-  }
-  if(model=="spwb") x_out = res$spwbOutput
-  else if(model=="growth") x_out = res$growthOutput
-  else if(model=="fordyn") x_out = res$NextInputObject
-  
-  # Frees memory if detailed results are not required
-  if(!keep_results) res = NULL
-  return(list(result = res, summary = s, x_out = x_out, forest_out = f_out, management_out = m_out))
+  return(list(result = res, summary = summary, x_out = x_out, forest_out = f_out, management_out = m_out))
 }
 
 .check_model_inputs<-function(y, meteo) {
@@ -278,7 +292,11 @@
     res$forest <- forestlist_out
     if(!is.null(management_function)) res$management_arguments <- managementlist_out
   }
-  if(keep_results) res$result <- resultlist
+  res$result <- resultlist
+  errors <- sapply(res$result, function(x){inherits(x, "error")})
+  if(sum(errors)>0) {
+    message(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'."))
+  }
   if(!is.null(summary_function)) res$summary <- summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))
 }
@@ -331,11 +349,11 @@
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
 #'   \item{\code{id}: Stand id, taken from the input.}
-#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
 #'   \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in function \code{fordyn_spatial} if management function was supplied), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'   \item{\code{result}: A list of model output for each simulated stand (if \code{keep_results = TRUE}).}
-#'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
+#'   \item{\code{result}: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if \code{keep_results = FALSE}.}
+#'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}), with NULL values whenever simulation errors occurred.}
 #' }
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
