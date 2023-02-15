@@ -212,7 +212,7 @@
   if(parallelize) {
     if(progress) cat("   i) Preparation\n")
     
-    if(is.null(chunk_size)) chunk_size = floor(n/num_cores)
+    if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))
         
     XI = vector("list", n)
     for(i in 1:n) {
@@ -226,7 +226,7 @@
     }
     if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
     cl<-parallel::makeCluster(num_cores)
-    reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial, 
+    reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
                                              SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear,
                                              keep_results = keep_results,
