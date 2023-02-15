@@ -177,11 +177,11 @@ of such lists, one per spatial unit.</p></dd>
 
 <p>An object of class 'sf' containing four elements:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand id, taken from the input.</p></li>
-<li><p><code>state</code>: A list of <code>spwbInput</code> or <code>growthInput</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in function <code>fordyn_spatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<li><p><code>state</code>: A list of <code>spwbInput</code> or <code>growthInput</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
+<li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in function <code>fordyn_spatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
 <li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in function <code>fordyn_spatial</code> if management function was supplied), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>result</code>: A list of model output for each simulated stand (if <code>keep_results = TRUE</code>).</p></li>
-<li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>).</p></li>
+<li><p><code>result</code>: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if <code>keep_results = FALSE</code>.</p></li>
+<li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>), with NULL values whenever simulation errors occurred.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
