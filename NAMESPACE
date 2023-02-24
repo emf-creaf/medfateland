@@ -13,7 +13,7 @@ importFrom("dplyr", "bind_rows")
 importFrom("tibble", "as_tibble")
 importFrom("lifecycle","deprecated")
 importFrom("stats", "var")
-importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("cli", "cli_progress_bar", "cli_progress_update", "cli_progress_done")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExport", "clusterApply")
 export(default_watershed_correction_factors,
        default_volume_function,

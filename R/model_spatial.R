@@ -198,10 +198,11 @@
     }
     w_init = which(init)
     if(length(w_init)>0) {
-      if(progress) cat(paste0("Creating ", length(w_init)," input objects for model '", model, "':\n"))
-      if(progress) pb = txtProgressBar(0, length(w_init), style=3)
+      if(progress) { 
+        cli::cli_h2(paste0("Creating input objects"))
+        cli::cli_progress_bar(name = "Stands", total = n)
+      }
       for(w in 1:length(w_init)) {
-        if(progress) setTxtProgressBar(pb, w)
         i = w_init[w]
         f = forestlist[[i]]
         s = soillist[[i]]
@@ -215,16 +216,17 @@
             xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
           }
         }
+        if(progress) cli::cli_progress_update()
       }
-      if(progress) cat("\n\n")
+      if(progress) cli::cli_progress_done()
     } else {
       if(progress) cat(paste0("All input objects are already available for '", model, "'.\n\n"))
     }
   }
 
-  if(progress) cat(paste0("Simulation of model '", model,"' on ",n," locations:\n"))
+  if(progress)  cli::cli_h2(paste0("Simulation of model '", model,"' on ",n," locations"))
   if(parallelize) {
-    if(progress) cat("   i) Preparation\n")
+    if(progress) cli::cli_li("Preparation")
     
     if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))
         
@@ -238,7 +240,7 @@
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                      management_args = managementlist[[i]])
     }
-    if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
+    if(progress) cli::cli_li(paste0("Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")"))
     cl<-parallel::makeCluster(num_cores)
     reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
@@ -248,7 +250,7 @@
                                              summary_function = summary_function, summary_arguments = summary_arguments,
                                              chunk.size = chunk_size)
     parallel::stopCluster(cl)
-    if(progress) cat(" iii) Retrieval\n")
+    if(progress) cli::cli_li("Retrieval")
     for(i in 1:n) {
       if(!is.null(reslist_parallel[[i]]$x_out)) xlist[[i]] = reslist_parallel[[i]]$x_out
       if(!is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
@@ -260,9 +262,8 @@
     }
     if(progress) cat("\n")
   } else {
-    if(progress) pb = txtProgressBar(0, n, style=3)
+    if(progress) cli::cli_progress_bar(name = "Simulated stands", total = n)
     for(i in 1:n) {
-      if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, 
                 id = y$id[i],
                 point = sf::st_geometry(y)[i],
@@ -271,11 +272,11 @@
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                 management_args = managementlist[[i]])
       sim_out = .f_spatial(xi = xi, 
-                      meteo = meteo, dates = dates, model = model,
-                      SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
-                      keep_results = keep_results,
-                      management_function = management_function, 
-                      summary_function = summary_function, summary_arguments = summary_arguments)
+                           meteo = meteo, dates = dates, model = model,
+                           SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
+                           keep_results = keep_results,
+                           management_function = management_function, 
+                           summary_function = summary_function, summary_arguments = summary_arguments)
       if(!is.null(sim_out$x_out)) xlist[[i]] = sim_out$x_out
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
       if(!is.null(sim_out$result)) resultlist[[i]] = sim_out$result
@@ -283,7 +284,9 @@
         if(!is.null(sim_out$forest_out)) forestlist_out[[i]] = sim_out$forest_out
         if(!is.null(sim_out$management_out)) managementlist_out[[i]] = sim_out$management_out
       }
+      if(progress) cli::cli_progress_update()
     }
+    if(progress) cli::cli_progress_done()
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))
   res$id <- y$id
