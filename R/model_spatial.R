@@ -313,7 +313,7 @@
   if(sum(errors)>0) {
     cli::cli_alert_warning(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'."))
   } else {
-    cli::cli_alert_success(paste0("No simulation errors detected."))
+    if(progress) cli::cli_alert_success(paste0("No simulation errors detected."))
   }
   if(!is.null(summary_function)) res$summary <- summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))

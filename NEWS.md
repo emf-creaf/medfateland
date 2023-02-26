@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.1.2
+- Package 'cli' adopted for client interface
+
 # Version 1.1.1
 - Compliance with medfate 2.9.0
 - Allowing the use of an input state in fordyn_spatial simulations

@@ -16,6 +16,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 library(medfate)
 library(medfateland)
+library(meteoland)
 ```
 
 
