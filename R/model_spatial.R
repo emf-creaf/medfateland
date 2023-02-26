@@ -155,6 +155,7 @@
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                         progress = TRUE) {
   
+  
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
   local_control$verbose = FALSE
@@ -178,6 +179,8 @@
   } else {
     meteolist = vector("list",n)
   }
+
+  if(progress)  cli::cli_h1(paste0("Simulation of model '", model,"' on ",n," locations"))
   
   resultlist = vector("list",n)
   summarylist = vector("list",n)
@@ -199,8 +202,7 @@
     w_init = which(init)
     if(length(w_init)>0) {
       if(progress) { 
-        cli::cli_h2(paste0("Creating input objects"))
-        cli::cli_progress_bar(name = "Stands", total = n)
+        cli::cli_progress_step(paste0("Creating '", length(w_init), "' input objects."))
       }
       for(w in 1:length(w_init)) {
         i = w_init[w]
@@ -216,17 +218,19 @@
             xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
           }
         }
-        if(progress) cli::cli_progress_update()
       }
-      if(progress) cli::cli_progress_done()
+      if(progress) {
+        cli::cli_progress_done()
+      }
     } else {
-      if(progress) cat(paste0("All input objects are already available for '", model, "'.\n\n"))
+      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'."))
     }
-  }
+  } 
 
-  if(progress)  cli::cli_h2(paste0("Simulation of model '", model,"' on ",n," locations"))
   if(parallelize) {
-    if(progress) cli::cli_li("Preparation")
+    if(progress) {
+      cli::cli_progress_step("Preparing data for parellization.")
+    }
     
     if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))
         
@@ -240,7 +244,7 @@
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                      management_args = managementlist[[i]])
     }
-    if(progress) cli::cli_li(paste0("Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")"))
+    if(progress) cli::cli_progress_step(paste0("Launching parallel computation (cores = ", num_cores, "; chunk size = ", chunk_size,")."))
     cl<-parallel::makeCluster(num_cores)
     reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
@@ -250,7 +254,9 @@
                                              summary_function = summary_function, summary_arguments = summary_arguments,
                                              chunk.size = chunk_size)
     parallel::stopCluster(cl)
-    if(progress) cli::cli_li("Retrieval")
+    if(progress) {
+      cli::cli_progress_step("Retrieval of results.")
+    }
     for(i in 1:n) {
       if(!is.null(reslist_parallel[[i]]$x_out)) xlist[[i]] = reslist_parallel[[i]]$x_out
       if(!is.null(reslist_parallel[[i]]$result)) resultlist[[i]] = reslist_parallel[[i]]$result
@@ -260,10 +266,15 @@
         if(!is.null(reslist_parallel[[i]]$management_out)) managementlist_out[[i]] = reslist_parallel[[i]]$management_out
       }
     }
-    if(progress) cat("\n")
+    if(progress) {
+      cli::cli_progress_done()
+    }
   } else {
-    if(progress) cli::cli_progress_bar(name = "Simulated stands", total = n)
-    for(i in 1:n) {
+    if(progress) {
+      cli::cli_li(paste0("Performing '", model, "' simulations."))
+      cli::cli_progress_bar(name = "Stands", total = n)
+     }
+     for(i in 1:n) {
       xi = list(i = i, 
                 id = y$id[i],
                 point = sf::st_geometry(y)[i],
@@ -286,7 +297,9 @@
       }
       if(progress) cli::cli_progress_update()
     }
-    if(progress) cli::cli_progress_done()
+    if(progress) {
+      cli::cli_progress_done()
+    }
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))
   res$id <- y$id
@@ -298,7 +311,9 @@
   res$result <- resultlist
   errors <- sapply(res$result, function(x){inherits(x, "error")})
   if(sum(errors)>0) {
-    message(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'."))
+    cli::cli_alert_warning(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'."))
+  } else {
+    cli::cli_alert_success(paste0("No simulation errors detected."))
   }
   if(!is.null(summary_function)) res$summary <- summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))

@@ -74,6 +74,9 @@
   } else {
     xlist <- vector("list", n)
   }
+  
+  if(progress)  cli::cli_h1(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"'"))
+  
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   names(resultlist) = names(forestlist)
@@ -98,10 +101,10 @@
     }
     w_init = which(init)
     if(length(w_init)>0) {
-      if(progress) cat(paste0("Creating ", length(w_init)," input objects for model '", model, "':\n"))
-      if(progress) pb = txtProgressBar(0, length(w_init), style=3)
+      if(progress) { 
+        cli::cli_progress_step(paste0("Creating '", length(w_init), "' input objects."))
+      }
       for(w in 1:length(w_init)) {
-        if(progress) setTxtProgressBar(pb, w)
         i = w_init[w]
         f = forestlist[[i]]
         s = soillist[[i]]
@@ -116,16 +119,19 @@
           }
         }
       }
-      if(progress) cat("\n\n")
+      if(progress) {
+        cli::cli_progress_done()
+      }
     } else {
-      if(progress) cat(paste0("All input objects are already available for model '", model, "'.\n\n"))
+      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'."))
     }
   }
 
 
-  if(progress) cat(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"':\n"))
   if(parallelize) {
-    if(progress) cat("   i) Preparation\n")
+    if(progress) {
+      cli::cli_progress_step("Preparing data for parellization.")
+    }
     
     if(is.null(chunk_size)) chunk_size = floor(n/num_cores)
     
@@ -137,26 +143,33 @@
                      meteo = meteolist[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
     }
-    if(progress) cat(paste0("  ii) Parallel computation (cores = ", num_cores, ", chunk_size = ", chunk_size,")\n"))
+    if(progress) cli::cli_progress_step(paste0("Launching parallel computation (cores = ", num_cores, "; chunk size = ", chunk_size,")."))
     cl<-parallel::makeCluster(num_cores)
     reslist_parallel = parallel::parLapplyLB(cl, XI, .f_spatial_day, 
                                              meteo = meteo, date = date, model = model,
                                              chunk.size = chunk_size)
     parallel::stopCluster(cl)
-    if(progress) cat(" iii) Retrieval\n")
+    if(progress) {
+      cli::cli_progress_step("Retrieval of results.")
+    }
     for(i in 1:n) {
       resultlist[[i]] = reslist_parallel[[i]]
     }
-    if(progress) cat("\n")
+    if(progress) {
+      cli::cli_progress_done()
+    }
   } else {
-    if(progress) pb = txtProgressBar(0, n, style=3)
+    if(progress) {
+      cli::cli_li(paste0("Performing '", model, "' simulations."))
+      cli::cli_progress_bar(name = "Stands", total = n)
+    }
     for(i in 1:n) {
-      if(progress) setTxtProgressBar(pb, i)
       xi = list(i = i, id = y$id[i],
                 point = sf::st_geometry(y)[i], x = xlist[[i]],
                 meteo = meteolist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i])
       resultlist[[i]] = .f_spatial_day(xi, meteo = meteo, date = date, model = model)
+      if(progress) cli::cli_progress_update()
     }
   }
   res = sf::st_sf(geometry=sf::st_geometry(y))
