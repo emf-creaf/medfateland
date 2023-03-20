@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-02-15</h4>
+            <h4 data-toc-skip class="date">2023-03-20</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -150,8 +150,6 @@ we restrict the dates for simplicity):</p>
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-28"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</span></span></code></pre>
-<pre><code><span><span class="co">## Package 'meteoland' [ver. 1.0.3.9000]</span></span></code></pre>
 <p>Function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> first initializes model inputs
 by calling <code>forest2spwbInput()</code> for each forest stand
 described in the <code>sf</code> landscape object. Then it calls
@@ -162,7 +160,7 @@ forest stands, but different weather could have been specified for each
 one (see documentation of function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>).</p>
 <p>The result of calling <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> is an object of
 class <code>sf</code> with the following columns:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "geometry" "id"       "state"    "result"</span></span></code></pre>
 <p>Column <code>geometry</code> contains the geometry given as input to
@@ -181,31 +179,31 @@ querying information for the simulation of any particular forest stand.
 For example, we may use function <code>plot.spwb()</code>, from package
 <strong>medfate</strong>, to display the simulation results on a
 particular plot:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"Evapotranspiration"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <p>Similarly, if we want a monthly summary of water balance for the
 first stand, we can use function <code>summary.spwb()</code> from
 package <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, freq<span class="op">=</span><span class="st">"months"</span>,FUN<span class="op">=</span><span class="va">sum</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 39.6370782 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9699644  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    52.730084      0   40.6174919           34.03585    18.461760</span></span>
-<span><span class="co">## 2001-02-01     6.522806      0    0.1652514           21.15459     1.487895</span></span>
+<span><span class="co">## 2001-01-01    52.730084      0   40.6162567           34.03849    18.461760</span></span>
+<span><span class="co">## 2001-02-01     6.522806      0    0.1569381           21.18700     1.487895</span></span>
 <span><span class="co">##            SoilEvaporation PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5776187        9.994239      9.996468</span></span>
-<span><span class="co">## 2001-02-01       0.9473393       18.710095     18.719355</span></span>
+<span><span class="co">## 2001-01-01       5.5785170        9.996655      9.998214</span></span>
+<span><span class="co">## 2001-02-01       0.9530808       18.740241     18.746027</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.03133441</span></span>
+<span><span class="co">## 2001-01-01              0.03169547</span></span>
 <span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>However, a more convenient way of generating summaries is by
 calculating them on all forest stands in one step, using function
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> on objects issued from
 simulations:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, </span>
 <span>                              freq<span class="op">=</span><span class="st">"months"</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></span></code></pre></div>
 <p>where the argument <code>summary_function</code> points to the
@@ -214,31 +212,31 @@ arguments are those of the local summary function. The result of using
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> is again an object of class
 <code>sf</code> that contains the spatial geometry and the list of
 summaries for all stands:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_sum</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "geometry" "id"       "summary"</span></span></code></pre>
 <p>The summary for the first stand can now be accessed through the first
 element of column <code>summary</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_sum</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 39.6370782 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9699644  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    52.730084      0   40.6174919           34.03585    18.461760</span></span>
-<span><span class="co">## 2001-02-01     6.522806      0    0.1652514           21.15459     1.487895</span></span>
+<span><span class="co">## 2001-01-01    52.730084      0   40.6162567           34.03849    18.461760</span></span>
+<span><span class="co">## 2001-02-01     6.522806      0    0.1569381           21.18700     1.487895</span></span>
 <span><span class="co">##            SoilEvaporation PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5776187        9.994239      9.996468</span></span>
-<span><span class="co">## 2001-02-01       0.9473393       18.710095     18.719355</span></span>
+<span><span class="co">## 2001-01-01       5.5785170        9.996655      9.998214</span></span>
+<span><span class="co">## 2001-02-01       0.9530808       18.740241     18.746027</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.03133441</span></span>
+<span><span class="co">## 2001-01-01              0.03169547</span></span>
 <span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>Summary objects are handy because their <code><a href="../reference/plot_summary.html">plot_summary()</a></code>
 function allows us to display maps of summaries for specific dates:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-01-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;"></p>
 <p>To avoid displaying maps one by one, the package includes function
@@ -259,7 +257,7 @@ those summaries instead of all the output of function
 <code>spwb()</code>.</p>
 <p>For example the following code will keep temporal summaries of water
 balance components instead of simulation results:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,                  </span>
 <span>                  keep_results <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -270,29 +268,29 @@ stands, whereas <code>summary_function = summary.spwb</code> tells
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> to perform and store summaries before
 discarding the results of any stand. The output has slightly different
 column names:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "geometry" "id"       "state"    "result"   "summary"</span></span></code></pre>
 <p>In particular, <code>result</code> is not included. Now the temporal
 summaries can be directly accessed through the column
 <code>summary</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_2</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 39.6370782 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9699644  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    52.730084      0   40.6174919           34.03585    18.461760</span></span>
-<span><span class="co">## 2001-02-01     6.522806      0    0.1652514           21.15459     1.487895</span></span>
+<span><span class="co">## 2001-01-01    52.730084      0   40.6162567           34.03849    18.461760</span></span>
+<span><span class="co">## 2001-02-01     6.522806      0    0.1569381           21.18700     1.487895</span></span>
 <span><span class="co">##            SoilEvaporation PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5776187        9.994239      9.996468</span></span>
-<span><span class="co">## 2001-02-01       0.9473393       18.710095     18.719355</span></span>
+<span><span class="co">## 2001-01-01       5.5785170        9.996655      9.998214</span></span>
+<span><span class="co">## 2001-02-01       0.9530808       18.740241     18.746027</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.03133441</span></span>
+<span><span class="co">## 2001-01-01              0.03169547</span></span>
 <span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>And one can produce maps with summary results directly from the
 output of the simulation function:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_2</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>The possibility of running a summary function after the simulation of
@@ -302,35 +300,35 @@ define their own summary functions, provided the first argument is
 (i.e., the result of calling <code>spwb()</code>, <code>growth()</code>
 or <code>fordyn()</code>). For example, the following function calls
 <code>droughtStress()</code>:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f_stress</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">droughtStress</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span>, draw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Now we can call again <code>spwb_spatial</code>:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,                  </span>
 <span>                  keep_results <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                  summary_function <span class="op">=</span> <span class="va">f_stress</span>, </span>
 <span>                  summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>index <span class="op">=</span> <span class="st">"ADS"</span>, freq <span class="op">=</span> <span class="st">"months"</span>, bySpecies<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The drought stress summary of stand #1 is:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_3</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            Dorycnium spp. Genista spp. Hedera helix Juniperus communis</span></span>
-<span><span class="co">## 2001-01-01            NaN          NaN  0.006273327        0.003925004</span></span>
-<span><span class="co">## 2001-02-01            NaN          NaN  0.008524042        0.005282324</span></span>
+<span><span class="co">## 2001-01-01            NaN          NaN  0.006165402        0.003861844</span></span>
+<span><span class="co">## 2001-02-01            NaN          NaN  0.007618106        0.004739411</span></span>
 <span><span class="co">##            Lavandula spp. Phillyrea angustifolia Pinus nigra Pistacia lentiscus</span></span>
-<span><span class="co">## 2001-01-01     0.01752024            0.003804935 0.009586767        0.003587112</span></span>
-<span><span class="co">## 2001-02-01     0.02405541            0.005238353 0.012895864        0.004822708</span></span>
+<span><span class="co">## 2001-01-01     0.01720418            0.003735971 0.009425589        0.003528457</span></span>
+<span><span class="co">## 2001-02-01     0.02141699            0.004658094 0.011569840        0.004327903</span></span>
 <span><span class="co">##            Quercus coccifera Quercus faginea Quercus ilex Rubus spp.</span></span>
-<span><span class="co">## 2001-01-01       0.003288045             NaN   0.01105257        NaN</span></span>
-<span><span class="co">## 2001-02-01       0.004511654             NaN   0.01377302        NaN</span></span>
+<span><span class="co">## 2001-01-01       0.003229448             NaN   0.01092188        NaN</span></span>
+<span><span class="co">## 2001-02-01       0.004017091             NaN   0.01272611        NaN</span></span>
 <span><span class="co">##            Salvia rosmarinus Viburnum spp.</span></span>
 <span><span class="co">## 2001-01-01               NaN           NaN</span></span>
 <span><span class="co">## 2001-02-01               NaN           NaN</span></span></code></pre>
 <p>And we can draw a map with the monthly drought stress of <em>Quercus
 ilex</em> across space using:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_3</span>, <span class="st">"Quercus ilex"</span>, <span class="st">"2001-02-01"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -344,27 +342,27 @@ from the point where the first one ended. In order to do so, we need to
 update the state variables in spatial object with their values at the
 end of the simulation, using function
 <code><a href="../reference/update_landscape.html">update_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pts_sf_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">pts_sf</span>, <span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p>The resulting object <code>w</code> is the same as <code>y</code>
 except for the state variables. For example we can compare the water
 potential in the first soil layer:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">pts_sf</span>, <span class="st">"psi1"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">pts_sf_mod</span>, <span class="st">"psi1"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;"></p>
 <p>By using <code>w</code> as input we can now simulate water balance in
 the set of stands for an extra month:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">pts_sf_mod</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                      dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>, </span>
 <span>                      summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="st">"months"</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And display a map with the resulting month transpiration:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_3</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -383,11 +381,42 @@ runoff from one cell to the other.</p>
 function <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, we first load a small example
 watershed included with the package, which we transform to
 <code>sf</code>:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplewatershed"</span><span class="op">)</span></span>
 <span><span class="va">ws_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sp_to_sf.html">sp_to_sf</a></span><span class="op">(</span><span class="va">examplewatershed</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">ws_sf</span>, <span class="st">"elevation"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;"></p>
+<span><span class="va">ws_sf</span></span></code></pre></div>
+<pre><code><span><span class="co">## Simple feature collection with 66 features and 18 fields</span></span>
+<span><span class="co">## Geometry type: POINT</span></span>
+<span><span class="co">## Dimension:     XY</span></span>
+<span><span class="co">## Bounding box:  xmin: 401380 ymin: 4671820 xmax: 402880 ymax: 4672620</span></span>
+<span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 19</span></span></span>
+<span><span class="co">##            geometry    id elevation slope aspect land_cover_type forest   soil  </span></span>
+<span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570)     1      <span style="text-decoration: underline;">1</span>162 11.3   79.2  wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470)     2      <span style="text-decoration: underline;">1</span>214 12.4   98.7  agriculture     &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470)     3      <span style="text-decoration: underline;">1</span>197 10.4  102.   wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470)     4      <span style="text-decoration: underline;">1</span>180  8.12  83.3  wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470)     5      <span style="text-decoration: underline;">1</span>164 13.9   96.8  wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470)     6      <span style="text-decoration: underline;">1</span>146 11.2    8.47 agriculture     &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470)     7      <span style="text-decoration: underline;">1</span>153  9.26 356.   agriculture     &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370)     8      <span style="text-decoration: underline;">1</span>237 14.5   75.1  wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370)     9      <span style="text-decoration: underline;">1</span>213 13.2   78.7  wildland        &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370)    10      <span style="text-decoration: underline;">1</span>198  8.56  75.6  agriculture     &lt;forest&gt; &lt;soil&gt;</span></span>
+<span><span class="co">## <span style="color: #949494;"># … with 56 more rows, and 11 more variables: state &lt;list&gt;, waterOrder &lt;int&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   waterQ &lt;list&gt;, queenNeigh &lt;list&gt;, channel &lt;lgl&gt;, depth_to_bedrock &lt;dbl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;, snowpack &lt;dbl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   aquifer &lt;dbl&gt;, represented_area &lt;dbl&gt;</span></span></span></code></pre>
+<p>Here is a map of elevation values:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">ws_sf</span>, <span class="st">"elevation"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Since the landscape contains agricultural lands, we need to define
+<em>crop factors</em>, which will determine transpiration flow as a
+proportion of potential evapotranspiration:</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ws_sf</span><span class="op">$</span><span class="va">crop_factor</span> <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="va">ws_sf</span><span class="op">$</span><span class="va">crop_factor</span><span class="op">[</span><span class="va">ws_sf</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">==</span><span class="st">"agriculture"</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0.75</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulation-function">Simulation function<a class="anchor" aria-label="anchor" href="#simulation-function"></a>
@@ -396,7 +425,7 @@ watershed included with the package, which we transform to
 the same weather (i.e. <code>examplemeteo</code>) across the watershed.
 To speed up calculations we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> for a
 single month.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">ws_sf</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -422,37 +451,37 @@ single month.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Final average soil water content (mm): 530.8</span></span>
 <span><span class="co">## Final average snowpack water content (mm): 0.05</span></span>
-<span><span class="co">## Final average aquifer water content (mm): 57.98</span></span>
+<span><span class="co">## Final average aquifer water content (mm): 53.17</span></span>
 <span><span class="co">## Final watershed water content (mm): 522.76</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in snowpack water content (mm): 0.05</span></span>
-<span><span class="co">## Snowpack water balance result (mm): 2.93</span></span>
+<span><span class="co">## Snowpack water balance result (mm): 3.19</span></span>
 <span><span class="co">## Snowpack water balance components:</span></span>
-<span><span class="co">##   Snow fall (mm) 16.65 Snow melt (mm) 13.73</span></span>
+<span><span class="co">##   Snow fall (mm) 16.65 Snow melt (mm) 13.46</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in soil water content (mm): 0</span></span>
-<span><span class="co">## Soil water balance result (mm): -1.15</span></span>
+<span><span class="co">## Soil water balance result (mm): -10.58</span></span>
 <span><span class="co">## Soil water balance components:</span></span>
-<span><span class="co">##   Net rainfall (mm) 53.12 Snow melt (mm) 13.73</span></span>
+<span><span class="co">##   Net rainfall (mm) 37.92 Snow melt (mm) 13.47</span></span>
 <span><span class="co">##   Runon (mm) 1.1 Runoff (mm) 0</span></span>
 <span><span class="co">##   Subsurface input (mm) 0  Subsurface output (mm) 0</span></span>
-<span><span class="co">##   Deep drainage (mm) 58.87 Aquifer discharge (mm) 0</span></span>
-<span><span class="co">##   Soil evaporation (mm) 6.94 Plant transpiration (mm) 3.29</span></span>
+<span><span class="co">##   Deep drainage (mm) 53.99 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Soil evaporation (mm) 5.79 Plant transpiration (mm) 3.29</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Change in aquifer water content (mm): 57.98</span></span>
-<span><span class="co">## Aquifer water balance result (mm): 57.98</span></span>
+<span><span class="co">## Change in aquifer water content (mm): 53.17</span></span>
+<span><span class="co">## Aquifer water balance result (mm): 53.17</span></span>
 <span><span class="co">## Aquifer water balance components:</span></span>
-<span><span class="co">##   Deep drainage (mm) 57.98 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Deep drainage (mm) 53.17 Aquifer discharge (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in watershed water content (mm): 0</span></span>
-<span><span class="co">## Watershed water balance result (mm): 59.77</span></span>
+<span><span class="co">## Watershed water balance result (mm): 45.94</span></span>
 <span><span class="co">## Watershed water balance components:</span></span>
 <span><span class="co">##   Precipitation (mm) 74.75</span></span>
-<span><span class="co">##   Interception (mm) 4.9 Soil evaporation (mm) 6.83 Plant Transpiration (mm) 3.24</span></span>
+<span><span class="co">##   Interception (mm) 19.87 Soil evaporation (mm) 5.7 Plant Transpiration (mm) 3.24</span></span>
 <span><span class="co">##   Export (mm) 0</span></span>
 <span><span class="co">## Watershed lateral flows:</span></span>
 <span><span class="co">##   Subsurface flow (mm) 0</span></span>
-<span><span class="co">##   Groundwater flow (mm) 9.27</span></span>
+<span><span class="co">##   Groundwater flow (mm) 7.77</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ------------ spwb_land ------------</span></span></code></pre>
 <p>Although simulations are performed using daily temporal steps,
@@ -468,23 +497,23 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            Runon Runoff Infiltration     Rain NetRain     Snow Snowmelt</span></span>
 <span><span class="co">## 2001-01-01     0      0     66.83459 58.09884 53.1979 16.65065  13.6367</span></span>
 <span><span class="co">##            Interception DeepDrainage AquiferDischarge SaturationExcess</span></span>
-<span><span class="co">## 2001-01-01     4.900943     57.47547                0                0</span></span>
+<span><span class="co">## 2001-01-01     4.900943     57.47486                0                0</span></span>
 <span><span class="co">##            SoilEvaporation Transpiration SWE  SoilVol        Psi1  WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01        6.995018       3.28614   0 563.8283 -0.03300001 4000 14.71204</span></span>
+<span><span class="co">## 2001-01-01        6.995272       3.28633   0 532.3416 -0.03300001 4000 14.78647</span></span>
 <span><span class="co">##            InterflowInput InterflowOutput BaseflowInput BaseflowOutput</span></span>
-<span><span class="co">## 2001-01-01              0               0      8.762734        5.89643</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0               0      5.935362       4.507225</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
 water volume for the simulated month:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </div>
