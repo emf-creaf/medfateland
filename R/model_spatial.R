@@ -113,6 +113,11 @@
   if(!all(c("elevation","slope","aspect") %in% names(y))) stop("Columns 'elevation', 'slope' and 'aspect' must be defined.")
   if(!("forest" %in% names(y))) stop("Column 'forest' must be defined.")
   if(!("soil" %in% names(y))) stop("Column 'soil' must be defined.")
+  if("land_cover_type" %in% names(y)) {
+    if(sum(y$land_cover_type=="agriculture")>0) {
+      if(!("crop_factor" %in% names(y))) stop("Column 'crop_factor' must be defined to simulate soil water balance in agricultural locations.")
+    }
+  }
   # if(inherits(y, "SpatialGridLandscape")) {
   #   if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
   #     stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")

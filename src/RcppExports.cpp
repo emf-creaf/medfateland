@@ -10,6 +10,44 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// aspwbInput
+List aspwbInput(double crop_factor, List control, List soil);
+RcppExport SEXP _medfateland_aspwbInput(SEXP crop_factorSEXP, SEXP controlSEXP, SEXP soilSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type crop_factor(crop_factorSEXP);
+    Rcpp::traits::input_parameter< List >::type control(controlSEXP);
+    Rcpp::traits::input_parameter< List >::type soil(soilSEXP);
+    rcpp_result_gen = Rcpp::wrap(aspwbInput(crop_factor, control, soil));
+    return rcpp_result_gen;
+END_RCPP
+}
+// aspwb_day
+List aspwb_day(List x, CharacterVector date, double tmin, double tmax, double rhmin, double rhmax, double rad, double wind, double latitude, double elevation, double slope, double aspect, double prec, double runon, bool modifyInput);
+RcppExport SEXP _medfateland_aspwb_day(SEXP xSEXP, SEXP dateSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP rhminSEXP, SEXP rhmaxSEXP, SEXP radSEXP, SEXP windSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP precSEXP, SEXP runonSEXP, SEXP modifyInputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
+    Rcpp::traits::input_parameter< double >::type tmin(tminSEXP);
+    Rcpp::traits::input_parameter< double >::type tmax(tmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type rhmin(rhminSEXP);
+    Rcpp::traits::input_parameter< double >::type rhmax(rhmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type rad(radSEXP);
+    Rcpp::traits::input_parameter< double >::type wind(windSEXP);
+    Rcpp::traits::input_parameter< double >::type latitude(latitudeSEXP);
+    Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
+    Rcpp::traits::input_parameter< double >::type slope(slopeSEXP);
+    Rcpp::traits::input_parameter< double >::type aspect(aspectSEXP);
+    Rcpp::traits::input_parameter< double >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< double >::type runon(runonSEXP);
+    Rcpp::traits::input_parameter< bool >::type modifyInput(modifyInputSEXP);
+    rcpp_result_gen = Rcpp::wrap(aspwb_day(x, date, tmin, tmax, rhmin, rhmax, rad, wind, latitude, elevation, slope, aspect, prec, runon, modifyInput));
+    return rcpp_result_gen;
+END_RCPP
+}
 // genros
 double genros(double phi, double theta, double a1, double a2, double b, double n1, double n2, double c);
 RcppExport SEXP _medfateland_genros(SEXP phiSEXP, SEXP thetaSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP bSEXP, SEXP n1SEXP, SEXP n2SEXP, SEXP cSEXP) {
@@ -217,6 +255,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_medfateland_aspwbInput", (DL_FUNC) &_medfateland_aspwbInput, 3},
+    {"_medfateland_aspwb_day", (DL_FUNC) &_medfateland_aspwb_day, 15},
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
     {"_medfateland_ellipseROS", (DL_FUNC) &_medfateland_ellipseROS, 4},
     {"_medfateland_doubleEllipseROS", (DL_FUNC) &_medfateland_doubleEllipseROS, 4},

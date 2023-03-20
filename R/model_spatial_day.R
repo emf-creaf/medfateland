@@ -3,37 +3,37 @@
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
     else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-      met = meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-      met = met@data[[1]]
+      met <- meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
+      met <- met@data[[1]]
     } 
     else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      spt = SpatialPointsTopography(as(xi$point, "Spatial"), 
+      spt <- SpatialPointsTopography(as(xi$point, "Spatial"), 
                                     elevation = xi$elevation, 
                                     slope = xi$slope, 
                                     aspect = xi$aspect)
-      met = meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
-      met = met@data[[1]]
+      met <- meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
+      met <- met@data[[1]]
     }
     else if(inherits(meteo, "stars")) {
-      pt_sf = sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met = meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
-      met = met$interpolated_data[[1]]
-      met = as.data.frame(met)
-      row.names(met) = met$dates
+      pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met <- meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
+      met <- met$interpolated_data[[1]]
+      met <- as.data.frame(met)
+      row.names(met) <- met$dates
       met$dates = NULL
     }    
   } 
   else {
-    met = xi$meteo  
+    met <- xi$meteo  
   }
   
-  tmin = met[date,"MinTemperature"]
-  tmax = met[date,"MaxTemperature"]
-  rhmin = met[date,"MinRelativeHumidity"]
-  rhmax = met[date,"MaxRelativeHumidity"]
-  rad = met[date,"Radiation"]
-  wind = met[date,"WindSpeed"]
-  prec = met[date,"Precipitation"]
+  tmin <- met[date,"MinTemperature"]
+  tmax <- met[date,"MaxTemperature"]
+  rhmin <- met[date,"MinRelativeHumidity"]
+  rhmax <- met[date,"MaxRelativeHumidity"]
+  rad <- met[date,"Radiation"]
+  wind <- met[date,"WindSpeed"]
+  prec <- met[date,"Precipitation"]
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
       res<-medfate::spwb_day(xi$x, date, 
@@ -41,7 +41,13 @@
                              latitude = xi$latitude, elevation = xi$elevation,
                              slope = xi$slope, aspect = xi$aspect, prec = prec,
                              modifyInput = TRUE)
-    } 
+    } else if(inherits(xi$x, "aspwbInput")) {
+      res <- .aspwb_day(xi$x, date, 
+                       tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
+                       latitude = xi$latitude, elevation = xi$elevation, 
+                       slope = xi$slope, aspect = xi$aspect, prec = prec,
+                       modifyInput = TRUE)
+    }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
       res<-medfate::growth_day(xi$x, date, 
@@ -49,7 +55,13 @@
                                latitude = xi$latitude, elevation = xi$elevation,
                                slope = xi$slope, aspect = xi$aspect, prec = prec,
                                modifyInput = TRUE)
-    } 
+    } else if(inherits(xi$x, "aspwbInput")) {
+      res <- .aspwb_day(xi$x, date, 
+                       tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
+                       latitude = xi$latitude, elevation = xi$elevation,
+                       slope = xi$slope, aspect = xi$aspect, prec = prec,
+                       modifyInput = TRUE)
+    }
   } 
   return(res)
 }
@@ -67,10 +79,20 @@
   local_control$verbose <- FALSE
   
   n <- nrow(y)
-  forestlist = y$forest
-  soillist  = y$soil
+  forestlist <- y$forest
+  soillist  <- y$soil
+  if("land_cover_type" %in% names(y)) {
+    landcover <- y$land_cover_type
+  } else {
+    landcover <- rep("wildland", n)
+  }
+  if("crop_factor" %in% names(y)) {
+    cropfactor <- y$crop_factor
+  } else {
+    cropfactor <- rep(NA, n)
+  }
   if("state" %in% names(y)) {
-    xlist  = y$state
+    xlist  <- y$state
   } else {
     xlist <- vector("list", n)
   }
@@ -82,21 +104,27 @@
   names(resultlist) = names(forestlist)
   names(summarylist) = names(forestlist)
   if("meteo" %in% names(y)) {
-    meteolist = y$meteo
+    meteolist <- y$meteo
   } else {
-    meteolist = vector("list",n)
+    meteolist <- vector("list",n)
   }
 
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
-      f = forestlist[[i]]
-      s = soillist[[i]]
-      if(inherits(f, "forest") && inherits(s, c("soil","data.frame"))) {
-        init[i] = TRUE
-        x = xlist[[i]]
-        if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
-        if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+      if(landcover[i] == "wildland") {
+        f <- forestlist[[i]]
+        s <- soillist[[i]]
+        if(inherits(f, "forest") && inherits(s, c("soil","data.frame"))) {
+          init[i] <- TRUE
+          x <- xlist[[i]]
+          if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
+          if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+        }
+      } else if(landcover[i] == "agriculture") {
+        if(inherits(soillist[[i]], c("soil","data.frame"))) {
+          init[i] <- TRUE
+        }
       }
     }
     w_init = which(init)
@@ -105,18 +133,22 @@
         cli::cli_progress_step(paste0("Creating '", length(w_init), "' input objects."))
       }
       for(w in 1:length(w_init)) {
-        i = w_init[w]
-        f = forestlist[[i]]
-        s = soillist[[i]]
+        i <- w_init[w]
+        s <- soillist[[i]]
         if(inherits(s, "data.frame")){
-          s = soil(s)
+          s <- soil(s)
         }
-        if(inherits(f, "forest") && inherits(s, "soil")) {
-          if(model=="spwb") {
-            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
-          } else if(model=="growth") {
-            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
+        if(landcover[i] == "wildland") {
+          f <- forestlist[[i]]
+          if(inherits(f, "forest") && inherits(s, "soil")) {
+            if(model=="spwb") {
+              xlist[[i]] <- medfate::forest2spwbInput(f, s, SpParams, local_control)
+            } else if(model=="growth") {
+              xlist[[i]] <- medfate::forest2growthInput(f, s, SpParams, local_control)
+            }
           }
+        } else if(landcover[i] == "agriculture") {
+          xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
       }
       if(progress) {
@@ -172,10 +204,10 @@
       if(progress) cli::cli_progress_update()
     }
   }
-  res = sf::st_sf(geometry=sf::st_geometry(y))
-  res$id = y$id
-  res$state = xlist
-  res$result = resultlist
+  res <- sf::st_sf(geometry=sf::st_geometry(y))
+  res$id <- y$id
+  res$state <- xlist
+  res$result <- resultlist
   return(sf::st_as_sf(tibble::as_tibble(res)))
 }
 

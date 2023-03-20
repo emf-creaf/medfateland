@@ -4,6 +4,7 @@
 
 # Version 1.1.2
 - Package 'cli' adopted for client interface
+- Soil water balance in agricultural soils
 
 # Version 1.1.1
 - Compliance with medfate 2.9.0
