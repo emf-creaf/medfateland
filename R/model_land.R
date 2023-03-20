@@ -78,11 +78,17 @@
     cat(paste0("Preparing ", localModel, " input...\n"))
   }
   for(i in 1:nCells) {
-    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
+    if(y$land_cover_type[i] == "wildland") {
       f = y$forest[[i]]
       s = y$soil[[i]]
       if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, local_control)
       else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, local_control)
+    } 
+    else if(y$land_cover_type[i] == "agriculture") {
+      s = y$soil[[i]]
+      cf = y$crop_factor[i]
+      if(inherits(s, "data.frame")) s = medfate::soil(s)
+      y$state[[i]] = .aspwbInput(cf, local_control, s)
     } 
   }
   if(progress) cat("done.\n\n")
@@ -506,6 +512,10 @@
 #' # Transform example to 'sf' 
 #' ws_sf <- sp_to_sf(examplewatershed)
 #'   
+#' # Set crop factor 
+#' ws_sf$crop_factor <- NA
+#' ws_sf$crop_factor[ws_sf$land_cover_type=="agriculture"] <- 0.75
+#' 
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   

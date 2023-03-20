@@ -211,11 +211,25 @@ Simulation of watershed hydrology involves describing a watershed in a gridded m
 ### Example data set
 To illustrate this kind of simulation, which is carried out using function `spwb_land()`, we first load a small example watershed included with the package, which we transform to `sf`:
 
-```{r, warning=FALSE, fig.align="center", fig.width=7}
+```{r, warning=FALSE}
 data("examplewatershed")
 ws_sf <- sp_to_sf(examplewatershed)
+ws_sf
+```
+
+Here is a map of elevation values:
+
+```{r, warning=FALSE, fig.align="center", fig.width=7}
 plot_variable(ws_sf, "elevation")
 ```
+
+Since the landscape contains agricultural lands, we need to define *crop factors*, which will determine transpiration flow as a proportion of potential evapotranspiration:
+
+```{r}
+ws_sf$crop_factor = NA
+ws_sf$crop_factor[ws_sf$land_cover_type=="agriculture"] = 0.75
+```
+
 
 ### Simulation function
 As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.

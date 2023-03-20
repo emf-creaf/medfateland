@@ -100,6 +100,10 @@ data("examplewatershed")
 # Transform example to 'sf' 
 ws_sf <- sp_to_sf(examplewatershed)
   
+# Set crop factor 
+ws_sf$crop_factor <- NA
+ws_sf$crop_factor[ws_sf$land_cover_type=="agriculture"] <- 0.75
+
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   

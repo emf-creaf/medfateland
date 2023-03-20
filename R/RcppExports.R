@@ -9,6 +9,10 @@
     .Call(`_medfateland_aspwb_day`, x, date, tmin, tmax, rhmin, rhmax, rad, wind, latitude, elevation, slope, aspect, prec, runon, modifyInput)
 }
 
+.aspwb <- function(x, meteo, latitude, elevation = NA_real_, slope = NA_real_, aspect = NA_real_) {
+    .Call(`_medfateland_apwb`, x, meteo, latitude, elevation, slope, aspect)
+}
+
 .genros <- function(phi, theta, a1, a2, b, n1, n2, c) {
     .Call(`_medfateland_genros`, phi, theta, a1, a2, b, n1, n2, c)
 }

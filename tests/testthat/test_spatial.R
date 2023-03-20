@@ -4,6 +4,8 @@ data("examplepointslandscape")
 data("examplewatershed")
 ypts = sp_to_sf(examplepointslandscape)
 yws = sp_to_sf(examplewatershed)
+yws$crop_factor = NA
+yws$crop_factor[yws$land_cover_type=="agriculture"] = 0.75
 
 data("examplemeteo")
 data("SpParamsMED")

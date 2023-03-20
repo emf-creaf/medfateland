@@ -48,6 +48,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// apwb
+List apwb(List x, DataFrame meteo, double latitude, double elevation, double slope, double aspect);
+RcppExport SEXP _medfateland_apwb(SEXP xSEXP, SEXP meteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type meteo(meteoSEXP);
+    Rcpp::traits::input_parameter< double >::type latitude(latitudeSEXP);
+    Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
+    Rcpp::traits::input_parameter< double >::type slope(slopeSEXP);
+    Rcpp::traits::input_parameter< double >::type aspect(aspectSEXP);
+    rcpp_result_gen = Rcpp::wrap(apwb(x, meteo, latitude, elevation, slope, aspect));
+    return rcpp_result_gen;
+END_RCPP
+}
 // genros
 double genros(double phi, double theta, double a1, double a2, double b, double n1, double n2, double c);
 RcppExport SEXP _medfateland_genros(SEXP phiSEXP, SEXP thetaSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP bSEXP, SEXP n1SEXP, SEXP n2SEXP, SEXP cSEXP) {
@@ -257,6 +273,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_aspwbInput", (DL_FUNC) &_medfateland_aspwbInput, 3},
     {"_medfateland_aspwb_day", (DL_FUNC) &_medfateland_aspwb_day, 15},
+    {"_medfateland_apwb", (DL_FUNC) &_medfateland_apwb, 6},
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
     {"_medfateland_ellipseROS", (DL_FUNC) &_medfateland_ellipseROS, 4},
     {"_medfateland_doubleEllipseROS", (DL_FUNC) &_medfateland_doubleEllipseROS, 4},

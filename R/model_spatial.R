@@ -48,6 +48,14 @@
         }, error = function(e) {
           simpleError(e$message,"spwb")
         })
+    } else if(inherits(x, "aspwbInput")){
+      res <- tryCatch({
+          .aspwb(x, meteo=met,
+                 latitude = xi$latitude, elevation = xi$elevation,
+                 slope = xi$slope, aspect = xi$aspect)
+      }, error = function(e) {
+        simpleError(e$message,"aspwb")
+      })
     } 
   } else if(model=="growth") {
     if(inherits(x, "growthInput")) {
@@ -59,6 +67,14 @@
       },
       error = function(e){
         simpleError(e$message,"growth")
+      })
+    } else if(inherits(x, "aspwbInput")){
+      res <- tryCatch({
+        .aspwb(x, meteo=met,
+               latitude = xi$latitude, elevation = xi$elevation,
+               slope = xi$slope, aspect = xi$aspect)
+      }, error = function(e) {
+        simpleError(e$message,"aspwb")
       })
     } 
   } else if(model=="fordyn") {
@@ -169,6 +185,16 @@
   n = length(forestlist)
   
   soillist  = y$soil
+  if("land_cover_type" %in% names(y)) {
+    landcover <- y$land_cover_type
+  } else {
+    landcover <- rep("wildland", n)
+  }
+  if("crop_factor" %in% names(y)) {
+    cropfactor <- y$crop_factor
+  } else {
+    cropfactor <- rep(NA, n)
+  }
   if("state" %in% names(y)) {
     xlist  = y$state
   } else {
@@ -195,13 +221,19 @@
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
-      f = forestlist[[i]]
-      s = soillist[[i]]
-      if(inherits(f, "forest") && inherits(s, c("soil", "data.frame"))) {
-        init[i] = TRUE
-        x = xlist[[i]]
-        if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
-        if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+      if(landcover[i] == "wildland") {
+        f = forestlist[[i]]
+        s = soillist[[i]]
+        if(inherits(f, "forest") && inherits(s, c("soil", "data.frame"))) {
+          init[i] = TRUE
+          x = xlist[[i]]
+          if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
+          if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+        }
+      } else if(landcover[i] == "agriculture") {
+        if(inherits(soillist[[i]], c("soil","data.frame"))) {
+          init[i] <- TRUE
+        }
       }
     }
     w_init = which(init)
@@ -211,17 +243,21 @@
       }
       for(w in 1:length(w_init)) {
         i = w_init[w]
-        f = forestlist[[i]]
         s = soillist[[i]]
         if(inherits(s, "data.frame")) {
           s <- soil(s)
         }
-        if(inherits(f, "forest") && inherits(s, "soil")) {
-          if(model=="spwb") {
-            xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
-          } else if(model=="growth") {
-            xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
+        if(landcover[i] == "wildland") {
+          f = forestlist[[i]]
+          if(inherits(f, "forest") && inherits(s, "soil")) {
+            if(model=="spwb") {
+              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
+            } else if(model=="growth") {
+              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
+            }
           }
+        } else if(landcover[i] == "agriculture") {
+          xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
       }
       if(progress) {

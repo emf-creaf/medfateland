@@ -3,6 +3,7 @@
 #include <Rcpp.h>
 #include <meteoland.h>
 #include <medfate.h>
+#include "aspwb.h"
 using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
@@ -298,36 +299,48 @@ List watershedDay(String localModel,
 
       //Run daily soil water balance for the current cell
       List res;
-      if(localModel=="spwb") {
-         res = medfate::spwb_day(x, date,
+      if(lct[iCell]=="agriculture") {
+        res = aspwb_day(x, date,
                         tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
                         radVec[iCell], wsVec[iCell],
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                        precVec[iCell], NA_REAL, Runon[iCell]+SaturationExcess[iCell],
+                        precVec[iCell], Runon[iCell]+SaturationExcess[iCell],
                         true);
-      } else if(localModel =="growth") {
-        res = medfate::growth_day(x, date,tminVec[iCell], tmaxVec[iCell], 
-                                  rhminVec[iCell], rhmaxVec[iCell], radVec[iCell], wsVec[iCell],
+      } else {
+        if(localModel=="spwb") {
+          res = medfate::spwb_day(x, date,
+                                  tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
+                                  radVec[iCell], wsVec[iCell],
                                   latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                                   precVec[iCell], NA_REAL, Runon[iCell]+SaturationExcess[iCell],
                                   true);
+        } else if(localModel =="growth") {
+          res = medfate::growth_day(x, date,tminVec[iCell], tmaxVec[iCell], 
+                                    rhminVec[iCell], rhmaxVec[iCell], radVec[iCell], wsVec[iCell],
+                                    latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
+                                    precVec[iCell], NA_REAL, Runon[iCell]+SaturationExcess[iCell],
+                                    true);
+        }
       }
       localResults[iCell] = res; //Store for output
       soil["Kdrain"] = Kdrain; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
-      DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
       Snow[iCell] = DB["Snow"];
       Snowmelt[iCell] = DB["Snowmelt"];
       Rain[iCell] = DB["Rain"];
-      NetRain[iCell] = DB["NetRain"];
       Infiltration[iCell] = DB["Infiltration"];
       Runoff[iCell] = DB["Runoff"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
       SoilEvaporation[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
-      NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
-      Transpiration[iCell] = sum(EplantCoh);
+      
+      if(lct[iCell]=="wildland") {
+        NetRain[iCell] = DB["NetRain"];
+        DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
+        NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
+        Transpiration[iCell] = sum(EplantCoh);
+      }
 
       //Add deep drainage to aquifer of the cell
       aquifer[iCell] += DeepDrainage[iCell];

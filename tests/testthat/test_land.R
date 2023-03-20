@@ -2,6 +2,8 @@ library(medfateland)
 
 data("examplewatershed")
 yws = sp_to_sf(examplewatershed)
+yws$crop_factor = NA
+yws$crop_factor[yws$land_cover_type=="agriculture"] = 0.75
 
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-03"), by="day")
