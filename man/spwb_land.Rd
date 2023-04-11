@@ -28,7 +28,28 @@ growth_land(
 )
 }
 \arguments{
-\item{sf}{An object of class \code{\link{sf}} containing watershed information.}
+\item{sf}{An object of class \code{\link{sf}} with the following columns:
+\itemize{
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Stand identifiers.}
+\item{\code{elevation}: Elevation above sea level (in m).}
+\item{\code{slope}: Slope (in degrees).}
+\item{\code{aspect}: Aspect (in degrees).}
+\item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').}
+\item{\code{forest}: Objects of class \code{\link{forest}}.}
+\item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
+\item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+\item{\code{waterOrder}: Integer vector indicating cell processing order.}
+\item{\code{waterQ}: A list of water discharge values to neighbors.}
+\item{\code{queenNeigh}: A list of integers identifying the (up to 8) queen neighbors, for each cell.}
+\item{\code{channel}: A logical vector indicating whether each cell belongs to the channel network.}
+\item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
+\item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
+\item{\code{bedrock_porosity}: Bedrock porosity (\link{0-1}).}
+\item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
+\item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
+\item{\code{represented_area}: Area represented by each cell (in m2).}
+}}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
