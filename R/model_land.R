@@ -429,7 +429,6 @@
   }
 
   sf = sf::st_sf(geometry=sf::st_geometry(y))
-  sf$id = y$id
   sf$state = y$state
   sf$aquifer = y$aquifer
   sf$snowpack = y$snowpack
@@ -453,7 +452,6 @@
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
-#'     \item{\code{id}: Stand identifiers.}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
@@ -480,13 +478,12 @@
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
 #'  
-#' @return Function \code{spwb_land} list of class 'spwb_land' with the following elements:
+#' @return Functions \code{spwb_land} and \code{growth_land} return list of class of the same name as the function with the following elements:
 #' \itemize{
 #'   \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}}, 
 #'   with the following columns:
 #'     \itemize{
 #'        \item{\code{state}: A list of model input objects for each simulated stand.}
-#'        \item{\code{id}: Stand id, taken from the input.}
 #'        \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 #'        \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 #'        \item{\code{summary}: A list of cell summaries, containing the following variables:
