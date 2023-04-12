@@ -38,6 +38,8 @@ growth_land(
 \item{\code{forest}: Objects of class \code{\link{forest}}.}
 \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+\item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
+\item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{waterOrder}: Integer vector indicating cell processing order.}
 \item{\code{waterQ}: A list of water discharge values to neighbors.}
 \item{\code{queenNeigh}: A list of integers identifying the (up to 8) queen neighbors, for each cell.}

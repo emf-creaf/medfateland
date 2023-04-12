@@ -21,12 +21,12 @@ Useful links:
 Authors:
 \itemize{
   \item Aitor Améztegui (\href{https://orcid.org/0000-0003-2006-1559}{ORCID})
+  \item María González (\href{https://orcid.org/0000-0002-2227-8404}{ORCID})
 }
 
 Other contributors:
 \itemize{
   \item Mario Beltrán [contributor]
-  \item María González (\href{https://orcid.org/0000-0002-2227-8404}{ORCID}) [contributor]
 }
 
 }

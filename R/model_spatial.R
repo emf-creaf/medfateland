@@ -372,10 +372,12 @@
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
+#'     \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
 #'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
 #'     \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
+#'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
