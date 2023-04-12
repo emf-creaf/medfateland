@@ -125,11 +125,22 @@ List aspwb_day_internal(List x, NumericVector meteovec,
 }
 
 // [[Rcpp::export(".aspwb_day")]]
-List aspwb_day(List x, 
-               CharacterVector date, 
-               double tmin, double tmax, double rhmin, double rhmax, double rad, double wind, 
+List aspwb_day(List x, CharacterVector date, NumericVector meteovec, 
                double latitude, double elevation, double slope, double aspect,
-               double prec, double runon=0.0, bool modifyInput = true) {
+               double runon=0.0, bool modifyInput = true) {
+  
+  double tmin = meteovec["MinTemperature"];
+  double tmax = meteovec["MaxTemperature"];
+  double rhmin = meteovec["MinRelativeHumidity"];
+  double rhmax = meteovec["MaxRelativeHumidity"];
+  double rad = meteovec["Radiation"];
+  double prec = meteovec["Precipitation"];
+  double wind = NA_REAL;
+  if(meteovec.containsElementNamed("WindSpeed")) wind = meteovec["WindSpeed"];
+  double Catm = NA_REAL; 
+  if(meteovec.containsElementNamed("CO2")) Catm = meteovec["CO2"];
+  double Patm = NA_REAL; 
+  if(meteovec.containsElementNamed("Patm")) Patm = meteovec["Patm"];
   
   List control = x["control"];
   bool verbose = control["verbose"];
@@ -153,13 +164,13 @@ List aspwb_day(List x,
     x = clone(x);
   }
   
-  NumericVector meteovec = NumericVector::create(
+  NumericVector meteovec_inner = NumericVector::create(
     Named("tday") = tday, 
     Named("prec") = prec,
     Named("rad") = rad, 
     Named("pet") = pet);
   
-  return(aspwb_day_internal(x, meteovec,
+  return(aspwb_day_internal(x, meteovec_inner,
                   elevation, slope, aspect, 
                   runon, verbose));
 }

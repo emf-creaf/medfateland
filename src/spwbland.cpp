@@ -299,27 +299,28 @@ List watershedDay(String localModel,
 
       //Run daily soil water balance for the current cell
       List res;
+      NumericVector meteovec = NumericVector::create(
+        _["MinTemperature"] = tminVec[iCell],
+        _["MaxTemperature"] = tmaxVec[iCell],
+        _["MinRelativeHumidity"] = rhminVec[iCell],
+        _["MaxRelativeHumidity"] = rhmaxVec[iCell],
+        _["Precipitation"]  =precVec[iCell],
+        _["Radiation"] = radVec[iCell],
+        _["WindSpeed"] = wsVec[iCell]
+      );
       if(lct[iCell]=="agriculture") {
-        res = aspwb_day(x, date,
-                        tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
-                        radVec[iCell], wsVec[iCell],
+        res = aspwb_day(x, date, meteovec,
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                        precVec[iCell], Runon[iCell]+SaturationExcess[iCell],
-                        true);
+                        Runon[iCell]+SaturationExcess[iCell], true);
       } else {
         if(localModel=="spwb") {
-          res = medfate::spwb_day(x, date,
-                                  tminVec[iCell], tmaxVec[iCell], rhminVec[iCell], rhmaxVec[iCell],
-                                  radVec[iCell], wsVec[iCell],
+          res = medfate::spwb_day(x, date, meteovec,
                                   latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                                  precVec[iCell], NA_REAL, Runon[iCell]+SaturationExcess[iCell],
-                                  true);
+                                  Runon[iCell]+SaturationExcess[iCell], true);
         } else if(localModel =="growth") {
-          res = medfate::growth_day(x, date,tminVec[iCell], tmaxVec[iCell], 
-                                    rhminVec[iCell], rhmaxVec[iCell], radVec[iCell], wsVec[iCell],
+          res = medfate::growth_day(x, date, meteovec,
                                     latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                                    precVec[iCell], NA_REAL, Runon[iCell]+SaturationExcess[iCell],
-                                    true);
+                                    Runon[iCell]+SaturationExcess[iCell], true);
         }
       }
       localResults[iCell] = res; //Store for output

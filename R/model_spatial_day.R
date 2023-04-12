@@ -27,40 +27,27 @@
     met <- xi$meteo  
   }
   
-  tmin <- met[date,"MinTemperature"]
-  tmax <- met[date,"MaxTemperature"]
-  rhmin <- met[date,"MinRelativeHumidity"]
-  rhmax <- met[date,"MaxRelativeHumidity"]
-  rad <- met[date,"Radiation"]
-  wind <- met[date,"WindSpeed"]
-  prec <- met[date,"Precipitation"]
+  meteovec <- unlist(met[date, ])
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      res<-medfate::spwb_day(xi$x, date, 
-                             tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                             latitude = xi$latitude, elevation = xi$elevation,
-                             slope = xi$slope, aspect = xi$aspect, prec = prec,
+      res<-medfate::spwb_day(xi$x, date, meteovec,
+                             latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, 
-                       tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                       latitude = xi$latitude, elevation = xi$elevation, 
-                       slope = xi$slope, aspect = xi$aspect, prec = prec,
+      res <- .aspwb_day(xi$x, date, meteovec,
+                       latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                        modifyInput = TRUE)
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      res<-medfate::growth_day(xi$x, date, 
-                               tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                               latitude = xi$latitude, elevation = xi$elevation,
-                               slope = xi$slope, aspect = xi$aspect, prec = prec,
+      res<-medfate::growth_day(xi$x, date, meteovec,
+                               latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, 
-                       tmin = tmin, tmax = tmax, rhmin = rhmin, rhmax = rhmax, rad = rad, wind = wind,
-                       latitude = xi$latitude, elevation = xi$elevation,
-                       slope = xi$slope, aspect = xi$aspect, prec = prec,
-                       modifyInput = TRUE)
+      res <- .aspwb_day(xi$x, date, meteovec,
+                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                        modifyInput = TRUE)
+      
     }
   } 
   return(res)

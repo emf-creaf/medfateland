@@ -5,8 +5,8 @@
     .Call(`_medfateland_aspwbInput`, crop_factor, control, soil)
 }
 
-.aspwb_day <- function(x, date, tmin, tmax, rhmin, rhmax, rad, wind, latitude, elevation, slope, aspect, prec, runon = 0.0, modifyInput = TRUE) {
-    .Call(`_medfateland_aspwb_day`, x, date, tmin, tmax, rhmin, rhmax, rad, wind, latitude, elevation, slope, aspect, prec, runon, modifyInput)
+.aspwb_day <- function(x, date, meteovec, latitude, elevation, slope, aspect, runon = 0.0, modifyInput = TRUE) {
+    .Call(`_medfateland_aspwb_day`, x, date, meteovec, latitude, elevation, slope, aspect, runon, modifyInput)
 }
 
 .aspwb <- function(x, meteo, latitude, elevation = NA_real_, slope = NA_real_, aspect = NA_real_) {

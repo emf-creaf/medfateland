@@ -24,27 +24,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // aspwb_day
-List aspwb_day(List x, CharacterVector date, double tmin, double tmax, double rhmin, double rhmax, double rad, double wind, double latitude, double elevation, double slope, double aspect, double prec, double runon, bool modifyInput);
-RcppExport SEXP _medfateland_aspwb_day(SEXP xSEXP, SEXP dateSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP rhminSEXP, SEXP rhmaxSEXP, SEXP radSEXP, SEXP windSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP precSEXP, SEXP runonSEXP, SEXP modifyInputSEXP) {
+List aspwb_day(List x, CharacterVector date, NumericVector meteovec, double latitude, double elevation, double slope, double aspect, double runon, bool modifyInput);
+RcppExport SEXP _medfateland_aspwb_day(SEXP xSEXP, SEXP dateSEXP, SEXP meteovecSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP runonSEXP, SEXP modifyInputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type x(xSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
-    Rcpp::traits::input_parameter< double >::type tmin(tminSEXP);
-    Rcpp::traits::input_parameter< double >::type tmax(tmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type rhmin(rhminSEXP);
-    Rcpp::traits::input_parameter< double >::type rhmax(rhmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type rad(radSEXP);
-    Rcpp::traits::input_parameter< double >::type wind(windSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type meteovec(meteovecSEXP);
     Rcpp::traits::input_parameter< double >::type latitude(latitudeSEXP);
     Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< double >::type slope(slopeSEXP);
     Rcpp::traits::input_parameter< double >::type aspect(aspectSEXP);
-    Rcpp::traits::input_parameter< double >::type prec(precSEXP);
     Rcpp::traits::input_parameter< double >::type runon(runonSEXP);
     Rcpp::traits::input_parameter< bool >::type modifyInput(modifyInputSEXP);
-    rcpp_result_gen = Rcpp::wrap(aspwb_day(x, date, tmin, tmax, rhmin, rhmax, rad, wind, latitude, elevation, slope, aspect, prec, runon, modifyInput));
+    rcpp_result_gen = Rcpp::wrap(aspwb_day(x, date, meteovec, latitude, elevation, slope, aspect, runon, modifyInput));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -272,7 +266,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_aspwbInput", (DL_FUNC) &_medfateland_aspwbInput, 3},
-    {"_medfateland_aspwb_day", (DL_FUNC) &_medfateland_aspwb_day, 15},
+    {"_medfateland_aspwb_day", (DL_FUNC) &_medfateland_aspwb_day, 9},
     {"_medfateland_apwb", (DL_FUNC) &_medfateland_apwb, 6},
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
     {"_medfateland_ellipseROS", (DL_FUNC) &_medfateland_ellipseROS, 4},

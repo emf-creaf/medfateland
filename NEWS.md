@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 1.2
+- Compliance with medfate 3.0.0
+
 # Version 1.1.2
 - Package 'cli' adopted for client interface
 - Soil water balance in agricultural soils
