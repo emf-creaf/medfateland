@@ -8,7 +8,7 @@ yws = sp_to_sf(examplewatershed)
 data("SpParamsMED")
 vars <- c("elevation", "slope", "aspect", "land_cover_type",
           "texture1", "texture2", "texture3", "soilvolextract", "soilvolsat", "soilvolfc", "soilvolwp", "soilvolcurr",
-          "basal_area", "leaf_area_index", "foliar_biomass", "fuel", "shrub_volume")
+          "basal_area", "leaf_area_index", "foliar_biomass", "fuel")
 vars_ws <- c(vars,
              "num_neigh", "water_order", "outlets", "channel","depth_to_bedrock","bedrock_porosity", "bedrock_conductivity",
              "aquifer_elevation", "depth_to_aquifer","aquifer_volume", "snowpack")

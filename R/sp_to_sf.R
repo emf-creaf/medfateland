@@ -23,6 +23,15 @@ sp_to_sf<-function(y) {
   names(soil_list) = NULL
   names(x_list) = NULL
   epl$forest = forest_list
+  ## Check forest
+  for(i in 1:length(epl$forest)) {
+    f <- epl$forest[[i]]
+    if(!is.null(f)) {
+      if(length(f$herbCover)==0) f$herbCover <- NA
+      if(length(f$herbHeight)==0) f$herbHeight <- NA
+      epl$forest[[i]] <- f
+    }
+  }
   epl$soil = soil_list
   epl$state = x_list
   if(inherits(y,"DistributedWatershed")) {

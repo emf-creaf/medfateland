@@ -4,7 +4,14 @@
 \alias{landscape_summary}
 \title{Forest and soil summaries over space}
 \usage{
-landscape_summary(object, name, summary_function, ..., unlist = FALSE)
+landscape_summary(
+  object,
+  name,
+  summary_function,
+  ...,
+  unlist = FALSE,
+  progress = FALSE
+)
 }
 \arguments{
 \item{object}{An object of class \code{\link{sf}}.}
@@ -16,6 +23,8 @@ landscape_summary(object, name, summary_function, ..., unlist = FALSE)
 \item{...}{Additional arguments to the summary function.}
 
 \item{unlist}{Logical flag to try converting the summaries into different columns}
+
+\item{progress}{Boolean flag to display progress information}
 }
 \value{
 An object of class \code{\link{sf}} containing the calculated statistics.

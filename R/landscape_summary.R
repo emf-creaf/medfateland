@@ -9,6 +9,7 @@
 #' @param summary_function A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.
 #' @param ... Additional arguments to the summary function.
 #' @param unlist Logical flag to try converting the summaries into different columns
+#' @param progress Boolean flag to display progress information
 #' 
 #' @returns An object of class \code{\link{sf}} containing the calculated statistics. 
 #' If \code{unlist = FALSE} column 'summary' is a list with summaries for each element. 
@@ -31,25 +32,41 @@
 #' # Apply forest summary function
 #' landscape_summary(y, "forest", summary.forest, SpParamsMED)
 #'  
-landscape_summary<-function(object, name, summary_function, ..., unlist = FALSE) {
+landscape_summary<-function(object, name, summary_function, ..., unlist = FALSE, progress = FALSE) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")
   name = match.arg(name, c("forest", "soil", "state"))
   l = object[[name]]
   if(length(l)==0) return(NULL)
   l_isnull = unlist(lapply(l,is.null))
   sm = vector("list", length(l))
+  if(progress) {
+    cli::cli_li(paste0("Calculating summaries"))
+    cli::cli_progress_bar(name = "Stands", total = length(l))
+  }
   for(i in 1:length(l)) {
     if(!l_isnull[i]) sm[[i]] = do.call(summary_function, args=list(object=l[[i]],...))
+    if(progress) cli::cli_progress_update()
+  }
+  if(progress) {
+    cli::cli_progress_done()
   }
   res = sf::st_sf(geometry=sf::st_geometry(object))
   if(!unlist) {
     res$summary = sm
   } else {
+    if(progress) {
+      cli::cli_li(paste0("Unlisting"))
+      cli::cli_progress_bar(name = "Stands", total = length(l))
+    }
     d1 = unlist(sm[[1]])
     nms = names(d1)
     for(nm in nms) res[[nm]] = NA
     for(i in 1:length(sm)) {
       res[i, nms] = unlist(sm[[i]])
+      if(progress) cli::cli_progress_update()
+    }
+    if(progress) {
+      cli::cli_progress_done()
     }
   }
   return(sf::st_as_sf(tibble::as_tibble(res)))
