@@ -18,7 +18,7 @@ in an object of class sf containing landscape information."><!-- mathjax --><scr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -52,7 +52,14 @@ in an object of class <code>sf</code> containing landscape information.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">landscape_summary</span><span class="op">(</span><span class="va">object</span>, <span class="va">name</span>, <span class="va">summary_function</span>, <span class="va">...</span>, unlist <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">landscape_summary</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">name</span>,</span>
+<span>  <span class="va">summary_function</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  unlist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +82,10 @@ in an object of class <code>sf</code> containing landscape information.</p>
 
 <dt>unlist</dt>
 <dd><p>Logical flag to try converting the summaries into different columns</p></dd>
+
+
+<dt>progress</dt>
+<dd><p>Boolean flag to display progress information</p></dd>
 
 </dl></div>
     <div id="value">
@@ -115,17 +126,17 @@ If <code>unlist = TRUE</code> different columns are returned instead, one per va
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            geometry summary        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> (411000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> (412000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> (413000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> (415000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> (416000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> (423000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> (426000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> (428000 4646000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> (402000 4645000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> (404000 4645000) <span style="color: #949494;">&lt;smmry.fr [20]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 90 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> (411000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> (412000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> (413000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> (415000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> (416000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> (423000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> (426000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> (428000 4646000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> (402000 4645000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> (404000 4645000) <span style="color: #949494;">&lt;smmry.fr [26]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
 <span class="r-in"><span> </span></span>
 </code></pre></div>
     </div>
@@ -137,7 +148,7 @@ If <code>unlist = TRUE</code> different columns are returned instead, one per va
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, Mario Beltrán.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, María González.</p>
 </div>
 
 <div class="pkgdown">

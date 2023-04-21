@@ -18,7 +18,7 @@ No spatial processes are simulated."><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -110,10 +110,12 @@ No spatial processes are simulated.</p>
 <li><p><code>elevation</code>: Elevation above sea level (in m).</p></li>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
 <li><p><code>aspect</code>: Aspect (in degrees).</p></li>
+<li><p><code>land_cover_type</code>: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').</p></li>
 <li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
 <li><p><code>soil</code>: Objects of class <code>soil</code> or data frames of physical properties.</p></li>
 <li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
+<li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
 <li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_spatial</code> only).</p></li>
 </ul></dd>
 
@@ -254,7 +256,7 @@ in a column named 'meteo'.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, Mario Beltrán.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, María González.</p>
 </div>
 
 <div class="pkgdown">
