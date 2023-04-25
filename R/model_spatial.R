@@ -239,7 +239,7 @@
     w_init = which(init)
     if(length(w_init)>0) {
       if(progress) { 
-        cli::cli_progress_step(paste0("Creating '", length(w_init), "' input objects."))
+        cli::cli_progress_step(paste0("Creating ", length(w_init), " input objects for model '", model, "'."))
       }
       for(w in 1:length(w_init)) {
         i = w_init[w]
@@ -528,7 +528,6 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #' \code{\link{update_landscape}}
 #' 
 #' @examples
-#' \dontrun{
 #' # Load example landscape data
 #' data("example_ifn")
 #'   
@@ -541,8 +540,6 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #' # Initialize state for 'spwb' simulations
 #' example_ifn <- initialize_landscape(example_ifn, SpParamsMED, 
 #'                                     defaultControl(), model = "spwb")
-#' 
-#' }
 #' 
 #' @name initialize_landscape
 initialize_landscape<- function(x, SpParams, local_control, model = "spwb", replace = FALSE, progress = TRUE) {
@@ -592,7 +589,8 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
     w_init = which(init)
     if(length(w_init)>0) {
       if(progress) { 
-        cli::cli_progress_step(paste0("Creating '", length(w_init), "' input objects."))
+        cli::cli_progress_step(paste0("Creating ", length(w_init), " input objects for model '", model, "'."))
+        cli::cli_progress_bar(name = "Stands", total = n)
       }
       for(w in 1:length(w_init)) {
         i = w_init[w]
@@ -612,12 +610,11 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
         } else if(landcover[i] == "agriculture") {
           xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
+        if(progress) cli::cli_progress_update()
       }
-      if(progress) {
-        cli::cli_progress_done()
-      }
+      if(progress) cli::cli_progress_done()
     } else {
-      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'."))
+      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'. Use 'replace = TRUE' to force replacing current inputs."))
     }
   } 
   x[["state"]] <- xlist

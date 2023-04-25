@@ -45,7 +45,6 @@ Initialization is dealt automatically when calling simulation functions \code{\l
 \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
 }
 \examples{
-\dontrun{
 # Load example landscape data
 data("example_ifn")
   
@@ -58,8 +57,6 @@ data("SpParamsMED")
 # Initialize state for 'spwb' simulations
 example_ifn <- initialize_landscape(example_ifn, SpParamsMED, 
                                     defaultControl(), model = "spwb")
-
-}
 
 }
 \seealso{

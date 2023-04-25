@@ -2,7 +2,7 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
-# Version 1.2
+# Version 1.2.1
 - Compliance with medfate 3.0.0
 - New function 'initialize_state'
 
