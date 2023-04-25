@@ -18,6 +18,7 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster", "clusterExpo
 export(default_watershed_correction_factors,
        default_volume_function,
        extract_variables,
+       initialize_landscape,
        plot_variable,
        plot_summary,
        spwb_spatial, growth_spatial, fordyn_spatial,

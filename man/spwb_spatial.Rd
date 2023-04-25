@@ -170,7 +170,8 @@ res_man$result[[1]]$CutTreeTable
 }
 \seealso{
 \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}},
-\code{\link{simulation_summary}} , \code{\link{plot_summary}}, \code{\link{update_landscape}}
+\code{\link{simulation_summary}} , \code{\link{plot_summary}},
+\code{\link{initialize_landscape}}, \code{\link{update_landscape}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

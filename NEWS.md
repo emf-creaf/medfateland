@@ -4,6 +4,7 @@
 
 # Version 1.2
 - Compliance with medfate 3.0.0
+- New function 'initialize_state'
 
 # Version 1.1.2
 - Package 'cli' adopted for client interface
