@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-04-21</h4>
+            <h4 data-toc-skip class="date">2023-04-25</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -192,14 +192,14 @@ package <strong>medfate</strong>:</p>
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 38.7543798 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9431937  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    51.847386      0  39.61114863           35.18615    19.344459</span></span>
-<span><span class="co">## 2001-02-01     6.496036      0   0.08293529           21.76881     1.514666</span></span>
+<span><span class="co">## 2001-01-01    51.847386      0  39.60925072           35.18913    19.344459</span></span>
+<span><span class="co">## 2001-02-01     6.496036      0   0.08228418           21.77340     1.514666</span></span>
 <span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5215353                 0        10.32016      10.32016</span></span>
-<span><span class="co">## 2001-02-01       0.9068632                 0        19.34728      19.34728</span></span>
+<span><span class="co">## 2001-01-01       5.5213711                 0        10.32330      10.32330</span></span>
+<span><span class="co">## 2001-02-01       0.9065478                 0        19.35219      19.35219</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01               0.0307044</span></span>
-<span><span class="co">## 2001-02-01               0.0000000</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0.03070669</span></span>
+<span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>However, a more convenient way of generating summaries is by
 calculating them on all forest stands in one step, using function
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> on objects issued from
@@ -224,14 +224,14 @@ element of column <code>summary</code>:</p>
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 38.7543798 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9431937  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    51.847386      0  39.61114863           35.18615    19.344459</span></span>
-<span><span class="co">## 2001-02-01     6.496036      0   0.08293529           21.76881     1.514666</span></span>
+<span><span class="co">## 2001-01-01    51.847386      0  39.60925072           35.18913    19.344459</span></span>
+<span><span class="co">## 2001-02-01     6.496036      0   0.08228418           21.77340     1.514666</span></span>
 <span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5215353                 0        10.32016      10.32016</span></span>
-<span><span class="co">## 2001-02-01       0.9068632                 0        19.34728      19.34728</span></span>
+<span><span class="co">## 2001-01-01       5.5213711                 0        10.32330      10.32330</span></span>
+<span><span class="co">## 2001-02-01       0.9065478                 0        19.35219      19.35219</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01               0.0307044</span></span>
-<span><span class="co">## 2001-02-01               0.0000000</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0.03070669</span></span>
+<span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>Summary objects are handy because their <code><a href="../reference/plot_summary.html">plot_summary()</a></code>
 function allows us to display maps of summaries for specific dates:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -281,14 +281,14 @@ summaries can be directly accessed through the column
 <span><span class="co">## 2001-01-01 45.07945      74.74949 58.098839 16.650650 38.7543798 13.093006</span></span>
 <span><span class="co">## 2001-02-01 84.71521       4.99943  2.457859  2.541571  0.9431937  5.552842</span></span>
 <span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    51.847386      0  39.61114863           35.18615    19.344459</span></span>
-<span><span class="co">## 2001-02-01     6.496036      0   0.08293529           21.76881     1.514666</span></span>
+<span><span class="co">## 2001-01-01    51.847386      0  39.60925072           35.18913    19.344459</span></span>
+<span><span class="co">## 2001-02-01     6.496036      0   0.08228418           21.77340     1.514666</span></span>
 <span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01       5.5215353                 0        10.32016      10.32016</span></span>
-<span><span class="co">## 2001-02-01       0.9068632                 0        19.34728      19.34728</span></span>
+<span><span class="co">## 2001-01-01       5.5213711                 0        10.32330      10.32330</span></span>
+<span><span class="co">## 2001-02-01       0.9065478                 0        19.35219      19.35219</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01               0.0307044</span></span>
-<span><span class="co">## 2001-02-01               0.0000000</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0.03070669</span></span>
+<span><span class="co">## 2001-02-01              0.00000000</span></span></code></pre>
 <p>And one can produce maps with summary results directly from the
 output of the simulation function:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -316,14 +316,14 @@ or <code>fordyn()</code>). For example, the following function calls
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_3</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            Dorycnium spp. Genista spp. Hedera helix Juniperus communis</span></span>
-<span><span class="co">## 2001-01-01            NaN          NaN  0.006172931        0.003866370</span></span>
-<span><span class="co">## 2001-02-01            NaN          NaN  0.007700051        0.004788863</span></span>
+<span><span class="co">## 2001-01-01            NaN          NaN  0.006172975        0.003866397</span></span>
+<span><span class="co">## 2001-02-01            NaN          NaN  0.007700626        0.004789213</span></span>
 <span><span class="co">##            Lavandula spp. Phillyrea angustifolia Pinus nigra Pistacia lentiscus</span></span>
-<span><span class="co">## 2001-01-01     0.01722601            0.003740738 0.009436776        0.003532603</span></span>
-<span><span class="co">## 2001-02-01     0.02165466            0.004710261 0.011690019        0.004372917</span></span>
+<span><span class="co">## 2001-01-01     0.01722614            0.003740765  0.00943684        0.003532628</span></span>
+<span><span class="co">## 2001-02-01     0.02165632            0.004710626  0.01169086        0.004373235</span></span>
 <span><span class="co">##            Quercus coccifera Quercus faginea Quercus ilex Rubus spp.</span></span>
-<span><span class="co">## 2001-01-01       0.003233518             NaN   0.01093148        NaN</span></span>
-<span><span class="co">## 2001-02-01       0.004061631             NaN   0.01282453        NaN</span></span>
+<span><span class="co">## 2001-01-01       0.003233542             NaN   0.01093154        NaN</span></span>
+<span><span class="co">## 2001-02-01       0.004061943             NaN   0.01282524        NaN</span></span>
 <span><span class="co">##            Salvia rosmarinus Viburnum spp.</span></span>
 <span><span class="co">## 2001-01-01               NaN           NaN</span></span>
 <span><span class="co">## 2001-02-01               NaN           NaN</span></span></code></pre>
@@ -453,7 +453,7 @@ single month.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Final average soil water content (mm): 530.8</span></span>
 <span><span class="co">## Final average snowpack water content (mm): 0.05</span></span>
-<span><span class="co">## Final average aquifer water content (mm): 48.92</span></span>
+<span><span class="co">## Final average aquifer water content (mm): 48.91</span></span>
 <span><span class="co">## Final watershed water content (mm): 522.76</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in snowpack water content (mm): 0.05</span></span>
@@ -467,19 +467,19 @@ single month.</p>
 <span><span class="co">##   Net rainfall (mm) 34.02 Snow melt (mm) 13.38</span></span>
 <span><span class="co">##   Runon (mm) 1.1 Runoff (mm) 0</span></span>
 <span><span class="co">##   Subsurface input (mm) 0  Subsurface output (mm) 0</span></span>
-<span><span class="co">##   Deep drainage (mm) 49.67 Aquifer discharge (mm) 0</span></span>
-<span><span class="co">##   Soil evaporation (mm) 5.35 Plant transpiration (mm) 2.77</span></span>
+<span><span class="co">##   Deep drainage (mm) 49.66 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Soil evaporation (mm) 5.35 Plant transpiration (mm) 2.79</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Change in aquifer water content (mm): 48.92</span></span>
-<span><span class="co">## Aquifer water balance result (mm): 48.92</span></span>
+<span><span class="co">## Change in aquifer water content (mm): 48.91</span></span>
+<span><span class="co">## Aquifer water balance result (mm): 48.91</span></span>
 <span><span class="co">## Aquifer water balance components:</span></span>
-<span><span class="co">##   Deep drainage (mm) 48.92 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Deep drainage (mm) 48.91 Aquifer discharge (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in watershed water content (mm): 0</span></span>
-<span><span class="co">## Watershed water balance result (mm): 43.03</span></span>
+<span><span class="co">## Watershed water balance result (mm): 43.02</span></span>
 <span><span class="co">## Watershed water balance components:</span></span>
 <span><span class="co">##   Precipitation (mm) 74.75</span></span>
-<span><span class="co">##   Interception (mm) 23.71 Soil evaporation (mm) 5.27 Plant Transpiration (mm) 2.73</span></span>
+<span><span class="co">##   Interception (mm) 23.71 Soil evaporation (mm) 5.27 Plant Transpiration (mm) 2.75</span></span>
 <span><span class="co">##   Export (mm) 0</span></span>
 <span><span class="co">## Watershed lateral flows:</span></span>
 <span><span class="co">##   Subsurface flow (mm) 0</span></span>
@@ -504,11 +504,11 @@ summaries for a given landscape cell using:</p>
 <pre><code><span><span class="co">##            Runon Runoff Infiltration     Rain  NetRain     Snow Snowmelt</span></span>
 <span><span class="co">## 2001-01-01     0      0     69.20227 58.09884 55.36951 16.65065 13.83276</span></span>
 <span><span class="co">##            Interception DeepDrainage AquiferDischarge SaturationExcess</span></span>
-<span><span class="co">## 2001-01-01     2.729327     60.66513                0                0</span></span>
+<span><span class="co">## 2001-01-01     2.729327      60.6391                0                0</span></span>
 <span><span class="co">##            SoilEvaporation Transpiration SWE  SoilVol        Psi1  WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01        7.289911      1.837411   0 532.3416 -0.03300001 4000 14.78509</span></span>
+<span><span class="co">## 2001-01-01        7.286388      1.871498   0 532.3416 -0.03300001 4000 14.78526</span></span>
 <span><span class="co">##            InterflowInput InterflowOutput BaseflowInput BaseflowOutput</span></span>
-<span><span class="co">## 2001-01-01              0               0      5.239264       4.494522</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0               0      5.237089       4.491537</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
