@@ -26,7 +26,7 @@ reference:
   - landscape_summary
   - extract_variables
 
-- title: Model inputs
+- title: Model inputs defaults
   desc:  Defaults for model inputs
   contents:
   - default_watershed_correction_factors
@@ -44,6 +44,7 @@ reference:
   - starts_with("fordyn")
   - ends_with("_day")
   - update_landscape
+  - initialize_landscape
 
 - title: Post-processing
   desc:  Plot and summary functions for simulation results
