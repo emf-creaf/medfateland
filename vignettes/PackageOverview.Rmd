@@ -18,15 +18,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-The R package **medfateland** has been designed to run simulations of forest functioning and dynamics at the landscape and regional scales. The package allows executing the stand-level models available in package **medfate** on points and cells within landscape, in either sequential or parallel computation. In addition, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   
+The R package **medfateland** has been designed to run simulations of forest functioning and dynamics at the landscape and regional scales. The package allows executing the stand-level models available in package **medfate** on points and cells within landscape, in either sequential or parallel computation. In addition, medfateland allows considering spatial hydrological processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications. 
+
+Complete documentation on the design and formulation of the simulation models and their inputs can be found at the [medfate reference book](https://emf-creaf.github.io/medfatebook/index.html). 
 
 ## Data structures
 
-[TO BE WRITTEN]
+In previous versions of **medfateland** package (up to ver. 1.2.1), data structures extended those of older version of **meteoland**, which in turn depended on package **sp**. Current versions of **medfateland** (ver. > 2.0.0) use package **sf** (simple features) to represent spatial structures, both for inputs and outputs. Documentation and examples are given in the package of the variables that need to be represented. 
 
 ## Dynamic simulation functions
 
-Eco-hydrological processes are fundamental for the simulation models included in the `medfate` package. Eco-hydrological processes can be divided into local and landscape processes. 
+Eco-hydrological processes are fundamental for the simulation models included in the **medfate** package. Eco-hydrological processes can be divided into local and landscape processes. 
 
 ### Local water balance 
 
