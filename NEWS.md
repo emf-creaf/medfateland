@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.0.0
+- Important: Removal of sp-type S4 classes
+
 # Version 1.2.1
 - Compliance with medfate 3.0.0
 - New function 'initialize_state'

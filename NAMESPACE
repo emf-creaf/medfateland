@@ -1,4 +1,3 @@
-import(sp)
 import(sf)
 import(ggplot2)
 import(methods)
@@ -27,11 +26,8 @@ export(default_watershed_correction_factors,
        simulation_summary,
        landscape_summary,
        shinyplot_land,
-       sp_to_sf,
        update_landscape,
        create_management_scenario,
        fordyn_scenario)
 
 useDynLib(medfateland, .registration = TRUE)
-
-exportClasses(SpatialPointsLandscape, SpatialGridLandscape, SpatialPixelsLandscape, DistributedWatershed)
