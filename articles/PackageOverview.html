@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-04-25</h4>
+            <h4 data-toc-skip class="date">2023-04-30</h4>
       
       
       <div class="hidden name"><code>PackageOverview.Rmd</code></div>
@@ -90,49 +90,7 @@ eco-hydrological applications.</p>
 <div class="section level2">
 <h2 id="data-structures">Data structures<a class="anchor" aria-label="anchor" href="#data-structures"></a>
 </h2>
-<p><strong>IMPORTANT</strong>: All data the following data structures
-have been deprecated because of their dependencies with package
-<em>sp</em>.</p>
-<p>Package <strong>medfateland</strong> offers three <em>spatial
-classes</em> that inherit fields from three corresponding classes in
-package <strong>meteoland</strong>:</p>
-<ul>
-<li>
-<code>SpatialPointsLandscape</code>: represents a set of forest
-stands (including soil description) as points within a landscape.
-Extends class <code>SpatialPointsTopography</code>.</li>
-<li>
-<code>SpatialPixelsLandscape</code>: represents a set of forests
-(including soil description) or other land cover units
-(i.e. agricultural, rock outcrops or urban areas) as pixels within a
-gridded landscape. Extends class
-<code>SpatialPixelsTopography</code>.</li>
-<li>
-<code>SpatialGridLandscape</code>: represents a set of forests
-(including soil description) or other land cover units
-(i.e. agricultural, rock outcrops or urban areas) as pixels within a
-complete grid. Extends class <code>SpatialGridTopography</code>.</li>
-</ul>
-<p>Spatial objects <code>SpatialPointsLandscape</code>,
-<code>SpatialPixelsLandscape</code> and
-<code>SpatialGridLandscape</code> allow simulations to be performed
-straightforwardly for a set of forests distributed spatially.
-Simulations of local processes are performed sequentially or in parallel
-computation for all forest stands, because landscape processes are not
-considered.</p>
-<p>An additional spatial class is defined for watershed ecohydrological
-modelling:</p>
-<ul>
-<li>
-<code>DistributedWatershed</code>: Represents a (forested)
-watershed, including land cover units (i.e. agricultural, rock outcrops
-or urban areas), forest and soil information as well as bedrock
-properties. Extends class <code>SpatialPixelsLandscape</code>.</li>
-</ul>
-<p>Simulating water balance on objects <code>DistributedWatershed</code>
-allows considering an aquifer compartment for each cell as well as
-simulating spatial water transfer between cells, i.e. overland,
-subsurface water and groundwater flows.</p>
+<p>[TO BE WRITTEN]</p>
 </div>
 <div class="section level2">
 <h2 id="dynamic-simulation-functions">Dynamic simulation functions<a class="anchor" aria-label="anchor" href="#dynamic-simulation-functions"></a>

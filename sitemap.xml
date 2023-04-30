@@ -22,18 +22,6 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/DistributedWatershed-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SpatialGridLandscape-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SpatialPixelsLandscape-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SpatialPointsLandscape-class.html</loc>
-  </url>
-  <url>
     <loc>/reference/create_management_scenario.html</loc>
   </url>
   <url>
@@ -46,10 +34,10 @@
     <loc>/reference/default_watershed_correction_factors.html</loc>
   </url>
   <url>
-    <loc>/reference/examplepointslandscape.html</loc>
+    <loc>/reference/example_ifn.html</loc>
   </url>
   <url>
-    <loc>/reference/examplewatershed.html</loc>
+    <loc>/reference/example_watershed.html</loc>
   </url>
   <url>
     <loc>/reference/extract_variables.html</loc>
