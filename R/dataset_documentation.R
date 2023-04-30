@@ -14,3 +14,52 @@
 #' @seealso \code{\link{create_management_scenario}}, \code{\link{defaultManagementArguments}},
 #' \code{\link{fordyn_scenario}}
 NULL
+
+
+#' Example of watershed
+#' 
+#' An example of an object of \code{\link{sf}} with data for a small catchment of 53 ha (0.53 km2) in Catalonia.
+#' 
+#' @name example_watershed
+#' @docType data
+#' @format 
+#' The data format is that of an object \code{\link{sf}} 
+#' 
+#' @source
+#'   \itemize{
+#'    \item{Watershed limits and channel network from the spanish Ministerio de \enc{Transición}{Transicion} \enc{Ecológica}{Ecologica} y el Reto \enc{Demográfico}{Demografico}.}
+#'    \item{Elevation data at 30 m resolution from catalan Institut \enc{Cartogràfic}{Cartografic} i \enc{Geològic}{Geologic} de Catalunya.}
+#'    \item{Soil data from SoilGrids global database (Hengl et al. 2017).}
+#'    \item{Soil depth and depth to bedrock from Shangguan et al. (2017).}
+#'    \item{Bedrock hydraulic properties from Huscroft et al. (2018).}
+#'    \item{Land cover data from Mapa Forestal de \enc{España}{Espana} 1:25000.}
+#'    \item{Forest structure and composition from Mapa Forestal de \enc{España}{Espana} 1:25000 and the Third Spanish Forest Inventory (IFN3).}
+#'  }
+#'  
+#' @seealso \code{\link{spwb_land}}
+#' 
+#' @references
+#' 
+#' Hengl, T., Mendes De Jesus, J., Heuvelink, G.B.M., Gonzalez, M.R., Kilibarda, M., \enc{Blagotí}{Blagoti}, A., Shangguan, W., Wright, M.N., Geng, X., Bauer-Marschallinger, B., Guevara, M.A., Vargas, R., Macmillan, R.A., Batjes, N.H., Leenaars, J.G.B., Ribeiro, E., Wheeler, I., Mantel, S., Kempen, B., 2017. SoilGrids250m: Global Gridded Soil Information Based on Machine Learning. PLoS One 12, e0169748. doi:10.1371/journal.pone.0169748
+#' 
+#' Huscroft, J., Gleeson, T., Hartmann, J., \enc{Börker}{Borker}, J., 2018. Compiling and Mapping Global Permeability of the Unconsolidated and Consolidated Earth: GLobal HYdrogeology MaPS 2.0 (GLHYMPS 2.0). Geophys. Res. Lett. 45, 1897–1904. doi:10.1002/2017GL075860
+#' 
+#' Shangguan, W., Hengl, T., Mendes de Jesus, J., Yuan, H., Dai, Y., 2017. Mapping the global depth to bedrock for land surface modeling. J. Adv. Model. Earth Syst. 9, 65–88. doi:10.1002/2016MS000686
+NULL
+
+#' Example of distributed forest inventory stands
+#'
+#'  An example of an coordinates, topography, forest and soil data corresponding to 30 forest inventory plots.
+#'  
+#' @name example_ifn
+#' @docType data
+#' @format The data format is that of an object \code{\link{sf}} 
+#' 
+#' @source
+#'  \itemize{
+#'    \item{Soil data from SoilGrids global database (Hengl et al. 2017).}
+#'    \item{Soil depth and depth to bedrock from Shangguan et al. (2017).}
+#'    \item{Forest structure and composition from the Third Spanish Forest Inventory (IFN3).}
+#'  }
+#' @seealso {\code{\link{spwb_spatial}}}
+NULL

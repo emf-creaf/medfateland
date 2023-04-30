@@ -1,7 +1,7 @@
 library(medfateland)
 
-data("examplewatershed")
-yws = sp_to_sf(examplewatershed)
+data("example_watershed")
+yws = example_watershed
 yws$crop_factor = NA
 yws$crop_factor[yws$land_cover_type=="agriculture"] = 0.75
 

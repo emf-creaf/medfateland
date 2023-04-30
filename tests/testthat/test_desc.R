@@ -1,9 +1,9 @@
 library(medfateland)
 
-data("examplepointslandscape")
-data("examplewatershed")
-ypts = sp_to_sf(examplepointslandscape)
-yws = sp_to_sf(examplewatershed)
+data("example_ifn")
+data("example_watershed")
+ypts = example_ifn
+yws = example_watershed
 
 data("SpParamsMED")
 vars <- c("elevation", "slope", "aspect", "land_cover_type",

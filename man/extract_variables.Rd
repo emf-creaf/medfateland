@@ -74,15 +74,12 @@ The following string values are available for \code{vars}.
 }
 \examples{
 # Load data and species parameters from medfate
-data(examplepointslandscape)
+data(example_ifn)
 data(SpParamsMED)
   
-# Transform example to 'sf' 
-y <- sp_to_sf(examplepointslandscape)
- 
 # Calculate basal area and leaf area index
 # for all forest stands
-extract_variables(y, vars = c("basal_area", "leaf_area_index"),
+extract_variables(example_ifn, vars = c("basal_area", "leaf_area_index"),
                   SpParams = SpParamsMED)
                   
 }

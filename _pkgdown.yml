@@ -12,12 +12,10 @@ articles:
     - starts_with("LandscapeWaterBalance")
 
 reference:
-- title: Landscape classes
-  desc:  Landscape class definition and initialization
+- title: Example data
+  desc:  Example data sets for distributed stands and watershed
   contents:
   - starts_with("example")
-  - starts_with("Distributed")
-  - starts_with("Spatial")
   - sp_to_sf
 
 - title: Summary/extract functions for spatial classes

@@ -21,16 +21,13 @@
 #' 
 #' @examples 
 #' # Load plot data and species parameters from medfate
-#' data(examplepointslandscape)
+#' data(example_ifn)
 #' 
 #' # Load default medfate parameters
 #' data("SpParamsMED")
 #'  
-#' # Transform example to 'sf' 
-#' y = sp_to_sf(examplepointslandscape)
-#' 
 #' # Apply forest summary function
-#' landscape_summary(y, "forest", summary.forest, SpParamsMED)
+#' landscape_summary(example_ifn, "forest", summary.forest, SpParamsMED)
 #'  
 landscape_summary<-function(object, name, summary_function, ..., unlist = FALSE, progress = FALSE) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")

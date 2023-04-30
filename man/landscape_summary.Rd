@@ -37,16 +37,13 @@ in an object of class \code{\link{sf}} containing landscape information.
 }
 \examples{
 # Load plot data and species parameters from medfate
-data(examplepointslandscape)
+data(example_ifn)
 
 # Load default medfate parameters
 data("SpParamsMED")
  
-# Transform example to 'sf' 
-y = sp_to_sf(examplepointslandscape)
-
 # Apply forest summary function
-landscape_summary(y, "forest", summary.forest, SpParamsMED)
+landscape_summary(example_ifn, "forest", summary.forest, SpParamsMED)
  
 }
 \seealso{

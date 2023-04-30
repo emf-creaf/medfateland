@@ -116,14 +116,11 @@ provided by \code{\link{growth_day}}.
 \examples{
 \dontrun{
 # Load example watershed data
-data("examplewatershed")
+data("example_watershed")
 
-# Transform example to 'sf' 
-ws_sf <- sp_to_sf(examplewatershed)
-  
 # Set crop factor 
-ws_sf$crop_factor <- NA
-ws_sf$crop_factor[ws_sf$land_cover_type=="agriculture"] <- 0.75
+example_watershed$crop_factor <- NA
+example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] <- 0.75
 
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
@@ -135,7 +132,7 @@ data("SpParamsMED")
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 # Launch simulations
-res <- spwb_land(ws_sf, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 }
 
 }

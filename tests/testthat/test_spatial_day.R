@@ -1,9 +1,9 @@
 library(medfateland)
 
-data("examplepointslandscape")
-data("examplewatershed")
-ypts = sp_to_sf(examplepointslandscape)
-yws = sp_to_sf(examplewatershed)
+data("example_ifn")
+data("example_watershed")
+ypts = example_ifn
+yws = example_watershed
 yws$crop_factor = NA
 yws$crop_factor[yws$land_cover_type=="agriculture"] = 0.75
 
