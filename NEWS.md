@@ -3,7 +3,7 @@
 ----------------------------------
 
 # Version 2.0.0
-- Important: Removal of sp-type S4 classes
+- IMPORTANT: In this version we removed sp-type S4 classes that were deprecated in 1.0.1. Use release version 1.2.1 to continue using deprecated classes.
 
 # Version 1.2.1
 - Compliance with medfate 3.0.0
