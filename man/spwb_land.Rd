@@ -132,7 +132,8 @@ data("SpParamsMED")
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
 # Launch simulations
-res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
+                 dates = dates, summary_frequency = "month")
 }
 
 }
