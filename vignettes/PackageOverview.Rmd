@@ -22,21 +22,7 @@ The R package **medfateland** has been designed to run simulations of forest fun
 
 ## Data structures
 
-**IMPORTANT**: All data the following data structures have been deprecated because of their dependencies with package *sp*.
-
-Package **medfateland** offers three *spatial classes* that inherit fields from three corresponding classes in package **meteoland**:
-
-* `SpatialPointsLandscape`: represents a set of forest stands (including soil description) as points within a landscape. Extends class `SpatialPointsTopography`.
-* `SpatialPixelsLandscape`: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a gridded landscape. Extends class `SpatialPixelsTopography`.
-* `SpatialGridLandscape`: represents a set of forests (including soil description) or other land cover units (i.e. agricultural, rock outcrops or urban areas) as pixels within a complete grid. Extends class `SpatialGridTopography`.
-
-Spatial objects `SpatialPointsLandscape`, `SpatialPixelsLandscape` and `SpatialGridLandscape` allow simulations to be performed straightforwardly for a set of forests distributed spatially. Simulations of local processes are performed sequentially or in parallel computation for all forest stands, because landscape processes are not considered. 
-
-An additional spatial class is defined for watershed ecohydrological modelling:
-
-* `DistributedWatershed`: Represents a (forested) watershed, including land cover units (i.e. agricultural, rock outcrops or urban areas), forest and soil information as well as bedrock properties. Extends class `SpatialPixelsLandscape`.
-
-Simulating water balance on objects `DistributedWatershed` allows considering an aquifer compartment for each cell as well as simulating spatial water transfer between cells, i.e. overland, subsurface water and groundwater flows.
+[TO BE WRITTEN]
 
 ## Dynamic simulation functions
 
