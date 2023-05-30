@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-04-30</h4>
+            <h4 data-toc-skip class="date">2023-05-30</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -432,37 +432,37 @@ single month.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Final average soil water content (mm): 530.8</span></span>
 <span><span class="co">## Final average snowpack water content (mm): 0.05</span></span>
-<span><span class="co">## Final average aquifer water content (mm): 48.91</span></span>
+<span><span class="co">## Final average aquifer water content (mm): 18.22</span></span>
 <span><span class="co">## Final watershed water content (mm): 522.76</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in snowpack water content (mm): 0.05</span></span>
-<span><span class="co">## Snowpack water balance result (mm): 3.27</span></span>
+<span><span class="co">## Snowpack water balance result (mm): 11.43</span></span>
 <span><span class="co">## Snowpack water balance components:</span></span>
-<span><span class="co">##   Snow fall (mm) 16.65 Snow melt (mm) 13.38</span></span>
+<span><span class="co">##   Snow fall (mm) 16.65 Snow melt (mm) 5.22</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in soil water content (mm): 0</span></span>
-<span><span class="co">## Soil water balance result (mm): -9.3</span></span>
+<span><span class="co">## Soil water balance result (mm): -8.65</span></span>
 <span><span class="co">## Soil water balance components:</span></span>
-<span><span class="co">##   Net rainfall (mm) 34.02 Snow melt (mm) 13.38</span></span>
+<span><span class="co">##   Net rainfall (mm) 5.9 Snow melt (mm) 5.1</span></span>
 <span><span class="co">##   Runon (mm) 1.1 Runoff (mm) 0</span></span>
 <span><span class="co">##   Subsurface input (mm) 0  Subsurface output (mm) 0</span></span>
-<span><span class="co">##   Deep drainage (mm) 49.66 Aquifer discharge (mm) 0</span></span>
-<span><span class="co">##   Soil evaporation (mm) 5.35 Plant transpiration (mm) 2.79</span></span>
+<span><span class="co">##   Deep drainage (mm) 18.5 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Soil evaporation (mm) 1.9 Plant transpiration (mm) 0.35</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Change in aquifer water content (mm): 48.91</span></span>
-<span><span class="co">## Aquifer water balance result (mm): 48.91</span></span>
+<span><span class="co">## Change in aquifer water content (mm): 18.22</span></span>
+<span><span class="co">## Aquifer water balance result (mm): 18.22</span></span>
 <span><span class="co">## Aquifer water balance components:</span></span>
-<span><span class="co">##   Deep drainage (mm) 48.91 Aquifer discharge (mm) 0</span></span>
+<span><span class="co">##   Deep drainage (mm) 18.22 Aquifer discharge (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Change in watershed water content (mm): 0</span></span>
-<span><span class="co">## Watershed water balance result (mm): 43.02</span></span>
+<span><span class="co">## Watershed water balance result (mm): 21.13</span></span>
 <span><span class="co">## Watershed water balance components:</span></span>
 <span><span class="co">##   Precipitation (mm) 74.75</span></span>
-<span><span class="co">##   Interception (mm) 23.71 Soil evaporation (mm) 5.27 Plant Transpiration (mm) 2.75</span></span>
+<span><span class="co">##   Interception (mm) 51.41 Soil evaporation (mm) 1.87 Plant Transpiration (mm) 0.34</span></span>
 <span><span class="co">##   Export (mm) 0</span></span>
 <span><span class="co">## Watershed lateral flows:</span></span>
 <span><span class="co">##   Subsurface flow (mm) 0</span></span>
-<span><span class="co">##   Groundwater flow (mm) 5.91</span></span>
+<span><span class="co">##   Groundwater flow (mm) 1.22</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ------------ spwb_land ------------</span></span></code></pre>
 <p>Although simulations are performed using daily temporal steps,
@@ -480,14 +480,14 @@ embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##            Runon Runoff Infiltration     Rain  NetRain     Snow Snowmelt</span></span>
-<span><span class="co">## 2001-01-01     0      0     69.20227 58.09884 55.36951 16.65065 13.83276</span></span>
+<pre><code><span><span class="co">##            Runon Runoff Infiltration     Rain NetRain     Snow Snowmelt</span></span>
+<span><span class="co">## 2001-01-01     0      0            0 58.09884      NA 16.65065        0</span></span>
 <span><span class="co">##            Interception DeepDrainage AquiferDischarge SaturationExcess</span></span>
-<span><span class="co">## 2001-01-01     2.729327      60.6391                0                0</span></span>
+<span><span class="co">## 2001-01-01           NA            0                0                0</span></span>
 <span><span class="co">##            SoilEvaporation Transpiration SWE  SoilVol        Psi1  WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01        7.286388      1.871498   0 532.3416 -0.03300001 4000 14.78526</span></span>
+<span><span class="co">## 2001-01-01             0.5            NA   0 532.3416 -0.03300001 4000 15.35978</span></span>
 <span><span class="co">##            InterflowInput InterflowOutput BaseflowInput BaseflowOutput</span></span>
-<span><span class="co">## 2001-01-01              0               0      5.237089       4.491537</span></span></code></pre>
+<span><span class="co">## 2001-01-01              0               0      2.402043     0.08156255</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
