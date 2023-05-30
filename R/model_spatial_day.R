@@ -2,18 +2,6 @@
   res = NULL
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
-    else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-      met <- meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-      met <- met@data[[1]]
-    } 
-    else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      spt <- SpatialPointsTopography(as(xi$point, "Spatial"), 
-                                    elevation = xi$elevation, 
-                                    slope = xi$slope, 
-                                    aspect = xi$aspect)
-      met <- meteoland::interpolationpoints(meteo, spt, dates=as.Date(date), verbose=FALSE)
-      met <- met@data[[1]]
-    }
     else if(inherits(meteo, "stars")) {
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
       met <- meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
@@ -22,8 +10,7 @@
       row.names(met) <- met$dates
       met$dates = NULL
     }    
-  } 
-  else {
+  } else {
     met <- xi$meteo  
   }
   

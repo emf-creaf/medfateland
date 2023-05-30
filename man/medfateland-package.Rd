@@ -6,7 +6,7 @@
 \alias{medfateland-package}
 \title{medfateland: Mediterranean Landscape Forest Simulation}
 \description{
-Functions to simulate hydrology, forest functioning and dynamics over landscapes.
+Functions to simulate forest hydrology, forest function and dynamics over landscapes.
 }
 \seealso{
 Useful links:

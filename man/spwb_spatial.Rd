@@ -117,7 +117,7 @@ No spatial processes are simulated.
 }
 \details{
 Simulation functions  accept different formats for meteorological input (parameter \code{meteo}).
-The user may supply two kinds of weather sources:
+The user may supply two kinds of daily weather sources:
 \enumerate{
 \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
 \item{An object of class \code{\link{stars}} with interpolation data, created by package \code{\link{meteoland}}.}

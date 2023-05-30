@@ -14,18 +14,6 @@
   
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) met <- meteo
-    else if(inherits(meteo,"SpatialGridMeteorology") || inherits(meteo,"SpatialPixelsMeteorology")) {
-      met <- meteoland::extractgridpoints(meteo, as(xi$point, "Spatial"))
-      met <- met@data[[1]]
-    } 
-    else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      spt <- SpatialPointsTopography(as(xi$point, "Spatial"), 
-                                    elevation = xi$elevation, 
-                                    slope = xi$slope, 
-                                    aspect = xi$aspect)
-      met <- meteoland::interpolationpoints(meteo, spt, dates=dates, verbose=FALSE)
-      met <- met@data[[1]]
-    }
     else if(inherits(meteo, "stars")) {
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
       met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
@@ -396,7 +384,7 @@
 #' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
-#' The user may supply two kinds of weather sources: 
+#' The user may supply two kinds of daily weather sources: 
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
 #'   \item{An object of class \code{\link{stars}} with interpolation data, created by package \code{\link{meteoland}}.}
