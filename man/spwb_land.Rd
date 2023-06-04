@@ -3,6 +3,7 @@
 \name{spwb_land}
 \alias{spwb_land}
 \alias{growth_land}
+\alias{fordyn_land}
 \title{Watershed simulations}
 \usage{
 spwb_land(
@@ -10,6 +11,7 @@ spwb_land(
   SpParams,
   meteo = NULL,
   dates = NULL,
+  CO2ByYear = numeric(0),
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
   correction_factors = default_watershed_correction_factors(),
@@ -21,6 +23,19 @@ growth_land(
   SpParams,
   meteo = NULL,
   dates = NULL,
+  CO2ByYear = numeric(0),
+  summary_frequency = "years",
+  local_control = medfate::defaultControl(),
+  correction_factors = default_watershed_correction_factors(),
+  progress = TRUE
+)
+
+fordyn_land(
+  sf,
+  SpParams,
+  meteo = NULL,
+  dates = NULL,
+  CO2ByYear = numeric(0),
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
   correction_factors = default_watershed_correction_factors(),
@@ -57,6 +72,8 @@ growth_land(
 \item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}}).}
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
+
+\item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
 \item{summary_frequency}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
 
@@ -108,10 +125,17 @@ with the following columns:
 }
 }
 \description{
-Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
-on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.
-Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells,
-provided by \code{\link{growth_day}}.
+Functions to perform simulations on a watershed described by a set of connected grid cells
+}
+\details{
+\itemize{
+\item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
+on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
+\item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells,
+provided by \code{\link{growth_day}}.}
+\item{Function \code{fordyn_land} extends the previous two functions with the simulation of recruitment
+and forest dynamics.}
+}
 }
 \examples{
 \dontrun{

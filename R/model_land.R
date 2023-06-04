@@ -1,5 +1,6 @@
 .landSim<-function(landModel = "spwb_land", 
                    y, SpParams, meteo, dates = NULL,
+                   CO2ByYear = numeric(0), 
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),
@@ -174,7 +175,7 @@
     if(progress) cat(".")
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
-    
+    yearString = substr(datechar, 1, 4)
     gridMinTemperature = rep(NA, nCells)
     gridMaxTemperature = rep(NA, nCells)
     gridMinRelativeHumidity = rep(NA, nCells)
@@ -182,26 +183,12 @@
     gridPrecipitation = rep(NA, nCells)
     gridRadiation = rep(NA, nCells)
     gridWindSpeed = rep(NA, nCells)
+    Catm = NA
+    if(yearString %in% names(CO2ByYear)) Catm = CO2ByYear[yearString]
+    gridCO2 = rep(Catm, nCells)
     
     if(!is.null(meteo)) {
-      if(inherits(meteo,"MeteorologyInterpolationData")) {
-        spt = SpatialPointsTopography(as(sf::st_geometry(y), "Spatial"), 
-                                      elevation = y$elevation, 
-                                      slope = y$slope, 
-                                      aspect = y$aspect)
-        ml = interpolationpoints(meteo, spt, dates[day], verbose = FALSE)
-        for(iml in 1:nCells) {
-          meti = ml@data[[iml]]
-          gridMinTemperature[iml] = meti$MinTemperature[1]
-          gridMaxTemperature[iml] = meti$MaxTemperature[1]
-          gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[1]
-          gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[1]
-          gridPrecipitation[iml] = meti$Precipitation[1]
-          gridRadiation[iml] = meti$Radiation[1]
-          gridWindSpeed[iml] = meti$WindSpeed[1]
-        }
-      } 
-      else if(inherits(meteo,"stars")) {
+      if(inherits(meteo,"stars")) {
         pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
                           elevation = y$elevation, slope = y$slope, aspect = y$aspect)
         met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
@@ -214,19 +201,6 @@
         gridRadiation = ml$Radiation
         gridWindSpeed = ml$WindSpeed      
       } 
-      else if(inherits(meteo,"SpatialPointsMeteorology")) {
-        imeteo = which(datesMeteo == dates[day]) #date index in meteo data
-        for(iml in 1:nCells) {
-          meti = meteo@data[[iml]]
-          gridMinTemperature[iml] = meti$MinTemperature[imeteo]
-          gridMaxTemperature[iml] = meti$MaxTemperature[imeteo]
-          gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[imeteo]
-          gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[imeteo]
-          gridPrecipitation[iml] = meti$Precipitation[imeteo]
-          gridRadiation[iml] = meti$Radiation[imeteo]
-          gridWindSpeed[iml] = meti$WindSpeed[imeteo]
-        }
-      } 
       else { # data frame
         imeteo = which(datesMeteo == dates[day]) #date index in meteo data
         # repeat values for all cells
@@ -237,6 +211,7 @@
         gridPrecipitation = rep(meteo[imeteo,"Precipitation"], nCells)
         gridRadiation = rep(meteo[imeteo, "Radiation"], nCells)
         gridWindSpeed = rep(meteo[imeteo, "WindSpeed"], nCells)
+        if("CO2" %in% names(meteo)) gridCO2 = rep(meteo[imeteo, "CO2"], nCells)
       }
     } 
     else {
@@ -250,6 +225,7 @@
         gridPrecipitation[iml] = meti$Precipitation[imeteo]
         gridRadiation[iml] = meti$Radiation[imeteo]
         gridWindSpeed[iml] = meti$WindSpeed[imeteo]
+        if("CO2" %in% names(meti)) gridCO2[iml] = meti$CO2[imeteo]
       }
     }
     
@@ -260,7 +236,8 @@
                            MaxRelativeHumidity = gridMaxRelativeHumidity,
                            Precipitation = gridPrecipitation,
                            Radiation = gridRadiation,
-                           WindSpeed = gridWindSpeed)
+                           WindSpeed = gridWindSpeed,
+                           CO2 = gridCO2)
     ws_day = .watershedDay(localModel,
                            y$land_cover_type, y$state, y$soil,
                            y$waterOrder, y$queenNeigh, y$waterQ,
@@ -444,11 +421,17 @@
 
 #' Watershed simulations
 #' 
-#' Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
-#' on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells. 
-#' Function \code{growth_land} is similar, but includes daily local carbon balance and growth processes in grid cells, 
-#' provided by \code{\link{growth_day}}.
+#' Functions to perform simulations on a watershed described by a set of connected grid cells
 #' 
+#' @details
+#' \itemize{
+#'   \item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
+#'         on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
+#'   \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells, 
+#'         provided by \code{\link{growth_day}}.} 
+#'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of recruitment
+#'         and forest dynamics.}
+#' }
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
@@ -475,6 +458,7 @@
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}}).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
+#' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
@@ -549,25 +533,41 @@
 #' 
 #' @name spwb_land
 spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
-                   summary_frequency = "years",
-                   local_control = medfate::defaultControl(),
-                   correction_factors = default_watershed_correction_factors(),
-                   progress = TRUE) {
+                    CO2ByYear = numeric(0), 
+                    summary_frequency = "years",
+                    local_control = medfate::defaultControl(),
+                    correction_factors = default_watershed_correction_factors(),
+                    progress = TRUE) {
   return(.landSim("spwb_land",
                   y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
+                  CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
                   correction_factors = correction_factors, progress = progress))
 }
 #' @rdname spwb_land
 growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
-                   summary_frequency = "years",
-                   local_control = medfate::defaultControl(),
-                   correction_factors = default_watershed_correction_factors(),
-                   progress = TRUE) {
+                      CO2ByYear = numeric(0), 
+                      summary_frequency = "years",
+                      local_control = medfate::defaultControl(),
+                      correction_factors = default_watershed_correction_factors(),
+                      progress = TRUE) {
   return(.landSim("growth_land",
                   y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
+                  CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
                   correction_factors = correction_factors, progress = progress))
+}
+
+#' @rdname spwb_land
+fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
+                        CO2ByYear = numeric(0), 
+                        summary_frequency = "years",
+                        local_control = medfate::defaultControl(),
+                        correction_factors = default_watershed_correction_factors(),
+                        progress = TRUE) {
+  
+  
+  
 }

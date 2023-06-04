@@ -109,7 +109,8 @@ List watershedDay(String localModel,
   NumericVector precVec = gridMeteo["Precipitation"];
   NumericVector radVec = gridMeteo["Radiation"];
   NumericVector wsVec = gridMeteo["WindSpeed"];
-
+  NumericVector C02Vec = gridMeteo["CO2"];
+  
 
   //A1. Calculate soil and aquifer water table elevation (heads)
   if(progress) Rcout<<"+";
@@ -306,7 +307,8 @@ List watershedDay(String localModel,
         _["MaxRelativeHumidity"] = rhmaxVec[iCell],
         _["Precipitation"]  =precVec[iCell],
         _["Radiation"] = radVec[iCell],
-        _["WindSpeed"] = wsVec[iCell]
+        _["WindSpeed"] = wsVec[iCell],
+        _["CO2"] = C02Vec[iCell]
       );
       if(lct[iCell]=="agriculture") {
         res = aspwb_day(x, date, meteovec,
