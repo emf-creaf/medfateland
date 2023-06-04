@@ -93,9 +93,9 @@ reference book</a>.</p>
 <div class="section level2">
 <h2 id="data-structures">Data structures<a class="anchor" aria-label="anchor" href="#data-structures"></a>
 </h2>
-<p>In previous versions of <strong>medfateland</strong> package (up to
-ver. 1.2.1), data structures extended those of older version of
-<strong>meteoland</strong>, which in turn depended on package
+<p>In previous versions of <strong>medfateland</strong> package, data
+structures extended those of older version of
+<strong>meteoland</strong>, which in turn depended by then on package
 <strong>sp</strong>. Current versions of <strong>medfateland</strong>
 (ver. &gt; 2.0.0) use package <strong>sf</strong> (simple features) to
 represent spatial structures, both for inputs and outputs. Documentation
@@ -103,7 +103,7 @@ and examples are given in the package of the variables that need to be
 represented.</p>
 </div>
 <div class="section level2">
-<h2 id="dynamic-simulation-functions">Dynamic simulation functions<a class="anchor" aria-label="anchor" href="#dynamic-simulation-functions"></a>
+<h2 id="simulation-functions">Simulation functions<a class="anchor" aria-label="anchor" href="#simulation-functions"></a>
 </h2>
 <p>Eco-hydrological processes are fundamental for the simulation models
 included in the <strong>medfate</strong> package. Eco-hydrological
@@ -141,7 +141,7 @@ continuous areas.</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="carbon-balance-and-plant-growth">Carbon balance and plant growth<a class="anchor" aria-label="anchor" href="#carbon-balance-and-plant-growth"></a>
+<h3 id="local-carbon-balance-and-plant-growth">Local carbon balance and plant growth<a class="anchor" aria-label="anchor" href="#local-carbon-balance-and-plant-growth"></a>
 </h3>
 <p>Changes in leaf area and plant growth are key to evaluate the
 influence of climatic conditions on forest structure and function.
@@ -183,7 +183,7 @@ to monitor wildfire risk).</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="forest-dynamics">Forest dynamics<a class="anchor" aria-label="anchor" href="#forest-dynamics"></a>
+<h3 id="local-forest-dynamics-and-coordination-via-management-scenarios">Local forest dynamics and coordination via management scenarios<a class="anchor" aria-label="anchor" href="#local-forest-dynamics-and-coordination-via-management-scenarios"></a>
 </h3>
 <p>Changes in forest structure and composition result from the interplay
 of demographic processes (growth, mortality and recruitment) and may
@@ -196,19 +196,20 @@ time steps on a given forest stand, building on previous models. Package
 make internal calls to function <code>fordyn()</code>. In addition,
 <strong>medfateland</strong> provides function
 <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>, which allows performing simulations of
-forest dynamics for a set of forest stands, while controlling management
-actions following a timber demand-based approach.</p>
+forest dynamics for a set of forest stands, while coordinating
+management actions in the set of stands following a timber demand-based
+approach.</p>
 </div>
 <div class="section level3">
-<h3 id="water-and-carbon-balance-including-spatial-processes">Water and carbon balance including spatial processes<a class="anchor" aria-label="anchor" href="#water-and-carbon-balance-including-spatial-processes"></a>
+<h3 id="watershed-simulations-including-lateral-water-transfer-processes">Watershed simulations including lateral water transfer
+processes<a class="anchor" aria-label="anchor" href="#watershed-simulations-including-lateral-water-transfer-processes"></a>
 </h3>
 <p>When input data is in form of continuous spatial variation of forests
 over a landscape, the <strong>medfateland</strong> package allows
-studying local soil water balance in combination with lateral water
-transfer processes using function <code><a href="../reference/spwb_land.html">spwb_land()</a></code>. The package
-also allows studying local water balance and plant growth processes in
-combination with lateral water transfer processes using function
-<code><a href="../reference/spwb_land.html">growth_land()</a></code>. Three lateral flows are considered in
+performing local process simulations while accounting for lateral water
+transfer processes. This is done using functions
+<code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
+<code><a href="../reference/spwb_land.html">fordyn_land()</a></code>. Three lateral water flows are considered in
 <strong>medfateland</strong>:</p>
 <ol style="list-style-type: lower-alpha">
 <li>Overland surface flows from upslope cells</li>
@@ -231,6 +232,11 @@ evaporation</li>
 river streams.</li>
 </ol>
 </li>
+</ol>
+<p>Function <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> may be used to:</p>
+<ol style="list-style-type: decimal">
+<li>Determine the effect of forest management alternatives on the forest
+function, dynamics and the water production of watersheds.</li>
 </ol>
 </div>
 </div>

@@ -160,7 +160,6 @@ of such lists, one per spatial unit.</p></dd>
 <p>Functions <code>spwb_land</code>, <code>growth_land</code> and <code>fordyn_land</code> return a list of class of the same name as the function with the following elements:</p><ul><li><p><code>sf</code>: An object of class <code>sf</code>, similar to the output of <code><a href="spwb_spatial.html">spwb_spatial</a></code>,
 with the following columns:
 </p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
-<li><p><code>id</code>: Cell id, taken from the input.</p></li>
 <li><p><code>state</code>: A list of model input objects for each simulated stand.</p></li>
 <li><p><code>aquifer</code>: A numeric vector with the water volume in the aquifer of each cell.</p></li>
 <li><p><code>snowpack</code>: A numeric vector with the snowpack water equivalent volume of each cell.</p></li>
@@ -189,8 +188,8 @@ with the following columns:
 </ul></li>
 </ul>
 In function <code>fordyn_land</code> the <code>sf</code> object contains additional columns:
-<ul><li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
-<li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in <code>fordynspatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<ul><li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<li><p><code>management_arguments</code>: A list of management arguments for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>tree_table</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>
 <li><p><code>shrub_table</code>: A list of data frames for each simulated stand, containing the living shrub at each time step.</p></li>
 <li><p><code>dead_tree_table</code>: A list of data frames for each simulated stand, containing the dead trees at each time step.</p></li>
