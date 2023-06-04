@@ -90,13 +90,12 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 of such lists, one per spatial unit.}
 }
 \value{
-Functions \code{spwb_land}, \code{growth_land} and \code{growth_land} return a list of class of the same name as the function with the following elements:
+Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 \itemize{
 \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}},
 with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
-\item{\code{id}: Cell id, taken from the input.}
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
@@ -128,8 +127,8 @@ with the following columns:
 }
 In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
 \itemize{
-\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{management_arguments}: A list of management arguments for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
 \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
 \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}

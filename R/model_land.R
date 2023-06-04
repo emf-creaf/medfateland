@@ -498,7 +498,6 @@
 #'   with the following columns:
 #'     \itemize{
 #'        \item{\code{geometry}: Spatial geometry.}
-#'        \item{\code{id}: Cell id, taken from the input.}
 #'        \item{\code{state}: A list of model input objects for each simulated stand.}
 #'        \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 #'        \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
@@ -530,8 +529,8 @@
 #'     }
 #'     In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
 #'     \itemize{
-#'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'        \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{management_arguments}: A list of management arguments for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'        \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
 #'        \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
 #'        \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
@@ -827,12 +826,11 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
     }
   }
   out_sf <- sf::st_sf(geometry=sf::st_geometry(sf))
-  out_sf$id <- sf$id
-  out_sf$forest <- sf$forest
   out_sf$state <- sf$state
   out_sf$aquifer <- sf$aquifer
   out_sf$snowpack <- sf$snowpack
   out_sf$summary <- cell_summary
+  out_sf$forest <- sf$forest
   if("management_args" %in% names(sf)) out_sf$management_arguments <- sf$management_arguments
   out_sf$tree_table <- treeTableVec
   out_sf$shrub_table <- shrubTableVec

@@ -24,9 +24,9 @@ Complete documentation on the design and formulation of the simulation models an
 
 ## Data structures
 
-In previous versions of **medfateland** package (up to ver. 1.2.1), data structures extended those of older version of **meteoland**, which in turn depended on package **sp**. Current versions of **medfateland** (ver. > 2.0.0) use package **sf** (simple features) to represent spatial structures, both for inputs and outputs. Documentation and examples are given in the package of the variables that need to be represented. 
+In previous versions of **medfateland** package, data structures extended those of older version of **meteoland**, which in turn depended by then on package **sp**. Current versions of **medfateland** (ver. > 2.0.0) use package **sf** (simple features) to represent spatial structures, both for inputs and outputs. Documentation and examples are given in the package of the variables that need to be represented. 
 
-## Dynamic simulation functions
+## Simulation functions
 
 Eco-hydrological processes are fundamental for the simulation models included in the **medfate** package. Eco-hydrological processes can be divided into local and landscape processes. 
 
@@ -41,7 +41,7 @@ In package **medfate**, the local soil water balance of a forest is primarily us
 3. Monitor or forecast temporal variation of fuel moisture in particular stands (for example to monitor wildfire risk) or over continuous areas.
 
 
-### Carbon balance and plant growth
+### Local carbon balance and plant growth
 
 Changes in leaf area and plant growth are key to evaluate the influence of climatic conditions on forest structure and function. Processes affecting annual changes leaf area and plant size are those involved water and carbon balances, as well as those affecting growth directly. Processes influencing plant water balance include those affecting soil water content, such as rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. Carbon balance arises from the relationship between plant photosynthesis and respiration, although carbon reserves play a role in the availability of carbon for growth. Water and carbon balances are coupled through the regulation of transpiration done by stomata. Plant growth is affected by the availability of carbon (source limitation), but also by temperature and water status (sink limitation). Leaf area of plants can be severely decreased by drought stress, causing an increase in dead leaf area and affecting carbon and water fluxes. 
 
@@ -52,15 +52,15 @@ Package **medfate** allows simulating plant growth and mortality of a set of coh
 3. Monitor or forecast temporal variation of live fuel moisture and the amount of standing dead and live fuels in particular stands (for example to monitor wildfire risk).
 
 
-### Forest dynamics
+### Local forest dynamics and coordination via management scenarios
 
 Changes in forest structure and composition result from the interplay of demographic processes (growth, mortality and recruitment) and may include forest management. 
 
-Package **medfate** includes function `fordyn()`, which allows simulating these processes at yearly time steps on a given forest stand, building on previous models. Package **medfateland** extends this by providing function `fordyn_spatial()`, which operates on spatial classes and make internal calls to function `fordyn()`. In addition, **medfateland** provides function `fordyn_scenario()`, which allows performing simulations of forest dynamics for a set of forest stands, while controlling management actions following a timber demand-based approach.
+Package **medfate** includes function `fordyn()`, which allows simulating these processes at yearly time steps on a given forest stand, building on previous models. Package **medfateland** extends this by providing function `fordyn_spatial()`, which operates on spatial classes and make internal calls to function `fordyn()`. In addition, **medfateland** provides function `fordyn_scenario()`, which allows performing simulations of forest dynamics for a set of forest stands, while coordinating management actions in the set of stands following a timber demand-based approach.
 
-### Water and carbon balance including spatial processes
+### Watershed simulations including lateral water transfer processes
 
-When input data is in form of continuous spatial variation of forests over a landscape, the **medfateland** package allows studying local soil water balance in combination with lateral water transfer processes using function `spwb_land()`. The package also allows studying local water balance and plant growth processes in combination with lateral water transfer processes using function `growth_land()`. Three lateral flows are considered in **medfateland**:
+When input data is in form of continuous spatial variation of forests over a landscape, the **medfateland** package allows performing local process simulations while accounting for lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`. Three lateral water flows are considered in **medfateland**:
 
   a. Overland surface flows from upslope cells
   b. Lateral saturated soil flows (i.e. interflow) between adjacent cells
@@ -73,3 +73,7 @@ Functions `spwb_land()` and `growth_land()` may be used to:
    i) water evaporated from canopy interception or bare soil evaporation
    ii) water transpired by plants
    iii) water exported via runoff or deep drainage into the water table and river streams.
+
+Function `fordyn_land()` may be used to:
+
+1. Determine the effect of forest management alternatives on the forest function, dynamics and the water production of watersheds.
