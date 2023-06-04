@@ -14,8 +14,10 @@
 #' 
 update_landscape<-function(x, y) {
   if(!inherits(x, "sf")) stop("'x' should be of class 'sf' ")
-  if(!inherits(y, "sf") && !inherits(y, "spwb_land") && !inherits(y, "growth_land") && !inherits(y, "fordyn_scenario")) stop("'y' should be of class 'sf', 'spwb_land', 'growth_land' or 'fordyn_scenario'")
-  if(inherits(y, c("spwb_land", "growth_land", "fordyn_scenario"))) {
+  if(!inherits(y, "sf") && !inherits(y, "spwb_land") && !inherits(y, "growth_land") 
+     && !inherits(y, "fordyn_land") && !inherits(y, "fordyn_scenario")) 
+    stop("'y' should be of class 'sf', 'spwb_land', 'growth_land', 'fordyn_land' or 'fordyn_scenario'")
+  if(inherits(y, c("spwb_land", "growth_land", "fordyn_land", "fordyn_scenario"))) {
     y = y$sf
   }
   if(nrow(y)!=nrow(x)) stop("'y' does not have the same number of elements as 'x'")
