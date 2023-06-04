@@ -492,7 +492,7 @@
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
 #'  
-#' @return Functions \code{spwb_land}, \code{growth_land} and \code{growth_land} return a list of class of the same name as the function with the following elements:
+#' @return Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 #' \itemize{
 #'   \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}}, 
 #'   with the following columns:
