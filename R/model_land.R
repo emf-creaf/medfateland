@@ -4,7 +4,7 @@
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
                    correction_factors = default_watershed_correction_factors(),
-                   progress = TRUE) {
+                   progress = TRUE, header_footer = progress) {
 
   #check input
   if(!inherits(y, "sf")) stop("'y' has to be of class 'sf'.")
@@ -23,12 +23,6 @@
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) {
       datesMeteo = as.Date(row.names(meteo))
-    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      datesMeteo = meteo@dates
-    } else if(inherits(meteo, "SpatialGridMeteorology")) {
-      datesMeteo = meteo@dates
-    } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
-      datesMeteo = meteo@dates
     } else if(inherits(meteo, "stars")) {
       datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
     }
@@ -61,38 +55,60 @@
   t.df = as.numeric(table(df.int))
 
   #Determine outlet cells (those without downhill neighbors)
-  outlets = which(unlist(lapply(y$waterQ, sum))==0)
+  isOutlet = (unlist(lapply(y$waterQ, sum))==0)
+  outlets = which(isOutlet)
 
-  patchsize = sqrt(y$represented_area[1])
+  patchsize = mean(y$represented_area, na.rm=TRUE)
 
   #Print information area
-  if(progress) {
-    cat(paste0("\n------------ ", landModel," ------------\n"))
-    cat(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha\n"))
-    cat(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater,"\n"))
-    cat(paste0("Cells with soil: ", nSoil,"\n"))
-    cat(paste0("Meteorological input class: ", class(meteo),"\n"))
-    cat(paste0("Number of days to simulate: ",nDays,"\n"))
-    cat(paste0("Number of summaries: ", nSummary,"\n"))
-    cat(paste0("Number of outlet cells: ", length(outlets),"\n\n"))
-    
-    cat(paste0("Preparing ", localModel, " input...\n"))
+  if(header_footer) {
+    cli::cli_li(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha"))
+    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
+    cli::cli_li(paste0("Cells with soil: ", nSoil))
+    cli::cli_li(paste0("Number of days to simulate: ",nDays))
+    cli::cli_li(paste0("Number of summaries: ", nSummary))
+    cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
   }
-  for(i in 1:nCells) {
-    if(y$land_cover_type[i] == "wildland") {
+  #Check neighbours
+  if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
+  if(max(y$waterOrder)>nCells) cli::cli_abort(paste0("Water order values outside valid range [1-",nCells,"]"))
+  for(i in 1:nCells) { 
+    ni <- y$queenNeigh[[i]]
+    qi <- y$waterQ[[i]]
+    if(max(ni)>nCells || min(ni) < 1) {
+      cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
+    }
+    if(length(qi) != length(ni)) {
+      cli::cli_abort(paste0("Cell ", i, " has different number of neighbors in 'waterQ' than 'queenNeigh'"))
+    }
+    if(!isOutlet[i]) {
+      if(abs(sum(qi) - 1) > 0.0001) {
+        cli::cli_abort(paste0("'waterQ' values for cell ", i, " do not add up to 1"))
+      }
+    }
+  }
+  
+  if(header_footer) cli::cli_progress_step(paste0("Checking ", localModel, " input"))
+  initialized_cells <- 0
+  for(i in 1:nCells) { #Initialize if not previously initialized
+    if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
       f = y$forest[[i]]
       s = y$soil[[i]]
       if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, local_control)
       else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, local_control)
+      initialized_cells <- initialized_cells + 1
     } 
-    else if(y$land_cover_type[i] == "agriculture") {
+    else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
       s = y$soil[[i]]
       cf = y$crop_factor[i]
       if(inherits(s, "data.frame")) s = medfate::soil(s)
       y$state[[i]] = .aspwbInput(cf, local_control, s)
+      initialized_cells <- initialized_cells + 1
     } 
   }
-  if(progress) cat("done.\n\n")
+  if(header_footer) {
+    cli::cli_progress_step(paste0( initialized_cells, " cells needed initialization"))
+  }
 
   #Output matrices
   DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))
@@ -158,12 +174,12 @@
   initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
   if(progress) {
-    cat(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2),"\n"))
-    cat(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2),"\n"))
-    cat(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2),"\n"))
-    cat(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2),"\n"))
-    
-    cat(paste0("\nPerforming daily simulations:\n"))
+    # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
+    # cli::cli_li(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2)))
+    # cli::cli_li(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2)))
+    # cli::cli_li(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2)))
+    # 
+    cli::cli_progress_bar("Daily simulations", total = nDays)
   }
   
   if(inherits(meteo, "SpatialPixelsMeteorology") || inherits(meteo, "SpatialGridMeteorology")) {
@@ -172,7 +188,7 @@
   }  
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
-    if(progress) cat(".")
+    if(progress) cli::cli_progress_update()
     doy = as.numeric(format(dates[day],"%j"))
     datechar = as.character(dates[day])
     yearString = substr(datechar, 1, 4)
@@ -247,11 +263,10 @@
                            datechar,
                            gridMeteo,
                            latitude, y$elevation, y$slope, y$aspect,
-                           patchsize, progress)
+                           patchsize, FALSE)
     
     res_day = ws_day[["WatershedWaterBalance"]]
     
-    if(progress) cat("+")
     summary_df = landscape_summary(y, "soil", soil_summary_function, local_control$soilFunctions, 
                                    unlist = TRUE)
     ifactor = df.int[day]
@@ -308,7 +323,7 @@
     SoilLandscapeBalance$SoilEvaporation[ifactor] = SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
     SoilLandscapeBalance$Transpiration[ifactor] = SoilLandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
   }
-  if(progress) cat("done\n\n")
+  if(progress) cli::cli_progress_done()
   #Average summaries
   LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
   SoilLandscapeBalance$Precipitation = SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
@@ -354,57 +369,57 @@
   SoilInterflowOutputsum = sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
   
   
-  if(progress){
-    cat(paste0("Final average soil water content (mm): ", round(finalSoilContent,2),"\n"))
-    cat(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2),"\n"))
-    cat(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2),"\n"))
-    cat(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2),"\n"))
-  }
+  # if(progress){
+  #   cli::cli_li(paste0("Final average soil water content (mm): ", round(finalSoilContent,2)))
+  #   cli::cli_li(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2)))
+  #   cli::cli_li(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2)))
+  #   cli::cli_li(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2)))
+  # }
   
   snowpack_wb = Snowsum - Snowmeltsum
-  if(progress) {
-    cat(paste0("\nChange in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
-    cat(paste0("Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
-    cat(paste0("Snowpack water balance components:\n"))
-    cat(paste0("  Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+  if(header_footer) {
+    cli::cli_li("Water balance check")
+    cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
+    cat(paste0("  Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
+    cat(paste0("  Snowpack water balance components:\n"))
+    cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
   }
   soil_input = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
   soil_output = (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
   soil_wb =  soil_input - soil_output
-  if(progress) {
-    cat(paste0("\nChange in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
-    cat(paste0("Soil water balance result (mm): ",round(soil_wb,2),"\n"))
-    cat(paste0("Soil water balance components:\n"))
-    cat(paste0("  Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
-    cat(paste0("  Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
-    cat(paste0("  Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-    cat(paste0("  Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
-    cat(paste0("  Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
+  if(header_footer) {
+    cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
+    cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
+    cat(paste0("  Soil water balance components:\n"))
+    cat(paste0("    Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
+    cat(paste0("    Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
+    cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+    cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
+    cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
   }
   
   aquifer_wb = DeepDrainagesum - AquiferDischargesum
-  if(progress){
-    cat(paste0("\nChange in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
-    cat(paste0("Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
-    cat(paste0("Aquifer water balance components:\n"))
-    cat(paste0("  Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
+  if(header_footer){
+    cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
+    cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
+    cat(paste0("  Aquifer water balance components:\n"))
+    cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
   }
   
   landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
-  if(progress) {
-    cat(paste0("\nChange in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
-    cat(paste0("Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
-    cat(paste0("Watershed water balance components:\n"))
-    cat(paste0("  Precipitation (mm) ", round(Precipitationsum,2),"\n"))
-    cat(paste0("  Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
-    cat(paste0("  Export (mm) ", round(Exportsum,2),"\n"))
-    cat(paste0("Watershed lateral flows:\n"))
-    cat(paste0("  Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
-    cat(paste0("  Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
-    
-    cat(paste0("\n------------ ",landModel," ------------\n"))
+  if(header_footer) {
+    cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
+    cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
+    cat(paste0("  Watershed water balance components:\n"))
+    cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
+    cat(paste0("    Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
+    cat(paste0("    Export (mm) ", round(Exportsum,2),"\n"))
+    cat(paste0("  Watershed lateral flows:\n"))
+    cat(paste0("    Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
+    cat(paste0("    Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
   }
-
+  if(header_footer)  cli::cli_li("Done")
+  
   sf = sf::st_sf(geometry=sf::st_geometry(y))
   sf$state = y$state
   sf$aquifer = y$aquifer
@@ -454,6 +469,7 @@
 #'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
 #'     \item{\code{represented_area}: Area represented by each cell (in m2).}
+#'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}}).
@@ -463,6 +479,8 @@
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
+#' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
+#' of such lists, one per spatial unit.
 #'  
 #' @return Functions \code{spwb_land} and \code{growth_land} return list of class of the same name as the function with the following elements:
 #' \itemize{
@@ -538,12 +556,13 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                     local_control = medfate::defaultControl(),
                     correction_factors = default_watershed_correction_factors(),
                     progress = TRUE) {
+  if(progress) cli::cli_h1(paste0("Simulation of model 'spwb' over a watershed"))
   return(.landSim("spwb_land",
                   y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                   CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
-                  correction_factors = correction_factors, progress = progress))
+                  correction_factors = correction_factors, progress = progress, header_footer = progress))
 }
 #' @rdname spwb_land
 growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
@@ -552,12 +571,13 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                       local_control = medfate::defaultControl(),
                       correction_factors = default_watershed_correction_factors(),
                       progress = TRUE) {
+  if(progress) cli::cli_h1(paste0("Simulation of model 'growth' over a watershed"))
   return(.landSim("growth_land",
                   y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                   CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
-                  correction_factors = correction_factors, progress = progress))
+                  correction_factors = correction_factors, progress = progress, header_footer = progress))
 }
 
 #' @rdname spwb_land
@@ -566,8 +586,145 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         summary_frequency = "years",
                         local_control = medfate::defaultControl(),
                         correction_factors = default_watershed_correction_factors(),
+                        management_function = NULL,
                         progress = TRUE) {
   
+  if(progress) cli::cli_h1(paste0("Simulation of model 'fordyn' over a watershed"))
   
+  nCells = nrow(sf)
+  isSoilCell = sf$land_cover_type %in% c("wildland", "agriculture")
+  nSoil = sum(isSoilCell)
+  nWild = sum(sf$land_cover_type %in% c("wildland"))
+  nAgri = sum(sf$land_cover_type %in% c("agriculture"))
+  nRock = sum(sf$land_cover_type %in% c("rock"))
+  nArti = sum(sf$land_cover_type %in% c("artificial"))
+  nWater = sum(sf$land_cover_type %in% c("water"))
   
+  patchsize = mean(sf$represented_area, na.rm=TRUE)
+  
+  if(is.null(dates)) {
+    # Try to get dates from input
+    if(!is.null(meteo)) {
+      if(inherits(meteo, "data.frame")) dates <- as.Date(row.names(meteo))
+    } else {
+      if("meteo" %in% names(sf)) {
+        dates = as.Date(row.names(sf$meteo[[1]]))
+      }
+    }
+  }
+  years <- as.numeric(format(dates, "%Y"))
+  months <- as.numeric(format(dates, "%m"))
+  yearsUnique <- unique(years)
+  nYears <- length(yearsUnique)
+  
+  if(progress) {
+    cli::cli_li(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha"))
+    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
+    cli::cli_li(paste0("Cells with soil: ", nSoil))
+    cli::cli_li(paste0("Number of years to simulate: ",nYears))
+  }
+  # Init growth 
+  if(progress) cli::cli_h3(paste0("Initialisation"))
+  sf <- initialize_landscape(sf, SpParams, local_control = local_control, model = "growth")
+  
+  #Simulations
+  for(iYear in 1:nYears) {
+    year <- yearsUnique[iYear]
+    if(progress) cli::cli_h3(paste0("Simulating year ", year, " [", iYear,"/", nYears,"]"))
+    meteoYear <- meteo[years==year,]
+    monthsYear <- months[years==year]
+    datesYear <- dates[years==year]
+    # 1.1 Calls growth_land model
+    if(progress) cli::cli_li(paste0("Growth/mortality"))
+    GL <- .landSim("growth_land",
+                   y = sf, SpParams = SpParams, meteo = meteo, dates = datesYear,
+                   CO2ByYear = CO2ByYear,
+                   summary_frequency = summary_frequency, 
+                   local_control = local_control,
+                   correction_factors = correction_factors, progress = progress, header_footer = FALSE)
+    if(progress) cli::cli_li(paste0("Management/Recruitment/Resprouting"))
+    for(i in 1:nCells) { 
+      if(sf$land_cover_type[i] == "wildland")  {
+        forest <- sf$forest[[i]]
+        # 1.2 Store growth results
+        # 1.3 Retrieve modified growth output
+        xo <- GL$sf$state[[i]]
+        # 2.2 Update dead tree/shrub tables
+        # 2.2 Update forest structural variables
+        isTree <- is.na(xo$above$Cover)
+        forest$treeData$N  <- xo$above$N[isTree]
+        forest$treeData$DBH  <- xo$above$DBH[isTree]
+        forest$treeData$Height  <- xo$above$H[isTree]
+        if(local_control$shrubDynamics) {
+          forest$shrubData$Cover  <- xo$above$Cover[!isTree]
+          forest$shrubData$Height  <- xo$above$H[!isTree]
+        }
+        # 2.3 Call management function if required
+        management_result <- NULL
+        planted_forest <- emptyforest()
+        if(!is.null(management_function) && ("management_args" %in% names(sf))) {
+          management_args <- sf$management_args[[i]]
+          if(!is.null(management_args)) {
+            management_result <- do.call(management_function, list(x = forest, args= management_args, verbose = FALSE))
+            # Update forest and xo objects
+            forest$treeData$N <- pmax(0,forest$treeData$N - management_result$N_tree_cut)
+            xo$above$N[isTree] <- forest$treeData$N
+            forest$shrubData$Cover <- pmax(0,forest$shrubData$Cover - management_result$Cover_shrub_cut)
+            xo$above$Cover[!isTree] <- forest$shrubData$Cover
+            # Update cut tables
+            # cutTreeTableYear <- .createCutTreeTable(iYear, year, xo, management_result$N_tree_cut)
+            # cutShrubTableYear <- .createCutShrubTable(iYear, year, xo, management_result$Cover_shrub_cut)
+            # Retrieve plantation information
+            planted_forest <- management_result$planted_forest
+            if(nrow(planted_forest$treeData)>0) {
+              for(i in 1:nrow(planted_forest$treeData)) {
+                planted_forest$treeData$Z50[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"RecrZ50")
+                planted_forest$treeData$Z95[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"RecrZ95")
+                if(is.na(planted_forest$treeData$Z50[i])) planted_forest$treeData$Z50[i] <- 250
+                if(is.na(planted_forest$treeData$Z95[i])) planted_forest$treeData$Z95[i] <- 500
+              }
+            }
+            if(nrow(planted_forest$shrubData)>0) {
+              for(i in 1:nrow(planted_forest$shrubData)) {
+                planted_forest$shrubData$Z50[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"RecrZ50")
+                planted_forest$shrubData$Z95[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"RecrZ95")
+                if(is.na(planted_forest$shrubData$Z50[i])) planted_forest$shrubData$Z50[i] <- 100
+                if(is.na(planted_forest$shrubData$Z95[i])) planted_forest$shrubData$Z95[i] <- 300
+              }
+            }
+          
+            # Store new management arguments (may have changed)
+            sf$management_args[[i]] <- management_result$management_args
+          }
+        }
+        # 3.1 Simulate species recruitment
+        # if(local_control$allowRecruitment) {
+        #   monthlyMinTemp <- tapply(Gi$weather$MinTemperature, monthsYear, FUN="mean", na.rm=TRUE)
+        #   monthlyMaxTemp <- tapply(Gi$weather$MaxTemperature, monthsYear, FUN="mean", na.rm=TRUE)
+        #   monthlyTemp <- 0.606*monthlyMaxTemp + 0.394*monthlyMinTemp
+        #   minMonthTemp <- min(monthlyTemp, na.rm=TRUE)
+        #   moistureIndex <- sum(Gi$WaterBalance$Precipitation, na.rm=TRUE)/sum(Gi$WaterBalance$PET, na.rm=TRUE)
+        #   recr_forest <- medfate::recruitment(forest, SpParams, local_control, minMonthTemp, moistureIndex, verbose = FALSE)
+        # } else {
+          recr_forest <- emptyforest()
+        # }
+        # 3.2 Simulate species resprouting
+        if(local_control$allowResprouting) {
+          resp_forest <- medfate::resprouting(forest, xo$internalMortality, SpParams, local_control,
+                                              management_result)
+        } else {
+          resp_forest <- emptyforest()
+        }
+        # 4. Update inputs for next year
+        nyf <- medfate:::.nextYearForest(forest, xo, SpParams, local_control,
+                                         planted_forest, recr_forest, resp_forest)
+
+        sf$forest[[i]] <- nyf$forest
+        sf$state[[i]] <- nyf$xi
+      }
+    }
+  }
+  l <- list(sf = sf)
+  class(l)<-c("fordyn_land", "list")
+  return(l)
 }

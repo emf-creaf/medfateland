@@ -39,6 +39,7 @@ fordyn_land(
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
   correction_factors = default_watershed_correction_factors(),
+  management_function = NULL,
   progress = TRUE
 )
 }
@@ -65,6 +66,7 @@ fordyn_land(
 \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
 \item{\code{represented_area}: Area represented by each cell (in m2).}
+\item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
@@ -82,6 +84,9 @@ fordyn_land(
 \item{correction_factors}{A list of watershed correction factors for hydraulic parameters.}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+
+\item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
+of such lists, one per spatial unit.}
 }
 \value{
 Functions \code{spwb_land} and \code{growth_land} return list of class of the same name as the function with the following elements:

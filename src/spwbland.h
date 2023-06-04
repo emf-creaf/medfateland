@@ -15,4 +15,4 @@ List watershedDay(String localModel,
                   CharacterVector date,
                   DataFrame gridMeteo,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                  double patchsize);
+                  double patchsize, bool progress = true);
