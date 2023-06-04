@@ -458,7 +458,6 @@
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
-#'     \item{\code{id}: Cell ids (normally row number).}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
