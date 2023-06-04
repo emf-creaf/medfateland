@@ -86,7 +86,8 @@ List watershedDay(String localModel,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                   double patchsize, bool progress = true) {
   int nX = xList.size();
-  NumericVector Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
+  NumericVector MinTemperature(nX, NA_REAL), MaxTemperature(nX, NA_REAL), PET(nX, NA_REAL);
+  NumericVector Precipitation(nX, NA_REAL), Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
   NumericVector NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
   NumericVector SaturationExcess(nX, 0.0);
   NumericVector Runoff(nX,NA_REAL), DeepDrainage(nX,0.0), AquiferDischarge(nX, 0.0);
@@ -330,8 +331,11 @@ List watershedDay(String localModel,
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
+      MinTemperature[iCell] = tminVec[iCell];
+      MaxTemperature[iCell] = tmaxVec[iCell];
       Snow[iCell] = DB["Snow"];
       Snowmelt[iCell] = DB["Snowmelt"];
+      PET[iCell] = DB["PET"];
       Rain[iCell] = DB["Rain"];
       Infiltration[iCell] = DB["Infiltration"];
       Runoff[iCell] = DB["Runoff"];
@@ -408,7 +412,8 @@ List watershedDay(String localModel,
   }
   // Rcout<<"C";
 
-  DataFrame waterBalance = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,
+  DataFrame waterBalance = DataFrame::create(_["MinTemperature"] = MinTemperature, _["MaxTemperature"] = MaxTemperature, _["PET"] = PET,
+                                             _["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,
                                              _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
                                              _["Runoff"] = Runoff, _["SaturationExcess"] = SaturationExcess,
                                              _["DeepDrainage"] = DeepDrainage, _["AquiferDischarge"] = AquiferDischarge,

@@ -36,7 +36,6 @@ fordyn_land(
   meteo = NULL,
   dates = NULL,
   CO2ByYear = numeric(0),
-  summary_frequency = "years",
   local_control = medfate::defaultControl(),
   correction_factors = default_watershed_correction_factors(),
   management_function = NULL,
@@ -47,6 +46,7 @@ fordyn_land(
 \item{sf}{An object of class \code{\link{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Cell ids (normally row number).}
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
@@ -77,7 +77,8 @@ fordyn_land(
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{summary_frequency}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).}
+\item{summary_frequency}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
+In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
@@ -89,11 +90,13 @@ fordyn_land(
 of such lists, one per spatial unit.}
 }
 \value{
-Functions \code{spwb_land} and \code{growth_land} return list of class of the same name as the function with the following elements:
+Functions \code{spwb_land}, \code{growth_land} and \code{growth_land} return a list of class of the same name as the function with the following elements:
 \itemize{
 \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}},
 with the following columns:
 \itemize{
+\item{\code{geometry}: Spatial geometry.}
+\item{\code{id}: Cell id, taken from the input.}
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
@@ -123,6 +126,17 @@ with the following columns:
 }
 }
 }
+In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
+\itemize{
+\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+\item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+\item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+\item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+\item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+\item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+}
 }
 \item{\code{watershed_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 \item{\code{watershed_soil_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
@@ -138,8 +152,8 @@ Functions to perform simulations on a watershed described by a set of connected 
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells,
 provided by \code{\link{growth_day}}.}
-\item{Function \code{fordyn_land} extends the previous two functions with the simulation of recruitment
-and forest dynamics.}
+\item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
+and resprouting.}
 }
 }
 \examples{

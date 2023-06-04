@@ -116,10 +116,17 @@
   rownames(DailyRunoff) = as.character(dates)
   
   summarylist = vector("list", nCells)
-  vars = c("Runon", "Runoff", "Infiltration", "Rain", "NetRain", "Snow",
+  vars = c("MinTemperature","MaxTemperature","PET", "Runon", "Runoff", 
+           "Infiltration", "Rain", "NetRain", "Snow",
            "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
            "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
            "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+  varsSum = c("PET","Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
+               "Infiltration", "DeepDrainage", "SaturationExcess",
+               "AquiferDischarge", "SoilEvaporation", "Transpiration",
+               "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+  varsMean = c( "MinTemperature", "MaxTemperature")
+  varsState = c("SWE", "Psi1", "SoilVol", "WTD")
   for(i in 1:nCells) {
     m = matrix(0, nrow = nSummary, ncol = length(vars))
     colnames(m) = vars
@@ -127,7 +134,8 @@
     summarylist[[i]] = m
   }
 
-  LandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
+  LandscapeBalance = data.frame(dates = levels(date.factor)[1:nSummary],
+                                Precipitation = rep(0, nSummary),
                                 Snow = rep(0, nSummary),
                                 Snowmelt = rep(0, nSummary),
                                 Rain = rep(0, nSummary),
@@ -143,7 +151,8 @@
                                 Interflow = rep(0, nSummary),
                                 Baseflow = rep(0, nSummary),
                                 Export = rep(0, nSummary))
-  SoilLandscapeBalance = data.frame(Precipitation = rep(0, nSummary),
+  SoilLandscapeBalance = data.frame(dates = levels(date.factor)[1:nSummary],
+                                    Precipitation = rep(0, nSummary),
                                     Snow = rep(0, nSummary),
                                     Snowmelt = rep(0, nSummary),
                                     Rain = rep(0, nSummary),
@@ -270,15 +279,14 @@
     summary_df = landscape_summary(y, "soil", soil_summary_function, local_control$soilFunctions, 
                                    unlist = TRUE)
     ifactor = df.int[day]
-    varsSum = c("Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
-                "Infiltration", "DeepDrainage", "SaturationExcess",
-                "AquiferDischarge", "SoilEvaporation", "Transpiration",
-                "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
-    varsState = c("SWE", "Psi1", "SoilVol", "WTD")
+
     DTAday = (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
         summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]
+      }
+      for(v in varsMean) {
+        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
       }
       summarylist[[i]][ifactor,"Interception"] = summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
       for(v in varsState) {
@@ -444,12 +452,13 @@
 #'         on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 #'   \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells, 
 #'         provided by \code{\link{growth_day}}.} 
-#'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of recruitment
-#'         and forest dynamics.}
+#'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
+#'         and resprouting.}
 #' }
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
+#'     \item{\code{id}: Cell ids (normally row number).}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
@@ -476,17 +485,20 @@
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
+#'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
 #'  
-#' @return Functions \code{spwb_land} and \code{growth_land} return list of class of the same name as the function with the following elements:
+#' @return Functions \code{spwb_land}, \code{growth_land} and \code{growth_land} return a list of class of the same name as the function with the following elements:
 #' \itemize{
 #'   \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}}, 
 #'   with the following columns:
 #'     \itemize{
+#'        \item{\code{geometry}: Spatial geometry.}
+#'        \item{\code{id}: Cell id, taken from the input.}
 #'        \item{\code{state}: A list of model input objects for each simulated stand.}
 #'        \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 #'        \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
@@ -516,11 +528,23 @@
 #'         }
 #'       }
 #'     }
+#'     In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
+#'     \itemize{
+#'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+#'        \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
+#'        \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
+#'        \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
+#'        \item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
+#'        \item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
+#'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
+#'     }
 #'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 #'   \item{\code{watershed_soil_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
 #'   \item{\code{daily_runoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 #' }
+#' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
 #' @seealso \code{\link{spwb_day}},  \code{\link{growth_day}},
@@ -583,7 +607,6 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
 #' @rdname spwb_land
 fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
-                        summary_frequency = "years",
                         local_control = medfate::defaultControl(),
                         correction_factors = default_watershed_correction_factors(),
                         management_function = NULL,
@@ -625,7 +648,45 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   }
   # Init growth 
   if(progress) cli::cli_h3(paste0("Initialisation"))
+  if(local_control$allowRecruitment) {
+    for(i in 1:nCells) { 
+      if(sf$land_cover_type[i] == "wildland")  {
+        forest <- sf$forest[[i]]
+        forest$treeData <- forest$treeData[,c("Species","DBH", "Height","N","Z50","Z95")]
+        forest$shrubData <- forest$shrubData[,c("Species","Height","Cover", "Z50","Z95")]
+        sf$forest[[i]] <- forest
+      }
+    }
+  }
   sf <- initialize_landscape(sf, SpParams, local_control = local_control, model = "growth")
+  
+  LandscapeBalance <- NULL 
+  SoilLandscapeBalance <- NULL
+  DailyRunoff <- NULL
+  cell_summary <- NULL
+  
+  #initial tree/shrub tables
+  if(progress) cli::cli_progress_step("Initializing 'fordyn' output tables")
+  treeTableVec <- vector("list", nCells)
+  shrubTableVec <- vector("list", nCells)
+  deadTreeTableVec <- vector("list", nCells)
+  deadShrubTableVec <- vector("list", nCells)
+  cutTreeTableVec <- vector("list", nCells)
+  cutShrubTableVec <- vector("list", nCells)
+  for(i in 1:nCells) {
+    if(sf$land_cover_type[i] == "wildland")  {
+      xi <- sf$state[[i]]
+      treeTable <- medfate:::.createTreeTable(0, NA, xi)
+      shrubTable <- medfate:::.createShrubTable(0, NA, xi)
+      treeTableVec[[i]] <- treeTable
+      shrubTableVec[[i]] <- shrubTable
+      deadTreeTableVec[[i]] <- medfate:::.createDeadTreeTable(0, NA, xi)
+      deadShrubTableVec[[i]] <- medfate:::.createDeadShrubTable(0, NA, xi)
+      cutTreeTableVec[[i]] <- treeTable[numeric(),,drop = FALSE]
+      cutShrubTableVec[[i]] <- shrubTable[numeric(),,drop = FALSE]
+    }
+  }
+  if(progress) cli::cli_progress_done()
   
   #Simulations
   for(iYear in 1:nYears) {
@@ -639,17 +700,38 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
     GL <- .landSim("growth_land",
                    y = sf, SpParams = SpParams, meteo = meteo, dates = datesYear,
                    CO2ByYear = CO2ByYear,
-                   summary_frequency = summary_frequency, 
+                   summary_frequency = "month", # Summary frequency to use statistics
                    local_control = local_control,
                    correction_factors = correction_factors, progress = progress, header_footer = FALSE)
-    if(progress) cli::cli_li(paste0("Management/Recruitment/Resprouting"))
+    
+    # Store snowpack and aquifer state
+    sf$aquifer <- GL$sf$aquifer
+    sf$snowpack <- GL$sf$snowpack
+    
+    #Store landscape and cell summaries
+    if(iYear==1) {
+      DailyRunoff <- GL$daily_runoff
+      LandscapeBalance <- GL$watershed_balance
+      SoilLandscapeBalance <- GL$watershed_soil_balance
+      cell_summary <- GL$sf$summary
+    } else {
+      DailyRunoff <- rbind(DailyRunoff, GL$daily_runoff)
+      LandscapeBalance <- rbind(LandscapeBalance, GL$watershed_balance)
+      SoilLandscapeBalance <- rbind(SoilLandscapeBalance, GL$watershed_soil_balance)
+      for(i in 1:nCells) { 
+        cell_summary[[i]] <- rbind(cell_summary[[i]], GL$sf$summary[[i]])
+      }
+    }
+    if(progress) cli::cli_li(paste0("Management/recruitment/resprouting"))
     for(i in 1:nCells) { 
       if(sf$land_cover_type[i] == "wildland")  {
         forest <- sf$forest[[i]]
-        # 1.2 Store growth results
-        # 1.3 Retrieve modified growth output
+        # 1 Retrieve modified growth output
         xo <- GL$sf$state[[i]]
-        # 2.2 Update dead tree/shrub tables
+        # 2.1 Update dead tree/shrub tables
+        deadTreeTableYear <- medfate:::.createDeadTreeTable(iYear, year, xo)
+        deadShrubTableYear <- medfate:::.createDeadShrubTable(iYear, year, xo)
+        
         # 2.2 Update forest structural variables
         isTree <- is.na(xo$above$Cover)
         forest$treeData$N  <- xo$above$N[isTree]
@@ -660,6 +742,8 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
           forest$shrubData$Height  <- xo$above$H[!isTree]
         }
         # 2.3 Call management function if required
+        cutTreeTableYear <- NULL
+        cutShrubTableYear <- NULL
         management_result <- NULL
         planted_forest <- emptyforest()
         if(!is.null(management_function) && ("management_args" %in% names(sf))) {
@@ -672,8 +756,8 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
             forest$shrubData$Cover <- pmax(0,forest$shrubData$Cover - management_result$Cover_shrub_cut)
             xo$above$Cover[!isTree] <- forest$shrubData$Cover
             # Update cut tables
-            # cutTreeTableYear <- .createCutTreeTable(iYear, year, xo, management_result$N_tree_cut)
-            # cutShrubTableYear <- .createCutShrubTable(iYear, year, xo, management_result$Cover_shrub_cut)
+            cutTreeTableYear <- medfate:::.createCutTreeTable(iYear, year, xo, management_result$N_tree_cut)
+            cutShrubTableYear <- medfate:::.createCutShrubTable(iYear, year, xo, management_result$Cover_shrub_cut)
             # Retrieve plantation information
             planted_forest <- management_result$planted_forest
             if(nrow(planted_forest$treeData)>0) {
@@ -697,17 +781,20 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
             sf$management_args[[i]] <- management_result$management_args
           }
         }
-        # 3.1 Simulate species recruitment
-        # if(local_control$allowRecruitment) {
-        #   monthlyMinTemp <- tapply(Gi$weather$MinTemperature, monthsYear, FUN="mean", na.rm=TRUE)
-        #   monthlyMaxTemp <- tapply(Gi$weather$MaxTemperature, monthsYear, FUN="mean", na.rm=TRUE)
-        #   monthlyTemp <- 0.606*monthlyMaxTemp + 0.394*monthlyMinTemp
-        #   minMonthTemp <- min(monthlyTemp, na.rm=TRUE)
-        #   moistureIndex <- sum(Gi$WaterBalance$Precipitation, na.rm=TRUE)/sum(Gi$WaterBalance$PET, na.rm=TRUE)
-        #   recr_forest <- medfate::recruitment(forest, SpParams, local_control, minMonthTemp, moistureIndex, verbose = FALSE)
-        # } else {
+        # 3.1 Simulate species local recruitment
+        if(local_control$allowRecruitment) {
+          summary_i <- GL$sf$summary[[i]]
+          monthlyMinTemp <- summary_i[, "MinTemperature"]
+          monthlyMaxTemp <- summary_i[, "MaxTemperature"]
+          monthlyPrecipitation <- summary_i[, "Snow"] + summary_i[, "Rain"]
+          monthlyPET <- summary_i[,"PET"]
+          monthlyTemp <- 0.606*monthlyMaxTemp + 0.394*monthlyMinTemp
+          minMonthTemp <- min(monthlyTemp, na.rm=TRUE)
+          moistureIndex <- sum(monthlyPrecipitation, na.rm=TRUE)/sum(monthlyPET, na.rm=TRUE)
+          recr_forest <- medfate::recruitment(forest, SpParams, local_control, minMonthTemp, moistureIndex, verbose = FALSE)
+        } else {
           recr_forest <- emptyforest()
-        # }
+        }
         # 3.2 Simulate species resprouting
         if(local_control$allowResprouting) {
           resp_forest <- medfate::resprouting(forest, xo$internalMortality, SpParams, local_control,
@@ -719,12 +806,44 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
         nyf <- medfate:::.nextYearForest(forest, xo, SpParams, local_control,
                                          planted_forest, recr_forest, resp_forest)
 
+        # 5 Store current forest state
         sf$forest[[i]] <- nyf$forest
         sf$state[[i]] <- nyf$xi
+        
+        
+        # 6.1 Create tree/shrub table of final state (after management/recruitment/resprouting)
+        treeTableYear <- medfate:::.createTreeTable(iYear, year, nyf$xi)
+        shrubTableYear <- medfate:::.createShrubTable(iYear, year, nyf$xi)
+        
+        # 6.2 Store tables
+        treeTableVec[[i]] <- rbind(treeTableVec[[i]], treeTableYear)
+        shrubTableVec[[i]] <- rbind(shrubTableVec[[i]], shrubTableYear)
+        deadTreeTableVec[[i]] <- rbind(deadTreeTableVec[[i]], deadTreeTableYear)
+        deadShrubTableVec[[i]] <- rbind(deadShrubTableVec[[i]], deadShrubTableYear)
+        if(!is.null(cutTreeTableYear)) cutTreeTableVec[[i]] <- rbind(cutTreeTableVec[[i]], cutTreeTableYear)
+        if(!is.null(cutShrubTableYear)) cutShrubTableVec[[i]] <- rbind(cutShrubTableVec[[i]], cutShrubTableYear)
+        
       }
     }
   }
-  l <- list(sf = sf)
+  out_sf <- sf::st_sf(geometry=sf::st_geometry(sf))
+  out_sf$id <- sf$id
+  out_sf$forest <- sf$forest
+  out_sf$state <- sf$state
+  out_sf$aquifer <- sf$aquifer
+  out_sf$snowpack <- sf$snowpack
+  out_sf$summary <- cell_summary
+  if("management_args" %in% names(sf)) out_sf$management_arguments <- sf$management_arguments
+  out_sf$tree_table <- treeTableVec
+  out_sf$shrub_table <- shrubTableVec
+  out_sf$dead_tree_table <- deadTreeTableVec
+  out_sf$dead_shrub_table <- deadShrubTableVec
+  out_sf$cut_tree_table <- cutTreeTableVec
+  out_sf$cut_shrub_table <- cutShrubTableVec
+  l <- list(sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
+            watershed_balance = LandscapeBalance,
+            watershed_soil_balance = SoilLandscapeBalance,
+            daily_runoff = DailyRunoff)
   class(l)<-c("fordyn_land", "list")
   return(l)
 }
