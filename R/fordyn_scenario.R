@@ -219,7 +219,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   cat(paste0("  Management units:\n"))
   for(i in 1:length(units)) {
     if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), 
-                                    " stands in unit [", row.names(management_scenario$units)[i],"]\n"))
+                                    " stands in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
     else cat(paste0("     ", sum(is.na(y$management_unit)), " stands without prescriptions\n"))
   }
   if(is.null(volume_function)) {
