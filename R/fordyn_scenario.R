@@ -130,25 +130,48 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) {
-      datesMeteo = as.Date(row.names(meteo))
+      if(!("dates" %in% names(meteo))) {
+        datesMeteo <- as.Date(row.names(meteo))
+      } else {
+        datesMeteo <- as.Date(meteo$dates)
+      }
     } else if(inherits(meteo, "stars")) {
-      datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
+      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+    } else if(inherits(meteo, "list")) {
+      datesMeteo <- NULL
+      for(i in 1:length(meteo)) {
+        dates_i<- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+        if(is.null(datesMeteo)) datesMeteo <- dates_i
+        else datesMeteo <- c(datesMeteo, dates_i)
+      }
     }
   } 
   else {
     if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
-    datesMeteo = as.Date(row.names(y$meteo[[1]]))
+    if(!("dates" %in% names(y$meteo[[1]]))) {
+      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
+    } else {
+      datesMeteo <- as.Date(y$meteo[[1]]$dates)
+    }
     # check that all items have same dates
     for(i in 1:nrow(y)) {
-      if(!all(as.Date(row.names(y$meteo[[i]]))==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
+      if(!("dates" %in% names(y$meteo[[i]]))) {
+        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
+      } else {
+        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
+      }
+      if(!all(datesMeteo_i==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
     }
   }
+  
+  
   if(is.null(dates)) {
-    dates = datesMeteo
+    dates <- datesMeteo
   } else {
     if(sum(dates %in% datesMeteo)<length(dates))
       stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
+  
   # Determine number of years to process
   years = unique(sort(as.numeric(format(dates, "%Y"))))
   
@@ -444,8 +467,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   target = data.frame(Name = SpParams$Name[extractSums>0], target[extractSums>0,])
   names(target) <- c("species", as.character(years))
   row.names(target) <- NULL
-  extracted_pv <- tidyr::pivot_longer(extracted, as.character(2001:2003), names_to="year", values_to = "extracted")
-  target_pv <- tidyr::pivot_longer(target, as.character(2001:2003), names_to="year", values_to = "target")
+  extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
+  target_pv <- tidyr::pivot_longer(target, as.character(years), names_to="year", values_to = "target")
   if(management_scenario$scenario_type != "bottom-up") {
     volumes <- dplyr::full_join(target_pv, extracted_pv, by=c("species", "year"))
   } else {
