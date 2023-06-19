@@ -120,7 +120,9 @@ Simulation functions  accept different formats for meteorological input (paramet
 The user may supply two kinds of daily weather sources:
 \enumerate{
 \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-\item{An object of class \code{\link{stars}} with interpolation data, created by package \code{\link{meteoland}}.}
+\item{An object or (a list of objects) of class \code{\link{stars}} with reference interpolation data created by package \code{\link{meteoland}}.
+If a list of such \emph{interpolator} objects is supplied, the simulation functions will interpolate on the target locations for the periods covered by each interpolator,
+but the user will be responsible for supplying interpolators in the correct temporal order.}
 }
 Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
 in a column named 'meteo'.

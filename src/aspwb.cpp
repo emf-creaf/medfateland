@@ -4,6 +4,38 @@ using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
 
+
+CharacterVector getWeatherDates(DataFrame meteo){
+  CharacterVector dateStrings;
+  if(meteo.containsElementNamed("dates")){
+    RObject vector = Rcpp::as<Rcpp::RObject>(meteo["dates"]);
+    if(is<DateVector>(vector)) {
+      DateVector dateVector = Rcpp::as<Rcpp::DateVector>(vector);
+      CharacterVector dS(dateVector.size(), NA_STRING);
+      for(int i=0;i< dateVector.size();i++) {
+        Date d = dateVector[i];
+        dS[i] = d.format("%Y-%m-%d");
+      }
+      dateStrings = dS;
+    } else if(is<DatetimeVector>(vector)) {
+      DatetimeVector datetimeVector = Rcpp::as<Rcpp::DatetimeVector>(vector);
+      CharacterVector dS(datetimeVector.size(), NA_STRING);
+      for(int i=0;i< datetimeVector.size();i++) {
+        Datetime dt = datetimeVector[i];
+        Date d(dt.getYear(), dt.getMonth(), dt.getDay());
+        dS[i] = d.format("%Y-%m-%d");
+      }
+      dateStrings = dS;
+    } else if(is<StringVector>(vector)) {
+      dateStrings = Rcpp::as<Rcpp::StringVector>(vector);
+    }
+  } else {
+    dateStrings = meteo.attr("row.names"); 
+  }
+  return(dateStrings);
+}
+
+
 NumericVector agricultureSoilWaterInputs(List soil, 
                                          double prec, double tday, double rad, double elevation,
                                          double LgroundSWR, 
@@ -176,8 +208,7 @@ List aspwb_day(List x, CharacterVector date, NumericVector meteovec,
 }
 
 
-DataFrame defineWaterBalanceDailyOutput(DataFrame meteo, NumericVector PET) {
-  CharacterVector dateStrings = meteo.attr("row.names");
+DataFrame defineWaterBalanceDailyOutput(CharacterVector dateStrings, NumericVector PET) {
   int numDays = dateStrings.length();
   
   NumericVector Precipitation(numDays), Evapotranspiration(numDays);
@@ -196,12 +227,11 @@ DataFrame defineWaterBalanceDailyOutput(DataFrame meteo, NumericVector PET) {
                                     _["Evapotranspiration"]=Evapotranspiration,
                                     _["SoilEvaporation"]=SoilEvaporation,
                                     _["Transpiration"]=Transpiration);
-  DWB.attr("row.names") = meteo.attr("row.names") ;
+  DWB.attr("row.names") = dateStrings;
   return(DWB);
 }
 
-DataFrame defineSoilWaterBalanceDailyOutput(DataFrame meteo, List soil) {
-  CharacterVector dateStrings = meteo.attr("row.names");
+DataFrame defineSoilWaterBalanceDailyOutput(CharacterVector dateStrings, List soil) {
   int numDays = dateStrings.length();
   NumericVector W = soil["W"];
   int nlayers = W.length();
@@ -220,8 +250,7 @@ DataFrame defineSoilWaterBalanceDailyOutput(DataFrame meteo, List soil) {
                                     _["WTD"] = WaterTable,
                                     _["SWE"] = SWE, 
                                     _["psi"]=psidays); 
-  SWB.attr("row.names") = meteo.attr("row.names") ;
-  
+  SWB.attr("row.names") = dateStrings;
   return(SWB);  
 }
 
@@ -393,7 +422,7 @@ List apwb(List x, DataFrame meteo, double latitude, double elevation = NA_REAL, 
     }
   }
   
-  CharacterVector dateStrings = meteo.attr("row.names");
+  CharacterVector dateStrings = getWeatherDates(meteo);
   
 
   //Detailed subday results
@@ -401,8 +430,8 @@ List apwb(List x, DataFrame meteo, double latitude, double elevation = NA_REAL, 
   
 
   //Water balance output variables
-  DataFrame DWB = defineWaterBalanceDailyOutput(meteo, PET);
-  DataFrame SWB = defineSoilWaterBalanceDailyOutput(meteo, soil);
+  DataFrame DWB = defineWaterBalanceDailyOutput(dateStrings, PET);
+  DataFrame SWB = defineSoilWaterBalanceDailyOutput(dateStrings, soil);
   
   NumericVector initialContent = medfate::soil_water(soil, soilFunctions);
   double initialSnowContent = soil["SWE"];
@@ -492,7 +521,7 @@ List apwb(List x, DataFrame meteo, double latitude, double elevation = NA_REAL, 
   }
   
   
-  subdailyRes.attr("names") = meteo.attr("row.names") ;
+  subdailyRes.attr("names") = dateStrings;
   
   NumericVector topo = NumericVector::create(elevation, slope, aspect);
   topo.attr("names") = CharacterVector::create("elevation", "slope", "aspect");

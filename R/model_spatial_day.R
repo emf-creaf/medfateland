@@ -1,20 +1,27 @@
 .f_spatial_day<-function(xi, meteo, date, model){
   res = NULL
   if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) met = meteo[date,,drop = FALSE]
+    if(inherits(meteo,"data.frame")) {
+      if(!("dates" %in% names(meteo))) {
+        meteovec <- unlist(meteo[date, ]) 
+      } else {
+        meteovec <- unlist(meteo[as.character(meteo$dates)==as.character(date), ])
+      }
+    }
     else if(inherits(meteo, "stars")) {
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
       met <- meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
       met <- met$interpolated_data[[1]]
-      met <- as.data.frame(met)
-      row.names(met) <- met$dates
-      met$dates = NULL
+      meteovec <- unlist(met[as.character(met$dates)==as.character(date), ])
     }    
-  } else {
-    met <- xi$meteo  
+  } else { # Weather in 'meteo' element
+    if(!("dates" %in% names(xi$meteo))) {
+      meteovec <- unlist(xi$meteo[date, ]) 
+    } else {
+      meteovec <- unlist(xi$meteo[as.character(xi$meteo$dates)==as.character(date), ])
+    }
   }
   
-  meteovec <- unlist(met[date, ])
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
       res<-medfate::spwb_day(xi$x, date, meteovec,

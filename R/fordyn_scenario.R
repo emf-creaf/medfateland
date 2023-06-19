@@ -131,12 +131,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) {
       datesMeteo = as.Date(row.names(meteo))
-    } else if(inherits(meteo, "MeteorologyInterpolationData")) {
-      datesMeteo = meteo@dates
-    } else if(inherits(meteo, "SpatialGridMeteorology")) {
-      datesMeteo = meteo@dates
-    } else if(inherits(meteo, "SpatialPixelsMeteorology")) {
-      datesMeteo = meteo@dates
     } else if(inherits(meteo, "stars")) {
       datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
     }

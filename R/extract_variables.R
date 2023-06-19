@@ -111,7 +111,7 @@
     vars <- c(vars,
               "Leaf area index (m2/m2)" = "leaf_area_index", 
               "Foliar biomass (kg/m2)" = "foliar_biomass", 
-              "Fine live fuel (kg/m2)" = "fuel")
+              "Fine live fuel (kg/m2)" = "fuel_loading")
   }
   return(vars)
 }
@@ -125,7 +125,7 @@
       if(variable=="basal_area") varplot[i] = stand_basalArea(f)
       else if(variable=="leaf_area_index") varplot[i] = stand_LAI(f, SpParams)
       else if(variable=="foliar_biomass") varplot[i] = stand_foliarBiomass(f, SpParams)
-      else if(variable=="fuel") varplot[i] = stand_fuel(f, SpParams)
+      else if(variable=="fuel_loading") varplot[i] = stand_fuelLoading(f, SpParams)
     }
   }
   return(varplot)
@@ -199,7 +199,7 @@
 #'      \item{\code{"basal_area"}:}{Basal area (m2/ha).}
 #'      \item{\code{"leaf_area_index"}:}{Leaf area index (m2/m2).} 
 #'      \item{\code{"foliar_biomass"}:}{Foliar biomass (kg/m2).} 
-#'      \item{\code{"fuel"}:}{Fine live fuel (kg/m2).} 
+#'      \item{\code{"fuel_loading"}:}{Fine live fuel loading (kg/m2).} 
 #'      \item{\code{"shrub_volume"}:}{Shrub shrub_volume (m3/m2).}
 #'    }
 #'

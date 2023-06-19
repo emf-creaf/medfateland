@@ -13,19 +13,33 @@
   summary <- NULL
   
   if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) met <- meteo
-    else if(inherits(meteo, "stars")) {
+    if(inherits(meteo,"data.frame")) { # A data frame common for all locations
+      met <- meteo
+    }
+    else if(inherits(meteo, "stars")) { # An interpolator object
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
       met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
       met <- met$interpolated_data[[1]]
-      met <- as.data.frame(met)
-      row.names(met) = met$dates
-      met$dates = NULL
-    }    
+    }
+    else if(inherits(meteo, "list")) { # A list of interpolators
+      pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+      met <- data.frame()
+      for(i in 1:length(meteo)) {
+        met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], verbose = FALSE)
+        met <- rbind(met, met_i$interpolated_data[[1]])
+      }
+    }
   } else { # If weather was supplied as part of 'xi' list
     met <- xi$meteo
   }
-  if(!is.null(dates)) met <- met[as.character(dates),,drop =FALSE] #subset dates
+  if(!("dates" %in% names(met))) {
+    if(!is.null(dates)) met <- met[as.character(dates),,drop =FALSE] #subset dates
+    met$dates <- as.Date(row.names(met))
+    row.names(met) <- NULL
+  } else {
+    if(!is.null(dates)) met <- met[as.character(met$dates) %in% as.character(dates),,drop =FALSE] #subset dates
+    met$dates <- as.Date(met$dates)
+  }
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
       res <- tryCatch({
@@ -387,7 +401,9 @@
 #' The user may supply two kinds of daily weather sources: 
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-#'   \item{An object of class \code{\link{stars}} with interpolation data, created by package \code{\link{meteoland}}.}
+#'   \item{An object or (a list of objects) of class \code{\link{stars}} with reference interpolation data created by package \code{\link{meteoland}}.
+#'         If a list of such \emph{interpolator} objects is supplied, the simulation functions will interpolate on the target locations for the periods covered by each interpolator, 
+#'         but the user will be responsible for supplying interpolators in the correct temporal order.}
 #' }
 #' Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
 #' in a column named 'meteo'.

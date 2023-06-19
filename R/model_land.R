@@ -11,54 +11,75 @@
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
 
   #duplicate input (to avoid modifying input objects)
-  y = rlang::duplicate(y)
+  y <- rlang::duplicate(y)
   
-  if(landModel == "spwb_land") localModel = "spwb"
-  else if(landModel=="growth_land") localModel = "growth"
-  else if(landModel=="fordyn_land") localModel = "growth"
+  if(landModel == "spwb_land") localModel <- "spwb"
+  else if(landModel=="growth_land") localModel <- "growth"
+  else if(landModel=="fordyn_land") localModel <- "growth"
   
-  latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+  latitude <- sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
 
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) {
-      datesMeteo = as.Date(row.names(meteo))
+      if(!("dates" %in% names(meteo))) {
+        datesMeteo <- as.Date(row.names(meteo))
+      } else {
+        datesMeteo <- as.Date(meteo$dates)
+      }
     } else if(inherits(meteo, "stars")) {
-      datesMeteo = as.Date(stars::st_get_dimension_values(meteo, "date"))
+      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+    } else if(inherits(meteo, "list")) {
+      datesStarsList <- vector("list", length(meteo))
+      datesMeteo <- NULL
+      for(i in 1:length(meteo)) {
+        datesStarsList[[i]] <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+        if(is.null(datesMeteo)) datesMeteo <- datesStarsList[[i]]
+        else datesMeteo <- c(datesMeteo, datesStarsList[[i]])
+      }
     }
   } else {
     if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
-    datesMeteo = as.Date(row.names(y$meteo[[1]]))
+    if(!("dates" %in% names(y$meteo[[1]]))) {
+      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
+    } else {
+      datesMeteo <- as.Date(y$meteo[[1]]$dates)
+    }
     # check that all items have same dates
     for(i in 1:nrow(y)) {
-      if(!all(as.Date(row.names(y$meteo[[i]]))==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
+      if(!("dates" %in% names(y$meteo[[i]]))) {
+        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
+      } else {
+        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
+      }
+      if(!all(datesMeteo_i==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
     }
   }
   if(is.null(dates)) {
-    dates = datesMeteo
+    dates <- datesMeteo
   } else {
     if(sum(dates %in% datesMeteo)<length(dates))
       stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
-  date.factor = cut(dates, breaks=summary_frequency)
-  df.int = as.numeric(date.factor)
-  nDays = length(dates)
-  nCells = nrow(y)
-  isSoilCell = y$land_cover_type %in% c("wildland", "agriculture")
-  nSoil = sum(isSoilCell)
-  nWild = sum(y$land_cover_type %in% c("wildland"))
-  nAgri = sum(y$land_cover_type %in% c("agriculture"))
-  nRock = sum(y$land_cover_type %in% c("rock"))
-  nArti = sum(y$land_cover_type %in% c("artificial"))
-  nWater = sum(y$land_cover_type %in% c("water"))
-  nSummary = sum(table(date.factor)>0)
-  t.df = as.numeric(table(df.int))
+  date.factor <- cut(dates, breaks=summary_frequency)
+  df.int <- as.numeric(date.factor)
+  nDays <- length(dates)
+  nCells <- nrow(y)
+  isSoilCell <- y$land_cover_type %in% c("wildland", "agriculture")
+  nSoil <- sum(isSoilCell)
+  nWild <- sum(y$land_cover_type %in% c("wildland"))
+  nAgri <- sum(y$land_cover_type %in% c("agriculture"))
+  nRock <- sum(y$land_cover_type %in% c("rock"))
+  nArti <- sum(y$land_cover_type %in% c("artificial"))
+  nWater <- sum(y$land_cover_type %in% c("water"))
+  nSummary <- sum(table(date.factor)>0)
+  t.df <- as.numeric(table(df.int))
 
   #Determine outlet cells (those without downhill neighbors)
-  isOutlet = (unlist(lapply(y$waterQ, sum))==0)
-  outlets = which(isOutlet)
+  isOutlet <- (unlist(lapply(y$waterQ, sum))==0)
+  outlets <- which(isOutlet)
 
-  patchsize = mean(y$represented_area, na.rm=TRUE)
+  patchsize <- mean(y$represented_area, na.rm=TRUE)
 
   #Print information area
   if(header_footer) {
@@ -92,17 +113,17 @@
   initialized_cells <- 0
   for(i in 1:nCells) { #Initialize if not previously initialized
     if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
-      f = y$forest[[i]]
-      s = y$soil[[i]]
-      if(localModel=="spwb") y$state[[i]] = forest2spwbInput(f, s, SpParams, local_control)
-      else if(localModel=="growth") y$state[[i]] = forest2growthInput(f, s, SpParams, local_control)
+      f <- y$forest[[i]]
+      s <- y$soil[[i]]
+      if(localModel=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control)
+      else if(localModel=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control)
       initialized_cells <- initialized_cells + 1
     } 
     else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
-      s = y$soil[[i]]
-      cf = y$crop_factor[i]
-      if(inherits(s, "data.frame")) s = medfate::soil(s)
-      y$state[[i]] = .aspwbInput(cf, local_control, s)
+      s <- y$soil[[i]]
+      cf <- y$crop_factor[i]
+      if(inherits(s, "data.frame")) s <- medfate::soil(s)
+      y$state[[i]] <- .aspwbInput(cf, local_control, s)
       initialized_cells <- initialized_cells + 1
     } 
   }
@@ -111,30 +132,30 @@
   }
 
   #Output matrices
-  DailyRunoff = matrix(0,nrow = nDays, ncol = length(outlets))
-  colnames(DailyRunoff) = outlets
-  rownames(DailyRunoff) = as.character(dates)
+  DailyRunoff <- matrix(0,nrow = nDays, ncol = length(outlets))
+  colnames(DailyRunoff) <- outlets
+  rownames(DailyRunoff) <- as.character(dates)
   
-  summarylist = vector("list", nCells)
-  vars = c("MinTemperature","MaxTemperature","PET", "Runon", "Runoff", 
-           "Infiltration", "Rain", "NetRain", "Snow",
-           "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
-           "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
-           "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
-  varsSum = c("PET","Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
+  summarylist <- vector("list", nCells)
+  vars <- c("MinTemperature","MaxTemperature","PET", "Runon", "Runoff", 
+            "Infiltration", "Rain", "NetRain", "Snow",
+            "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
+            "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
+            "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+  varsSum <- c("PET","Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
                "Infiltration", "DeepDrainage", "SaturationExcess",
                "AquiferDischarge", "SoilEvaporation", "Transpiration",
                "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
-  varsMean = c( "MinTemperature", "MaxTemperature")
-  varsState = c("SWE", "Psi1", "SoilVol", "WTD")
+  varsMean <- c( "MinTemperature", "MaxTemperature")
+  varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
   for(i in 1:nCells) {
-    m = matrix(0, nrow = nSummary, ncol = length(vars))
-    colnames(m) = vars
-    rownames(m) = levels(date.factor)[1:nSummary]
-    summarylist[[i]] = m
+    m <- matrix(0, nrow = nSummary, ncol = length(vars))
+    colnames(m) <- vars
+    rownames(m) <- levels(date.factor)[1:nSummary]
+    summarylist[[i]] <- m
   }
 
-  LandscapeBalance = data.frame(dates = levels(date.factor)[1:nSummary],
+  LandscapeBalance <- data.frame(dates = levels(date.factor)[1:nSummary],
                                 Precipitation = rep(0, nSummary),
                                 Snow = rep(0, nSummary),
                                 Snowmelt = rep(0, nSummary),
@@ -151,7 +172,7 @@
                                 Interflow = rep(0, nSummary),
                                 Baseflow = rep(0, nSummary),
                                 Export = rep(0, nSummary))
-  SoilLandscapeBalance = data.frame(dates = levels(date.factor)[1:nSummary],
+  SoilLandscapeBalance <- data.frame(dates = levels(date.factor)[1:nSummary],
                                     Precipitation = rep(0, nSummary),
                                     Snow = rep(0, nSummary),
                                     Snowmelt = rep(0, nSummary),
@@ -169,7 +190,7 @@
                                     AquiferDischarge = rep(0, nSummary))
   
 
-  soil_summary_function = function(object, model="SX") {
+  soil_summary_function <- function(object, model="SX") {
     if(!inherits(object,"soil")) return(list(SWE=NA, Psi1=NA, SoilVol=NA, WTD=NA))
     list(SWE = object$SWE,
          Psi1 = soil_psi(object)[1],
@@ -177,10 +198,10 @@
          WTD = soil_waterTableDepth(object, model))
   }
   
-  initialSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
-  initialSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
-  initialAquiferContent = mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
-  initialLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
+  initialSoilContent <- mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
+  initialSnowContent <- mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
+  initialAquiferContent <- mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
+  initialLandscapeContent <- initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
   if(progress) {
     # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
@@ -191,71 +212,83 @@
     cli::cli_progress_bar("Daily simulations", total = nDays)
   }
   
-  if(inherits(meteo, "SpatialPixelsMeteorology") || inherits(meteo, "SpatialGridMeteorology")) {
-    meteo = meteoland::extractgridpoints(meteo, as(sf::st_geometry(y), "Spatial"))
-    # now meteo is a SpatialPointsMeteorology
-  }  
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
     if(progress) cli::cli_progress_update()
-    doy = as.numeric(format(dates[day],"%j"))
-    datechar = as.character(dates[day])
-    yearString = substr(datechar, 1, 4)
-    gridMinTemperature = rep(NA, nCells)
-    gridMaxTemperature = rep(NA, nCells)
-    gridMinRelativeHumidity = rep(NA, nCells)
-    gridMaxRelativeHumidity = rep(NA, nCells)
-    gridPrecipitation = rep(NA, nCells)
-    gridRadiation = rep(NA, nCells)
-    gridWindSpeed = rep(NA, nCells)
-    Catm = NA
-    if(yearString %in% names(CO2ByYear)) Catm = CO2ByYear[yearString]
+    doy <- as.numeric(format(dates[day],"%j"))
+    datechar <- as.character(dates[day])
+    yearString <- substr(datechar, 1, 4)
+    gridMinTemperature <- rep(NA, nCells)
+    gridMaxTemperature <- rep(NA, nCells)
+    gridMinRelativeHumidity <- rep(NA, nCells)
+    gridMaxRelativeHumidity <- rep(NA, nCells)
+    gridPrecipitation <- rep(NA, nCells)
+    gridRadiation <- rep(NA, nCells)
+    gridWindSpeed <- rep(NA, nCells)
+    Catm <- NA
+    if(yearString %in% names(CO2ByYear)) Catm <- CO2ByYear[yearString]
     gridCO2 = rep(Catm, nCells)
     
     if(!is.null(meteo)) {
       if(inherits(meteo,"stars")) {
-        pt_sf = sf::st_sf(geometry = sf::st_geometry(y), 
+        pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
                           elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-        met = meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
-        ml = tidyr::unnest(met, cols = "interpolated_data")
-        gridMinTemperature = ml$MinTemperature
-        gridMaxTemperature = ml$MaxTemperature
-        gridMinRelativeHumidity = ml$MinRelativeHumidity
-        gridMaxRelativeHumidity = ml$MaxRelativeHumidity
-        gridPrecipitation = ml$Precipitation
-        gridRadiation = ml$Radiation
-        gridWindSpeed = ml$WindSpeed      
-      } 
-      else { # data frame
-        imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+        met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
+        ml <- tidyr::unnest(met, cols = "interpolated_data")
+        gridMinTemperature <- ml$MinTemperature
+        gridMaxTemperature <- ml$MaxTemperature
+        gridMinRelativeHumidity <- ml$MinRelativeHumidity
+        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity
+        gridPrecipitation <- ml$Precipitation
+        gridRadiation <- ml$Radiation
+        gridWindSpeed <- ml$WindSpeed      
+      } else if(inherits(meteo,"list")) {
+        i_stars <- NA
+        for(i in 1:length(datesStarsList)) {
+          if(dates[day] %in% datesStarsList[[i]]) i_stars <- i
+        }
+        if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
+        pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
+                           elevation = y$elevation, slope = y$slope, aspect = y$aspect)
+        met <- meteoland::interpolate_data(pt_sf, meteo[[i_stars]], dates = dates[day], verbose = FALSE)
+        ml <- tidyr::unnest(met, cols = "interpolated_data")
+        gridMinTemperature <- ml$MinTemperature
+        gridMaxTemperature <- ml$MaxTemperature
+        gridMinRelativeHumidity <- ml$MinRelativeHumidity
+        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity
+        gridPrecipitation <- ml$Precipitation
+        gridRadiation <- ml$Radiation
+        gridWindSpeed <- ml$WindSpeed   
+      } else { # data frame
+        imeteo <- which(datesMeteo == dates[day]) #date index in meteo data
         # repeat values for all cells
-        gridMinTemperature = rep(meteo[imeteo,"MinTemperature"], nCells)
-        gridMaxTemperature = rep(meteo[imeteo,"MaxTemperature"], nCells)
-        gridMinRelativeHumidity = rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
-        gridMaxRelativeHumidity = rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
-        gridPrecipitation = rep(meteo[imeteo,"Precipitation"], nCells)
-        gridRadiation = rep(meteo[imeteo, "Radiation"], nCells)
-        gridWindSpeed = rep(meteo[imeteo, "WindSpeed"], nCells)
-        if("CO2" %in% names(meteo)) gridCO2 = rep(meteo[imeteo, "CO2"], nCells)
+        gridMinTemperature <- rep(meteo[imeteo,"MinTemperature"], nCells)
+        gridMaxTemperature <- rep(meteo[imeteo,"MaxTemperature"], nCells)
+        gridMinRelativeHumidity <- rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
+        gridMaxRelativeHumidity <- rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
+        gridPrecipitation <- rep(meteo[imeteo,"Precipitation"], nCells)
+        gridRadiation <- rep(meteo[imeteo, "Radiation"], nCells)
+        gridWindSpeed <- rep(meteo[imeteo, "WindSpeed"], nCells)
+        if("CO2" %in% names(meteo)) gridCO2 <- rep(meteo[imeteo, "CO2"], nCells)
       }
     } 
     else {
       imeteo = which(datesMeteo == dates[day]) #date index in meteo data
       for(iml in 1:nCells) {
-        meti = y$meteo[[iml]]
-        gridMinTemperature[iml] = meti$MinTemperature[imeteo]
-        gridMaxTemperature[iml] = meti$MaxTemperature[imeteo]
-        gridMinRelativeHumidity[iml] = meti$MinRelativeHumidity[imeteo]
-        gridMaxRelativeHumidity[iml] = meti$MaxRelativeHumidity[imeteo]
-        gridPrecipitation[iml] = meti$Precipitation[imeteo]
-        gridRadiation[iml] = meti$Radiation[imeteo]
-        gridWindSpeed[iml] = meti$WindSpeed[imeteo]
-        if("CO2" %in% names(meti)) gridCO2[iml] = meti$CO2[imeteo]
+        meti <- y$meteo[[iml]]
+        gridMinTemperature[iml] <- meti$MinTemperature[imeteo]
+        gridMaxTemperature[iml] <- meti$MaxTemperature[imeteo]
+        gridMinRelativeHumidity[iml] <- meti$MinRelativeHumidity[imeteo]
+        gridMaxRelativeHumidity[iml] <- meti$MaxRelativeHumidity[imeteo]
+        gridPrecipitation[iml] <- meti$Precipitation[imeteo]
+        gridRadiation[iml] <- meti$Radiation[imeteo]
+        gridWindSpeed[iml] <- meti$WindSpeed[imeteo]
+        if("CO2" %in% names(meti)) gridCO2[iml] <- meti$CO2[imeteo]
       }
     }
     
-    gridRadiation[is.na(gridRadiation)] = mean(gridRadiation, na.rm=T)
-    gridMeteo = data.frame(MinTemperature = gridMinTemperature, 
+    gridRadiation[is.na(gridRadiation)] <- mean(gridRadiation, na.rm=T)
+    gridMeteo <- data.frame(MinTemperature = gridMinTemperature, 
                            MaxTemperature = gridMaxTemperature,
                            MinRelativeHumidity = gridMinRelativeHumidity,
                            MaxRelativeHumidity = gridMaxRelativeHumidity,
@@ -263,7 +296,7 @@
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed,
                            CO2 = gridCO2)
-    ws_day = .watershedDay(localModel,
+    ws_day <- .watershedDay(localModel,
                            y$land_cover_type, y$state, y$soil,
                            y$waterOrder, y$queenNeigh, y$waterQ,
                            y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
@@ -274,107 +307,107 @@
                            latitude, y$elevation, y$slope, y$aspect,
                            patchsize, FALSE)
     
-    res_day = ws_day[["WatershedWaterBalance"]]
+    res_day <- ws_day[["WatershedWaterBalance"]]
     
-    summary_df = landscape_summary(y, "soil", soil_summary_function, local_control$soilFunctions, 
+    summary_df <- landscape_summary(y, "soil", soil_summary_function, local_control$soilFunctions, 
                                    unlist = TRUE)
-    ifactor = df.int[day]
+    ifactor <- df.int[day]
 
     DTAday = (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
-        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]
+        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]
       }
       for(v in varsMean) {
-        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
+        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
       }
-      summarylist[[i]][ifactor,"Interception"] = summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
+      summarylist[[i]][ifactor,"Interception"] <- summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
       for(v in varsState) {
-        summarylist[[i]][ifactor,v] = summarylist[[i]][ifactor,v] + summary_df[[v]][i]/t.df[ifactor]
+        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_df[[v]][i]/t.df[ifactor]
       }  
-      summarylist[[i]][ifactor,"DTA"] = summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+      summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
     }
 
-    DailyRunoff[day,] = res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
+    DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
-    LandscapeBalance$Rain[ifactor]= LandscapeBalance$Rain[ifactor] + sum(res_day$Rain, na.rm=T)/nCells
-    LandscapeBalance$Snow[ifactor]= LandscapeBalance$Snow[ifactor] + sum(res_day$Snow, na.rm=T)/nCells
-    LandscapeBalance$DeepDrainage[ifactor] = LandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage, na.rm=T)/nCells
-    LandscapeBalance$SaturationExcess[ifactor] = LandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess, na.rm=T)/nCells
-    LandscapeBalance$AquiferDischarge[ifactor] = LandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge, na.rm=T)/nCells
-    LandscapeBalance$Runoff[ifactor] = LandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff, na.rm=T)/nCells
-    LandscapeBalance$Runon[ifactor] = LandscapeBalance$Runon[ifactor] + sum(res_day$Runon, na.rm=T)/nCells
-    LandscapeBalance$Snowmelt[ifactor]= LandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt, na.rm=T)/nCells
-    LandscapeBalance$NetRain[ifactor]= LandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain, na.rm=T)/nCells
-    LandscapeBalance$Interception[ifactor]= LandscapeBalance$Interception[ifactor] + (sum(res_day$Rain, na.rm=T) - sum(res_day$NetRain, na.rm=T))/nCells
-    LandscapeBalance$Infiltration[ifactor]= LandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration, na.rm=T)/nCells
-    LandscapeBalance$SoilEvaporation[ifactor] = LandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation, na.rm=T)/nCells
-    LandscapeBalance$Transpiration[ifactor] = LandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration, na.rm=T)/nCells
-    LandscapeBalance$Export[ifactor] = LandscapeBalance$Export[ifactor] + (sum(res_day$Runoff[outlets], na.rm=T)/nCells)
-    LandscapeBalance$Interflow[ifactor]= LandscapeBalance$Interflow[ifactor] + sum(res_day$InterflowInput, na.rm=T)/nCells
-    LandscapeBalance$Baseflow[ifactor]= LandscapeBalance$Baseflow[ifactor] + sum(res_day$BaseflowInput, na.rm=T)/nCells
+    LandscapeBalance$Rain[ifactor] <- LandscapeBalance$Rain[ifactor] + sum(res_day$Rain, na.rm=T)/nCells
+    LandscapeBalance$Snow[ifactor] <- LandscapeBalance$Snow[ifactor] + sum(res_day$Snow, na.rm=T)/nCells
+    LandscapeBalance$DeepDrainage[ifactor] <- LandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage, na.rm=T)/nCells
+    LandscapeBalance$SaturationExcess[ifactor] <- LandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess, na.rm=T)/nCells
+    LandscapeBalance$AquiferDischarge[ifactor] <- LandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge, na.rm=T)/nCells
+    LandscapeBalance$Runoff[ifactor] <- LandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff, na.rm=T)/nCells
+    LandscapeBalance$Runon[ifactor] <- LandscapeBalance$Runon[ifactor] + sum(res_day$Runon, na.rm=T)/nCells
+    LandscapeBalance$Snowmelt[ifactor] <- LandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt, na.rm=T)/nCells
+    LandscapeBalance$NetRain[ifactor] <- LandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain, na.rm=T)/nCells
+    LandscapeBalance$Interception[ifactor] <- LandscapeBalance$Interception[ifactor] + (sum(res_day$Rain, na.rm=T) - sum(res_day$NetRain, na.rm=T))/nCells
+    LandscapeBalance$Infiltration[ifactor] <- LandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration, na.rm=T)/nCells
+    LandscapeBalance$SoilEvaporation[ifactor] <- LandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation, na.rm=T)/nCells
+    LandscapeBalance$Transpiration[ifactor] <- LandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration, na.rm=T)/nCells
+    LandscapeBalance$Export[ifactor] <- LandscapeBalance$Export[ifactor] + (sum(res_day$Runoff[outlets], na.rm=T)/nCells)
+    LandscapeBalance$Interflow[ifactor] <- LandscapeBalance$Interflow[ifactor] + sum(res_day$InterflowInput, na.rm=T)/nCells
+    LandscapeBalance$Baseflow[ifactor] <- LandscapeBalance$Baseflow[ifactor] + sum(res_day$BaseflowInput, na.rm=T)/nCells
     
-    SoilLandscapeBalance$Rain[ifactor]= SoilLandscapeBalance$Rain[ifactor] + sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Snow[ifactor]= SoilLandscapeBalance$Snow[ifactor] + sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$DeepDrainage[ifactor] = SoilLandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$SaturationExcess[ifactor] = SoilLandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$AquiferDischarge[ifactor] = SoilLandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$InterflowInput[ifactor]= SoilLandscapeBalance$InterflowInput[ifactor] + sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$InterflowOutput[ifactor]= SoilLandscapeBalance$InterflowOutput[ifactor] + sum(res_day$InterflowOutput[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Runoff[ifactor] = SoilLandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Runon[ifactor] = SoilLandscapeBalance$Runon[ifactor] + sum(res_day$Runon[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Snowmelt[ifactor]= SoilLandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$NetRain[ifactor]= SoilLandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Interception[ifactor]= SoilLandscapeBalance$Interception[ifactor] + (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
-    SoilLandscapeBalance$Infiltration[ifactor]= SoilLandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$SoilEvaporation[ifactor] = SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
-    SoilLandscapeBalance$Transpiration[ifactor] = SoilLandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Rain[ifactor] <- SoilLandscapeBalance$Rain[ifactor] + sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Snow[ifactor] <- SoilLandscapeBalance$Snow[ifactor] + sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$DeepDrainage[ifactor] <- SoilLandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$SaturationExcess[ifactor] <- SoilLandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$AquiferDischarge[ifactor] <- SoilLandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$InterflowInput[ifactor] <- SoilLandscapeBalance$InterflowInput[ifactor] + sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$InterflowOutput[ifactor] <- SoilLandscapeBalance$InterflowOutput[ifactor] + sum(res_day$InterflowOutput[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Runoff[ifactor] <- SoilLandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Runon[ifactor] <- SoilLandscapeBalance$Runon[ifactor] + sum(res_day$Runon[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Snowmelt[ifactor] <- SoilLandscapeBalance$Snowmelt[ifactor] + sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$NetRain[ifactor] <- SoilLandscapeBalance$NetRain[ifactor] + sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Interception[ifactor] <- SoilLandscapeBalance$Interception[ifactor] + (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
+    SoilLandscapeBalance$Infiltration[ifactor] <- SoilLandscapeBalance$Infiltration[ifactor] + sum(res_day$Infiltration[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$SoilEvaporation[ifactor] <- SoilLandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
+    SoilLandscapeBalance$Transpiration[ifactor] <- SoilLandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
   }
   if(progress) cli::cli_progress_done()
   #Average summaries
-  LandscapeBalance$Precipitation = LandscapeBalance$Rain + LandscapeBalance$Snow
-  SoilLandscapeBalance$Precipitation = SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
+  LandscapeBalance$Precipitation <- LandscapeBalance$Rain + LandscapeBalance$Snow
+  SoilLandscapeBalance$Precipitation <- SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
   
-  finalSoilContent = mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
-  finalSnowContent = mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
-  finalAquiferContent = mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
-  finalLandscapeContent = initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
+  finalSoilContent <- mean(extract_variables(y, "soilvolcurr")$soilvolcurr, na.rm=TRUE)
+  finalSnowContent <- mean(extract_variables(y, "snowpack")$snowpack, na.rm=TRUE)
+  finalAquiferContent <- mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
+  finalLandscapeContent <- initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
 
-  Precipitationsum = sum(LandscapeBalance$Precipitation, na.rm=T)
-  Rainfallsum = sum(LandscapeBalance$Rain, na.rm=T)
-  NetRainsum = sum(LandscapeBalance$NetRain, na.rm=T)
-  Interceptionsum = sum(LandscapeBalance$Interception, na.rm=T)
-  Infiltrationsum = sum(LandscapeBalance$Infiltration, na.rm=T)
-  Snowsum = sum(LandscapeBalance$Snow, na.rm=T)
-  Snowmeltsum = sum(LandscapeBalance$Snowmelt, na.rm=T)
-  Runonsum = sum(LandscapeBalance$Runon, na.rm=T)
-  Runoffsum = sum(LandscapeBalance$Runoff, na.rm=T)
-  DeepDrainagesum= sum(LandscapeBalance$DeepDrainage, na.rm=T)
-  SaturationExcesssum= sum(LandscapeBalance$SaturationExcess, na.rm=T)
-  SoilEvaporationsum= sum(LandscapeBalance$SoilEvaporation , na.rm=T)
-  Transpirationsum = sum(LandscapeBalance$Transpiration , na.rm=T)
-  AquiferDischargesum = sum(LandscapeBalance$AquiferDischarge , na.rm=T)
-  Exportsum = sum(LandscapeBalance$Export, na.rm=T)
-  Interflowsum = sum(LandscapeBalance$Interflow , na.rm=T)
-  Baseflowsum = sum(LandscapeBalance$Baseflow , na.rm=T)
+  Precipitationsum <- sum(LandscapeBalance$Precipitation, na.rm=T)
+  Rainfallsum <- sum(LandscapeBalance$Rain, na.rm=T)
+  NetRainsum <- sum(LandscapeBalance$NetRain, na.rm=T)
+  Interceptionsum <- sum(LandscapeBalance$Interception, na.rm=T)
+  Infiltrationsum <- sum(LandscapeBalance$Infiltration, na.rm=T)
+  Snowsum <- sum(LandscapeBalance$Snow, na.rm=T)
+  Snowmeltsum <- sum(LandscapeBalance$Snowmelt, na.rm=T)
+  Runonsum <- sum(LandscapeBalance$Runon, na.rm=T)
+  Runoffsum <- sum(LandscapeBalance$Runoff, na.rm=T)
+  DeepDrainagesum <- sum(LandscapeBalance$DeepDrainage, na.rm=T)
+  SaturationExcesssum <- sum(LandscapeBalance$SaturationExcess, na.rm=T)
+  SoilEvaporationsum <- sum(LandscapeBalance$SoilEvaporation , na.rm=T)
+  Transpirationsum <- sum(LandscapeBalance$Transpiration , na.rm=T)
+  AquiferDischargesum <- sum(LandscapeBalance$AquiferDischarge , na.rm=T)
+  Exportsum <- sum(LandscapeBalance$Export, na.rm=T)
+  Interflowsum <- sum(LandscapeBalance$Interflow , na.rm=T)
+  Baseflowsum <- sum(LandscapeBalance$Baseflow , na.rm=T)
   
-  SoilPrecipitationsum = sum(SoilLandscapeBalance$Precipitation, na.rm=T)
-  SoilRainfallsum = sum(SoilLandscapeBalance$Rain, na.rm=T)
-  SoilNetRainsum = sum(SoilLandscapeBalance$NetRain, na.rm=T)
-  SoilInterceptionsum = sum(SoilLandscapeBalance$Interception, na.rm=T)
-  SoilInfiltrationsum = sum(SoilLandscapeBalance$Infiltration, na.rm=T)
-  SoilSnowsum = sum(SoilLandscapeBalance$Snow, na.rm=T)
-  SoilSnowmeltsum = sum(SoilLandscapeBalance$Snowmelt, na.rm=T)
-  SoilRunonsum = sum(SoilLandscapeBalance$Runon, na.rm=T)
-  SoilRunoffsum = sum(SoilLandscapeBalance$Runoff, na.rm=T)
-  SoilSaturationExcesssum= sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
-  SoilDeepDrainagesum= sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
-  SoilSoilEvaporationsum= sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
-  SoilTranspirationsum = sum(SoilLandscapeBalance$Transpiration , na.rm=T)
-  SoilAquiferDischargesum = sum(SoilLandscapeBalance$AquiferDischarge , na.rm=T)
-  SoilInterflowInputsum = sum(SoilLandscapeBalance$InterflowInput , na.rm=T)
-  SoilInterflowOutputsum = sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
+  SoilPrecipitationsum <- sum(SoilLandscapeBalance$Precipitation, na.rm=T)
+  SoilRainfallsum <- sum(SoilLandscapeBalance$Rain, na.rm=T)
+  SoilNetRainsum <- sum(SoilLandscapeBalance$NetRain, na.rm=T)
+  SoilInterceptionsum <- sum(SoilLandscapeBalance$Interception, na.rm=T)
+  SoilInfiltrationsum <- sum(SoilLandscapeBalance$Infiltration, na.rm=T)
+  SoilSnowsum <- sum(SoilLandscapeBalance$Snow, na.rm=T)
+  SoilSnowmeltsum <- sum(SoilLandscapeBalance$Snowmelt, na.rm=T)
+  SoilRunonsum <- sum(SoilLandscapeBalance$Runon, na.rm=T)
+  SoilRunoffsum <- sum(SoilLandscapeBalance$Runoff, na.rm=T)
+  SoilSaturationExcesssum <- sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
+  SoilDeepDrainagesum <- sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
+  SoilSoilEvaporationsum <- sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
+  SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
+  SoilAquiferDischargesum <- sum(SoilLandscapeBalance$AquiferDischarge , na.rm=T)
+  SoilInterflowInputsum <- sum(SoilLandscapeBalance$InterflowInput , na.rm=T)
+  SoilInterflowOutputsum <- sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
   
   
   # if(progress){
@@ -384,7 +417,7 @@
   #   cli::cli_li(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2)))
   # }
   
-  snowpack_wb = Snowsum - Snowmeltsum
+  snowpack_wb <- Snowsum - Snowmeltsum
   if(header_footer) {
     cli::cli_li("Water balance check")
     cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
@@ -392,9 +425,9 @@
     cat(paste0("  Snowpack water balance components:\n"))
     cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
   }
-  soil_input = (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
-  soil_output = (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
-  soil_wb =  soil_input - soil_output
+  soil_input <- (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
+  soil_output <- (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
+  soil_wb <-  soil_input - soil_output
   if(header_footer) {
     cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
     cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
@@ -406,7 +439,7 @@
     cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
   }
   
-  aquifer_wb = DeepDrainagesum - AquiferDischargesum
+  aquifer_wb <- DeepDrainagesum - AquiferDischargesum
   if(header_footer){
     cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
     cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
@@ -414,7 +447,7 @@
     cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
   }
   
-  landscape_wb = Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
+  landscape_wb <- Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
   if(header_footer) {
     cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
     cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
@@ -428,11 +461,11 @@
   }
   if(header_footer)  cli::cli_li("Done")
   
-  sf = sf::st_sf(geometry=sf::st_geometry(y))
-  sf$state = y$state
-  sf$aquifer = y$aquifer
-  sf$snowpack = y$snowpack
-  sf$summary = summarylist
+  sf <- sf::st_sf(geometry=sf::st_geometry(y))
+  sf$state <- y$state
+  sf$aquifer <- y$aquifer
+  sf$snowpack <- y$snowpack
+  sf$summary <- summarylist
 
   l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
             watershed_balance = LandscapeBalance,
@@ -612,24 +645,45 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   
   if(progress) cli::cli_h1(paste0("Simulation of model 'fordyn' over a watershed"))
   
-  nCells = nrow(sf)
-  isSoilCell = sf$land_cover_type %in% c("wildland", "agriculture")
-  nSoil = sum(isSoilCell)
-  nWild = sum(sf$land_cover_type %in% c("wildland"))
-  nAgri = sum(sf$land_cover_type %in% c("agriculture"))
-  nRock = sum(sf$land_cover_type %in% c("rock"))
-  nArti = sum(sf$land_cover_type %in% c("artificial"))
-  nWater = sum(sf$land_cover_type %in% c("water"))
+  nCells <- nrow(sf)
+  isSoilCell <- sf$land_cover_type %in% c("wildland", "agriculture")
+  nSoil <- sum(isSoilCell)
+  nWild <- sum(sf$land_cover_type %in% c("wildland"))
+  nAgri <- sum(sf$land_cover_type %in% c("agriculture"))
+  nRock <- sum(sf$land_cover_type %in% c("rock"))
+  nArti <- sum(sf$land_cover_type %in% c("artificial"))
+  nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  patchsize = mean(sf$represented_area, na.rm=TRUE)
+  patchsize <- mean(sf$represented_area, na.rm=TRUE)
   
   if(is.null(dates)) {
     # Try to get dates from input
     if(!is.null(meteo)) {
-      if(inherits(meteo, "data.frame")) dates <- as.Date(row.names(meteo))
+      if(inherits(meteo, "data.frame")) {
+        if(!("dates" %in% names(meteo))) {
+          dates <- as.Date(row.names(meteo))
+        } else {
+          dates <- as.Date(meteo$dates)
+        }
+      } else if(inherits(meteo, "stars")) {
+        dates <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+      } else if(inherits(meteo, "list")) {
+        dates <- NULL
+        for(i in 1:length(meteo)) {
+          dates_i <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+          if(is.null(dates)) dates <- dates_i
+          else dates <- c(dates, dates_i)
+        }
+      }
     } else {
       if("meteo" %in% names(sf)) {
-        dates = as.Date(row.names(sf$meteo[[1]]))
+        if(!("dates" %in% names(sf$meteo[[1]]))) {
+          dates <- as.Date(row.names(sf$meteo[[1]]))
+        } else {
+          dates <- as.Date(sf$meteo[[1]]$dates)
+        }
+      } else {
+        stop("Column 'meteo' must be defined in 'sf' if not supplied separately")
       }
     }
   }
@@ -690,7 +744,6 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   for(iYear in 1:nYears) {
     year <- yearsUnique[iYear]
     if(progress) cli::cli_h3(paste0("Simulating year ", year, " [", iYear,"/", nYears,"]"))
-    meteoYear <- meteo[years==year,]
     monthsYear <- months[years==year]
     datesYear <- dates[years==year]
     # 1.1 Calls growth_land model

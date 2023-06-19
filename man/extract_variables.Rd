@@ -68,7 +68,7 @@ The following string values are available for \code{vars}.
 \item{\code{"basal_area"}:}{Basal area (m2/ha).}
 \item{\code{"leaf_area_index"}:}{Leaf area index (m2/m2).}
 \item{\code{"foliar_biomass"}:}{Foliar biomass (kg/m2).}
-\item{\code{"fuel"}:}{Fine live fuel (kg/m2).}
+\item{\code{"fuel_loading"}:}{Fine live fuel loading (kg/m2).}
 \item{\code{"shrub_volume"}:}{Shrub shrub_volume (m3/m2).}
 }
 }
