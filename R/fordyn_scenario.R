@@ -115,7 +115,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   y <- sf
   
-  .check_model_inputs(y, meteo)
+  .check_model_inputs(y, meteo, dates)
 
   # A.1 Check inputs
   n = nrow(y)

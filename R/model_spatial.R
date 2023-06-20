@@ -25,8 +25,13 @@
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
       met <- data.frame()
       for(i in 1:length(meteo)) {
-        met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], verbose = FALSE)
-        met <- rbind(met, met_i$interpolated_data[[1]])
+        interpolator_i <- meteo[[i]]
+        dates_i <- as.Date(stars::st_get_dimension_values(interpolator_i, "date"))
+        dates_i <- dates_i[dates_i %in% dates]
+        if(length(dates_i)>0) { # Only call interpolation if there are matching dates 
+          met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, verbose = FALSE)
+          met <- rbind(met, met_i$interpolated_data[[1]])
+        }
       }
     }
   } else { # If weather was supplied as part of 'xi' list
@@ -126,7 +131,7 @@
   return(list(result = res, summary = summary, x_out = x_out, forest_out = f_out, management_out = m_out))
 }
 
-.check_model_inputs<-function(y, meteo) {
+.check_model_inputs<-function(y, meteo, dates = NULL) {
   if(!inherits(y, "sf")) stop("'sf' has to be an object of class 'sf'.")
   if(!all(c("elevation","slope","aspect") %in% names(y))) stop("Columns 'elevation', 'slope' and 'aspect' must be defined.")
   if(!("forest" %in% names(y))) stop("Column 'forest' must be defined.")
@@ -136,34 +141,34 @@
       if(!("crop_factor" %in% names(y))) stop("Column 'crop_factor' must be defined to simulate soil water balance in agricultural locations.")
     }
   }
-  # if(inherits(y, "SpatialGridLandscape")) {
-  #   if(!inherits(meteo,c("data.frame","SpatialGridMeteorology","MeteorologyInterpolationData")))
-  #     stop("'meteo' has to be of class 'data.frame', 'SpatialGridMeteorology' or 'MeteorologyInterpolationData'.")
-  #   if(inherits(meteo,"SpatialGridMeteorology")) {
-  #     ycoords = coordinates(y)
-  #     mcoords = coordinates(meteo)
-  #     if(sum(ycoords == mcoords)!=2*nrow(ycoords)) stop("Coordinates of 'y' and 'meteo' must be the same.")
-  #   }
-  # } else if(inherits(y, "SpatialPixelsLandscape")) {
-  #   if(!inherits(meteo,c("data.frame","character","SpatialPixelsMeteorology","MeteorologyInterpolationData")))
-  #     stop("'meteo' has to be of class 'data.frame', 'SpatialPixelsMeteorology' or 'MeteorologyInterpolationData'.")
-  #   if(inherits(meteo,"SpatialPixelsMeteorology")) {
-  #     ycoords = coordinates(y)
-  #     mcoords = coordinates(meteo)
-  #     if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
-  #   }
-  # } else if(inherits(y, "SpatialPointsLandscape")) {
-  #   if(!inherits(meteo,c("data.frame","character","SpatialPointsMeteorology","MeteorologyInterpolationData")))
-  #     stop("'meteo' has to be of class 'data.frame', 'character', 'SpatialPointsMeteorology' or 'MeteorologyInterpolationData'.")
-  #   if(inherits(meteo,"SpatialPointsMeteorology")) {
-  #     ycoords = coordinates(y)
-  #     mcoords = coordinates(meteo)
-  #     if(round(sum(abs(as.vector(ycoords) - as.vector(mcoords)))) > 0) stop("Coordinates of 'y' and 'meteo' must be the same.")
-  #   }
-  # } 
   if(!is.null(meteo)) {
-    if(inherits(meteo, "character")) {
-      if(!all(file.exists(meteo))) stop("Some strings do not correspond to file names")
+    if(!is.null(dates)) {
+      if(inherits(meteo, "data.frame")) {
+        if("dates" %in% names(meteo)) {
+          datesMeteo <- as.Date(meteo$dates)
+        } else {
+          datesMeteo <- as.Date(row.names(meteo))
+        }
+        if(sum(datesMeteo %in% dates) < length(dates)) {
+          stop("Supplied weather data frame does not cover all elements in 'dates'")
+        }
+      }
+      if(inherits(meteo, "stars")) {
+        datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+        if(sum(datesMeteo %in% dates) < length(dates)) {
+          stop("Supplied weather interpolator does not cover all elements in 'dates'")
+        }
+      } else if(inherits(meteo, "list")) {
+        datesMeteo <- NULL
+        for(i in 1:length(meteo)) {
+          dates_i<- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+          if(is.null(datesMeteo)) datesMeteo <- dates_i
+          else datesMeteo <- c(datesMeteo, dates_i)
+        }
+        if(sum(datesMeteo %in% dates) < length(dates)) {
+          stop("Supplied weather interpolator(s) do not cover all elements in 'dates'")
+        }
+      }
     }
   } else {
     if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
@@ -470,7 +475,7 @@
 spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo)
+  .check_model_inputs(sf, meteo, as.Date(dates))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
@@ -480,7 +485,7 @@ spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultContro
 growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo)
+  .check_model_inputs(sf, meteo, as.Date(dates))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
@@ -491,7 +496,7 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
                        CO2ByYear = numeric(0), keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo)
+  .check_model_inputs(sf, meteo, as.Date(dates))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, 
                 management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 
