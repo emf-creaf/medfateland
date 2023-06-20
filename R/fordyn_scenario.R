@@ -128,48 +128,33 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   scenario_type = match.arg(management_scenario$scenario_type, c("bottom-up", "input_rate", "input_demand"))
   
-  if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) {
-      if(!("dates" %in% names(meteo))) {
-        datesMeteo <- as.Date(row.names(meteo))
-      } else {
-        datesMeteo <- as.Date(meteo$dates)
-      }
-    } else if(inherits(meteo, "stars")) {
-      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
-    } else if(inherits(meteo, "list")) {
-      datesMeteo <- NULL
-      for(i in 1:length(meteo)) {
-        dates_i<- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
-        if(is.null(datesMeteo)) datesMeteo <- dates_i
-        else datesMeteo <- c(datesMeteo, dates_i)
-      }
-    }
-  } 
-  else {
-    if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
-    if(!("dates" %in% names(y$meteo[[1]]))) {
-      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
-    } else {
-      datesMeteo <- as.Date(y$meteo[[1]]$dates)
-    }
-    # check that all items have same dates
-    for(i in 1:nrow(y)) {
-      if(!("dates" %in% names(y$meteo[[i]]))) {
-        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
-      } else {
-        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
-      }
-      if(!all(datesMeteo_i==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
-    }
-  }
-  
-  
+  # If dates are not supplied, take them from weather input (already passed checks)
   if(is.null(dates)) {
+    if(!is.null(meteo)) {
+      if(inherits(meteo,"data.frame")) {
+        if(!("dates" %in% names(meteo))) {
+          datesMeteo <- as.Date(row.names(meteo))
+        } else {
+          datesMeteo <- as.Date(meteo$dates)
+        }
+      } else if(inherits(meteo, "stars")) {
+        datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+      } else if(inherits(meteo, "list")) {
+        datesMeteo <- NULL
+        for(i in 1:length(meteo)) {
+          dates_i<- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+          if(is.null(datesMeteo)) datesMeteo <- dates_i
+          else datesMeteo <- c(datesMeteo, dates_i)
+        }
+      }
+    } else {
+      if(!("dates" %in% names(y$meteo[[1]]))) {
+        datesMeteo <- as.Date(row.names(y$meteo[[1]]))
+      } else {
+        datesMeteo <- as.Date(y$meteo[[1]]$dates)
+      }
+    }
     dates <- datesMeteo
-  } else {
-    if(sum(dates %in% datesMeteo)<length(dates))
-      stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
   
   # Determine number of years to process

@@ -171,6 +171,7 @@
       }
     }
   } else {
+    datesMeteo_1 <- NULL
     if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
     for(i in 1:nrow(y)) {
       met_i <- y$meteo[[i]]
@@ -179,8 +180,14 @@
       } else {
         datesMeteo_i <- as.Date(row.names(met_i))
       }
-      if(sum(datesMeteo_i %in% dates) < length(dates)) {
-        stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
+      if(i==1) datesMeteo_1 <- datesMeteo_i
+      if(!is.null(dates)) {
+        if(sum(datesMeteo_i %in% dates) < length(dates)) {
+          stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
+        }
+      } else {
+        # check that all items have same dates
+        if(!all(datesMeteo_i==datesMeteo_1)) stop(paste0("Weather data of row ", i, " does not have the same dates as row 1. All spatial elements need to have the same weather dates"))
       }
     }
   }
