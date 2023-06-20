@@ -1,135 +1,3 @@
-.f_spatial<-function(xi, meteo, dates, model,
-                     SpParams, local_control, CO2ByYear = numeric(0), 
-                     keep_results = TRUE,
-                     management_function = NULL, summary_function = NULL, summary_arguments = NULL){
-  f <- xi$forest
-  s <- xi$soil
-  x <- xi$x
-
-  f_out <- NULL
-  m_out <- NULL
-  x_out <- NULL
-  res <- NULL
-  summary <- NULL
-  
-  if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) { # A data frame common for all locations
-      met <- meteo
-    }
-    else if(inherits(meteo, "stars")) { # An interpolator object
-      pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
-      met <- met$interpolated_data[[1]]
-    }
-    else if(inherits(meteo, "list")) { # A list of interpolators
-      pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met <- data.frame()
-      for(i in 1:length(meteo)) {
-        interpolator_i <- meteo[[i]]
-        dates_i <- as.Date(stars::st_get_dimension_values(interpolator_i, "date"))
-        if(!is.null(dates)) dates_i <- dates_i[dates_i %in% dates]
-        if(length(dates_i)>0) { # Only call interpolation if there are matching dates 
-          met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, verbose = FALSE)
-          met <- rbind(met, met_i$interpolated_data[[1]])
-        }
-      }
-    }
-  } else { # If weather was supplied as part of 'xi' list
-    met <- xi$meteo
-  }
-  if(!("dates" %in% names(met))) {
-    if(!is.null(dates)) met <- met[as.character(dates),,drop =FALSE] #subset dates
-    met$dates <- as.Date(row.names(met))
-    row.names(met) <- NULL
-  } else {
-    if(!is.null(dates)) met <- met[as.character(met$dates) %in% as.character(dates),,drop =FALSE] #subset dates
-    met$dates <- as.Date(met$dates)
-  }
-  if(model=="spwb") {
-    if(inherits(x, "spwbInput")){
-      res <- tryCatch({
-          medfate::spwb(x, meteo=met,
-                         latitude = xi$latitude, elevation = xi$elevation,
-                         slope = xi$slope, aspect = xi$aspect,
-                         CO2ByYear = CO2ByYear)
-        }, error = function(e) {
-          simpleError(e$message,"spwb")
-        })
-    } else if(inherits(x, "aspwbInput")){
-      res <- tryCatch({
-          .aspwb(x, meteo=met,
-                 latitude = xi$latitude, elevation = xi$elevation,
-                 slope = xi$slope, aspect = xi$aspect)
-      }, error = function(e) {
-        simpleError(e$message,"aspwb")
-      })
-    } 
-  } else if(model=="growth") {
-    if(inherits(x, "growthInput")) {
-      res <-tryCatch({
-        medfate::growth(x, meteo=met,
-                        latitude = xi$latitude, elevation = xi$elevation,
-                        slope = xi$slope, aspect = xi$aspect,
-                        CO2ByYear = CO2ByYear)
-      },
-      error = function(e){
-        simpleError(e$message,"growth")
-      })
-    } else if(inherits(x, "aspwbInput")){
-      res <- tryCatch({
-        .aspwb(x, meteo=met,
-               latitude = xi$latitude, elevation = xi$elevation,
-               slope = xi$slope, aspect = xi$aspect)
-      }, error = function(e) {
-        simpleError(e$message,"aspwb")
-      })
-    } 
-  } else if(model=="fordyn") {
-    if(inherits(s, "data.frame")) {
-      s <- soil(s)
-    }
-    if(inherits(f, "forest") && inherits(s, "soil")) {
-      mf <- management_function
-      ma <- xi$management_args
-      if(!is.null(x)) { #If there is a previous state, combine it with f so that state variables are no reinitialized
-        f_in <- list(NextForestObject = f,
-                     NextInputObject = x)
-        class(f_in) <- c("fordyn", "list")
-      } else { # Otherwise use the input object (this implies initialization of state variables)
-        f_in <- f
-      }
-      if(is.null(ma)) mf = NULL
-      res <- tryCatch({
-        medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
-                        latitude = xi$latitude, elevation = xi$elevation,
-                        slope = xi$slope, aspect = xi$aspect,
-                        CO2ByYear = CO2ByYear,
-                        management_function = mf, management_args = ma)
-      },
-      error = function(e){
-        simpleError(e$message,"fordyn")
-      })
-    }
-  } 
-  if(!is.null(res) && !inherits(res, "error")) {
-    if(!is.null(summary_function)){
-      argList <- list(object=res)
-      if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
-      summary <- do.call(summary_function, args=argList)
-    }
-    if(model=="fordyn"){
-      fs_i <- res$ForestStructures
-      f_out <- res$NextForestObject
-      m_out <- res$ManagementArgs
-    }
-    if(model=="spwb") x_out <- res$spwbOutput
-    else if(model=="growth") x_out <- res$growthOutput
-    else if(model=="fordyn") x_out <- res$NextInputObject
-    # Frees memory if detailed results are not required
-    if(!keep_results) res <- NULL
-  }
-  return(list(result = res, summary = summary, x_out = x_out, forest_out = f_out, management_out = m_out))
-}
 
 .check_meteo_object_input <- function(meteo, dates = NULL) {
   if(!is.null(dates)) {
@@ -331,6 +199,136 @@
     }
   } 
 
+  .f_spatial<-function(xi){
+    f <- xi$forest
+    s <- xi$soil
+    x <- xi$x
+    
+    f_out <- NULL
+    m_out <- NULL
+    x_out <- NULL
+    res <- NULL
+    summary <- NULL
+    
+    if(!is.null(meteo)) {
+      if(inherits(meteo,"data.frame")) { # A data frame common for all locations
+        met <- meteo
+      }
+      else if(inherits(meteo, "stars")) { # An interpolator object
+        pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+        met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
+        met <- met$interpolated_data[[1]]
+      }
+      else if(inherits(meteo, "list")) { # A list of interpolators
+        pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
+        met <- data.frame()
+        for(i in 1:length(meteo)) {
+          interpolator_i <- meteo[[i]]
+          dates_i <- as.Date(stars::st_get_dimension_values(interpolator_i, "date"))
+          if(!is.null(dates)) dates_i <- dates_i[dates_i %in% dates]
+          if(length(dates_i)>0) { # Only call interpolation if there are matching dates 
+            met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, verbose = FALSE)
+            met <- rbind(met, met_i$interpolated_data[[1]])
+          }
+        }
+      }
+    } else { # If weather was supplied as part of 'xi' list
+      met <- xi$meteo
+    }
+    if(!("dates" %in% names(met))) {
+      if(!is.null(dates)) met <- met[as.character(dates),,drop =FALSE] #subset dates
+      met$dates <- as.Date(row.names(met))
+      row.names(met) <- NULL
+    } else {
+      if(!is.null(dates)) met <- met[as.character(met$dates) %in% as.character(dates),,drop =FALSE] #subset dates
+      met$dates <- as.Date(met$dates)
+    }
+    if(model=="spwb") {
+      if(inherits(x, "spwbInput")){
+        res <- tryCatch({
+          medfate::spwb(x, meteo=met,
+                        latitude = xi$latitude, elevation = xi$elevation,
+                        slope = xi$slope, aspect = xi$aspect,
+                        CO2ByYear = CO2ByYear)
+        }, error = function(e) {
+          simpleError(e$message,"spwb")
+        })
+      } else if(inherits(x, "aspwbInput")){
+        res <- tryCatch({
+          .aspwb(x, meteo=met,
+                 latitude = xi$latitude, elevation = xi$elevation,
+                 slope = xi$slope, aspect = xi$aspect)
+        }, error = function(e) {
+          simpleError(e$message,"aspwb")
+        })
+      } 
+    } else if(model=="growth") {
+      if(inherits(x, "growthInput")) {
+        res <-tryCatch({
+          medfate::growth(x, meteo=met,
+                          latitude = xi$latitude, elevation = xi$elevation,
+                          slope = xi$slope, aspect = xi$aspect,
+                          CO2ByYear = CO2ByYear)
+        },
+        error = function(e){
+          simpleError(e$message,"growth")
+        })
+      } else if(inherits(x, "aspwbInput")){
+        res <- tryCatch({
+          .aspwb(x, meteo=met,
+                 latitude = xi$latitude, elevation = xi$elevation,
+                 slope = xi$slope, aspect = xi$aspect)
+        }, error = function(e) {
+          simpleError(e$message,"aspwb")
+        })
+      } 
+    } else if(model=="fordyn") {
+      if(inherits(s, "data.frame")) {
+        s <- soil(s)
+      }
+      if(inherits(f, "forest") && inherits(s, "soil")) {
+        mf <- management_function
+        ma <- xi$management_args
+        if(!is.null(x)) { #If there is a previous state, combine it with f so that state variables are no reinitialized
+          f_in <- list(NextForestObject = f,
+                       NextInputObject = x)
+          class(f_in) <- c("fordyn", "list")
+        } else { # Otherwise use the input object (this implies initialization of state variables)
+          f_in <- f
+        }
+        if(is.null(ma)) mf = NULL
+        res <- tryCatch({
+          medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
+                          latitude = xi$latitude, elevation = xi$elevation,
+                          slope = xi$slope, aspect = xi$aspect,
+                          CO2ByYear = CO2ByYear,
+                          management_function = mf, management_args = ma)
+        },
+        error = function(e){
+          simpleError(e$message,"fordyn")
+        })
+      }
+    } 
+    if(!is.null(res) && !inherits(res, "error")) {
+      if(!is.null(summary_function)){
+        argList <- list(object=res)
+        if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
+        summary <- do.call(summary_function, args=argList)
+      }
+      if(model=="fordyn"){
+        fs_i <- res$ForestStructures
+        f_out <- res$NextForestObject
+        m_out <- res$ManagementArgs
+      }
+      if(model=="spwb") x_out <- res$spwbOutput
+      else if(model=="growth") x_out <- res$growthOutput
+      else if(model=="fordyn") x_out <- res$NextInputObject
+      # Frees memory if detailed results are not required
+      if(!keep_results) res <- NULL
+    }
+    return(list(result = res, summary = summary, x_out = x_out, forest_out = f_out, management_out = m_out))
+  }
+  
   if(parallelize) {
     if(progress) {
       cli::cli_progress_step("Preparing data for parellization")
@@ -350,13 +348,11 @@
     }
     if(progress) cli::cli_progress_step(paste0("Launching parallel computation (cores = ", num_cores, "; chunk size = ", chunk_size,")"))
     cl<-parallel::makeCluster(num_cores)
-    reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
-                                             meteo = meteo, dates = dates, model = model,
-                                             SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear,
-                                             keep_results = keep_results,
-                                             management_function = management_function, 
-                                             summary_function = summary_function, summary_arguments = summary_arguments,
-                                             chunk.size = chunk_size)
+    parallel::clusterExport(cl, c("meteo", "dates", "model", "SpParams",
+                                  "local_control", "CO2ByYear",
+                                  "keep_results", "management_function",
+                                  "summary_function", "summary_arguments"), envir = environment())
+    reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, chunk.size = chunk_size)
     parallel::stopCluster(cl)
     if(progress) {
       cli::cli_progress_step("Retrieval of results")
@@ -386,12 +382,7 @@
                 meteo = meteolist[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                 management_args = managementlist[[i]])
-      sim_out = .f_spatial(xi = xi, 
-                           meteo = meteo, dates = dates, model = model,
-                           SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
-                           keep_results = keep_results,
-                           management_function = management_function, 
-                           summary_function = summary_function, summary_arguments = summary_arguments)
+      sim_out = .f_spatial(xi = xi)
       if(!is.null(sim_out$x_out)) xlist[[i]] = sim_out$x_out
       if(!is.null(sim_out$summary)) summarylist[[i]] = sim_out$summary
       if(!is.null(sim_out$result)) resultlist[[i]] = sim_out$result
