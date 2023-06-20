@@ -172,6 +172,17 @@
     }
   } else {
     if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
+    for(i in 1:nrow(y)) {
+      met_i <- y$meteo[[i]]
+      if("dates" %in% names(met_i)) {
+        datesMeteo_i <- as.Date(met_i$dates)
+      } else {
+        datesMeteo_i <- as.Date(row.names(met_i))
+      }
+      if(sum(datesMeteo_i %in% dates) < length(dates)) {
+        stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
+      }
+    }
   }
 }
 
