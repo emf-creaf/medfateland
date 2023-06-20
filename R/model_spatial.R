@@ -27,7 +27,7 @@
       for(i in 1:length(meteo)) {
         interpolator_i <- meteo[[i]]
         dates_i <- as.Date(stars::st_get_dimension_values(interpolator_i, "date"))
-        dates_i <- dates_i[dates_i %in% dates]
+        if(!is.null(dates)) dates_i <- dates_i[dates_i %in% dates]
         if(length(dates_i)>0) { # Only call interpolation if there are matching dates 
           met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, verbose = FALSE)
           met <- rbind(met, met_i$interpolated_data[[1]])
@@ -131,7 +131,90 @@
   return(list(result = res, summary = summary, x_out = x_out, forest_out = f_out, management_out = m_out))
 }
 
-.check_model_inputs<-function(y, meteo, dates = NULL) {
+.check_meteo_object_input <- function(meteo, dates = NULL) {
+  if(!is.null(dates)) {
+    if(inherits(meteo, "data.frame")) {
+      if("dates" %in% names(meteo)) {
+        datesMeteo <- as.Date(meteo$dates)
+      } else {
+        datesMeteo <- as.Date(row.names(meteo))
+      }
+      if(sum(datesMeteo %in% dates) < length(dates)) {
+        stop("Supplied weather data frame does not cover all elements in 'dates'")
+      }
+      # Subset dates in meteo
+      if("dates" %in% names(meteo)) {
+        meteo <- meteo[meteo$dates %in% dates, , drop = FALSE]
+      } else {
+        meteo <- meteo[as.character(dates), , drop = FALSE]
+      }
+    }
+    if(inherits(meteo, "stars")) {
+      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+      if(sum(datesMeteo %in% dates) < length(dates)) {
+        stop("Supplied weather interpolator does not cover all elements in 'dates'")
+      }
+      # Subset dates in meteo
+      params <- get_interpolation_params(meteo)
+      meteo <- meteo[,which(datesMeteo %in% dates),] |>
+        set_interpolation_params(params)
+    } else if(inherits(meteo, "list")) {
+      meteo_red <- list()
+      datesMeteo <- NULL
+      drop  <- rep(FALSE, length(meteo))
+      for(i in 1:length(meteo)) {
+        meteo_i <- meteo[[i]]
+        dates_i<- as.Date(stars::st_get_dimension_values(meteo_i, "date"))
+        if(is.null(datesMeteo)) datesMeteo <- dates_i
+        else datesMeteo <- c(datesMeteo, dates_i)
+        # Subset dates in meteo_i
+        params_i <- get_interpolation_params(meteo_i)
+        w_i <- which(dates_i %in% dates)
+        if(length(w_i)>0) {
+          meteo_red_i <- meteo_i[,w_i,] |>
+            set_interpolation_params(params_i)
+          meteo[[i]] <- meteo_red_i
+        } else {
+          drop[i] <- TRUE
+        }
+      }
+      meteo <- meteo[!drop]
+      if(sum(datesMeteo %in% dates) < length(dates)) {
+        stop("Supplied weather interpolator(s) do not cover all elements in 'dates'")
+      }
+    }
+  }
+  return(meteo)
+}
+.check_meteo_column_input <- function(meteo_column, dates = NULL) {
+  datesMeteo_1 <- NULL
+  for(i in 1:length(meteo_column)) {
+    met_i <- meteo_column[[i]]
+    if("dates" %in% names(met_i)) {
+      datesMeteo_i <- as.Date(met_i$dates)
+    } else {
+      datesMeteo_i <- as.Date(row.names(met_i))
+    }
+    if(i==1) datesMeteo_1 <- datesMeteo_i
+    if(!is.null(dates)) {
+      if(sum(datesMeteo_i %in% dates) < length(dates)) {
+        stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
+      }
+      # Subset dates in met_i
+      if("dates" %in% names(met_i)) {
+        met_i <- met_i[met_i$dates %in% dates, , drop = FALSE]
+      } else {
+        met_i <- met_i[as.character(dates), , drop = FALSE]
+      }
+      meteo_column[[i]] <- met_i
+    } else {
+      # check that all items have same dates
+      if(!all(datesMeteo_i==datesMeteo_1)) stop(paste0("Weather data of row ", i, " does not have the same dates as row 1. All spatial elements need to have the same weather dates"))
+    }
+  }
+  return(meteo_column)
+}
+.check_sf_input<-function(y) {
   if(!inherits(y, "sf")) stop("'sf' has to be an object of class 'sf'.")
   if(!all(c("elevation","slope","aspect") %in% names(y))) stop("Columns 'elevation', 'slope' and 'aspect' must be defined.")
   if(!("forest" %in% names(y))) stop("Column 'forest' must be defined.")
@@ -141,59 +224,9 @@
       if(!("crop_factor" %in% names(y))) stop("Column 'crop_factor' must be defined to simulate soil water balance in agricultural locations.")
     }
   }
-  if(!is.null(meteo)) {
-    if(!is.null(dates)) {
-      if(inherits(meteo, "data.frame")) {
-        if("dates" %in% names(meteo)) {
-          datesMeteo <- as.Date(meteo$dates)
-        } else {
-          datesMeteo <- as.Date(row.names(meteo))
-        }
-        if(sum(datesMeteo %in% dates) < length(dates)) {
-          stop("Supplied weather data frame does not cover all elements in 'dates'")
-        }
-      }
-      if(inherits(meteo, "stars")) {
-        datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
-        if(sum(datesMeteo %in% dates) < length(dates)) {
-          stop("Supplied weather interpolator does not cover all elements in 'dates'")
-        }
-      } else if(inherits(meteo, "list")) {
-        datesMeteo <- NULL
-        for(i in 1:length(meteo)) {
-          dates_i<- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
-          if(is.null(datesMeteo)) datesMeteo <- dates_i
-          else datesMeteo <- c(datesMeteo, dates_i)
-        }
-        if(sum(datesMeteo %in% dates) < length(dates)) {
-          stop("Supplied weather interpolator(s) do not cover all elements in 'dates'")
-        }
-      }
-    }
-  } else {
-    datesMeteo_1 <- NULL
-    if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
-    for(i in 1:nrow(y)) {
-      met_i <- y$meteo[[i]]
-      if("dates" %in% names(met_i)) {
-        datesMeteo_i <- as.Date(met_i$dates)
-      } else {
-        datesMeteo_i <- as.Date(row.names(met_i))
-      }
-      if(i==1) datesMeteo_1 <- datesMeteo_i
-      if(!is.null(dates)) {
-        if(sum(datesMeteo_i %in% dates) < length(dates)) {
-          stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
-        }
-      } else {
-        # check that all items have same dates
-        if(!all(datesMeteo_i==datesMeteo_1)) stop(paste0("Weather data of row ", i, " does not have the same dates as row 1. All spatial elements need to have the same weather dates"))
-      }
-    }
-  }
 }
 
-.model_spatial<-function(y, SpParams, meteo, model = "spwb",
+.model_spatial<-function(y, SpParams, meteo = NULL, model = "spwb",
                         local_control = defaultControl(), dates = NULL,
                         CO2ByYear = numeric(0), keep_results = TRUE,
                         management_function = NULL, 
@@ -201,6 +234,8 @@
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                         progress = TRUE) {
   
+  if(progress) cli::cli_progress_step(paste0("Checking sf input"))
+  .check_sf_input(y)
   
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
@@ -230,13 +265,16 @@
   } else {
     managementlist = vector("list",n)
   }
+  if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
   if("meteo" %in% names(y)) {
-    meteolist = y$meteo
+    if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
+    meteo <- NULL
+    meteolist <- .check_meteo_column_input(y$meteo, dates) 
   } else {
-    meteolist = vector("list",n)
+    if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
+    meteo <- .check_meteo_object_input(meteo, dates)
+    meteolist <- vector("list",n)
   }
-
-  if(progress)  cli::cli_h1(paste0("Simulation of model '", model,"' on ",n," locations"))
   
   resultlist = vector("list",n)
   summarylist = vector("list",n)
@@ -264,7 +302,7 @@
     w_init = which(init)
     if(length(w_init)>0) {
       if(progress) { 
-        cli::cli_progress_step(paste0("Creating ", length(w_init), " input objects for model '", model, "'."))
+        cli::cli_progress_step(paste0("Creating ", length(w_init), " input objects for model '", model, "'"))
       }
       for(w in 1:length(w_init)) {
         i = w_init[w]
@@ -289,13 +327,13 @@
         cli::cli_progress_done()
       }
     } else {
-      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'."))
+      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'"))
     }
   } 
 
   if(parallelize) {
     if(progress) {
-      cli::cli_progress_step("Preparing data for parellization.")
+      cli::cli_progress_step("Preparing data for parellization")
     }
     
     if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))
@@ -310,7 +348,7 @@
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                      management_args = managementlist[[i]])
     }
-    if(progress) cli::cli_progress_step(paste0("Launching parallel computation (cores = ", num_cores, "; chunk size = ", chunk_size,")."))
+    if(progress) cli::cli_progress_step(paste0("Launching parallel computation (cores = ", num_cores, "; chunk size = ", chunk_size,")"))
     cl<-parallel::makeCluster(num_cores)
     reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
@@ -321,7 +359,7 @@
                                              chunk.size = chunk_size)
     parallel::stopCluster(cl)
     if(progress) {
-      cli::cli_progress_step("Retrieval of results.")
+      cli::cli_progress_step("Retrieval of results")
     }
     for(i in 1:n) {
       if(!is.null(reslist_parallel[[i]]$x_out)) xlist[[i]] = reslist_parallel[[i]]$x_out
@@ -337,7 +375,7 @@
     }
   } else {
     if(progress) {
-      cli::cli_li(paste0("Performing '", model, "' simulations."))
+      cli::cli_progress_step(paste0("Performing '", model, "' simulations on ", n , " locations"))
       cli::cli_progress_bar(name = "Stands", total = n)
      }
      for(i in 1:n) {
@@ -377,9 +415,9 @@
   res$result <- resultlist
   errors <- sapply(res$result, function(x){inherits(x, "error")})
   if(sum(errors)>0) {
-    cli::cli_alert_warning(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'."))
+    cli::cli_alert_warning(paste0("Simulation errors occurred in ", sum(errors), " out of ",n ," stands. Check error messages in 'result'"))
   } else {
-    if(progress) cli::cli_alert_success(paste0("No simulation errors detected."))
+    if(progress) cli::cli_alert_success(paste0("No simulation errors detected"))
   }
   if(!is.null(summary_function)) res$summary <- summarylist
   return(sf::st_as_sf(tibble::as_tibble(res)))
@@ -493,7 +531,7 @@
 spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo, as.Date(dates))
+  if(progress)  cli::cli_h1(paste0("Simulation of model 'spwb'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
@@ -503,7 +541,7 @@ spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultContro
 growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo, as.Date(dates))
+  if(progress)  cli::cli_h1(paste0("Simulation of model 'growth'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
@@ -514,7 +552,7 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
                        CO2ByYear = numeric(0), keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo, as.Date(dates))
+  if(progress)  cli::cli_h1(paste0("Simulation of model 'fordyn'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, 
                 management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 

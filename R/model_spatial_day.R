@@ -54,6 +54,11 @@
                             progress = TRUE) {
   
   
+  if(progress)  cli::cli_h1(paste0("Simulation of model '",model, "' for date '", date,"'"))
+  
+  if(progress) cli::cli_progress_step(paste0("Checking sf input"))
+  .check_sf_input(y)
+  
   latitude <- sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
   date <- as.character(date)
   
@@ -78,18 +83,22 @@
     xlist <- vector("list", n)
   }
   
-  if(progress)  cli::cli_h1(paste0("Simulation of model '",model, "' on ",n," locations for date '", date,"'"))
-  
   resultlist = vector("list",n)
   summarylist = vector("list",n)
   names(resultlist) = names(forestlist)
   names(summarylist) = names(forestlist)
+  
+  if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
   if("meteo" %in% names(y)) {
-    meteolist <- y$meteo
+    if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
+    meteo <- NULL
+    meteolist <- .check_meteo_column_input(y$meteo, as.Date(date)) 
   } else {
+    if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
+    meteo <- .check_meteo_object_input(meteo, as.Date(date))
     meteolist <- vector("list",n)
   }
-
+  
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
@@ -240,14 +249,12 @@
 #' @name spwb_spatial_day
 spwb_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo, dates = as.Date(date))
   .model_spatial_day(y=sf, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, local_control = local_control, 
                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 #' @rdname spwb_spatial_day
 growth_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                            parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
-  .check_model_inputs(sf, meteo, dates = as.Date(date))
   .model_spatial_day(y=sf, meteo = meteo, date = date, model = "growth", SpParams = SpParams, local_control = local_control,
                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }

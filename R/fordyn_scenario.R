@@ -115,18 +115,29 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   y <- sf
   
-  .check_model_inputs(y, meteo, dates)
-
+  if(progress)  cli::cli_h1(paste0("Simulation of a management scenario with fordyn"))
+  
   # A.1 Check inputs
-  n = nrow(y)
-  nspp = nrow(SpParams)
-
+  if(progress) cli::cli_progress_step(paste0("Checking sf input"))
+  .check_sf_input(y)
   if(!("represented_area" %in% names(y))) stop("Column 'represented_area' must be defined in 'y'")
   if(!("management_unit" %in% names(y))) stop("Column 'management_unit' must be defined in 'y'")
-  
   if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
-  
   scenario_type = match.arg(management_scenario$scenario_type, c("bottom-up", "input_rate", "input_demand"))
+  
+  if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'sf' if not supplied separately")
+  if("meteo" %in% names(y)) {
+    if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
+    meteo <- NULL
+    y$meteo <- .check_meteo_column_input(y$meteo, dates) 
+  } else {
+    if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
+    meteo <- .check_meteo_object_input(meteo, dates)
+    y$meteo <- NULL
+  }
+  
+  n = nrow(y)
+  nspp = nrow(SpParams)
   
   # If dates are not supplied, take them from weather input (already passed checks)
   if(is.null(dates)) {
@@ -156,39 +167,46 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
     dates <- datesMeteo
   }
+  if(progress) cli::cli_progress_done()
   
   # Determine number of years to process
   years = unique(sort(as.numeric(format(dates, "%Y"))))
   
   # A.2 Scenario parameters
-  cat("SCENARIO PARAMETERS:\n")
-  cat(paste0("  Number of stands: ", n,"\n"))
-  cat(paste0("  Number of years: ", length(years),"\n"))
-  cat(paste0("  Management scenario type: ", scenario_type,"\n"))
+  if(progress) {
+    cli::cli_h2("Scenario parameters")
+    cli::cli_li(paste0("  Number of stands: ", n))
+    cli::cli_li(paste0("  Number of years: ", length(years)))
+    cli::cli_li(paste0("  Management scenario type: ", scenario_type))
+  }
   target_spp_names = names(management_scenario$annual_demand_by_species)
   spp_demand = rep(0, nrow(SpParams))
   names(spp_demand) = SpParams$Name
   if(scenario_type != "bottom-up"){
     spp_demand[target_spp_names] = management_scenario$annual_demand_by_species
     if(scenario_type == "input_demand"){
-      cat(paste0("  Fixed demand:\n"))
-      if(is.vector(spp_demand)) {
-        for(i in 1:length(spp_demand)) {
-          if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr \n"))
+      if(progress) {
+        cli::cli_li(paste0("Fixed demand:\n"))
+        if(is.vector(spp_demand)) {
+          for(i in 1:length(spp_demand)) {
+            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr \n"))
+          }
         }
       }
     }
     if(scenario_type == "input_rate"){
       extraction_rates = management_scenario$extraction_rate_by_year
-      cat(paste0("  Initial demand:\n"))
-      if(is.vector(spp_demand)) {
-        for(i in 1:length(spp_demand)) {
-          if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr\n"))
+      if(progress) {
+        cli::cli_li(paste0("Initial demand:\n"))
+        if(is.vector(spp_demand)) {
+          for(i in 1:length(spp_demand)) {
+            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr\n"))
+          }
         }
-      }
-      cat(paste0("  Extraction rates:\n"))
-      for(i in 1:length(extraction_rates)) {
-        cat(paste0("      yr. ", names(extraction_rates)[i], " - ", extraction_rates[i], "%\n"))
+        cli::cli_li(paste0("Extraction rates:\n"))
+        for(i in 1:length(extraction_rates)) {
+          cat(paste0("      yr. ", names(extraction_rates)[i], " - ", extraction_rates[i], "%\n"))
+        }
       }
     }
   } 
@@ -201,20 +219,21 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
   managed = !is.na(y$management_unit)
   units = sort(unique(y$management_unit), na.last = TRUE)
-  cat(paste0("  Management units:\n"))
-  for(i in 1:length(units)) {
-    if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), 
-                                    " stands in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
-    else cat(paste0("     ", sum(is.na(y$management_unit)), " stands without prescriptions\n"))
+  if(progress) {
+    cli::cli_li(paste0("Management units:"))
+    for(i in 1:length(units)) {
+      if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), 
+                                      " stands in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
+      else cat(paste0("     ", sum(is.na(y$management_unit)), " stands without prescriptions\n"))
+    }
   }
   if(is.null(volume_function)) {
-    cat("  Default volume function\n")
+    if(progress) cli::cli_li("Default volume function")
     volume_function = "default_volume_function"
   } else {
-    cat("  User-defined volume function\n")
+    if(progress) cli::cli_li("User-defined volume function")
   }
-  cat("\n")
-  
+
   
   
   # Define summary function (to save memory)
@@ -245,10 +264,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(scenario_type != "bottom-up") spp_demand_year = spp_demand
   
   # B. Year loop
-  if(progress) cat("SIMULATIONS: \n")
+  if(progress) cli::cli_h2("Simulation")
   for(yi in 1:length(years)) {
     year = years[yi]
-    if(progress) cat(paste0(" [ Year ", year, " (", yi,"/", length(years),") ]\n"))
+    if(progress) cli::cli_h3(paste0(" [ Year ", year, " (", yi,"/", length(years),") ]"))
     datesYear = dates[as.numeric(format(dates, "%Y")) == year]
 
     target[,yi] = spp_demand_year
@@ -258,9 +277,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(scenario_type != "bottom-up") {
       if(progress) {
         if(scenario_type=="input_rate") {
-          if(yi>1) cat(paste0("  Target extraction rate: ", extraction_rates[as.character(year)], "%\n"))
+          if(yi>1) cli::cli_li(paste0("  Target extraction rate: ", extraction_rates[as.character(year)], "%"))
         }
-        cat(paste0("  Species demand:\n"))
+        cli::cli_li(paste0("  Species demand:"))
         for(i in 1:length(spp_demand_year)) {
           if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3/yr\n"))
         }
@@ -311,21 +330,21 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           managed_step[no_final[sel_cut_j]] = TRUE # Set selected plots to TRUE
         }
       }
-      cat(paste0("  ", sum(managed_step), " stands to be managed (", sum(final_cuts) , " because of final cuts)\n"))
+      if(progress) cli::cli_li(paste0(sum(managed_step), " stands to be managed (", sum(final_cuts) , " because of final cuts)"))
     } else {
-      cat(paste0("  ", sum(managed_step), " stands allowed to be managed\n"))
+      if(progress) cli::cli_li(paste0(sum(managed_step), " stands allowed to be managed"))
     }
     prev_management_args = y$management_arguments
     y$management_arguments[managed & (!managed_step)] = list(NULL) # Deactivates management on plots that were not selected
     
     # B.2 Call fordyn_spatial()
-    if(progress) cat(paste0("  Calling fordyn_spatial...\n"))
-    fds <-fordyn_spatial(y, SpParams, meteo = meteo, local_control = local_control, dates = datesYear,
+    if(progress) cli::cli_li(paste0("Calling fordyn_spatial..."))
+    fds <-.model_spatial(y, SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = datesYear,
                         management_function = "defaultManagementFunction",
                         CO2ByYear = CO2ByYear, keep_results = FALSE, summary_function=table_selection, 
                         summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
-                        progress = FALSE)
+                        progress = progress)
     
     # B.3 Update final state variables in y and retrieve fordyn tables
     y = update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
@@ -376,29 +395,29 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
     }
     # B.5 Update extraction rates and actual satisfied demand
+    if(progress) cli::cli_li(paste0("Management statistics:"))
     final_volume_target_spp = .standingVolume(y, target_spp_names, SpParams, volume_function)
     extracted_i = sum(extracted[,yi])
     if(scenario_type != "bottom-up") {
       target_i = sum(target[,yi])
       if(progress) {
-        cat(paste0("  Target (m3): ", round(target_i), 
-                   "  Extraction (m3): ", round(extracted_i), " (", round(100*extracted_i/target_i),"% of target)"))
+        cat(paste0("      Target (m3): ", round(target_i), 
+                   "      Extraction (m3): ", round(extracted_i), " (", round(100*extracted_i/target_i),"% of target)"))
       }
     } else {
       if(progress) {
-        cat(paste0("  Extraction (m3): ", round(extracted_i)))
+        cat(paste0("      Extraction (m3): ", round(extracted_i)))
       }
     }
     growth_i = final_volume_target_spp - initial_volume_target_spp + extracted_i
     cumulative_extraction = cumulative_extraction + extracted_i
     cumulative_growth = cumulative_growth + growth_i
     if(progress) {
-      cat(paste0("  Growth (m3): ", round(growth_i), "\n",
-                 "  Extraction rate: ", round(100*extracted_i/growth_i),"%"))
-      if(yi>1) cat(paste0("  Average extraction rate: ", round(100*cumulative_extraction/cumulative_growth),"%\n"))
+      cat(paste0("      Growth (m3): ", round(growth_i), "\n",
+                 "      Extraction rate: ", round(100*extracted_i/growth_i),"%"))
+      if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction/cumulative_growth),"%\n"))
       else cat("\n")
     }
-    if(progress) cat("\n")
     # recalculate demand for next year
     if(yi < length(years)) {
       if(scenario_type=="input_demand") {
@@ -414,8 +433,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # Initial standing volume for next year
     initial_volume_target_spp = final_volume_target_spp
   }
-  if(progress) cat("ARRANGING OUTPUT: \n")
-  if(progress) cat(" Tree/shrub tables\n")
+  if(progress) cli::cli_h2("Arranging output")
+  if(progress) cli::cli_li(" Tree/shrub tables")
   tree_tables = vector("list", n)
   shrub_tables = vector("list", n)
   dead_tree_tables = vector("list", n)
@@ -444,7 +463,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   sf$summary = summary_list
   
   # Volumes extracted
-  if(progress) cat(" Extracted volumes\n")
+  if(progress) cli::cli_li(" Extracted volumes")
   extractSums = rowSums(extracted, na.rm=TRUE)
   extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0,])
   names(extracted) <- c("species", as.character(years))
