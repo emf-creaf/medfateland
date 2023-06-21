@@ -1,8 +1,8 @@
 #' Default volume function
 #' 
-#' Example function for estimating wood volume (in m3/ha) from a tree table. 
+#' Example function for estimating wood volume (in m3/ha) from a tree table or forest object. 
 #' 
-#' @param x A data frame with columns 'DBH', 'Height' and 'N'
+#' @param x A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link{forest}} object
 #' 
 #' @details Users should define their own functions taking into account that:
 #'  \itemize{
@@ -12,5 +12,6 @@
 #'  }
 #' 
 default_volume_function<-function(x){
+  if(inherits(x, "forest")) x <- x$treeData
   return((1/3) * pi * (x$DBH/200)^2 * (x$Height/100) * x$N) #m3/ha
 }

@@ -276,6 +276,16 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
     target[,yi] = spp_demand_year
     
+    # B.0 Check for null forest objects (from errors in previous step)
+    restored <- 0
+    for(i in 1:n) {
+      if(is.null(y$forest[[i]])) {
+        y$forest[[i]] <- emptyforest()
+        restored <- restored +1
+      }
+    }
+    if(progress && (restored>0)) cli::cli_li(paste0("Restored ", restored, " NULL objects to empty forest"))
+    
     # B.1 Determine which plots will be managed according to current demand
     managed_step = managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {

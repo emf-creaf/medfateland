@@ -7,10 +7,10 @@
 default_volume_function(x)
 }
 \arguments{
-\item{x}{A data frame with columns 'DBH', 'Height' and 'N'}
+\item{x}{A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link{forest}} object}
 }
 \description{
-Example function for estimating wood volume (in m3/ha) from a tree table.
+Example function for estimating wood volume (in m3/ha) from a tree table or forest object.
 }
 \details{
 Users should define their own functions taking into account that:
