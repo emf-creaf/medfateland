@@ -193,7 +193,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Fixed demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr \n"))
+            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr \n"))
           }
         }
       }
@@ -296,7 +296,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         }
         cli::cli_li(paste0("  Species demand:"))
         for(i in 1:length(spp_demand_year)) {
-          if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3/yr\n"))
+          if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i],1), " m3\n"))
         }
       }
       vol_species = matrix(0, n, nspp) 
