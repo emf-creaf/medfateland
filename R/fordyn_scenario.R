@@ -217,7 +217,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Fixed demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr \n"))
+            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr \n"))
           }
         }
       }
@@ -230,7 +230,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Input demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr\n"))
+            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr\n"))
           }
         }
         cli::cli_li(paste0("Extraction rates:\n"))
@@ -308,7 +308,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         if(progress) cli::cli_li(paste0("  Target extraction rate: ", extraction_rate_year, "%"))
         total_extraction_year = last_growth*(extraction_rate_year/100)
         spp_demand_year = total_extraction_year*(spp_demand/sum(spp_demand))
-        # print(spp_demand_year)
       } else {
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
         spp_demand_year <- spp_demand
@@ -331,9 +330,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     managed_step = managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {
       if(progress) {
-        cli::cli_li(paste0("  Species demand for current year:"))
-        for(i in 1:length(spp_demand_year)) {
-          if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
+        if(any(spp_demand_year > 0)) {
+          cli::cli_li(paste0("  Species with positive demand for current year:"))
+          for(i in 1:length(spp_demand_year)) {
+            if(spp_demand_year[i] > 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
+          }
+        } else {
+          cli::cli_li(paste0("  No species with positive demand"))
         }
       }
       vol_species = matrix(0, n, nspp) 
@@ -506,10 +509,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   # Volumes extracted
   if(progress) cli::cli_li(" Extracted volumes")
   extractSums = rowSums(extracted, na.rm=TRUE)
-  extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0,])
+  extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0, , drop = FALSE])
   names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
-  target = data.frame(Name = SpParams$Name[extractSums>0], target[extractSums>0,])
+  target = data.frame(Name = SpParams$Name[extractSums>0], target[extractSums>0, , drop = FALSE])
   names(target) <- c("species", as.character(years))
   row.names(target) <- NULL
   extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
