@@ -204,7 +204,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Initial demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr\n"))
+            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr\n"))
           }
         }
         cli::cli_li(paste0("Extraction rates:\n"))
@@ -281,6 +281,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     for(i in 1:n) {
       if(is.null(y$forest[[i]])) {
         y$forest[[i]] <- emptyforest()
+        managed[i] <- FALSE
         restored <- restored +1
       }
     }
