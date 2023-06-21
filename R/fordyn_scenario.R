@@ -4,12 +4,16 @@
   names(volume_target_spp) = target_spp_names
   for(i in 1:n) {
     f = y$forest[[i]]
-    vols_i <- do.call(what = volume_function, 
-                      args = list(x = f$treeData))*y$represented_area[i]
-    nsp_i <- medfate::species_characterParameter(f$treeData$Species, SpParams, "Name")
-    vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
-    vol_target_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
-    if(length(vol_target_i)>0) volume_target_spp[names(vol_target_i)] = volume_target_spp[names(vol_target_i)] + vol_target_i
+    if(!is.null(f)) {
+      if(inherits(f, "forest")) {
+        vols_i <- do.call(what = volume_function, 
+                          args = list(x = f$treeData))*y$represented_area[i]
+        nsp_i <- medfate::species_characterParameter(f$treeData$Species, SpParams, "Name")
+        vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+        vol_target_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
+        if(length(vol_target_i)>0) volume_target_spp[names(vol_target_i)] = volume_target_spp[names(vol_target_i)] + vol_target_i
+      }
+    }
   }
   return(sum(volume_target_spp))
 }
@@ -357,12 +361,12 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
     }
     # Move summary into results
-    fds$result = fds$summary 
+    fds$result <- fds$summary 
     # Retrieve user-defined summaries (if existing)
     if(!is.null(summary_function)) {
       for(i in 1:n){
-        if(yi==1) summary_list[[i]] = fds$result[[i]]$summary
-        else summary_list[[i]] = rbind(summary_list[[i]], fds$result[[i]]$summary)
+        if(yi==1) summary_list[[i]] <- fds$result[[i]]$summary
+        else summary_list[[i]] <- rbind(summary_list[[i]], fds$result[[i]]$summary)
       }
     }
     # Retrieve tree tables
