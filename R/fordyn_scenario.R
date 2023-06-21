@@ -36,10 +36,12 @@
 #'     \item{\code{management_unit}: Management unit corresponding to each stand.}
 #'     \item{\code{represented_area}: Area represented by each stand (in hectares).}
 #'   }
+#'   Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
+#'   to continue simulations.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
 #' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
-#' @param volume_function A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+#' @param volume_function A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 #' If NULL, the default volume function is used (not recommended!).
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
@@ -56,13 +58,10 @@
 #' 
 #' @returns An list of class 'fordyn_scenario' with the following elements:
 #'  \itemize{
-#'    \item{\code{sf}: An object of class 'sf' containing four elements:
+#'    \item{\code{result_sf}: An object of class 'sf' containing four elements:
 #'      \itemize{
 #'        \item{\code{geometry}: Spatial geometry.}
 #'        \item{\code{id}: Stand id, taken from the input.}
-#'        \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'        \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-#'        \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'        \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
 #'        \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
 #'        \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
@@ -72,7 +71,10 @@
 #'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 #'      }
 #'    }
-#'    \item{\code{volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+#'    \item{\code{result_volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+#'    \item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
+#'    \item{\code{next_demand}: A list with information (i.e. demand offset by species and last volume growth) 
+#'    to modify demand in subsequent calls to \code{fordyn_scenario}.}
 #'  }
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
@@ -87,16 +89,16 @@
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   
-#' #Prepare a three-year meteorological data 
-#' meteo_01_03 <- rbind(examplemeteo, examplemeteo, examplemeteo)
-#' row.names(meteo_01_03) <- seq(as.Date("2001-01-01"), 
-#'                               as.Date("2003-12-31"), by="day")
+#' #Prepare a three-year meteorological data in two blocks
+#' meteo_01_02 <- rbind(examplemeteo, examplemeteo)
+#' row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
+#'                               as.Date("2002-12-31"), by="day")
+#' meteo_03 <- examplemeteo
+#' row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
+#'                            as.Date("2003-12-31"), by="day")
 #'                          
 #' # Load default medfate parameters
 #' data("SpParamsMED")
-#' 
-#' # Creates scenario with one management unit and annual demand for P. nigra 
-#' scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 #' 
 #' # Assign management unit to all stands
 #' example_ifn$management_unit <- 1 
@@ -104,8 +106,16 @@
 #' # Assume that each stand represents 1km2 = 100 ha
 #' example_ifn$represented_area <- 100
 #' 
-#' # Launch simulation scenario
-#' res <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_03, 
+#' # Creates scenario with one management unit and annual demand for P. nigra 
+#' scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
+#' 
+#' # Launch simulation scenario (years 2001 and 2002)
+#' fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 
+#'                        volume_function = NULL, management_scenario = scen,
+#'                        parallelize = TRUE)
+#'                        
+#' # Continue simulation scenario 1 (year 2003)
+#' fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
 #'                        volume_function = NULL, management_scenario = scen,
 #'                        parallelize = TRUE)
 #'}
@@ -117,9 +127,24 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                          CO2ByYear = numeric(0), summary_function=NULL, summary_arguments=NULL,
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
   
-  y <- sf
-  
   if(progress)  cli::cli_h1(paste0("Simulation of a management scenario with fordyn"))
+  nspp = nrow(SpParams)
+  
+  if(inherits(sf, "sf")) {
+    y <- sf
+    offset_demand <- NULL
+    last_growth <- NULL 
+  } else if(inherits(sf, "fordyn_scenario")) {
+    if(progress) cli::cli_progress_step(paste0("Recovering previous run"))
+    y <- sf$next_sf
+    offset_demand <- rep(0, nspp)
+    names(offset_demand) <- SpParams$Name
+    offset <- sf$next_demand$offset
+    offset_demand[names(offset)] <- offset
+    last_growth <- sf$next_demand$last_growth
+  } else {
+    stop("Wrong class of input object. Should be an object of either class 'sf' or class 'fordyn_scenario'")
+  }
   
   # A.1 Check inputs
   if(progress) cli::cli_progress_step(paste0("Checking sf input"))
@@ -141,7 +166,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
   
   n = nrow(y)
-  nspp = nrow(SpParams)
   
   # If dates are not supplied, take them from weather input (already passed checks)
   if(is.null(dates)) {
@@ -193,18 +217,20 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Fixed demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr \n"))
+            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr \n"))
           }
         }
       }
     }
     if(scenario_type == "input_rate"){
-      extraction_rates = management_scenario$extraction_rate_by_year
+      extraction_rates <- management_scenario$extraction_rate_by_year
+      if(!all(as.character(years) %in% names(extraction_rates))) stop("Extraction rates have not been specified for all simulation years")
+      extraction_rates <- extraction_rates[as.character(years)]
       if(progress) {
-        cli::cli_li(paste0("Initial demand:\n"))
+        cli::cli_li(paste0("Input demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr\n"))
+            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", spp_demand[i], " m3/yr\n"))
           }
         }
         cli::cli_li(paste0("Extraction rates:\n"))
@@ -264,9 +290,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   # Estimate initial standing volume
   initial_volume_target_spp = .standingVolume(y, target_spp_names, SpParams, volume_function)
   
-  # Initial demand
-  if(scenario_type != "bottom-up") spp_demand_year = spp_demand
-  
+
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
   for(yi in 1:length(years)) {
@@ -274,6 +298,23 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(progress) cli::cli_h3(paste0(" [ Year ", year, " (", yi,"/", length(years),") ]"))
     datesYear = dates[as.numeric(format(dates, "%Y")) == year]
 
+    # Set demand in demand-based scenarios
+    if(scenario_type=="input_demand") {
+      spp_demand_year <- spp_demand
+      if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
+    } else if(scenario_type=="input_rate") {
+      extraction_rate_year = extraction_rates[as.character(years[yi])]
+      if(!is.null(last_growth)) {
+        if(progress) cli::cli_li(paste0("  Target extraction rate: ", extraction_rate_year, "%"))
+        total_extraction_year = last_growth*(extraction_rate_year/100)
+        spp_demand_year = total_extraction_year*(spp_demand/sum(spp_demand))
+        # print(spp_demand_year)
+      } else {
+        if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
+        spp_demand_year <- spp_demand
+      }
+      if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
+    }
     target[,yi] = spp_demand_year
     
     # B.0 Check for null forest objects (from errors in previous step)
@@ -281,7 +322,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     for(i in 1:n) {
       if(is.null(y$forest[[i]])) {
         y$forest[[i]] <- emptyforest()
-        managed[i] <- FALSE
         restored <- restored +1
       }
     }
@@ -291,12 +331,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     managed_step = managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {
       if(progress) {
-        if(scenario_type=="input_rate") {
-          if(yi>1) cli::cli_li(paste0("  Target extraction rate: ", extraction_rates[as.character(year)], "%"))
-        }
-        cli::cli_li(paste0("  Species demand:"))
+        cli::cli_li(paste0("  Species demand for current year:"))
         for(i in 1:length(spp_demand_year)) {
-          if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i],1), " m3\n"))
+          if(spp_demand_year[i]>0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
         }
       }
       vol_species = matrix(0, n, nspp) 
@@ -433,20 +470,12 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction/cumulative_growth),"%\n"))
       else cat("\n")
     }
-    # recalculate demand for next year
-    if(yi < length(years)) {
-      if(scenario_type=="input_demand") {
-        offset_demand = target[, yi] - extracted[,yi]
-        spp_demand_year = spp_demand + offset_demand
-      } else if(scenario_type=="input_rate") {
-        offset_demand = target[, yi] - extracted[,yi]
-        extraction_rate_next = extraction_rates[as.character(years[yi+1])]
-        total_extraction_next = growth_i*(extraction_rate_next/100)
-        spp_demand_year = total_extraction_next*(spp_demand/sum(spp_demand)) + offset_demand
-      }
-    }
+    
+    # recalculate offset and previous growth for next year (or next simulation)
+    offset_demand <- target[, yi] - extracted[,yi]
+    last_growth <- growth_i
     # Initial standing volume for next year
-    initial_volume_target_spp = final_volume_target_spp
+    initial_volume_target_spp <- final_volume_target_spp
   }
   if(progress) cli::cli_h2("Arranging output")
   if(progress) cli::cli_li(" Tree/shrub tables")
@@ -464,18 +493,15 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     cut_tree_tables[[i]] = cut_tree_table[cut_tree_table$id==y$id[i], ]
     cut_shrub_tables[[i]] = cut_shrub_table[cut_shrub_table$id==y$id[i], ]
   }
-  sf = sf::st_sf(geometry=sf::st_geometry(y))
-  sf$id = y$id
-  sf$state = y$state
-  sf$forest = y$forest
-  sf$management_arguments = y$management_arguments
-  sf$tree_table = tree_tables
-  sf$shrub_table = shrub_tables
-  sf$dead_tree_table = dead_tree_tables
-  sf$dead_shrub_table = dead_shrub_tables
-  sf$cut_tree_table = cut_tree_tables
-  sf$cut_shrub_table = cut_shrub_tables
-  sf$summary = summary_list
+  sf_results = sf::st_sf(geometry=sf::st_geometry(y))
+  sf_results$id = y$id
+  sf_results$tree_table = tree_tables
+  sf_results$shrub_table = shrub_tables
+  sf_results$dead_tree_table = dead_tree_tables
+  sf_results$dead_shrub_table = dead_shrub_tables
+  sf_results$cut_tree_table = cut_tree_tables
+  sf_results$cut_shrub_table = cut_shrub_tables
+  sf_results$summary = summary_list
   
   # Volumes extracted
   if(progress) cli::cli_li(" Extracted volumes")
@@ -493,8 +519,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   } else {
     volumes = extracted_pv
   }
-  l = list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
-           volumes = volumes)
+  l = list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
+           result_volumes = volumes,
+           next_sf = y,
+           next_demand = list(offset = offset_demand[offset_demand != 0], last_growth = last_growth))
   class(l)<-c("fordyn_scenario", "list")
   return(l)
 }

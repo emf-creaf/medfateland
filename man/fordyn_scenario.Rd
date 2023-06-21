@@ -35,7 +35,9 @@ fordyn_scenario(
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{management_unit}: Management unit corresponding to each stand.}
 \item{\code{represented_area}: Area represented by each stand (in hectares).}
-}}
+}
+Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
+to continue simulations.}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
@@ -43,7 +45,7 @@ fordyn_scenario(
 
 \item{management_scenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
 
-\item{volume_function}{A function accepting a forest object as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+\item{volume_function}{A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 If NULL, the default volume function is used (not recommended!).}
 
 \item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
@@ -67,13 +69,10 @@ If NULL, the default volume function is used (not recommended!).}
 \value{
 An list of class 'fordyn_scenario' with the following elements:
 \itemize{
-\item{\code{sf}: An object of class 'sf' containing four elements:
+\item{\code{result_sf}: An object of class 'sf' containing four elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand id, taken from the input.}
-\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
-\item{\code{management_arguments}: A list of management arguments for each simulated stand (only in \code{fordynspatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
 \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
 \item{\code{dead_tree_table}: A list of data frames for each simulated stand, containing the dead trees at each time step.}
@@ -83,7 +82,10 @@ An list of class 'fordyn_scenario' with the following elements:
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 }
 }
-\item{\code{volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+\item{\code{result_volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+\item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
+\item{\code{next_demand}: A list with information (i.e. demand offset by species and last volume growth)
+to modify demand in subsequent calls to \code{fordyn_scenario}.}
 }
 }
 \description{
@@ -101,16 +103,16 @@ data("example_ifn")
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   
-#Prepare a three-year meteorological data 
-meteo_01_03 <- rbind(examplemeteo, examplemeteo, examplemeteo)
-row.names(meteo_01_03) <- seq(as.Date("2001-01-01"), 
-                              as.Date("2003-12-31"), by="day")
+#Prepare a three-year meteorological data in two blocks
+meteo_01_02 <- rbind(examplemeteo, examplemeteo)
+row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
+                              as.Date("2002-12-31"), by="day")
+meteo_03 <- examplemeteo
+row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
+                           as.Date("2003-12-31"), by="day")
                          
 # Load default medfate parameters
 data("SpParamsMED")
-
-# Creates scenario with one management unit and annual demand for P. nigra 
-scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
 
 # Assign management unit to all stands
 example_ifn$management_unit <- 1 
@@ -118,8 +120,16 @@ example_ifn$management_unit <- 1
 # Assume that each stand represents 1km2 = 100 ha
 example_ifn$represented_area <- 100
 
-# Launch simulation scenario
-res <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_03, 
+# Creates scenario with one management unit and annual demand for P. nigra 
+scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
+
+# Launch simulation scenario (years 2001 and 2002)
+fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 
+                       volume_function = NULL, management_scenario = scen,
+                       parallelize = TRUE)
+                       
+# Continue simulation scenario 1 (year 2003)
+fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
                        volume_function = NULL, management_scenario = scen,
                        parallelize = TRUE)
 }

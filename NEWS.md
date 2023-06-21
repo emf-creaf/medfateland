@@ -2,6 +2,10 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+
+# Version 2.0.1
+- Improvements in fordyn_scenario
+
 # Version 2.0.0
 - IMPORTANT: In this version we removed sp-type S4 classes that were deprecated in 1.0.1. Use release version 1.2.1 to continue using deprecated classes.
 - New function 'fordyn_land'
