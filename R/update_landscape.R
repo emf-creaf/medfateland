@@ -18,23 +18,23 @@ update_landscape<-function(x, y) {
      && !inherits(y, "fordyn_land") && !inherits(y, "fordyn_scenario")) 
     stop("'y' should be of class 'sf', 'spwb_land', 'growth_land', 'fordyn_land' or 'fordyn_scenario'")
   if(inherits(y, c("spwb_land", "growth_land", "fordyn_land"))) {
-    y = y$sf
+    y <- y$sf
   } else if(inherits(y, c("fordyn_scenario"))) {
-    y = y$next_sf
+    y <- y$next_sf
   }
-  if(nrow(y)!=nrow(x)) stop("'y' does not have the same number of elements as 'x'")
+  if(nrow(y) != nrow(x)) stop("'y' does not have the same number of elements as 'x'")
   if("state" %in% names(y)) {
-    x$state = y$state
+    x$state <- y$state
     for(i in 1:nrow(x)) {
       if(!is.null(x$state[[i]])) {
-        if("soil" %in% names(x$state[[i]])) x$soil[[i]] = x$state[[i]]$soil
+        if("soil" %in% names(x$state[[i]])) x$soil[[i]] <- x$state[[i]]$soil
       }
     }
   } 
-  if("forest" %in% names(y)) x$forest = y$forest
-  if("management_arguments" %in% names(y)) x$management_arguments = y$management_arguments
-  if("aquifer" %in% names(y)) x$aquifer = y$aquifer
-  if("snowpack" %in% names(y)) x$snowpack = y$snowpack
+  if("forest" %in% names(y)) x$forest <- y$forest
+  if("management_arguments" %in% names(y)) x$management_arguments <- y$management_arguments
+  if("aquifer" %in% names(y)) x$aquifer <- y$aquifer
+  if("snowpack" %in% names(y)) x$snowpack <- y$snowpack
   # place geometry in first position
   ns <- names(x)
   if("geom" %in% ns) {

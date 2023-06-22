@@ -307,11 +307,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       spp_demand_year <- spp_demand + offset_demand
       target[names(spp_demand_year), yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
-      extraction_rate_year = extraction_rates[as.character(years[yi])]
+      extraction_rate_year <- extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
         total_extraction_year = last_growth*(extraction_rate_year/100)
         if(progress) cli::cli_li(paste0("  Previous growth ", round(last_growth), " m3 ","   target extraction rate: ", extraction_rate_year, "%","   target volume (no offset): ", round(total_extraction_year), " m3"))
-        spp_demand_year = as.numeric(total_extraction_year)*(spp_demand/sum(spp_demand))
+        spp_demand_year <- as.numeric(total_extraction_year)*(spp_demand/sum(spp_demand))
       } else {
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
         spp_demand_year <- spp_demand
@@ -330,7 +330,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(progress && (restored>0)) cli::cli_li(paste0("Restored ", restored, " NULL objects to empty forest"))
     
     # B.1 Determine which plots will be managed according to current demand
-    managed_step = managed # by default, manage all plots that have
+    managed_step <- managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {
       if(progress) {
         if(any(spp_demand_year != 0)) {
@@ -342,10 +342,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           cli::cli_li(paste0("  No species with demand"))
         }
       }
-      vol_spp_target = matrix(0, n, length(target_spp_names)) 
-      colnames(vol_spp_target) = target_spp_names
-      rownames(vol_spp_target) = y$id
-      final_cuts = rep(FALSE, n)
+      vol_spp_target <- matrix(0, n, length(target_spp_names)) 
+      colnames(vol_spp_target) <- target_spp_names
+      rownames(vol_spp_target) <- y$id
+      final_cuts <- rep(FALSE, n)
       # print(sum(unlist(lapply(y$management_arguments, FUN = is.null))))
       for(i in 1:n) {
         if(managed[i]) {
@@ -369,15 +369,15 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
       # print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
       # Set all plots not in final cuts to non-management
-      no_final = which(!final_cuts)
-      managed_step[no_final] = FALSE 
-      to_cut = integer(0)
+      no_final <- which(!final_cuts)
+      managed_step[no_final] <- FALSE 
+      to_cut <- integer(0)
       # For each species set to true
       for(j in 1:length(spp_demand_year)) {
-        vol_spp_j = vol_spp_target[,j]
+        vol_spp_j <- vol_spp_target[,j]
         if(spp_demand_year[j]>0) {
           # cat(paste0("Species ", names(spp_demand_year)[j], " Target ", spp_demand_year[j],"\n"))
-          o = order(vol_spp_j, decreasing = TRUE)
+          o <- order(vol_spp_j, decreasing = TRUE)
           vol_cum_sorted_j <- cumsum(sort(vol_spp_j, decreasing = TRUE))
           vol_cum_j <- vol_spp_j
           vol_cum_j[o] <- vol_cum_sorted_j
@@ -401,8 +401,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     } else {
       if(progress) cli::cli_li(paste0(sum(managed_step), " stands allowed to be managed"))
     }
-    prev_management_args = y$management_arguments
-    y$management_arguments[managed & (!managed_step)] = list(NULL) # Deactivates management on plots that were not selected
+    prev_management_args <- y$management_arguments
+    y$management_arguments[managed & (!managed_step)] <- list(NULL) # Deactivates management on plots that were not selected
     
     # B.2 Call fordyn_spatial()
     if(progress) cli::cli_li(paste0("Calling fordyn_spatial..."))
@@ -428,27 +428,30 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # Retrieve user-defined summaries (if existing)
     if(!is.null(summary_function)) {
       for(i in 1:n){
-        if(yi==1) summary_list[[i]] <- fds$result[[i]]$summary
-        else summary_list[[i]] <- rbind(summary_list[[i]], fds$result[[i]]$summary)
+        summary_i <- fds$result[[i]]$summary
+        if(!is.null(summary_i)) {
+          if(yi==1) summary_list[[i]] <- summary_i
+          else summary_list[[i]] <- rbind(summary_list[[i]], summary_i)
+        }
       }
     }
     # Retrieve tree tables
     if(yi==1) {
-      tree_table = .fordyn_tables(fds, "TreeTable")
-      shrub_table = .fordyn_tables(fds, "ShrubTable")
-      dead_tree_table = .fordyn_tables(fds, "DeadTreeTable")
-      dead_shrub_table = .fordyn_tables(fds, "DeadShrubTable")
-      cut_tree_table = .fordyn_tables(fds, "CutTreeTable")
-      cut_shrub_table = .fordyn_tables(fds, "CutShrubTable")
+      tree_table <- .fordyn_tables(fds, "TreeTable")
+      shrub_table <- .fordyn_tables(fds, "ShrubTable")
+      dead_tree_table <- .fordyn_tables(fds, "DeadTreeTable")
+      dead_shrub_table <- .fordyn_tables(fds, "DeadShrubTable")
+      cut_tree_table <- .fordyn_tables(fds, "CutTreeTable")
+      cut_shrub_table <- .fordyn_tables(fds, "CutShrubTable")
     } else {
-      tt_i = .fordyn_tables(fds, "TreeTable")
-      tree_table = dplyr::bind_rows(tree_table, tt_i[tt_i$Step==1,])
-      st_i = .fordyn_tables(fds, "ShrubTable")
-      shrub_table = dplyr::bind_rows(shrub_table, st_i[st_i$Step==1,])
-      dead_tree_table = dplyr::bind_rows(dead_tree_table, .fordyn_tables(fds, "DeadTreeTable"))
-      dead_shrub_table = dplyr::bind_rows(dead_shrub_table, .fordyn_tables(fds, "DeadShrubTable"))
-      cut_tree_table = dplyr::bind_rows(cut_tree_table, .fordyn_tables(fds, "CutTreeTable"))
-      cut_shrub_table = dplyr::bind_rows(cut_shrub_table, .fordyn_tables(fds, "CutShrubTable"))
+      tt_i <- .fordyn_tables(fds, "TreeTable")
+      tree_table <- dplyr::bind_rows(tree_table, tt_i[tt_i$Step==1,])
+      st_i <- .fordyn_tables(fds, "ShrubTable")
+      shrub_table <- dplyr::bind_rows(shrub_table, st_i[st_i$Step==1,])
+      dead_tree_table <- dplyr::bind_rows(dead_tree_table, .fordyn_tables(fds, "DeadTreeTable"))
+      dead_shrub_table <- dplyr::bind_rows(dead_shrub_table, .fordyn_tables(fds, "DeadShrubTable"))
+      cut_tree_table <- dplyr::bind_rows(cut_tree_table, .fordyn_tables(fds, "CutTreeTable"))
+      cut_shrub_table <- dplyr::bind_rows(cut_shrub_table, .fordyn_tables(fds, "CutShrubTable"))
     }
     # B.4 Store actual extraction
     for(i in 1:n){
@@ -515,39 +518,39 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
   if(progress) cli::cli_h2("Arranging output")
   if(progress) cli::cli_li(" Tree/shrub tables")
-  tree_tables = vector("list", n)
-  shrub_tables = vector("list", n)
-  dead_tree_tables = vector("list", n)
-  dead_shrub_tables = vector("list", n)
-  cut_tree_tables = vector("list", n)
-  cut_shrub_tables = vector("list", n)
+  tree_tables <- vector("list", n)
+  shrub_tables <- vector("list", n)
+  dead_tree_tables <- vector("list", n)
+  dead_shrub_tables <- vector("list", n)
+  cut_tree_tables <- vector("list", n)
+  cut_shrub_tables <- vector("list", n)
   for(i in 1:n) {
-    tree_tables[[i]] = tree_table[tree_table$id==y$id[i], ]
-    shrub_tables[[i]] = shrub_table[shrub_table$id==y$id[i], ]
-    dead_tree_tables[[i]] = dead_tree_table[dead_tree_table$id==y$id[i], ]
-    dead_shrub_tables[[i]] = dead_shrub_table[dead_shrub_table$id==y$id[i], ]
-    cut_tree_tables[[i]] = cut_tree_table[cut_tree_table$id==y$id[i], ]
-    cut_shrub_tables[[i]] = cut_shrub_table[cut_shrub_table$id==y$id[i], ]
+    tree_tables[[i]] <- tree_table[tree_table$id==y$id[i], ]
+    shrub_tables[[i]] <- shrub_table[shrub_table$id==y$id[i], ]
+    dead_tree_tables[[i]] <- dead_tree_table[dead_tree_table$id==y$id[i], ]
+    dead_shrub_tables[[i]] <- dead_shrub_table[dead_shrub_table$id==y$id[i], ]
+    cut_tree_tables[[i]] <- cut_tree_table[cut_tree_table$id==y$id[i], ]
+    cut_shrub_tables[[i]] <- cut_shrub_table[cut_shrub_table$id==y$id[i], ]
   }
-  sf_results = sf::st_sf(geometry=sf::st_geometry(y))
-  sf_results$id = y$id
-  sf_results$tree_table = tree_tables
-  sf_results$shrub_table = shrub_tables
-  sf_results$dead_tree_table = dead_tree_tables
-  sf_results$dead_shrub_table = dead_shrub_tables
-  sf_results$cut_tree_table = cut_tree_tables
-  sf_results$cut_shrub_table = cut_shrub_tables
-  sf_results$summary = summary_list
+  sf_results <- sf::st_sf(geometry=sf::st_geometry(y))
+  sf_results$id <- y$id
+  sf_results$tree_table <- tree_tables
+  sf_results$shrub_table <- shrub_tables
+  sf_results$dead_tree_table <- dead_tree_tables
+  sf_results$dead_shrub_table <- dead_shrub_tables
+  sf_results$cut_tree_table <- cut_tree_tables
+  sf_results$cut_shrub_table <- cut_shrub_tables
+  sf_results$summary <- summary_list
   
   # Volumes extracted
   if(progress) cli::cli_li(" Wood volume table")
-  extracted = data.frame(Name = SpParams$Name, extracted)
+  extracted <- data.frame(Name = SpParams$Name, extracted)
   names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
-  target = data.frame(Name = SpParams$Name, target)
+  target <- data.frame(Name = SpParams$Name, target)
   names(target) <- c("species", as.character(years))
   row.names(target) <- NULL
-  growth = data.frame(Name = SpParams$Name, growth)
+  growth <- data.frame(Name = SpParams$Name, growth)
   names(growth) <- c("species", as.character(years))
   row.names(growth) <- NULL
   extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
@@ -563,11 +566,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       dplyr::full_join(extracted_pv, by=c("species", "year")) |>
       dplyr::filter(growth!=0 | extracted!=0) 
   }
-  l = list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
+  l <- list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
            result_volumes = volumes,
            next_sf = y)
   if(scenario_type != "bottom-up") {
-    l[["next_demand"]] = list(offset = offset_demand, last_growth = last_growth)
+    l[["next_demand"]] <- list(offset = offset_demand, last_growth = last_growth)
   }
   class(l)<-c("fordyn_scenario", "list")
   return(l)
