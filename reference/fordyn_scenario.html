@@ -154,9 +154,9 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 <li><p><code>cut_shrub_table</code>: A list of data frames for each simulated stand, containing the cut shrub at each time step.</p></li>
 <li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>).</p></li>
 </ul></li>
-<li><p><code>result_volumes</code>: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.</p></li>
+<li><p><code>result_volumes</code>: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.</p></li>
 <li><p><code>next_sf</code>: An object of class 'sf' to continue simulations in subsequent calls to <code>fordyn_scenario</code>.</p></li>
-<li><p><code>next_demand</code>: A list with information (i.e. demand offset by species and last volume growth)
+<li><p><code>next_demand</code>: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth)
 to modify demand in subsequent calls to <code>fordyn_scenario</code>.</p></li>
 </ul></div>
     <div id="details">
