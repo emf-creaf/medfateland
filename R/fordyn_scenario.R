@@ -310,7 +310,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       extraction_rate_year = extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
         total_extraction_year = last_growth*(extraction_rate_year/100)
-        if(progress) cli::cli_li(paste0("  Target extraction rate: ", extraction_rate_year, "%", " volume: ", total_extraction_year, " m3"))
+        if(progress) cli::cli_li(paste0("  Previous growth ", round(last_growth), " m3 ","   target extraction rate: ", extraction_rate_year, "%","   target volume (no offset): ", round(total_extraction_year), " m3"))
         spp_demand_year = as.numeric(total_extraction_year)*(spp_demand/sum(spp_demand))
       } else {
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
