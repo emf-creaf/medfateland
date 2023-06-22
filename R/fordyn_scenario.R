@@ -309,9 +309,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     } else if(scenario_type=="input_rate") {
       extraction_rate_year = extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
-        if(progress) cli::cli_li(paste0("  Target extraction rate: ", extraction_rate_year, "%"))
         total_extraction_year = last_growth*(extraction_rate_year/100)
-        spp_demand_year = total_extraction_year*(spp_demand/sum(spp_demand))
+        if(progress) cli::cli_li(paste0("  Target extraction rate: ", extraction_rate_year, "%", " volume: ", total_extraction_year, " m3"))
+        spp_demand_year = as.numeric(total_extraction_year)*(spp_demand/sum(spp_demand))
       } else {
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
         spp_demand_year <- spp_demand
@@ -319,7 +319,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       spp_demand_year <- spp_demand_year + offset_demand
       target[names(spp_demand_year),yi] = spp_demand_year
     }
-    
     # B.0 Check for null forest objects (from errors in previous step)
     restored <- 0
     for(i in 1:n) {
