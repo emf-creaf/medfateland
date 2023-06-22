@@ -388,7 +388,16 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           managed_step[no_final[sel_cut_j]] = TRUE # Set selected plots to TRUE
         }
       }
-      if(progress) cli::cli_li(paste0(sum(managed_step), " stands to be managed (", sum(final_cuts) , " because of final cuts)"))
+      if(progress) {
+        cli::cli_li(paste0(sum(managed_step), " stands to be managed (", sum(final_cuts) , " because of final cuts):"))
+        for(i in 1:length(units)) {
+          if(!is.na(units[i])) {
+            n_man_unit <- sum(y$management_unit[managed_step]==units[i], na.rm=TRUE)
+            if(n_man_unit>0) cat(paste0("      ", n_man_unit , 
+                                          " stands in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
+          }          
+        }
+      }
     } else {
       if(progress) cli::cli_li(paste0(sum(managed_step), " stands allowed to be managed"))
     }
