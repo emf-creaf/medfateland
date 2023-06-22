@@ -1,7 +1,7 @@
-.standingVolume<-function(y, target_spp_names, SpParams, volume_function){
+.standingVolume<-function(y, SpParams, volume_function){
   n = nrow(y)
-  volume_target_spp = rep(0, length(target_spp_names))
-  names(volume_target_spp) = target_spp_names
+  volume_spp = rep(0, nrow(SpParams))
+  names(volume_spp) = SpParams$Name
   for(i in 1:n) {
     f = y$forest[[i]]
     if(!is.null(f)) {
@@ -10,12 +10,11 @@
                           args = list(x = f$treeData))*y$represented_area[i]
         nsp_i <- medfate::species_characterParameter(f$treeData$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
-        vol_target_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
-        if(length(vol_target_i)>0) volume_target_spp[names(vol_target_i)] = volume_target_spp[names(vol_target_i)] + vol_target_i
+        if(length(vol_sp_i)>0) volume_spp[names(vol_sp_i)] = volume_spp[names(vol_sp_i)] + vol_sp_i
       }
     }
   }
-  return(sum(volume_target_spp))
+  return(volume_spp)
 }
 
 #' Scenario of forest dynamics
@@ -71,9 +70,9 @@
 #'        \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 #'      }
 #'    }
-#'    \item{\code{result_volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+#'    \item{\code{result_volumes}: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
 #'    \item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
-#'    \item{\code{next_demand}: A list with information (i.e. demand offset by species and last volume growth) 
+#'    \item{\code{next_demand}: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth) 
 #'    to modify demand in subsequent calls to \code{fordyn_scenario}.}
 #'  }
 #' 
@@ -130,18 +129,20 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(progress)  cli::cli_h1(paste0("Simulation of a management scenario with fordyn"))
   nspp = nrow(SpParams)
   
+  offset_demand <- NULL
+  last_growth <- NULL 
   if(inherits(sf, "sf")) {
     y <- sf
-    offset_demand <- NULL
-    last_growth <- NULL 
   } else if(inherits(sf, "fordyn_scenario")) {
     if(progress) cli::cli_progress_step(paste0("Recovering previous run"))
     y <- sf$next_sf
     offset_demand <- rep(0, nspp)
     names(offset_demand) <- SpParams$Name
-    offset <- sf$next_demand$offset
-    offset_demand[names(offset)] <- offset
-    last_growth <- sf$next_demand$last_growth
+    if("next_demand" %in% names(sf)) {
+      offset <- sf$next_demand$offset
+      offset_demand[names(offset)] <- offset
+      last_growth <- sf$next_demand$last_growth
+    }
   } else {
     stop("Wrong class of input object. Should be an object of either class 'sf' or class 'fordyn_scenario'")
   }
@@ -282,14 +283,14 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   extracted = matrix(0, nspp, length(years))
   rownames(extracted) = SpParams$Name
+  growth = extracted
   target = extracted
   cumulative_extraction = 0
   cumulative_growth = 0
   summary_list = vector("list", n)
   
   # Estimate initial standing volume
-  initial_volume_target_spp = .standingVolume(y, target_spp_names, SpParams, volume_function)
-  
+  initial_volume_spp = .standingVolume(y, SpParams, volume_function)
 
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
@@ -302,6 +303,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(scenario_type=="input_demand") {
       spp_demand_year <- spp_demand
       if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
+      target[,yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
       extraction_rate_year = extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
@@ -313,8 +315,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         spp_demand_year <- spp_demand
       }
       if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
+      target[,yi] = spp_demand_year
     }
-    target[,yi] = spp_demand_year
     
     # B.0 Check for null forest objects (from errors in previous step)
     restored <- 0
@@ -451,34 +453,40 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
     # B.5 Update extraction rates and actual satisfied demand
     if(progress) cli::cli_li(paste0("Management statistics:"))
-    final_volume_target_spp = .standingVolume(y, target_spp_names, SpParams, volume_function)
-    extracted_i = sum(extracted[,yi])
-    if(scenario_type != "bottom-up") {
-      target_i = sum(target[,yi])
-      if(progress) {
-        cat(paste0("      Target (m3): ", round(target_i), 
-                   "      Extraction (m3): ", round(extracted_i), " (", round(100*extracted_i/target_i),"% of target)"))
-      }
-    } else {
-      if(progress) {
-        cat(paste0("      Extraction (m3): ", round(extracted_i)))
-      }
-    }
-    growth_i = final_volume_target_spp - initial_volume_target_spp + extracted_i
-    cumulative_extraction = cumulative_extraction + extracted_i
-    cumulative_growth = cumulative_growth + growth_i
+    final_volume_spp <- .standingVolume(y, SpParams, volume_function)
+    growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi]
+    extracted_sum <- sum(extracted[,yi], na.rm=TRUE)
+    initial_sum <- sum(initial_volume_spp, na.rm = TRUE)
+    final_sum <- sum(final_volume_spp, na.rm = TRUE)
+    growth_sum <- sum(growth[,yi], na.rm=TRUE)
+    cumulative_extraction <- cumulative_extraction + extracted_sum
+    cumulative_growth <- cumulative_growth + growth_sum
     if(progress) {
-      cat(paste0("      Growth (m3): ", round(growth_i), "\n",
-                 "      Extraction rate: ", round(100*extracted_i/growth_i),"%"))
+      cat(paste0("      Initial (m3): ", round(initial_sum),
+                 "      Growth (m3): ", round(growth_sum), 
+                 "      Extraction (m3): ", round(extracted_sum), 
+                 "      Final (m3): ", round(final_sum), 
+                 "\n"))
+      if(scenario_type != "bottom-up") {
+        target_sum = sum(target[,yi])
+        if(progress) {
+          cat(paste0("      Target (m3): ", round(target_sum), 
+                     "      Target satisfaction (%): ", round(100*extracted_sum/target_sum),
+                     "\n"))
+        }
+      }
+      cat(paste0("      Extraction rate: ", round(100*extracted_sum/growth_sum),"%"))
       if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction/cumulative_growth),"%\n"))
       else cat("\n")
     }
-    
+
     # recalculate offset and previous growth for next year (or next simulation)
-    offset_demand <- target[, yi] - extracted[,yi]
-    last_growth <- growth_i
+    if(scenario_type != "bottom-up") {
+      offset_demand <- target[, yi] - extracted[,yi]
+      last_growth <- growth_sum
+    }
     # Initial standing volume for next year
-    initial_volume_target_spp <- final_volume_target_spp
+    initial_volume_spp <- final_volume_spp
   }
   if(progress) cli::cli_h2("Arranging output")
   if(progress) cli::cli_li(" Tree/shrub tables")
@@ -507,25 +515,35 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   sf_results$summary = summary_list
   
   # Volumes extracted
-  if(progress) cli::cli_li(" Extracted volumes")
-  extractSums = rowSums(extracted, na.rm=TRUE)
-  extracted = data.frame(Name = SpParams$Name[extractSums>0], extracted[extractSums>0, , drop = FALSE])
+  if(progress) cli::cli_li(" Wood volume table")
+  extracted = data.frame(Name = SpParams$Name, extracted)
   names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
-  target = data.frame(Name = SpParams$Name[extractSums>0], target[extractSums>0, , drop = FALSE])
+  target = data.frame(Name = SpParams$Name, target)
   names(target) <- c("species", as.character(years))
   row.names(target) <- NULL
+  growth = data.frame(Name = SpParams$Name, growth)
+  names(growth) <- c("species", as.character(years))
+  row.names(growth) <- NULL
   extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
   target_pv <- tidyr::pivot_longer(target, as.character(years), names_to="year", values_to = "target")
+  growth_pv <- tidyr::pivot_longer(growth, as.character(years), names_to="year", values_to = "growth")
   if(management_scenario$scenario_type != "bottom-up") {
-    volumes <- dplyr::full_join(target_pv, extracted_pv, by=c("species", "year"))
+    volumes <- growth_pv |>
+      dplyr::full_join(target_pv, by=c("species", "year"))|>
+      dplyr::full_join(extracted_pv, by=c("species", "year")) |>
+      dplyr::filter(growth!=0 | target!=0 | extracted!=0)
   } else {
-    volumes = extracted_pv
+    volumes <- growth_pv |>
+      dplyr::full_join(extracted_pv, by=c("species", "year")) |>
+      dplyr::filter(growth!=0 | extracted!=0) 
   }
   l = list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
            result_volumes = volumes,
-           next_sf = y,
-           next_demand = list(offset = offset_demand[offset_demand != 0], last_growth = last_growth))
+           next_sf = y)
+  if(scenario_type != "bottom-up") {
+    l[["next_demand"]] = list(offset = offset_demand[offset_demand != 0], last_growth = last_growth)
+  }
   class(l)<-c("fordyn_scenario", "list")
   return(l)
 }

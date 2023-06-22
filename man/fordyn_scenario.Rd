@@ -82,9 +82,9 @@ An list of class 'fordyn_scenario' with the following elements:
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}).}
 }
 }
-\item{\code{result_volumes}: A data frame with extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+\item{\code{result_volumes}: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
 \item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
-\item{\code{next_demand}: A list with information (i.e. demand offset by species and last volume growth)
+\item{\code{next_demand}: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth)
 to modify demand in subsequent calls to \code{fordyn_scenario}.}
 }
 }
