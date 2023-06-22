@@ -136,13 +136,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   } else if(inherits(sf, "fordyn_scenario")) {
     if(progress) cli::cli_progress_step(paste0("Recovering previous run"))
     y <- sf$next_sf
-    offset_demand <- rep(0, nspp)
-    names(offset_demand) <- SpParams$Name
-    if("next_demand" %in% names(sf)) {
-      offset <- sf$next_demand$offset
-      offset_demand[names(offset)] <- offset
-      last_growth <- sf$next_demand$last_growth
-    }
   } else {
     stop("Wrong class of input object. Should be an object of either class 'sf' or class 'fordyn_scenario'")
   }
@@ -208,11 +201,18 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     cli::cli_li(paste0("  Number of years: ", length(years)))
     cli::cli_li(paste0("  Management scenario type: ", scenario_type))
   }
-  target_spp_names = names(management_scenario$annual_demand_by_species)
-  spp_demand = rep(0, nrow(SpParams))
-  names(spp_demand) = SpParams$Name
   if(scenario_type != "bottom-up"){
-    spp_demand[target_spp_names] = management_scenario$annual_demand_by_species
+    spp_demand <- management_scenario$annual_demand_by_species
+    target_spp_names <- names(spp_demand)
+    offset_demand <- rep(0, length(spp_demand))
+    names(offset_demand) <- target_spp_names
+    if(inherits(sf, "fordyn_scenario")) {
+      if("next_demand" %in% names(sf)) {
+        offset <- sf$next_demand$offset
+        offset_demand[names(offset)] <- offset
+        last_growth <- sf$next_demand$last_growth
+      }
+    }
     if(scenario_type == "input_demand"){
       if(progress) {
         cli::cli_li(paste0("Fixed demand:\n"))
@@ -282,15 +282,18 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
   
   extracted = matrix(0, nspp, length(years))
-  rownames(extracted) = SpParams$Name
-  growth = extracted
-  target = extracted
-  cumulative_extraction = 0
-  cumulative_growth = 0
+  rownames(extracted) <- SpParams$Name
+  growth <- extracted
+  target <- extracted
+  cumulative_extraction <- 0
+  cumulative_growth <- 0
+  cumulative_extraction_target <- 0
+  cumulative_growth_target <- 0
   summary_list = vector("list", n)
   
   # Estimate initial standing volume
-  initial_volume_spp = .standingVolume(y, SpParams, volume_function)
+  if(progress) cli::cli_li(paste0("Initial volume calculation"))
+  initial_volume_spp <- .standingVolume(y, SpParams, volume_function)
 
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
@@ -301,9 +304,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
     # Set demand in demand-based scenarios
     if(scenario_type=="input_demand") {
-      spp_demand_year <- spp_demand
-      if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
-      target[,yi] = spp_demand_year
+      spp_demand_year <- spp_demand + offset_demand
+      target[names(spp_demand_year), yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
       extraction_rate_year = extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
@@ -314,8 +316,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
         spp_demand_year <- spp_demand
       }
-      if(!is.null(offset_demand)) spp_demand_year <- spp_demand_year + offset_demand
-      target[,yi] = spp_demand_year
+      spp_demand_year <- spp_demand_year + offset_demand
+      target[names(spp_demand_year),yi] = spp_demand_year
     }
     
     # B.0 Check for null forest objects (from errors in previous step)
@@ -332,18 +334,18 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     managed_step = managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {
       if(progress) {
-        if(any(spp_demand_year > 0)) {
-          cli::cli_li(paste0("  Species with positive demand for current year:"))
+        if(any(spp_demand_year != 0)) {
+          cli::cli_li(paste0("  Species with demand for current year:"))
           for(i in 1:length(spp_demand_year)) {
-            if(spp_demand_year[i] > 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
+            if(spp_demand_year[i] != 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
           }
         } else {
-          cli::cli_li(paste0("  No species with positive demand"))
+          cli::cli_li(paste0("  No species with demand"))
         }
       }
-      vol_species = matrix(0, n, nspp) 
-      colnames(vol_species) = SpParams$Name
-      rownames(vol_species) = y$id
+      vol_spp_target = matrix(0, n, length(target_spp_names)) 
+      colnames(vol_spp_target) = target_spp_names
+      rownames(vol_spp_target) = y$id
       final_cuts = rep(FALSE, n)
       # print(sum(unlist(lapply(y$management_arguments, FUN = is.null))))
       for(i in 1:n) {
@@ -359,13 +361,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
             vols_i <- do.call(what = volume_function, args = list(x = ctd))*y$represented_area[i]
             nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
             vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
-            vol_species[i, names(vol_sp_i)] = vol_sp_i
+            vol_sp_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
+            if(length(vol_sp_i)>0) vol_spp_target[i, names(vol_sp_i)] = vol_sp_i
             # DECREASE TARGET according to FINAL CUTS
-            if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_species[i,, drop=FALSE]
+            if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_spp_target[i,, drop=FALSE]
           }
         }
       }
-      vol_spp_target = vol_species
       # print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
       # Set all plots not in final cuts to non-management
       no_final = which(!final_cuts)
@@ -452,7 +454,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
     }
     # B.5 Update extraction rates and actual satisfied demand
-    if(progress) cli::cli_li(paste0("Management statistics:"))
+    if(progress) cli::cli_li(paste0("Final volume calculation"))
     final_volume_spp <- .standingVolume(y, SpParams, volume_function)
     growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi]
     extracted_sum <- sum(extracted[,yi], na.rm=TRUE)
@@ -461,29 +463,44 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     growth_sum <- sum(growth[,yi], na.rm=TRUE)
     cumulative_extraction <- cumulative_extraction + extracted_sum
     cumulative_growth <- cumulative_growth + growth_sum
+    if(scenario_type != "bottom-up") {
+      extracted_target_sum <- sum(extracted[target_spp_names, yi], na.rm=TRUE)
+      initial_target_sum <- sum(initial_volume_spp[target_spp_names], na.rm = TRUE)
+      final_target_sum <- sum(final_volume_spp[target_spp_names], na.rm = TRUE)
+      growth_target_sum <- sum(growth[target_spp_names,yi], na.rm=TRUE)
+      cumulative_extraction_target <- cumulative_extraction_target + extracted_target_sum
+      cumulative_growth_target <- cumulative_growth_target + growth_target_sum
+    }
     if(progress) {
+      cli::cli_li(paste0("Management statistics:"))
       cat(paste0("      Initial (m3): ", round(initial_sum),
                  "      Growth (m3): ", round(growth_sum), 
                  "      Extraction (m3): ", round(extracted_sum), 
                  "      Final (m3): ", round(final_sum), 
                  "\n"))
-      if(scenario_type != "bottom-up") {
-        target_sum = sum(target[,yi])
-        if(progress) {
-          cat(paste0("      Target (m3): ", round(target_sum), 
-                     "      Target satisfaction (%): ", round(100*extracted_sum/target_sum),
-                     "\n"))
-        }
-      }
-      cat(paste0("      Extraction rate: ", round(100*extracted_sum/growth_sum),"%"))
-      if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction/cumulative_growth),"%\n"))
+      cat(paste0("      Extraction rate: ", round(100*extracted_sum/max(0,growth_sum)),"%"))
+      if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction/max(0,cumulative_growth)),"%\n"))
       else cat("\n")
+      if(scenario_type != "bottom-up") {
+        cli::cli_li(paste0("Management statistics (target species):"))
+        cat(paste0("      Initial (m3): ", round(initial_target_sum),
+                   "      Growth (m3): ", round(growth_target_sum), 
+                   "      Extraction (m3): ", round(extracted_target_sum), 
+                   "      Final (m3): ", round(final_target_sum), 
+                   "\n"))
+        target_sum = sum(target[,yi])
+        cat(paste0("      Target volume (m3): ", round(target_sum), 
+                   "      Target satisfaction: ", round(100*extracted_target_sum/target_sum), "%",
+                   "\n"))
+        cat(paste0("      Extraction rate: ", round(100*extracted_sum/max(0,growth_target_sum)),"%"))
+        if(yi>1) cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction_target/max(0,cumulative_growth_target)),"%\n"))
+      }
     }
 
     # recalculate offset and previous growth for next year (or next simulation)
     if(scenario_type != "bottom-up") {
-      offset_demand <- target[, yi] - extracted[,yi]
-      last_growth <- growth_sum
+      offset_demand <- target[target_spp_names, yi] - extracted[target_spp_names,yi]
+      last_growth <- growth_target_sum
     }
     # Initial standing volume for next year
     initial_volume_spp <- final_volume_spp
@@ -542,7 +559,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
            result_volumes = volumes,
            next_sf = y)
   if(scenario_type != "bottom-up") {
-    l[["next_demand"]] = list(offset = offset_demand[offset_demand != 0], last_growth = last_growth)
+    l[["next_demand"]] = list(offset = offset_demand, last_growth = last_growth)
   }
   class(l)<-c("fordyn_scenario", "list")
   return(l)
