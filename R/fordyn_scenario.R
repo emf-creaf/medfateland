@@ -324,6 +324,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     for(i in 1:n) {
       if(is.null(y$forest[[i]])) {
         y$forest[[i]] <- emptyforest()
+        managed[i] <- FALSE
+        y$management_arguments[[i]] <- list(NULL)
         restored <- restored +1
       }
     }
