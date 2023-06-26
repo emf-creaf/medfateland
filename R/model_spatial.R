@@ -333,7 +333,7 @@
 
   if(parallelize) {
     if(progress) {
-      cli::cli_progress_step("Preparing data for parellization")
+      cli::cli_progress_step("Preparing data for parallelization")
     }
     
     if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))

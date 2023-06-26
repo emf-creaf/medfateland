@@ -149,6 +149,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   scenario_type = match.arg(management_scenario$scenario_type, c("bottom-up", "input_rate", "input_demand"))
   
   if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'sf' if not supplied separately")
+  if(!is.null(meteo) && ("meteo" %in% names(y))) stop("Weather data supplied both as column 'meteo' and using parameter 'meteo'. Please choose one or the other")
   if("meteo" %in% names(y)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
     meteo <- NULL
@@ -319,18 +320,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       spp_demand_year <- spp_demand_year + offset_demand
       target[names(spp_demand_year),yi] = spp_demand_year
     }
-    # B.0 Check for null forest objects (from errors in previous step)
-    restored <- 0
-    for(i in 1:n) {
-      if(is.null(y$forest[[i]])) {
-        y$forest[[i]] <- emptyforest()
-        managed[i] <- FALSE
-        y$management_arguments[[i]] <- list(NULL)
-        restored <- restored +1
-      }
-    }
-    if(progress && (restored>0)) cli::cli_li(paste0("Restored ", restored, " NULL objects to empty forest"))
-    
+
     # B.1 Determine which plots will be managed according to current demand
     managed_step <- managed # by default, manage all plots that have
     if(scenario_type != "bottom-up") {
@@ -416,7 +406,35 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                         progress = progress)
     
     # B.3 Update final state variables in y and retrieve fordyn tables
-    y = update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
+    # y_backup <- rlang::duplicate(y)
+    y_backup <- y
+    y <- update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
+    # B.3b Check for null forest objects (from errors in previous step)
+    restored <- 0
+    for(i in 1:n) {
+      if(inherits(fds$result[[i]], "error")) {
+        forest_backup <- y_backup$forest[[i]]
+        y$forest[[i]] <- forest_backup
+        if("state" %in% names(y_backup)) {
+          state_backup <- y_backup$state[[i]]
+          if(!is.null(state_backup)) y$state[[i]] <- state_backup
+        } 
+        if("soil" %in% names(y_backup)) {
+          y$soil[[i]] <- y_backup$soil[[i]]
+          if(inherits(y$soil[[i]], "data.frame")) y$soil[[i]] <- soil(y$soil[[i]])
+        }
+        if(is.null(y$state[[i]])) y$state[[i]] <- forest2growthInput(y$forest[[i]], y$soil[[i]], SpParams, local_control)
+        
+        if("management_arguments" %in% names(y_backup)) {
+          man_backup  <- y_backup$management_arguments[[i]]
+          if(!is.null(man_backup)) y$management_arguments[[i]] <- man_backup
+          else y$management_arguments[[i]] <- list(NULL)
+        }
+        restored <- restored +1
+      }
+    }
+    if(progress && (restored>0)) cli::cli_li(paste0("Restored ", restored, " stands with errors during simulation to last year state"))
+    
     # For those plots that were not managed but have prescriptions in a demand-based scenario, 
     # copy back management arguments and increase the variable years since thinning
     y$management_arguments[managed & (!managed_step)] <- prev_management_args[managed & (!managed_step)]
