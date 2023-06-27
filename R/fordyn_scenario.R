@@ -413,7 +413,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     restored <- 0
     for(i in 1:n) {
       if(inherits(fds$result[[i]], "error")) {
-        print(fds$result[[i]])
+        cat(paste0("Error in plot ", i, ":", fds$result[[i]], "\n"))
         forest_backup <- y_backup$forest[[i]]
         y$forest[[i]] <- forest_backup
         if("state" %in% names(y_backup)) {
