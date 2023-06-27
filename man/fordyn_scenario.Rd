@@ -92,6 +92,9 @@ to modify demand in subsequent calls to \code{fordyn_scenario}.}
 Evaluates forest dynamics over a landscape including climate and management scenarios
 }
 \details{
+This function allows coordinating the dynamics of simulated forest stands via management actions. For each year to be simulated, the
+function determines which plots will be managed and then calls function \code{\link{fordyn_spatial}} for one year. If the simulation of some
+stands results in an error, the function will try to restore the previous state of the forest stand for the next year steps.
 Management is implemented using the \code{\link{defaultManagementFunction}} in medfate,
 meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
 }

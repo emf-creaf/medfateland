@@ -52,7 +52,10 @@
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
-#' @details Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
+#' @details This function allows coordinating the dynamics of simulated forest stands via management actions. For each year to be simulated, the
+#' function determines which plots will be managed and then calls function \code{\link{fordyn_spatial}} for one year. If the simulation of some
+#' stands results in an error, the function will try to restore the previous state of the forest stand for the next year steps. 
+#' Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
 #' meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
 #' 
 #' @returns An list of class 'fordyn_scenario' with the following elements:
@@ -249,7 +252,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(is.null(y$management_arguments[[i]])) y$management_arguments[[i]] = as.list(management_scenario$units[y$management_unit[i],])
     }
   }
-  managed = !is.na(y$management_unit)
+  managed <- !is.na(y$management_unit)
+  names(managed) <- y$id
+  
   units = sort(unique(y$management_unit), na.last = TRUE)
   if(progress) {
     cli::cli_li(paste0("Management units:"))
@@ -367,6 +372,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       # For each species set to true
       for(j in 1:length(spp_demand_year)) {
         vol_spp_j <- vol_spp_target[,j]
+        vol_spp_j <- vol_spp_j[vol_spp_j>0] # Remove plots with no possible revenue
         if(spp_demand_year[j]>0) {
           # cat(paste0("Species ", names(spp_demand_year)[j], " Target ", spp_demand_year[j],"\n"))
           o <- order(vol_spp_j, decreasing = TRUE)
@@ -374,10 +380,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           vol_cum_j <- vol_spp_j
           vol_cum_j[o] <- vol_cum_sorted_j
           sel_cut_j <- (vol_cum_j < spp_demand_year[j])
-          sel_cut_j[o[1]] = TRUE # Set plot with highest volume value to TRUE
-          sel_cut_j[vol_spp_j==0] = FALSE # Set plots without volume to FALSE
+          # if(vol_cum_j[o[1]] < spp_demand_year[j]) sel_cut_j[o[1]] = TRUE # Set plot with highest volume value to TRUE
           # print(cbind(vol_spp_j, vol_cum_j, sel_cut_j))
-          managed_step[no_final[sel_cut_j]] = TRUE # Set selected plots to TRUE
+          ids_to_cut <- names(sel_cut_j[sel_cut_j])
+          # print(ids_to_cut)
+          if(length(ids_to_cut)>0) managed_step[ids_to_cut] = TRUE # Set selected plots to TRUE
         }
       }
       if(progress) {
