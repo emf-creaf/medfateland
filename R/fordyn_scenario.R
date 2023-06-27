@@ -331,9 +331,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(scenario_type != "bottom-up") {
       if(progress) {
         if(any(spp_demand_year != 0)) {
-          cli::cli_li(paste0("  Species with demand for current year:"))
+          cli::cli_li(paste0("  Species with positive demand for current year:"))
           for(i in 1:length(spp_demand_year)) {
-            if(spp_demand_year[i] != 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
+            if(spp_demand_year[i] > 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
           }
         } else {
           cli::cli_li(paste0("  No species with demand"))
@@ -539,7 +539,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "      Extraction (m3): ", round(extracted_target_sum), 
                    "      Final (m3): ", round(final_target_sum), 
                    "\n"))
-        target_sum = sum(target[,yi])
+        target_sum = sum(spp_demand_year[spp_demand_year>0]) # Target for the current year was the sum of those species with positive demand
         cat(paste0("      Target volume (m3): ", round(target_sum), 
                    "      Target satisfaction: ", round(100*extracted_target_sum/target_sum), "%",
                    "\n"))
