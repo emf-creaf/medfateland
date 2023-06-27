@@ -335,8 +335,8 @@
     if(progress) {
       cli::cli_progress_step("Preparing data for parallelization")
     }
-    
-    if(is.null(chunk_size)) chunk_size = min(2, floor(n/num_cores))
+    num_cores <- min(num_cores, n)
+    if(is.null(chunk_size)) chunk_size = max(2, floor(n/num_cores))
         
     XI = vector("list", n)
     for(i in 1:n) {
