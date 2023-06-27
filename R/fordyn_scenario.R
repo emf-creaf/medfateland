@@ -271,8 +271,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   # Define summary function (to save memory)
   table_selection<-function(object, summary_function, summary_arguments, ...) {
     l = object[c("TreeTable", "ShrubTable",
-             "DeadTreeTable", "DeadTreeTable", 
-             "CutTreeTable", "CutShrubTable")]
+                 "DeadTreeTable", "DeadShrubTable", 
+                 "CutTreeTable", "CutShrubTable")]
     if(!is.null(summary_function)) {
       argList = list(object=object)
       if(!is.null(summary_arguments)) argList = c(argList, summary_arguments)
@@ -404,7 +404,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                         summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
                         progress = progress)
-    
+
     # B.3 Update final state variables in y and retrieve fordyn tables
     # y_backup <- rlang::duplicate(y)
     y_backup <- y
