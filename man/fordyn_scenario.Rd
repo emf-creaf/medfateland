@@ -10,6 +10,7 @@ fordyn_scenario(
   meteo = NULL,
   management_scenario,
   volume_function = NULL,
+  volume_arguments = NULL,
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
@@ -47,6 +48,8 @@ to continue simulations.}
 
 \item{volume_function}{A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
 If NULL, the default volume function is used (not recommended!).}
+
+\item{volume_arguments}{List with additional arguments for the volume function.}
 
 \item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
 

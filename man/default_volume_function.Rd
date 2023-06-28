@@ -4,10 +4,12 @@
 \alias{default_volume_function}
 \title{Default volume function}
 \usage{
-default_volume_function(x)
+default_volume_function(x, SpParams = NULL)
 }
 \arguments{
 \item{x}{A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link{forest}} object}
+
+\item{SpParams}{A data frame with species parameters (not used in the default function but will be called)}
 }
 \description{
 Example function for estimating wood volume (in m3/ha) from a tree table or forest object.
