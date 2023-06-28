@@ -369,7 +369,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                            args = list(x = f, args=man_args))
             ctd <- f$treeData
             ctd$N <- man$N_tree_cut
-            vols_i <- do.call(what = volume_function, args = list(x = ctd))*y$represented_area[i]
+            vols_i <- do.call(what = volume_function, args = list(x = ctd, SpParams = SpParams))*y$represented_area[i]
             nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
             vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
             vol_sp_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
