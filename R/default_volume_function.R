@@ -14,5 +14,7 @@
 #' 
 default_volume_function<-function(x, SpParams = NULL){
   if(inherits(x, "forest")) x <- x$treeData
-  return((1/3) * pi * (x$DBH/200)^2 * (x$Height/100) * x$N) #m3/ha
+  vol <- (1/3) * pi * (x$DBH/200)^2 * (x$Height/100) * x$N
+  vol[x$DBH < 7.5] = 0
+  return(vol) #m3/ha
 }
