@@ -46,7 +46,8 @@ to continue simulations.}
 
 \item{management_scenario}{A list defining the management scenario (see \code{\link{create_management_scenario}})}
 
-\item{volume_function}{A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+\item{volume_function}{A function accepting a forest object or a tree data table, and a species parameter table, as input and
+returning the wood volume (m3/ha) corresponding to each tree cohort. The function may accept additional arguments.
 If NULL, the default volume function is used (not recommended!).}
 
 \item{volume_arguments}{List with additional arguments for the volume function.}

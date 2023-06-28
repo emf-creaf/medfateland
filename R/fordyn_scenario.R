@@ -1,4 +1,4 @@
-.standingVolume<-function(y, SpParams, volume_function){
+.standingVolume<-function(y, SpParams, volume_function, volume_arguments){
   n = nrow(y)
   volume_spp = rep(0, nrow(SpParams))
   names(volume_spp) = SpParams$Name
@@ -6,8 +6,10 @@
     f = y$forest[[i]]
     if(!is.null(f)) {
       if(inherits(f, "forest")) {
+        argList <- list(x = f$treeData, SpParams = SpParams)
+        if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
         vols_i <- do.call(what = volume_function, 
-                          args = list(x = f$treeData, SpParams = SpParams))*y$represented_area[i]
+                          args = argList)*y$represented_area[i]
         nsp_i <- medfate::species_characterParameter(f$treeData$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         if(length(vol_sp_i)>0) volume_spp[names(vol_sp_i)] = volume_spp[names(vol_sp_i)] + vol_sp_i
@@ -40,7 +42,8 @@
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
 #' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
-#' @param volume_function A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+#' @param volume_function A function accepting a forest object or a tree data table, and a species parameter table, as input and 
+#' returning the wood volume (m3/ha) corresponding to each tree cohort. The function may accept additional arguments.
 #' If NULL, the default volume function is used (not recommended!).
 #' @param volume_arguments List with additional arguments for the volume function.
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
@@ -312,7 +315,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   
   # Estimate initial standing volume
   if(progress) cli::cli_li(paste0("Initial volume calculation"))
-  initial_volume_spp <- .standingVolume(y, SpParams, volume_function)
+  initial_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
 
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
@@ -369,7 +372,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                            args = list(x = f, args=man_args))
             ctd <- f$treeData
             ctd$N <- man$N_tree_cut
-            vols_i <- do.call(what = volume_function, args = list(x = ctd, SpParams = SpParams))*y$represented_area[i]
+            argList <- list(x = ctd, SpParams = SpParams)
+            if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
+            vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
             nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
             vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
             vol_sp_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
@@ -512,8 +517,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     for(i in 1:n){
       ctt <- fds$result[[i]]$CutTreeTable
       if(!is.null(ctt)) {
-        vols_i <- do.call(what = volume_function, 
-                          args = list(x = ctt))*y$represented_area[i]
+        argList <- list(x = ctt, SpParams = SpParams)
+        if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
+        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
         nsp_i <- medfate::species_characterParameter(ctt$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
@@ -521,7 +527,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
     # B.5 Update extraction rates and actual satisfied demand
     if(progress) cli::cli_li(paste0("Final volume calculation"))
-    final_volume_spp <- .standingVolume(y, SpParams, volume_function)
+    final_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
     growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi]
     extracted_sum[yi] <- sum(extracted[,yi], na.rm=TRUE)
     initial_sum[yi] <- sum(initial_volume_spp, na.rm = TRUE)
