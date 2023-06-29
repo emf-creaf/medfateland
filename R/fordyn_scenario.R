@@ -329,7 +329,6 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   cumulative_growth <- rep(0, length(years))
   cumulative_extraction_target <- rep(0, length(years))
   cumulative_growth_target <- rep(0, length(years))
-  cummulative_target_sum <- rep(0, length(years))
   cummulative_nominal_target_sum <- rep(0, length(years))
   
   summary_list = vector("list", n)
@@ -592,12 +591,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(yi==1) {
         cumulative_extraction_target[yi] <- extracted_target_sum[yi]
         cumulative_growth_target[yi] <- growth_target_sum[yi]
-        cummulative_target_sum[yi] <- volume_target_sum[yi]
         cummulative_nominal_target_sum[yi] <- sum(spp_demand, na.rm = TRUE)
       } else {
         cumulative_extraction_target[yi] <- cumulative_extraction_target[yi-1] + extracted_target_sum[yi]
         cumulative_growth_target[yi] <- cumulative_growth_target[yi-1] + growth_target_sum[yi]
-        cummulative_target_sum[yi] <- cummulative_target_sum[yi-1] + volume_target_sum[yi]
         cummulative_nominal_target_sum[yi] <- cummulative_nominal_target_sum[yi-1] + sum(spp_demand, na.rm = TRUE)
       }
       # recalculate offset and previous growth for next year (or next simulation)
@@ -698,10 +695,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                                           initial = initial_sum, growth = growth_sum, extracted  = extracted_sum, final = final_sum,
                                           cumulative_growth = cumulative_growth, cumulative_extraction = cumulative_extraction, 
                                           initial_demand = initial_target_sum, growth_demand = growth_target_sum, 
-                                          target_demand = volume_target_sum, nominal_target_demand = cummulative_nominal_target_sum,
+                                          target_demand = volume_target_sum, nominal_demand = rep(sum(spp_demand, na.rm=TRUE), length(years)),
                                           extracted_demand  = extracted_target_sum, 
                                           final_demand = final_sum, offset_demand = offset_target_sum,
-                                          cummulative_demand = cummulative_target_sum, cummulative_nominal_demand = cummulative_nominal_target_sum, cummulative_extracted_demand = cumulative_extraction_target))
+                                          cummulative_nominal_demand = cummulative_nominal_target_sum, cummulative_extracted_demand = cumulative_extraction_target))
   l <- list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
             result_volumes = volumes,
             result_volumes_spp = volumes_spp)
