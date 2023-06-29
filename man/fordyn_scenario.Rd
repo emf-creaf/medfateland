@@ -87,7 +87,8 @@ An list of class 'fordyn_scenario' with the following elements:
 }
 }
 \item{\code{result_volumes}: A data frame with initial, growth, extracted and final volumes (m3) by year. In demand-based scenarios volumes corresponding to species with demand are also included.}
-\item{\code{result_volumes_spp}: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+\item{\code{result_volumes_spp}: A data frame with growth and extracted volumes (m3) by species and year.}
+\item{\code{result_volumes_demand}: In demand-based scenarios target volumes are also included, a data frame with growth, target and extracted volumes (m3) by demand entity and year. .}
 \item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
 \item{\code{next_demand}: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth)
 to modify demand in subsequent calls to \code{fordyn_scenario}.}
@@ -129,7 +130,7 @@ example_ifn$management_unit <- 1
 example_ifn$represented_area <- 100
 
 # Creates scenario with one management unit and annual demand for P. nigra 
-scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
+scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
 
 # Launch simulation scenario (years 2001 and 2002)
 fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 

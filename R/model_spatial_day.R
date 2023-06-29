@@ -10,7 +10,8 @@
     }
     else if(inherits(meteo, "stars")) {
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met <- meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), verbose = FALSE)
+      met <- meteoland::interpolate_data(pt_sf, meteo, dates = as.Date(date), 
+                                         verbose = FALSE, ignore_convex_hull_check = TRUE)
       met <- met$interpolated_data[[1]]
       meteovec <- unlist(met[as.character(met$dates)==as.character(date), ])
     }    

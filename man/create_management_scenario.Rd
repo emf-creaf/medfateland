@@ -14,7 +14,7 @@ create_management_scenario(
 \arguments{
 \item{units}{Number of management units. Alternatively, a data frame with management options (in columns) for a set of units (in rows). Options not specified witl be taken from defaults.}
 
-\item{annual_demand_by_species}{A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
+\item{annual_demand_by_species}{A vector or matrix of annual wood demand (m3) by medfate species names (or groups of species names). If empty, the scenario is 'bottom-up' (not based on demand).
 If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
 to a different year.}
 
@@ -32,7 +32,7 @@ A list with the following structure:
 \item{\code{scenario_type}: Either 'bottom-up' (no demand is specified),
 'input_demand' (annual species demand is specified), or
 'input_rate' when extraction rates are also supplied.}
-\item{\code{annual_demand_by_species}: A vector of annual wood demand (m3) by species
+\item{\code{annual_demand_by_species}: A vector of annual wood demand (m3) by species (or species groups)
 (for scenario_type 'bottom-up' or 'input_demand').}
 \item{\code{extraction_rate_by_year}: A vector of extraction rate values per year.}
 \item{\code{units}: A data frame with as many rows as units and management arguments as columns.}
@@ -59,6 +59,10 @@ scen_2 <- create_management_scenario(3,
 # and not based on demand
 data("defaultPrescriptionsBySpecies")
 scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
+
+# A scenario with three management units and annual demand for one species group 
+# and a third species
+scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, "Pinus nigra" = 2000))
 
 }
 \seealso{

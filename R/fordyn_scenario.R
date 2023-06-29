@@ -78,7 +78,8 @@
 #'      }
 #'    }
 #'    \item{\code{result_volumes}: A data frame with initial, growth, extracted and final volumes (m3) by year. In demand-based scenarios volumes corresponding to species with demand are also included.}
-#'    \item{\code{result_volumes_spp}: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.}
+#'    \item{\code{result_volumes_spp}: A data frame with growth and extracted volumes (m3) by species and year.}
+#'    \item{\code{result_volumes_demand}: In demand-based scenarios target volumes are also included, a data frame with growth, target and extracted volumes (m3) by demand entity and year. .}
 #'    \item{\code{next_sf}: An object of class 'sf' to continue simulations in subsequent calls to \code{fordyn_scenario}.}
 #'    \item{\code{next_demand}: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth) 
 #'    to modify demand in subsequent calls to \code{fordyn_scenario}.}
@@ -114,7 +115,7 @@
 #' example_ifn$represented_area <- 100
 #' 
 #' # Creates scenario with one management unit and annual demand for P. nigra 
-#' scen <- create_management_scenario(1, c("Pinus nigra" = 2300))
+#' scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
 #' 
 #' # Launch simulation scenario (years 2001 and 2002)
 #' fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 
@@ -212,12 +213,15 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
   if(scenario_type != "bottom-up"){
     spp_demand <- management_scenario$annual_demand_by_species
-    target_spp_names <- names(spp_demand)
-    offset_demand <- rep(0, length(spp_demand))
-    names(offset_demand) <- target_spp_names
+    target_taxon_names <- names(spp_demand) # Species or species groups
+    target_split_names <- strsplit(target_taxon_names, "/") # List of species included in each item
+    target_spp_names <- unlist(target_split_names) # Vector of species names mentioned
+    offset_demand <- rep(0, length(spp_demand)) # Same vector length as annual demand
+    names(offset_demand) <- target_taxon_names
     if(inherits(sf, "fordyn_scenario")) {
       if("next_demand" %in% names(sf)) {
         offset <- sf$next_demand$offset
+        if(sum(names(offset) %in% target_taxon_names)< length(offset))  stop("Offset names do not all match to taxon names in demand")
         offset_demand[names(offset)] <- offset
         last_growth <- sf$next_demand$last_growth
       }
@@ -292,10 +296,20 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
 
   
+  # Growth and extraction by species and year
+  growth = matrix(0, nspp, length(years))
+  rownames(growth) <- SpParams$Name
   extracted = matrix(0, nspp, length(years))
   rownames(extracted) <- SpParams$Name
-  growth <- extracted
-  target <- extracted
+  
+  # Demand growth, target and extracted volumes by target entity and year
+  growth_target <- matrix(0, length(target_taxon_names), length(years))
+  rownames(growth_target) <- target_taxon_names
+  demand_target <- matrix(0, length(target_taxon_names), length(years))
+  rownames(demand_target) <- target_taxon_names
+  extracted_target <- matrix(0, length(target_taxon_names), length(years))
+  rownames(extracted_target) <- target_taxon_names
+  
   initial_sum <- rep(0, length(years))
   growth_sum <- rep(0, length(years))
   final_sum <- rep(0, length(years))
@@ -306,6 +320,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   volume_target_sum <- rep(0, length(years))
   extracted_target_sum <- rep(0, length(years))
   offset_target_sum <- rep(0, length(years))
+  
   cumulative_extraction <- 0
   cumulative_growth <- 0
   cumulative_extraction_target <- 0
@@ -327,7 +342,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # Set demand in demand-based scenarios
     if(scenario_type=="input_demand") {
       spp_demand_year <- spp_demand + offset_demand
-      target[names(spp_demand_year), yi] = spp_demand_year
+      demand_target[, yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
       extraction_rate_year <- extraction_rates[as.character(years[yi])]
       if(!is.null(last_growth)) {
@@ -339,7 +354,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         spp_demand_year <- spp_demand
       }
       spp_demand_year <- spp_demand_year + offset_demand
-      target[names(spp_demand_year),yi] = spp_demand_year
+      demand_target[,yi] = spp_demand_year
     }
 
     # B.1 Determine which plots will be managed according to current demand
@@ -349,7 +364,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         if(any(spp_demand_year != 0)) {
           volume_target_sum[yi] <- sum(spp_demand_year[spp_demand_year>0], na.rm=TRUE)
           cli::cli_li(paste0("  Target volume: ", round(volume_target_sum[yi]), " m3"))
-          cli::cli_li(paste0("  Species with positive demand for current year:"))
+          cli::cli_li(paste0("  Species or groups with positive demand for current year:"))
           for(i in 1:length(spp_demand_year)) {
             if(spp_demand_year[i] > 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
           }
@@ -378,26 +393,37 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
             nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
             vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
             vol_sp_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
-            if(length(vol_sp_i)>0) vol_spp_target[i, names(vol_sp_i)] = vol_sp_i
+            if(length(vol_sp_i)>0) {
+              vol_spp_target[i, names(vol_sp_i)] <- vol_sp_i
+            }
             # DECREASE TARGET according to FINAL CUTS
-            if(final_cuts[i]) spp_demand_year = spp_demand_year - vol_spp_target[i,, drop=FALSE]
+            if(final_cuts[i]) {
+              for(j in 1:length(target_taxon_names)) spp_demand_year[j] <- spp_demand_year[j] - vol_spp_target[i, target_split_names[[j]], drop=FALSE]
+            }
           }
         }
       }
-      # print(data.frame(vol_spp_target = rowSums(vol_spp_target), final_cut = final_cuts))
+      
+      # Copy volume matrix from species to demand taxa
+      vol_demand_target <- matrix(0, n, length(target_taxon_names)) 
+      colnames(vol_demand_target) <- target_taxon_names
+      rownames(vol_demand_target) <- y$id
+      for(j in 1:length(target_taxon_names)) {
+        vol_demand_target[,j] <- rowSums(vol_spp_target[, which(target_spp_names %in% target_split_names[[j]]), drop = FALSE])
+      }
       # Set all plots not in final cuts to non-management
       no_final <- which(!final_cuts)
       managed_step[no_final] <- FALSE 
       to_cut <- integer(0)
       # For each species set to true
-      for(j in 1:length(spp_demand_year)) {
-        vol_spp_j <- vol_spp_target[,j]
-        vol_spp_j <- vol_spp_j[vol_spp_j>0] # Remove plots with no possible revenue
+      for(j in 1:length(target_taxon_names)) {
+        vol_demand_j <- vol_demand_target[,j]
+        vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
         if(spp_demand_year[j]>0) {
           # cat(paste0("Species ", names(spp_demand_year)[j], " Target ", spp_demand_year[j],"\n"))
-          o <- order(vol_spp_j, decreasing = TRUE)
-          vol_cum_sorted_j <- cumsum(sort(vol_spp_j, decreasing = TRUE))
-          vol_cum_j <- vol_spp_j
+          o <- order(vol_demand_j, decreasing = TRUE)
+          vol_cum_sorted_j <- cumsum(sort(vol_demand_j, decreasing = TRUE))
+          vol_cum_j <- vol_demand_j
           vol_cum_j[o] <- vol_cum_sorted_j
           sel_cut_j <- (vol_cum_j < spp_demand_year[j])
           # if(vol_cum_j[o[1]] < spp_demand_year[j]) sel_cut_j[o[1]] = TRUE # Set plot with highest volume value to TRUE
@@ -408,13 +434,17 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         }
       }
       if(progress) {
-        cli::cli_li(paste0(sum(managed_step), " stand(s) where management will be simulated (", sum(final_cuts) , " because of final cuts):"))
-        for(i in 1:length(units)) {
-          if(!is.na(units[i])) {
-            n_man_unit <- sum(y$management_unit[managed_step]==units[i], na.rm=TRUE)
-            if(n_man_unit>0) cat(paste0("      ", n_man_unit , 
+        if(sum(managed_step)>0) {
+          cli::cli_li(paste0(sum(managed_step), " stand(s) where management will be simulated (", sum(final_cuts) , " because of final cuts):"))
+          for(i in 1:length(units)) {
+            if(!is.na(units[i])) {
+              n_man_unit <- sum(y$management_unit[managed_step]==units[i], na.rm=TRUE)
+              if(n_man_unit>0) cat(paste0("      ", n_man_unit , 
                                           " stand(s) in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
-          }          
+            }          
+          }
+        } else {
+          cli::cli_li("No stand(s) with management to be simulated")
         }
       }
     } else {
@@ -525,6 +555,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
       }
     }
+
     # B.5 Update extraction rates and actual satisfied demand
     if(progress) cli::cli_li(paste0("Final volume calculation"))
     final_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
@@ -536,6 +567,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     cumulative_extraction <- cumulative_extraction + extracted_sum[yi]
     cumulative_growth <- cumulative_growth + growth_sum[yi]
     if(scenario_type != "bottom-up") {
+      # Copy extraction to matrix by demand
+      for(j in 1:length(target_taxon_names)) {
+        extracted_target[j,yi] <- sum(extracted[which(SpParams$Name %in% target_split_names[[j]]), yi])
+        growth_target[j,yi] <- sum(growth[which(SpParams$Name %in% target_split_names[[j]]), yi])
+      }
       extracted_target_sum[yi] <- sum(extracted[target_spp_names, yi], na.rm=TRUE)
       initial_target_sum[yi] <- sum(initial_volume_spp[target_spp_names], na.rm = TRUE)
       final_target_sum[yi] <- sum(final_volume_spp[target_spp_names], na.rm = TRUE)
@@ -544,7 +580,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       cumulative_growth_target <- cumulative_growth_target + growth_target_sum[yi]
       cummulative_target_sum <- cummulative_target_sum + volume_target_sum[yi]
       # recalculate offset and previous growth for next year (or next simulation)
-      offset_demand <- target[target_spp_names, yi] - extracted[target_spp_names,yi]
+      offset_demand <- demand_target[, yi] - extracted_target[,yi]
       offset_target_sum[yi] <- sum(offset_demand, na.rm=TRUE)
       last_growth <- growth_target_sum[yi]
     }
@@ -611,37 +647,44 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   extracted <- data.frame(Name = SpParams$Name, extracted)
   names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
-  target <- data.frame(Name = SpParams$Name, target)
-  names(target) <- c("species", as.character(years))
-  row.names(target) <- NULL
   growth <- data.frame(Name = SpParams$Name, growth)
   names(growth) <- c("species", as.character(years))
   row.names(growth) <- NULL
   extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
-  target_pv <- tidyr::pivot_longer(target, as.character(years), names_to="year", values_to = "target")
   growth_pv <- tidyr::pivot_longer(growth, as.character(years), names_to="year", values_to = "growth")
+  volumes_spp <- growth_pv |>
+    dplyr::full_join(extracted_pv, by=c("species", "year")) |>
+    dplyr::filter(growth!=0 | extracted!=0) 
   if(management_scenario$scenario_type != "bottom-up") {
-    volumes_spp <- growth_pv |>
-      dplyr::full_join(target_pv, by=c("species", "year"))|>
-      dplyr::full_join(extracted_pv, by=c("species", "year")) |>
-      dplyr::filter(growth!=0 | target!=0 | extracted!=0)
-  } else {
-    volumes_spp <- growth_pv |>
-      dplyr::full_join(extracted_pv, by=c("species", "year")) |>
-      dplyr::filter(growth!=0 | extracted!=0) 
+    growth_target <- data.frame(Name = target_taxon_names, growth_target)
+    names(growth_target) <- c("species", as.character(years))
+    row.names(growth_target) <- NULL
+    extracted_target <- data.frame(Name = target_taxon_names, extracted_target)
+    names(extracted_target) <- c("species", as.character(years))
+    row.names(extracted_target) <- NULL
+    demand_target <- data.frame(Name = target_taxon_names, demand_target)
+    names(demand_target) <- c("species", as.character(years))
+    row.names(demand_target) <- NULL
+    growth_target_pv <- tidyr::pivot_longer(growth_target, as.character(years), names_to="year", values_to = "growth")
+    demand_target_pv <- tidyr::pivot_longer(demand_target, as.character(years), names_to="year", values_to = "demand")
+    extracted_target_pv <- tidyr::pivot_longer(extracted_target, as.character(years), names_to="year", values_to = "extracted")
+    volumes_demand <- growth_target_pv |>
+      dplyr::full_join(demand_target_pv, by=c("species", "year")) |> 
+      dplyr::full_join(extracted_target_pv, by=c("species", "year"))
   }
   volumes <- tibble::as_tibble(data.frame(Year = years, 
                                           initial = initial_sum, growth = growth_sum, extracted  = extracted_sum, final = final_sum,
-                                          initial_target = initial_target_sum, growth_target = growth_target_sum, 
-                                          volume_target = volume_target_sum, extracted_target  = extracted_target_sum, 
-                                          final_target = final_sum, offset_target = offset_target_sum))
+                                          initial_demand = initial_target_sum, growth_demand = growth_target_sum, 
+                                          target_demand = volume_target_sum, extracted_demand  = extracted_target_sum, 
+                                          final_demand = final_sum, offset_demand = offset_target_sum))
   l <- list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
             result_volumes = volumes,
-           result_volumes_spp = volumes_spp,
-           next_sf = y)
+            result_volumes_spp = volumes_spp)
   if(scenario_type != "bottom-up") {
+    l[["result_volumes_demand"]] <- volumes_demand
     l[["next_demand"]] <- list(offset = offset_demand, last_growth = last_growth)
   }
+  l[["next_sf"]] <- y
   class(l)<-c("fordyn_scenario", "list")
   return(l)
 }

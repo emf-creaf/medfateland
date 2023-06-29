@@ -18,7 +18,8 @@
     }
     else if(inherits(meteo, "stars")) { # An interpolator object
       pt_sf <- sf::st_sf(geometry = xi$point, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
-      met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, verbose = FALSE)
+      met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates, 
+                                         verbose = FALSE, ignore_convex_hull_check = TRUE)
       met <- met$interpolated_data[[1]]
     }
     else if(inherits(meteo, "list")) { # A list of interpolators
@@ -29,7 +30,8 @@
         dates_i <- as.Date(stars::st_get_dimension_values(interpolator_i, "date"))
         if(!is.null(dates)) dates_i <- dates_i[dates_i %in% dates]
         if(length(dates_i)>0) { # Only call interpolation if there are matching dates 
-          met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, verbose = FALSE)
+          met_i <- meteoland::interpolate_data(pt_sf, meteo[[i]], dates = dates_i, 
+                                               verbose = FALSE, ignore_convex_hull_check = TRUE)
           met <- rbind(met, met_i$interpolated_data[[1]])
         }
       }

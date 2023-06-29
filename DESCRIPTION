@@ -1,8 +1,8 @@
 Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Forest Simulation
-Version: 2.0.1
-Date: 2023-06-21
+Version: 2.0.2
+Date: 2023-06-29
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),

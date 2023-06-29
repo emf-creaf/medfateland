@@ -233,7 +233,8 @@
       if(inherits(meteo,"stars")) {
         pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
                           elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-        met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], verbose = FALSE)
+        met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], 
+                                           verbose = FALSE, ignore_convex_hull_check = TRUE)
         ml <- tidyr::unnest(met, cols = "interpolated_data")
         gridMinTemperature <- ml$MinTemperature
         gridMaxTemperature <- ml$MaxTemperature
@@ -250,7 +251,8 @@
         if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
         pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
                            elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-        met <- meteoland::interpolate_data(pt_sf, meteo[[i_stars]], dates = dates[day], verbose = FALSE)
+        met <- meteoland::interpolate_data(pt_sf, meteo[[i_stars]], dates = dates[day], 
+                                           verbose = FALSE, ignore_convex_hull_check = TRUE)
         ml <- tidyr::unnest(met, cols = "interpolated_data")
         gridMinTemperature <- ml$MinTemperature
         gridMaxTemperature <- ml$MaxTemperature
