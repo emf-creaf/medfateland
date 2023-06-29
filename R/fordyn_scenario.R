@@ -368,7 +368,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(scenario_type != "bottom-up") {
       if(progress) {
         volume_target_sum[yi] <- sum(spp_demand_year, na.rm=TRUE)
-        cli::cli_li(paste0("  Target volume (incl. offset): ", round(volume_target_sum[yi]), " m3"))
+        cli::cli_li(paste0("  Demand (incl. offset): ", round(volume_target_sum[yi]), " m3"))
         if(any(spp_demand_year > 0)) {
           cli::cli_li(paste0("  Species or groups with positive demand for current year:"))
           for(i in 1:length(spp_demand_year)) {
@@ -620,13 +620,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "      Growth (m3): ", round(growth_target_sum[yi]), 
                    "      Final (m3): ", round(final_target_sum[yi]), 
                    "\n"))
-        cat(paste0("      Nominal target (m3): ", round(sum(spp_demand, na.rm=TRUE)),
-                   "      Target incl. offset (m3): ", round(volume_target_sum[yi]),
+        cat(paste0("      Nominal demand (m3): ", round(sum(spp_demand, na.rm=TRUE)),
+                   "      Demand incl. offset (m3): ", round(volume_target_sum[yi]),
                    "      Extraction (m3): ", round(extracted_target_sum[yi]), 
                    "      Offset for next year (m3): ", round(offset_target_sum[yi]), 
                    "\n"))
-        cat(paste0("      Target volume satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
-                   "      Average nominal target satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
+        cat(paste0("      Demand volume satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
+                   "      Average nominal demand satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
                    "\n"))
         cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_target_sum[yi])),"%"))
         cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction_target[yi]/max(0,cumulative_growth_target[yi])),"%",
