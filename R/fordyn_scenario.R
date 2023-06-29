@@ -231,7 +231,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Fixed demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("     ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr \n"))
+            name_spp_demand_i <- names(spp_demand)[i]
+            if(nchar(name_spp_demand_i)> 30) name_spp_demand_i <- paste0(substr(name_spp_demand_i,1,27),"...")
+            if(spp_demand[i]>0) cat(paste0("     ", name_spp_demand_i, " ", round(spp_demand[i],1), " m3/yr \n"))
           }
         }
       }
@@ -244,7 +246,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         cli::cli_li(paste0("Input demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
-            if(spp_demand[i]>0) cat(paste0("      ", names(spp_demand)[i], " ", round(spp_demand[i],1), " m3/yr\n"))
+            name_spp_demand_i <- names(spp_demand)[i]
+            if(nchar(name_spp_demand_i)> 30) name_spp_demand_i <- paste0(substr(name_spp_demand_i,1,27),"...")
+            if(spp_demand[i]>0) cat(paste0("      ", name_spp_demand_i, " ", round(spp_demand[i],1), " m3/yr\n"))
           }
         }
         cli::cli_li(paste0("Extraction rates:\n"))
@@ -366,7 +370,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           cli::cli_li(paste0("  Target volume: ", round(volume_target_sum[yi]), " m3"))
           cli::cli_li(paste0("  Species or groups with positive demand for current year:"))
           for(i in 1:length(spp_demand_year)) {
-            if(spp_demand_year[i] > 0) cat(paste0("      ", names(spp_demand_year)[i], " ", round(spp_demand_year[i]), " m3\n"))
+            name_spp_demand_i <- names(spp_demand_year)[i]
+            if(nchar(name_spp_demand_i)> 30) name_spp_demand_i <- paste0(substr(name_spp_demand_i,1,27),"...")
+            if(spp_demand_year[i] > 0) cat(paste0("      ", name_spp_demand_i, " ", round(spp_demand_year[i]), " m3\n"))
           }
         } else {
           cli::cli_li(paste0("  No species with positive demand"))
