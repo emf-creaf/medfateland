@@ -410,7 +410,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           }
         }
       }
-      if(progress) cli::cli_li(paste0("Demand (after final cuts): ", sum(spp_demand_thinning_year), " m3"))
+      if(progress) cli::cli_li(paste0("Demand (after final cuts): ", round(sum(spp_demand_thinning_year)), " m3"))
       
       
       # Determine fulfillment of demand via thinning
