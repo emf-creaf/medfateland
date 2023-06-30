@@ -422,24 +422,43 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       for(j in 1:length(target_taxon_names)) {
         vol_demand_target[,j] <- rowSums(vol_spp_target[, which(target_spp_names %in% target_split_names[[j]]), drop = FALSE])
       }
+      
       # Set all plots not in final cuts to non-management
-      no_final <- which(!final_cuts)
-      managed_step[no_final] <- FALSE 
-      for(j in 1:length(target_taxon_names)) {
-        name_spp_demand_j <- target_taxon_names[j]
-        if(nchar(name_spp_demand_j)> 30) name_spp_demand_j <- paste0(substr(name_spp_demand_j,1,27),"...")
-        if(spp_demand_thinning_year[j]>0) {
-          vol_demand_j <- vol_demand_target[,j]
-          vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
-          o <- order(vol_demand_j, decreasing = TRUE)
-          vol_cum_sorted_j <- cumsum(sort(vol_demand_j, decreasing = TRUE))
-          vol_cum_j <- vol_demand_j
-          vol_cum_j[o] <- vol_cum_sorted_j
-          sel_cut_j <- (vol_cum_j < spp_demand_year[j])
-          ids_to_cut <- names(sel_cut_j[sel_cut_j])
-          if(length(ids_to_cut)>0) managed_step[ids_to_cut] = TRUE # Set selected plots to TRUE
-        } 
+      managed_step[!final_cuts] <- FALSE 
+      vol_demand_target_thinning <- vol_demand_target
+      vol_demand_target_thinning[final_cuts, ] <- 0
+      sel_positive_demand <- (spp_demand_thinning_year > 0)
+      stand_positive_demand <- rowSums(vol_demand_target_thinning[, sel_positive_demand, drop = FALSE])
+      stand_dominant_positive_demand <- stand_positive_demand/rowSums(vol_demand_target)
+      sel_available_stands <- (stand_dominant_positive_demand > 0.5) & (stand_positive_demand < sum(pmax(0,spp_demand_thinning_year)))
+      sel_available_stands[is.na(sel_available_stands)] <- FALSE
+      while(any(sel_positive_demand) && any(sel_available_stands)) {
+        i_max_vol_available <- which.max(stand_positive_demand[sel_available_stands])
+        i_max_vol <- which(sel_available_stands)[i_max_vol_available]
+        managed_step[i_max_vol] <- TRUE
+        spp_demand_thinning_year <- spp_demand_thinning_year - vol_demand_target_thinning[i_max_vol, , drop = FALSE] 
+        vol_demand_target_thinning[i_max_vol, ] <- 0
+        sel_positive_demand <- (spp_demand_thinning_year > 0)
+        stand_positive_demand <- rowSums(vol_demand_target_thinning[, sel_positive_demand, drop = FALSE])
+        stand_dominant_positive_demand <- stand_positive_demand/rowSums(vol_demand_target)
+        sel_available_stands <- (stand_dominant_positive_demand > 0.5)  & (stand_positive_demand < sum(pmax(0,spp_demand_thinning_year))) 
+        sel_available_stands[is.na(sel_available_stands)] <- FALSE
       }
+      # for(j in 1:length(target_taxon_names)) {
+      #   name_spp_demand_j <- target_taxon_names[j]
+      #   if(nchar(name_spp_demand_j)> 30) name_spp_demand_j <- paste0(substr(name_spp_demand_j,1,27),"...")
+      #   if(spp_demand_thinning_year[j]>0) {
+      #     vol_demand_j <- vol_demand_target[,j]
+      #     vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
+      #     o <- order(vol_demand_j, decreasing = TRUE)
+      #     vol_cum_sorted_j <- cumsum(sort(vol_demand_j, decreasing = TRUE))
+      #     vol_cum_j <- vol_demand_j
+      #     vol_cum_j[o] <- vol_cum_sorted_j
+      #     sel_cut_j <- (vol_cum_j < spp_demand_year[j])
+      #     ids_to_cut <- names(sel_cut_j[sel_cut_j])
+      #     if(length(ids_to_cut)>0) managed_step[ids_to_cut] = TRUE # Set selected plots to TRUE
+      #   } 
+      # }
       
       if(progress) {
         if(sum(managed_step)>0) {
