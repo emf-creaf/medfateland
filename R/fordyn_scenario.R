@@ -213,9 +213,15 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }
   if(scenario_type != "bottom-up"){
     spp_demand <- management_scenario$annual_demand_by_species
+    if(!is.numeric(spp_demand)) stop("Annual demand by species must be a named numeric vector")
     target_taxon_names <- names(spp_demand) # Species or species groups
+    if(is.null(target_taxon_names)) stop("Annual demand should be named")
     target_split_names <- strsplit(target_taxon_names, "/") # List of species included in each item
     target_spp_names <- unlist(target_split_names) # Vector of species names mentioned
+    if(length(target_spp_names) > length(unique(target_spp_names))) {
+      stop("Demand species names cannot be repeated!")
+    }
+    if(!all(target_spp_names %in% SpParams$Name)) stop("Some demand names do not match species names of 'SpParams'")
     offset_demand <- rep(0, length(spp_demand)) # Same vector length as annual demand
     names(offset_demand) <- target_taxon_names
     if(inherits(sf, "fordyn_scenario")) {
@@ -240,6 +246,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
     if(scenario_type == "input_rate"){
       extraction_rates <- management_scenario$extraction_rate_by_year
+      if(!is.numeric(extraction_rates)) stop("Extraction rates should be a named numeric vector")
+      if(is.null(names(extraction_rates))) stop("Extraction rates should be named")
       if(!all(as.character(years) %in% names(extraction_rates))) stop("Extraction rates have not been specified for all simulation years")
       extraction_rates <- extraction_rates[as.character(years)]
       if(progress) {
@@ -364,21 +372,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
     # B.1 Determine which plots will be managed according to current demand
     managed_step <- managed # by default, manage all plots that have
+    spp_demand_thinning_year <- spp_demand_year
     if(scenario_type != "bottom-up") {
       if(progress) {
         volume_target_sum[yi] <- sum(spp_demand_year, na.rm=TRUE)
         cli::cli_li(paste0("  Demand (incl. offset): ", round(volume_target_sum[yi]), " m3"))
-        if(any(spp_demand_year > 0)) {
-          cli::cli_li(paste0("  Species or groups with positive demand for current year:"))
-          for(i in 1:length(spp_demand_year)) {
-            name_spp_demand_i <- names(spp_demand_year)[i]
-            if(nchar(name_spp_demand_i)> 30) name_spp_demand_i <- paste0(substr(name_spp_demand_i,1,27),"...")
-            if(spp_demand_year[i] > 0) cat(paste0("      ", name_spp_demand_i, " ", round(spp_demand_year[i]), " m3\n"))
-          }
-        } else {
-          cli::cli_li(paste0("  No species with positive demand"))
-        }
       }
+      if(progress) cli::cli_li(paste0("Determining available volumes and final cuts"))
       vol_spp_target <- matrix(0, n, length(target_spp_names)) 
       colnames(vol_spp_target) <- target_spp_names
       rownames(vol_spp_target) <- y$id
@@ -405,12 +405,16 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
             }
             # DECREASE TARGET according to FINAL CUTS
             if(final_cuts[i]) {
-              for(j in 1:length(target_taxon_names)) spp_demand_year[j] <- spp_demand_year[j] - vol_spp_target[i, target_split_names[[j]], drop=FALSE]
+              for(j in 1:length(target_taxon_names)) spp_demand_thinning_year[j] <- spp_demand_thinning_year[j] - vol_spp_target[i, target_split_names[[j]], drop=FALSE]
             }
           }
         }
       }
+      if(progress) cli::cli_li(paste0("Demand (after final cuts): ", sum(spp_demand_thinning_year), " m3"))
       
+      
+      # Determine fulfillment of demand via thinning
+      if(progress) cli::cli_li(paste0("Determining thinning operations"))
       # Copy volume matrix from species to demand taxa
       vol_demand_target <- matrix(0, n, length(target_taxon_names)) 
       colnames(vol_demand_target) <- target_taxon_names
@@ -421,25 +425,22 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       # Set all plots not in final cuts to non-management
       no_final <- which(!final_cuts)
       managed_step[no_final] <- FALSE 
-      to_cut <- integer(0)
-      # For each species set to true
       for(j in 1:length(target_taxon_names)) {
-        vol_demand_j <- vol_demand_target[,j]
-        vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
-        if(spp_demand_year[j]>0) {
-          # cat(paste0("Species ", names(spp_demand_year)[j], " Target ", spp_demand_year[j],"\n"))
+        name_spp_demand_j <- target_taxon_names[j]
+        if(nchar(name_spp_demand_j)> 30) name_spp_demand_j <- paste0(substr(name_spp_demand_j,1,27),"...")
+        if(spp_demand_thinning_year[j]>0) {
+          vol_demand_j <- vol_demand_target[,j]
+          vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
           o <- order(vol_demand_j, decreasing = TRUE)
           vol_cum_sorted_j <- cumsum(sort(vol_demand_j, decreasing = TRUE))
           vol_cum_j <- vol_demand_j
           vol_cum_j[o] <- vol_cum_sorted_j
           sel_cut_j <- (vol_cum_j < spp_demand_year[j])
-          # if(vol_cum_j[o[1]] < spp_demand_year[j]) sel_cut_j[o[1]] = TRUE # Set plot with highest volume value to TRUE
-          # print(cbind(vol_spp_j, vol_cum_j, sel_cut_j))
           ids_to_cut <- names(sel_cut_j[sel_cut_j])
-          # print(ids_to_cut)
           if(length(ids_to_cut)>0) managed_step[ids_to_cut] = TRUE # Set selected plots to TRUE
-        }
+        } 
       }
+      
       if(progress) {
         if(sum(managed_step)>0) {
           cli::cli_li(paste0(sum(managed_step), " stand(s) where management will be simulated (", sum(final_cuts) , " because of final cuts):"))
@@ -449,6 +450,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
               if(n_man_unit>0) cat(paste0("      ", n_man_unit , 
                                           " stand(s) in unit [", row.names(management_scenario$units)[units[i]],"]\n"))
             }          
+          }
+          cli::cli_li(paste0("Volume by target species/group:"))
+          for(j in 1:length(target_taxon_names)) {
+            name_spp_demand_j <- target_taxon_names[j]
+            vol_demand_j <- vol_demand_target[,j]
+            if(nchar(name_spp_demand_j)> 30) name_spp_demand_j <- paste0(substr(name_spp_demand_j,1,27),"...")
+            cat(paste0("      ", name_spp_demand_j, " - demand ", round(spp_demand_year[j]), " m3, expected ", round(sum(vol_demand_j[managed_step], na.rm=TRUE)), " m3 from ", sum(managed_step & (vol_demand_j>0)) ," stand(s).\n"))
           }
         } else {
           cli::cli_li("No stand(s) with management to be simulated")
@@ -622,7 +630,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "      Extraction (m3): ", round(extracted_target_sum[yi]), 
                    "      Offset for next year (m3): ", round(offset_target_sum[yi]), 
                    "\n"))
-        cat(paste0("      Demand volume satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
+        cat(paste0("      Demand satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
                    "      Average nominal demand satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
                    "\n"))
         cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_target_sum[yi])),"%"))

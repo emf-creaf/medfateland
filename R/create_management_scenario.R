@@ -74,8 +74,19 @@ create_management_scenario<-function(units,
   }
   scenario_type = "bottom-up"
   if(!is.null(annual_demand_by_species)) {
+    if(!is.numeric(annual_demand_by_species)) stop("Annual demand by species should be a named numeric vector")
+    target_taxon_names <- names(annual_demand_by_species) # Species or species groups
+    if(is.null(target_taxon_names)) stop("Annual demand vector should named")
+    target_spp_names <- unlist(strsplit(target_taxon_names, "/")) # Vector of species names mentioned
+    if(length(target_spp_names) > length(unique(target_spp_names))) {
+      stop("Demand species names cannot be repeated!")
+    }
     scenario_type = "input_demand"
-    if(!is.null(extraction_rate_by_year)) scenario_type = "input_rate"
+    if(!is.null(extraction_rate_by_year)) {
+      if(!is.numeric(extraction_rate_by_year)) stop("Extraction rates should be a named numeric vector")
+      if(is.null(names(extraction_rate_by_year))) stop("Extraction rates should be named")
+      scenario_type = "input_rate"
+    }
   }
   l <- list(scenario_type = scenario_type, 
             annual_demand_by_species = annual_demand_by_species,
