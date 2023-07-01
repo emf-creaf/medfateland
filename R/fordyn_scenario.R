@@ -325,12 +325,14 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   rownames(extracted) <- SpParams$Name
   
   # Demand growth, target and extracted volumes by target entity and year
-  growth_target <- matrix(0, length(target_taxon_names), length(years))
-  rownames(growth_target) <- target_taxon_names
-  demand_target <- matrix(0, length(target_taxon_names), length(years))
-  rownames(demand_target) <- target_taxon_names
-  extracted_target <- matrix(0, length(target_taxon_names), length(years))
-  rownames(extracted_target) <- target_taxon_names
+  if(scenario_type != "bottom-up") {
+    growth_target <- matrix(0, length(target_taxon_names), length(years))
+    rownames(growth_target) <- target_taxon_names
+    demand_target <- matrix(0, length(target_taxon_names), length(years))
+    rownames(demand_target) <- target_taxon_names
+    extracted_target <- matrix(0, length(target_taxon_names), length(years))
+    rownames(extracted_target) <- target_taxon_names
+  }
   
   initial_sum <- rep(0, length(years))
   growth_sum <- rep(0, length(years))
@@ -387,8 +389,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
     # B.1 Determine which plots will be managed according to current demand
     managed_step <- managed # by default, manage all plots that have
-    spp_demand_thinning_year <- spp_demand_year
     if(scenario_type != "bottom-up") {
+      spp_demand_thinning_year <- spp_demand_year
       if(progress) {
         volume_target_sum[yi] <- sum(spp_demand_year, na.rm=TRUE)
         cli::cli_li(paste0("  Demand (incl. offset): ", round(volume_target_sum[yi]), " m3"))
