@@ -169,10 +169,14 @@ to modify demand in subsequent calls to <code>fordyn_scenario</code>.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function allows coordinating the dynamics of simulated forest stands via management actions. For each year to be simulated, the
-function determines which plots will be managed and then calls function <code><a href="spwb_spatial.html">fordyn_spatial</a></code> for one year. If the simulation of some
-stands results in an error, the function will try to restore the previous state of the forest stand for the next year steps.
-Management is implemented using the <code>defaultManagementFunction</code> in medfate,
+    <p>This function allows coordinating the dynamics of simulated forest stands via a management scenario
+defined at the landscape/regional level (see different kinds of scenarios and how to specify them in <code><a href="create_management_scenario.html">create_management_scenario</a></code>).</p>
+<p>For each year to be simulated, the function determines which forest stands will be managed, possibly depending on the demand,
+and then calls function <code><a href="spwb_spatial.html">fordyn_spatial</a></code> for one year (normally including parallelization).
+If the simulation of some stands results in an error, the function will try to restore
+the previous state of the forest stand for the next year steps. Finally, the function evaluates how much of the specified demand
+has been fulfilled and stores the results, including demand offsets to be applied the year after.</p>
+<p>Management is implemented using the <code>defaultManagementFunction</code> in medfate,
 meaning that management parameters need to follow the structure of <code>defaultManagementArguments</code></p>
     </div>
     <div id="see-also">
@@ -182,6 +186,7 @@ meaning that management parameters need to follow the structure of <code>default
     <div id="author">
     <h2>Author</h2>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
+<p>Aitor Améztegui, UdL</p>
     </div>
 
     <div id="ref-examples">
