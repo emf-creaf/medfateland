@@ -329,6 +329,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   initial_target_sum <- rep(0, length(years))
   growth_target_sum <- rep(0, length(years))
   final_target_sum <- rep(0, length(years))
+  nominal_target_sum <- rep(0, length(years))
   volume_target_sum <- rep(0, length(years))
   extracted_target_sum <- rep(0, length(years))
   offset_target_sum <- rep(0, length(years))
@@ -354,6 +355,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
 
     # Set demand in demand-based scenarios
     if(scenario_type=="input_demand") {
+      nominal_target_sum[yi] <- sum(spp_demand)
       spp_demand_year <- spp_demand + offset_demand
       demand_target[, yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
@@ -366,6 +368,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         if(progress) cli::cli_li(paste0("  Extraction rate: ", extraction_rate_year, "% cannot be applied (previous growth is missing)"))
         spp_demand_year <- spp_demand
       }
+      nominal_target_sum[yi] <- sum(spp_demand_year)
       spp_demand_year <- spp_demand_year + offset_demand
       demand_target[,yi] = spp_demand_year
     }
@@ -444,22 +447,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         sel_available_stands <- (stand_dominant_positive_demand > 0.5)  & (stand_positive_demand < sum(pmax(0,spp_demand_thinning_year))) 
         sel_available_stands[is.na(sel_available_stands)] <- FALSE
       }
-      # for(j in 1:length(target_taxon_names)) {
-      #   name_spp_demand_j <- target_taxon_names[j]
-      #   if(nchar(name_spp_demand_j)> 30) name_spp_demand_j <- paste0(substr(name_spp_demand_j,1,27),"...")
-      #   if(spp_demand_thinning_year[j]>0) {
-      #     vol_demand_j <- vol_demand_target[,j]
-      #     vol_demand_j <- vol_demand_j[vol_demand_j>0] # Remove plots with no possible revenue
-      #     o <- order(vol_demand_j, decreasing = TRUE)
-      #     vol_cum_sorted_j <- cumsum(sort(vol_demand_j, decreasing = TRUE))
-      #     vol_cum_j <- vol_demand_j
-      #     vol_cum_j[o] <- vol_cum_sorted_j
-      #     sel_cut_j <- (vol_cum_j < spp_demand_year[j])
-      #     ids_to_cut <- names(sel_cut_j[sel_cut_j])
-      #     if(length(ids_to_cut)>0) managed_step[ids_to_cut] = TRUE # Set selected plots to TRUE
-      #   } 
-      # }
-      
+
       if(progress) {
         if(sum(managed_step)>0) {
           cli::cli_li(paste0(sum(managed_step), " stand(s) where management will be simulated (", sum(final_cuts) , " because of final cuts):"))
@@ -618,11 +606,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(yi==1) {
         cumulative_extraction_target[yi] <- extracted_target_sum[yi]
         cumulative_growth_target[yi] <- growth_target_sum[yi]
-        cummulative_nominal_target_sum[yi] <- sum(spp_demand, na.rm = TRUE)
+        cummulative_nominal_target_sum[yi] <- nominal_target_sum[yi]
       } else {
         cumulative_extraction_target[yi] <- cumulative_extraction_target[yi-1] + extracted_target_sum[yi]
         cumulative_growth_target[yi] <- cumulative_growth_target[yi-1] + growth_target_sum[yi]
-        cummulative_nominal_target_sum[yi] <- cummulative_nominal_target_sum[yi-1] + sum(spp_demand, na.rm = TRUE)
+        cummulative_nominal_target_sum[yi] <- cummulative_nominal_target_sum[yi-1] + nominal_target_sum[yi]
       }
       # recalculate offset and previous growth for next year (or next simulation)
       offset_demand <- demand_target[, yi] - extracted_target[,yi]
@@ -650,7 +638,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "      Offset for next year (m3): ", round(offset_target_sum[yi]), 
                    "\n"))
         cat(paste0("      Demand satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
-                   "      Average nominal demand satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
+                   "      Nominal satisfaction: ", round(100*extracted_target_sum[yi]/nominal_target_sum[yi]), "%",
+                   "      Average nominal satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
                    "\n"))
         cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_target_sum[yi])),"%"))
         cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction_target[yi]/max(0,cumulative_growth_target[yi])),"%",
@@ -722,7 +711,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                                           initial = initial_sum, growth = growth_sum, extracted  = extracted_sum, final = final_sum,
                                           cumulative_growth = cumulative_growth, cumulative_extraction = cumulative_extraction, 
                                           initial_demand = initial_target_sum, growth_demand = growth_target_sum, 
-                                          target_demand = volume_target_sum, nominal_demand = rep(sum(spp_demand, na.rm=TRUE), length(years)),
+                                          target_demand = volume_target_sum, nominal_demand = nominal_target_sum,
                                           extracted_demand  = extracted_target_sum, 
                                           final_demand = final_sum, offset_demand = offset_target_sum,
                                           cummulative_nominal_demand = cummulative_nominal_target_sum, cummulative_extracted_demand = cumulative_extraction_target))
