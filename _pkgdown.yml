@@ -10,6 +10,7 @@ articles:
 - title: Simulation models
   contents:
     - starts_with("LandscapeWaterBalance")
+    - starts_with("ManagementScenario")
 
 reference:
 - title: Example data
