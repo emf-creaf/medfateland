@@ -39,10 +39,25 @@ A list with the following structure:
 }
 }
 \description{
-Defines a management scenario with default values, to be modified by the user
+Defines a management scenario for simulations of forest dynamics
 }
 \details{
-Each management unit represents a group of forest stands following the same silvicultural model.
+Three kinds of management scenarios are allowed:
+\enumerate{
+\item{\code{'bottom-up'} represents a scenario where forest stands belong to different management units,
+each of them having possibly distinct management prescriptions. However, there is no demand and the amount
+of extracted wood emerges from the interplay between forest dynamics and management prescriptions.}
+\item{\code{'input_demand'} represents a scenario where a certain amount of wood extraction is targeted for some species
+and each year. This requires deciding which stands will actually undergo thinning operations to fulfill the demand (stands
+managed following prescriptions that indicate final regeneration cuts are managed irrespective of demand).}
+\item{\code{'input_rate'} represents a scenario similar to the previous one but where total amount of wood targeted depends
+on (i.e. is a proportion of) the growth observed in previous year.}
+}
+
+The kind of management scenario depends on the arguments supplied by the user when calling \code{create_management_scenario} (see examples).
+In all cases, management units need to be defined. Each management unit represents a group of forest stands
+following the same management prescriptions. Although the \code{create_management_scenario} function allows specifying the management arguments of each unit,
+the simulation of management scenarios also requires specifying, for each forest stand, to which management unit it belongs (see \code{\link{fordyn_scenario}}).
 }
 \examples{
 
@@ -62,9 +77,15 @@ scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
 
 # A scenario with three management units and annual demand for one species group 
 # and a third species
-scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, "Pinus nigra" = 2000))
+scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, 
+                                           "Pinus nigra" = 2000))
 
 }
 \seealso{
 \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
+}
+\author{
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+
+Aitor \enc{Améztegui}{Ameztegui}, UdL
 }

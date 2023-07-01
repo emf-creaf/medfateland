@@ -56,9 +56,15 @@
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
-#' @details This function allows coordinating the dynamics of simulated forest stands via management actions. For each year to be simulated, the
-#' function determines which plots will be managed and then calls function \code{\link{fordyn_spatial}} for one year. If the simulation of some
-#' stands results in an error, the function will try to restore the previous state of the forest stand for the next year steps. 
+#' @details This function allows coordinating the dynamics of simulated forest stands via a management scenario 
+#' defined at the landscape/regional level (see different kinds of scenarios and how to specify them in \code{\link{create_management_scenario}}).
+#' 
+#' For each year to be simulated, the function determines which forest stands will be managed, possibly depending on the demand,
+#' and then calls function \code{\link{fordyn_spatial}} for one year (normally including parallelization). 
+#' If the simulation of some stands results in an error, the function will try to restore 
+#' the previous state of the forest stand for the next year steps. Finally, the function evaluates how much of the specified demand
+#' has been fulfilled and stores the results, including demand offsets to be applied the year after.
+#' 
 #' Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
 #' meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
 #' 
@@ -85,7 +91,11 @@
 #'    to modify demand in subsequent calls to \code{fordyn_scenario}.}
 #'  }
 #' 
-#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @author 
+#' 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' Aitor \enc{Améztegui}{Ameztegui}, UdL
 #' 
 #' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}
 #' 
@@ -356,6 +366,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # Set demand in demand-based scenarios
     if(scenario_type=="input_demand") {
       nominal_target_sum[yi] <- sum(spp_demand)
+      offset_target_sum[yi] <- sum(offset_demand, na.rm=TRUE)
       spp_demand_year <- spp_demand + offset_demand
       demand_target[, yi] = spp_demand_year
     } else if(scenario_type=="input_rate") {
@@ -369,6 +380,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         spp_demand_year <- spp_demand
       }
       nominal_target_sum[yi] <- sum(spp_demand_year)
+      offset_target_sum[yi] <- sum(offset_demand, na.rm=TRUE)
       spp_demand_year <- spp_demand_year + offset_demand
       demand_target[,yi] = spp_demand_year
     }
@@ -614,11 +626,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
       # recalculate offset and previous growth for next year (or next simulation)
       offset_demand <- demand_target[, yi] - extracted_target[,yi]
-      offset_target_sum[yi] <- sum(offset_demand, na.rm=TRUE)
       last_growth <- growth_target_sum[yi]
     }
     if(progress) {
-      cli::cli_li(paste0("Management statistics:"))
+      cli::cli_li(paste0("Management statistics (all species):"))
       cat(paste0("      Initial (m3): ", round(initial_sum[yi]),
                  "      Growth (m3): ", round(growth_sum[yi]), 
                  "      Extraction (m3): ", round(extracted_sum[yi]), 
@@ -627,22 +638,24 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_sum[yi])),"%"))
       cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction[yi]/max(0,cumulative_growth[yi])),"%\n"))
       if(scenario_type != "bottom-up") {
-        cli::cli_li(paste0("Management statistics (species with demand):"))
+        cli::cli_li(paste0("Management statistics (target species with demand):"))
+        cat(paste0("      Nominal demand (m3): ", round(sum(spp_demand, na.rm=TRUE)),
+                   "      Offset (m3): ", round(offset_target_sum[yi]), 
+                   "      Actual demand (m3): ", round(volume_target_sum[yi]),
+                   "\n"))
         cat(paste0("      Initial (m3): ", round(initial_target_sum[yi]),
                    "      Growth (m3): ", round(growth_target_sum[yi]), 
+                   "      Extraction (m3): ", round(extracted_target_sum[yi]), 
                    "      Final (m3): ", round(final_target_sum[yi]), 
                    "\n"))
-        cat(paste0("      Nominal demand (m3): ", round(sum(spp_demand, na.rm=TRUE)),
-                   "      Demand incl. offset (m3): ", round(volume_target_sum[yi]),
-                   "      Extraction (m3): ", round(extracted_target_sum[yi]), 
-                   "      Offset for next year (m3): ", round(offset_target_sum[yi]), 
+        cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_target_sum[yi])),"%",
+                   "      Average extraction rate: ", round(100*cumulative_extraction_target[yi]/max(0,cumulative_growth_target[yi])),"%",
                    "\n"))
         cat(paste0("      Demand satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
                    "      Nominal satisfaction: ", round(100*extracted_target_sum[yi]/nominal_target_sum[yi]), "%",
                    "      Average nominal satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
                    "\n"))
-        cat(paste0("      Extraction rate: ", round(100*extracted_sum[yi]/max(0,growth_target_sum[yi])),"%"))
-        cat(paste0("      Average extraction rate: ", round(100*cumulative_extraction_target[yi]/max(0,cumulative_growth_target[yi])),"%",
+        cat(paste0("      Next year offset (m3): ", round(sum(offset_demand, na.rm=TRUE)), 
                    "\n"))
       }
     }
@@ -708,13 +721,21 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   }  
   
   volumes <- tibble::as_tibble(data.frame(Year = years, 
-                                          initial = initial_sum, growth = growth_sum, extracted  = extracted_sum, final = final_sum,
-                                          cumulative_growth = cumulative_growth, cumulative_extraction = cumulative_extraction, 
-                                          initial_demand = initial_target_sum, growth_demand = growth_target_sum, 
-                                          target_demand = volume_target_sum, nominal_demand = nominal_target_sum,
-                                          extracted_demand  = extracted_target_sum, 
-                                          final_demand = final_sum, offset_demand = offset_target_sum,
-                                          cummulative_nominal_demand = cummulative_nominal_target_sum, cummulative_extracted_demand = cumulative_extraction_target))
+                                          initial = initial_sum, 
+                                          growth = growth_sum, 
+                                          extracted  = extracted_sum, 
+                                          final = final_sum,
+                                          cumulative_growth = cumulative_growth, 
+                                          cumulative_extraction = cumulative_extraction, 
+                                          initial_target = initial_target_sum,
+                                          growth_target = growth_target_sum, 
+                                          extracted_target  = extracted_target_sum, 
+                                          final_target = final_sum, 
+                                          nominal_demand = nominal_target_sum,
+                                          demand_offset = offset_target_sum,
+                                          actual_demand = volume_target_sum, 
+                                          cummulative_nominal_demand = cummulative_nominal_target_sum, 
+                                          cummulative_extracted_demand = cumulative_extraction_target))
   l <- list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
             result_volumes = volumes,
             result_volumes_spp = volumes_spp)

@@ -1,6 +1,6 @@
 #' Create management scenario
 #' 
-#' Defines a management scenario with default values, to be modified by the user
+#' Defines a management scenario for simulations of forest dynamics 
 #'
 #' @param units Number of management units. Alternatively, a data frame with management options (in columns) for a set of units (in rows). Options not specified witl be taken from defaults.
 #' @param annual_demand_by_species A vector or matrix of annual wood demand (m3) by medfate species names (or groups of species names). If empty, the scenario is 'bottom-up' (not based on demand).
@@ -13,7 +13,23 @@
 #'                            copied for all management units and can later be modified. If NULL, the result of calling function 
 #'                            \code{\link{defaultManagementArguments}} will be taken.
 #'
-#' @details Each management unit represents a group of forest stands following the same silvicultural model.
+#' @details 
+#' Three kinds of management scenarios are allowed:
+#' \enumerate{
+#'   \item{\code{'bottom-up'} represents a scenario where forest stands belong to different management units, 
+#'   each of them having possibly distinct management prescriptions. However, there is no demand and the amount
+#'   of extracted wood emerges from the interplay between forest dynamics and management prescriptions.}
+#'   \item{\code{'input_demand'} represents a scenario where a certain amount of wood extraction is targeted for some species
+#'   and each year. This requires deciding which stands will actually undergo thinning operations to fulfill the demand (stands 
+#'   managed following prescriptions that indicate final regeneration cuts are managed irrespective of demand).}
+#'   \item{\code{'input_rate'} represents a scenario similar to the previous one but where total amount of wood targeted depends
+#'   on (i.e. is a proportion of) the growth observed in previous year.}
+#' }
+#' 
+#' The kind of management scenario depends on the arguments supplied by the user when calling \code{create_management_scenario} (see examples). 
+#' In all cases, management units need to be defined. Each management unit represents a group of forest stands 
+#' following the same management prescriptions. Although the \code{create_management_scenario} function allows specifying the management arguments of each unit,
+#' the simulation of management scenarios also requires specifying, for each forest stand, to which management unit it belongs (see \code{\link{fordyn_scenario}}).
 #' 
 #' @return A list with the following structure:
 #'    \itemize{
@@ -26,6 +42,12 @@
 #'      \item{\code{units}: A data frame with as many rows as units and management arguments as columns.}
 #'    }
 #'
+#' @author 
+#' 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' Aitor \enc{Améztegui}{Ameztegui}, UdL
+#' 
 #' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
 #' 
 #' @examples 
@@ -46,7 +68,8 @@
 #' 
 #' # A scenario with three management units and annual demand for one species group 
 #' # and a third species
-#' scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, "Pinus nigra" = 2000))
+#' scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, 
+#'                                            "Pinus nigra" = 2000))
 #' 
 create_management_scenario<-function(units,
                                      annual_demand_by_species = NULL,
