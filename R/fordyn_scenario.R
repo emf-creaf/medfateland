@@ -348,7 +348,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   cumulative_growth <- rep(0, length(years))
   cumulative_extraction_target <- rep(0, length(years))
   cumulative_growth_target <- rep(0, length(years))
-  cummulative_nominal_target_sum <- rep(0, length(years))
+  cumulative_nominal_target_sum <- rep(0, length(years))
   
   summary_list = vector("list", n)
   
@@ -618,11 +618,11 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(yi==1) {
         cumulative_extraction_target[yi] <- extracted_target_sum[yi]
         cumulative_growth_target[yi] <- growth_target_sum[yi]
-        cummulative_nominal_target_sum[yi] <- nominal_target_sum[yi]
+        cumulative_nominal_target_sum[yi] <- nominal_target_sum[yi]
       } else {
         cumulative_extraction_target[yi] <- cumulative_extraction_target[yi-1] + extracted_target_sum[yi]
         cumulative_growth_target[yi] <- cumulative_growth_target[yi-1] + growth_target_sum[yi]
-        cummulative_nominal_target_sum[yi] <- cummulative_nominal_target_sum[yi-1] + nominal_target_sum[yi]
+        cumulative_nominal_target_sum[yi] <- cumulative_nominal_target_sum[yi-1] + nominal_target_sum[yi]
       }
       # recalculate offset and previous growth for next year (or next simulation)
       offset_demand <- demand_target[, yi] - extracted_target[,yi]
@@ -653,7 +653,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "\n"))
         cat(paste0("      Demand satisfaction: ", round(100*extracted_target_sum[yi]/volume_target_sum[yi]), "%",
                    "      Nominal satisfaction: ", round(100*extracted_target_sum[yi]/nominal_target_sum[yi]), "%",
-                   "      Average nominal satisfaction: ", round(100*cumulative_extraction_target[yi]/cummulative_nominal_target_sum[yi]), "%",
+                   "      Average nominal satisfaction: ", round(100*cumulative_extraction_target[yi]/cumulative_nominal_target_sum[yi]), "%",
                    "\n"))
         cat(paste0("      Next year offset (m3): ", round(sum(offset_demand, na.rm=TRUE)), 
                    "\n"))
@@ -734,8 +734,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                                           nominal_demand = nominal_target_sum,
                                           demand_offset = offset_target_sum,
                                           actual_demand = volume_target_sum, 
-                                          cummulative_nominal_demand = cummulative_nominal_target_sum, 
-                                          cummulative_extracted_demand = cumulative_extraction_target))
+                                          cumulative_nominal_demand = cumulative_nominal_target_sum, 
+                                          cumulative_extracted_demand = cumulative_extraction_target))
   l <- list(result_sf = sf::st_as_sf(tibble::as_tibble(sf_results)),
             result_volumes = volumes,
             result_volumes_spp = volumes_spp)

@@ -1,0 +1,220 @@
+---
+title: "Management scenario"
+author: "Miquel De Caceres"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Management scenario}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignettePackage{medfateland}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(medfate)
+library(medfateland)
+library(meteoland)
+```
+
+
+## Aim
+
+The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest dynamics on a set of forest stands while evaluating a demand-based management scenario. In particular, we will illustrate the use of functions `create_management_scenario()` and `fordyn_scenario()`.
+
+## Preparation
+
+### Forest stands, topography and soils
+
+All simulations in **medfateland** an `sf` object containing information of the topography, soils and vegetation of a set of target forest stands. Here we begin by loading the example dataset of 100 forest stands distributed on points in the landscape:
+
+```{r, fig.align='center', fig.width=7}
+data("example_ifn")
+example_ifn
+```
+
+To speed-up simulations in this vignette we select only stands 31 to 40:
+```{r}
+example_subset <- example_ifn[31:40, ]
+example_subset
+```
+
+### Weather
+
+In this example we will use, for simplicity, the same weather data for all stands, but normal applications should address spatial variation of weather. In the following code we prepare a three-year meteorological data in two blocks (data frames), using the example weather data provided in **medfate** package:
+
+```{r}
+data("examplemeteo")
+  
+meteo_01_02 <- rbind(examplemeteo, examplemeteo)
+row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
+                              as.Date("2002-12-31"), by="day")
+meteo_03 <- examplemeteo
+row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
+                           as.Date("2003-12-31"), by="day")
+```
+
+### Management prescriptions
+
+Management scenarios require classifying forest stands into *management units*. Each management unit can be interpreted as a set of stands that are managed following the same prescriptions. 
+Management units can be arbitrarily defined, but here we will define them on the basis of dominant tree species. The following code allows determining the dominant tree species in each of the `r nrow(example_subset)` forest stands:
+```{r}
+example_subset$dominant_tree_species <- sapply(example_subset$forest,
+                                               stand_dominantTreeSpecies, SpParamsMED)
+```
+And the result is:
+```{r}
+example_subset$dominant_tree_species
+```
+
+Package **medfateland** includes a table with default prescription parameters for a set of species. This is loaded using:
+
+```{r}
+data("defaultPrescriptionsBySpecies")
+```
+
+The columns of this data frame are the same as the parameter names required by function `defaultManagementFunction()` of package **medfate**:
+```{r}
+names(defaultPrescriptionsBySpecies)
+```
+
+whereas the rows correspond to species or species groups, whose names are:
+```{r}
+defaultPrescriptionsBySpecies$Name
+```
+
+To specify the management unit for stands, we first define a column `management_unit` with missing values and then assign the corresponding row number of `defaultPrescriptionsBySpecies` for stands dominated by each of the three species. 
+
+```{r}
+example_subset$management_unit <- NA
+example_subset$management_unit[example_subset$dominant_tree_species=="Pinus halepensis"] <- 9
+example_subset$management_unit[example_subset$dominant_tree_species=="Pinus nigra"] <- 10
+example_subset$management_unit[example_subset$dominant_tree_species=="Pinus sylvestris"] <- 14
+example_subset[,c("id", "dominant_tree_species", "management_unit")]
+```
+
+The stands with missing values of `management_unit` (here only one) will not be managed during simulations.
+
+
+### Demand-based management scenario
+
+Management scenarios are defined using function `create_management_scenario()`. Three different kinds of scenarios are allowed. Two of them being demand-based, meaning that management is constrained by a prescribed wood demand. The remaining one allows actual management to freely the interplay of forest dynamics and management prescriptions. Here we will define a demand-based scenario with fixed demand values for all years of the simulation. The demand will normally depend on the species available in the target stands and the area they represent. In this example, we will require an annual extraction of 2300 m3 of Pinus nigra or P. sylvestris and 1000 m3 of P. halepensis:
+
+```{r}
+scen <- create_management_scenario(defaultPrescriptionsBySpecies, 
+                                   c("Pinus nigra/Pinus sylvestris" = 1300,
+                                     "Pinus halepensis" = 500))
+```
+
+Note that we included the data frame `defaultPrescriptionBySpecies` in our call to `create_management_scenario()`. This allows having the sylvicultural prescriptions and other management parameters in a single object. Simulations will assign management parameters using `management_unit` column and the information in the prescription data frame.
+
+The scenario object is a list with the following elements.
+```{r}
+names(scen)
+```
+
+The first one specifies the type of scenario, which in this case is based on a fixed input demand:
+```{r}
+scen$scenario_type
+```
+
+The next element contains the demand values we entered:
+```{r}
+scen$annual_demand_by_species
+```
+
+The following element is NULL in this case, since it is used to specify demand-based scenarios where actual demand depends on observed growth and a desired rate of extraction:
+```{r}
+scen$extraction_rate_by_year
+```
+
+Finally, element `units` contains the data frame of management units, which in our case is `defaultPrescriptionBySpecies`.
+
+Normally, we will not need to modify management parameters, but here we will make thinning operations more likely for all three species by lowering the basal area threshold that triggers them:
+```{r}
+scen$units[c(9,10,14),"thinningThreshold"] <-20
+```
+
+### Area represented by forest stands
+
+Before running simulations, it is necessary to specify the area (in ha) that each forest stand represents. This is important, because all wood volumes are defined at the stand level in units of m3/ha. Hence, we need to multiply these values for the actual area that the stand represents, in order to know how much of the demand is fulfilled
+
+In this example, we will assume a constant area of 100 ha for all stands:
+```{r}
+example_subset$represented_area <- 100
+```
+
+## Performing simulations
+
+We are now ready to launch the simulation of the management scenario. This is done using a call to function `fordyn_scenario()`. As other simulation functions of **medfateland**, we need to supply the `sf` object, a table of species parameter values and the source of weather information. We also specify the management scenario and set `parallelize = TRUE` to speed-up calculations. This last parameter will also be important in real-case simulations.
+
+```{r}
+fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02, 
+                         management_scenario = scen,
+                         parallelize = TRUE)
+```
+Given that it is a long process, the function produces a lot of output (this can be turned of if `progress = FALSE`). First, the scenario parameters are presented, including the scenario type, the specified demand and the number of forest stands in each management unit. Then, the output is produced for each year, where the function first decides and reports how many forest stands will be simulated and, after these are completed, it summarizes the results.
+
+Function `fordyn_scenario()` returns a list whose elements are:
+
+```{r}
+names(fs_12)
+```
+
+The first four elements, those named `result_*` contain the actual simulation results, whereas the last two elements are used for subsequent simulations (see next section).
+
+Stand-level results are available in element `result_sf`. The column names of this `sf` object should be easy to interpret if you have experience with functions `fordyn()` or `fordyn_spatial()`:
+
+```{r}
+fs_12$result_sf
+```
+
+Another important element of the results is `result_volumes`, which contains several volumes statistics (in m3) summarizing what happened each year of the simulation.
+
+First, we can inspect for each year the volume corresponding to the initial and final standing stock, the forest growth and the extracted wood:
+```{r}
+fs_12$result_volumes[,1:7]
+```
+
+The same figures can be inspected, but corresponding to those species for which demand has been defined:
+```{r}
+fs_12$result_volumes[,c(1,8:11)]
+```
+
+Finally, we can display for each step what was the nominal demand (according to the input), the actual demand (once the offset of previous years was included), as well as the cumulative nominal demand and cumulative extracted volumes. While strong disagreements can exist between demand and extracted wood at the annual level, the cumulative columns mentioned are important to check whether simulations fulfilled the required demand in the long term.
+
+```{r}
+fs_12$result_volumes[,c(1, 12:16)]
+```
+
+
+## Continuing previous simulation
+
+As mentioned above, other elements of the output of `fordyn_scenario()` allow conducting a new scenario simulation starting at the point where the previous one finished. The element `next_sf` contains the `sf` object corresponding to the final state of the simulation:
+
+```{r}
+fs_12$next_sf
+```
+
+On the other hand, in demand-based scenarios there may be demand offsets that need to be carried on to the next simulations:
+```{r}
+fs_12$next_demand
+```
+
+In addition to the demand offset for each species or species group, note that `next_demand` also contains information about the last growth. This is necessary for scenarios where demand is modulated depending on intended extraction rates and past growth.
+
+If we want to carry on simulations for an extra time period (one year in our example), we can simply call `fordyn_scenario()` along with the result of the previous simulation instead of the original `sf` object:
+
+```{r}
+fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
+                        management_scenario = scen,
+                        parallelize = TRUE)
+
+```
+
+
+Note that in this case, the initial output makes explicit that a previous simulation is continued.
+
+
