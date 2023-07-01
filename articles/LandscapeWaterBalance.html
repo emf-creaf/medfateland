@@ -418,16 +418,15 @@ single month.</p>
 <pre><code><span><span class="co">## • Number of summaries: 1</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking spwb input <span style="color: #B2B2B2;">[598ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking spwb input <span style="color: #B2B2B2;">[604ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 65 cells needed initialization</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  23% | ETA:  4s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% | ETA:  2s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  48% | ETA:  3s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
 <pre><code><span><span class="co">##   Change in snowpack water content (mm): 0.05</span></span>
@@ -472,7 +471,7 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET Runon Runoff Infiltration</span></span>
 <span><span class="co">## 2001-01-01      -3.203556       2.427977 44.91317     0      0     53.67129</span></span>
@@ -488,7 +487,7 @@ summaries for a given landscape cell using:</p>
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
 water volume for the simulated month:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
