@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -56,6 +56,7 @@
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">management_scenario</span>,</span>
 <span>  volume_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  volume_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
@@ -99,8 +100,13 @@ to continue simulations.</p></dd>
 
 
 <dt>volume_function</dt>
-<dd><p>A function accepting a forest object or a tree data table as input and returning the wood volume (m3/ha) corresponding to each tree cohort.
+<dd><p>A function accepting a forest object or a tree data table, and a species parameter table, as input and
+returning the wood volume (m3/ha) corresponding to each tree cohort. The function may accept additional arguments.
 If NULL, the default volume function is used (not recommended!).</p></dd>
+
+
+<dt>volume_arguments</dt>
+<dd><p>List with additional arguments for the volume function.</p></dd>
 
 
 <dt>local_control</dt>
@@ -154,14 +160,19 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 <li><p><code>cut_shrub_table</code>: A list of data frames for each simulated stand, containing the cut shrub at each time step.</p></li>
 <li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>).</p></li>
 </ul></li>
-<li><p><code>result_volumes</code>: A data frame with growth and extracted volumes (m3) by species and year. In demand-based scenarios target volumes are also included.</p></li>
+<li><p><code>result_volumes</code>: A data frame with initial, growth, extracted and final volumes (m3) by year. In demand-based scenarios volumes corresponding to species with demand are also included.</p></li>
+<li><p><code>result_volumes_spp</code>: A data frame with growth and extracted volumes (m3) by species and year.</p></li>
+<li><p><code>result_volumes_demand</code>: In demand-based scenarios target volumes are also included, a data frame with growth, target and extracted volumes (m3) by demand entity and year. .</p></li>
 <li><p><code>next_sf</code>: An object of class 'sf' to continue simulations in subsequent calls to <code>fordyn_scenario</code>.</p></li>
 <li><p><code>next_demand</code>: In demand-based scenarios, a list with information (i.e. demand offset by species and last volume growth)
 to modify demand in subsequent calls to <code>fordyn_scenario</code>.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Management is implemented using the <code>defaultManagementFunction</code> in medfate,
+    <p>This function allows coordinating the dynamics of simulated forest stands via management actions. For each year to be simulated, the
+function determines which plots will be managed and then calls function <code><a href="spwb_spatial.html">fordyn_spatial</a></code> for one year. If the simulation of some
+stands results in an error, the function will try to restore the previous state of the forest stand for the next year steps.
+Management is implemented using the <code>defaultManagementFunction</code> in medfate,
 meaning that management parameters need to follow the structure of <code>defaultManagementArguments</code></p>
     </div>
     <div id="see-also">
@@ -200,7 +211,7 @@ meaning that management parameters need to follow the structure of <code>default
 <span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Creates scenario with one management unit and annual demand for P. nigra </span></span></span>
-<span class="r-in"><span><span class="va">scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra/Pinus sylvestris"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch simulation scenario (years 2001 and 2002)</span></span></span>
 <span class="r-in"><span><span class="va">fs_12</span> <span class="op">&lt;-</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, meteo <span class="op">=</span> <span class="va">meteo_01_02</span>, </span></span>

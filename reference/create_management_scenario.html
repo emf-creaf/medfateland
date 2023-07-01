@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
 
 
 <dt>annual_demand_by_species</dt>
-<dd><p>A vector or matrix of annual wood demand (m3) by medfate species names. If empty, the scenario is 'bottom-up' (not based on demand).
+<dd><p>A vector or matrix of annual wood demand (m3) by medfate species names (or groups of species names). If empty, the scenario is 'bottom-up' (not based on demand).
 If a vector is supplied, the same wood demand is applied for all simulated years. If a matrix is supplied, each row should correspond
 to a different year.</p></dd>
 
@@ -89,7 +89,7 @@ copied for all management units and can later be modified. If NULL, the result o
 <p>A list with the following structure:</p><ul><li><p><code>scenario_type</code>: Either 'bottom-up' (no demand is specified),
 'input_demand' (annual species demand is specified), or
 'input_rate' when extraction rates are also supplied.</p></li>
-<li><p><code>annual_demand_by_species</code>: A vector of annual wood demand (m3) by species
+<li><p><code>annual_demand_by_species</code>: A vector of annual wood demand (m3) by species (or species groups)
 (for scenario_type 'bottom-up' or 'input_demand').</p></li>
 <li><p><code>extraction_rate_by_year</code>: A vector of extraction rate values per year.</p></li>
 <li><p><code>units</code>: A data frame with as many rows as units and management arguments as columns.</p></li>
@@ -119,6 +119,10 @@ copied for all management units and can later be modified. If NULL, the result o
 <span class="r-in"><span><span class="co"># and not based on demand</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"defaultPrescriptionsBySpecies"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">scen_3</span> <span class="op">&lt;-</span> <span class="fu">create_management_scenario</span><span class="op">(</span><span class="va">defaultPrescriptionsBySpecies</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A scenario with three management units and annual demand for one species group </span></span></span>
+<span class="r-in"><span><span class="co"># and a third species</span></span></span>
+<span class="r-in"><span><span class="va">scen_4</span> <span class="op">&lt;-</span> <span class="fu">create_management_scenario</span><span class="op">(</span><span class="fl">3</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quercus ilex/Quercus pubescens"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"Pinus nigra"</span> <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-06-22</h4>
+            <h4 data-toc-skip class="date">2023-07-01</h4>
       
       
       <div class="hidden name"><code>PackageOverview.Rmd</code></div>
@@ -78,14 +78,14 @@ Caceres</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The R package <strong>medfateland</strong> has been designed to run
-simulations of forest functioning and dynamics at the landscape and
-regional scales. The package allows executing the stand-level models
-available in package <strong>medfate</strong> on points and cells within
-landscape, in either sequential or parallel computation. In addition,
-medfateland allows considering spatial hydrological processes in
-forested watersheds. Hence, medfateland can be used as a tool for
-eco-hydrological applications.</p>
+<p>The R package <strong>medfateland</strong> has been designed to
+facilitate running model simulations of forest functioning and dynamics
+at the landscape and regional scales. The package allows executing the
+stand-level models available in package <strong>medfate</strong> on
+points and grid cells within a landscape, in either sequential or
+parallel computation. In addition, <strong>medfateland</strong> allows
+performing simulations while accounting for processes relating different
+spatial units.</p>
 <p>Complete documentation on the design and formulation of the
 simulation models and their inputs can be found at the <a href="https://emf-creaf.github.io/medfatebook/index.html" class="external-link">medfate
 reference book</a>.</p>
@@ -117,14 +117,15 @@ include rainfall, canopy interception, infiltration and runoff,
 percolation and deep drainage, soil evaporation and plant
 transpiration.</p>
 <p>In package <strong>medfate</strong>, the local soil water balance of
-a forest is primarily used to predict drought stress for living plants
-in it using function <code>spwb()</code>. Package
-<strong>medfateland</strong> allows simulating water balance for
+a forest is primarily used to predict forest hydrological flows and
+drought stress for living plants in it; and the main simulation function
+is <code>spwb()</code>. Package <strong>medfateland</strong> extends the
+former function by allowing the simulation of soil water balance for
 multiple stands distributed spatially over a given time period using
 function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, which makes internal calls to
 <code>spwb()</code> on elements the spatial classes introduced above.
 Function <code><a href="../reference/spwb_spatial_day.html">spwb_spatial_day()</a></code> is analogous to the former, but
-are used for the simulation of a single day, using internal calls to
+is used for the simulation of a single day, using internal calls to
 function <code>spwb_day()</code> of <strong>medfate</strong>. Function
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> and its one-day counterpart may be used
 to:</p>
@@ -143,8 +144,8 @@ continuous areas.</li>
 <div class="section level3">
 <h3 id="local-carbon-balance-and-plant-growth">Local carbon balance and plant growth<a class="anchor" aria-label="anchor" href="#local-carbon-balance-and-plant-growth"></a>
 </h3>
-<p>Changes in leaf area and plant growth are key to evaluate the
-influence of climatic conditions on forest structure and function.
+<p>Changes in leaf area, plant density and biomass are key to evaluate
+the influence of climatic conditions on forest function and dynamics.
 Processes affecting annual changes leaf area and plant size are those
 involved water and carbon balances, as well as those affecting growth
 directly. Processes influencing plant water balance include those
@@ -158,17 +159,17 @@ stomata. Plant growth is affected by the availability of carbon (source
 limitation), but also by temperature and water status (sink limitation).
 Leaf area of plants can be severely decreased by drought stress, causing
 an increase in dead leaf area and affecting carbon and water fluxes.</p>
-<p>Package <strong>medfate</strong> allows simulating plant growth and
-mortality of a set of cohorts (competing for light and water) in a
-single forest stand using function <code>growth()</code>. Package
-<strong>medfateland</strong> extends this by providing function
-<code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code>, which operates on spatial classes and
-makes internal calls to function <code>growth()</code>. Function
-<code><a href="../reference/spwb_spatial_day.html">growth_spatial_day()</a></code> is analogous to the former, but are
-used for the simulation of a single day, using internal calls to
-function <code>growth_day()</code> of <strong>medfate</strong>. Function
-<code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and its one-day counterpart may be used
-to:</p>
+<p>Package <strong>medfate</strong> allows simulating carbon balance,
+growth and mortality of a set of plant cohorts (competing for light and
+water) in a single forest stand using function <code>growth()</code>.
+Package <strong>medfateland</strong> extends the former function by
+providing function <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code>, which operates on
+spatial classes and makes internal calls to function
+<code>growth()</code>. Function <code><a href="../reference/spwb_spatial_day.html">growth_spatial_day()</a></code> is
+analogous to the former, but are used for the simulation of a single
+day, using internal calls to function <code>growth_day()</code> of
+<strong>medfate</strong>. Function <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and its
+one-day counterpart may be used to:</p>
 <ol style="list-style-type: decimal">
 <li>Monitor or forecast temporal variation in water fluxes and soil
 water content in particular stands (for example to estimate regulation
@@ -183,22 +184,26 @@ to monitor wildfire risk).</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="local-forest-dynamics-and-coordination-via-management-scenarios">Local forest dynamics and coordination via management scenarios<a class="anchor" aria-label="anchor" href="#local-forest-dynamics-and-coordination-via-management-scenarios"></a>
+<h3 id="local-forest-dynamics-and-spatial-coordination-via-management-scenarios">Local forest dynamics and spatial coordination via management
+scenarios<a class="anchor" aria-label="anchor" href="#local-forest-dynamics-and-spatial-coordination-via-management-scenarios"></a>
 </h3>
 <p>Changes in forest structure and composition result from the interplay
-of demographic processes (growth, mortality and recruitment) and may
-include forest management.</p>
+of natural demographic processes (growth, mortality and recruitment) and
+natural or anthropogenic disturbances, including the effects of forest
+management.</p>
 <p>Package <strong>medfate</strong> includes function
 <code>fordyn()</code>, which allows simulating these processes at yearly
 time steps on a given forest stand, building on previous models. Package
-<strong>medfateland</strong> extends this by providing function
-<code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, which operates on spatial classes and
-make internal calls to function <code>fordyn()</code>. In addition,
-<strong>medfateland</strong> provides function
+<strong>medfateland</strong> extends the former function by providing
+function <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, which operates on spatial
+classes and make internal calls to function <code>fordyn()</code>. In
+addition, <strong>medfateland</strong> provides function
 <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>, which allows performing simulations of
 forest dynamics for a set of forest stands, while coordinating
 management actions in the set of stands following a timber demand-based
-approach.</p>
+approach, which defines the amount of wood to be cut annually for target
+tree species. In addition, stands are classified into management units,
+which can be associated with different silvicultural practices.</p>
 </div>
 <div class="section level3">
 <h3 id="watershed-simulations-including-lateral-water-transfer-processes">Watershed simulations including lateral water transfer
