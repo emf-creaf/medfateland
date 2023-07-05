@@ -277,12 +277,15 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
   } 
   # Initialize missing management arguments according to unit
-  if(!("management_arguments" %in% names(y))) y$management_arguments = vector("list", n)
+  if(!("management_arguments" %in% names(y))) {
+    if(progress) cli::cli_li(paste0("Adding column 'management_arguments'"))
+    y$management_arguments = vector("list", n)
+  }
   for(i in 1:n) {
     if(!is.na(y$management_unit[i])) {
       if(is.null(y$management_arguments[[i]])) y$management_arguments[[i]] = as.list(management_scenario$units[y$management_unit[i],])
     } else { # If management unit is missing remove any previously-existing management argument
-      y$management_arguments[[i]] <- list(NULL)
+      y$management_arguments[i] <- list(NULL)
     }
   }
   managed <- !is.na(y$management_unit)
