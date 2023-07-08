@@ -218,6 +218,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(progress) {
     cli::cli_h2("Scenario parameters")
     cli::cli_li(paste0("  Number of stands: ", n))
+    cli::cli_li(paste0("  Represented area: ", round(sum(y$represented_area)), " ha"))
     cli::cli_li(paste0("  Number of years: ", length(years)))
     cli::cli_li(paste0("  Management scenario type: ", scenario_type))
   }
@@ -366,9 +367,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   summary_list = vector("list", n)
   
   # Estimate initial standing volume
-  if(progress) cli::cli_li(paste0("Initial volume calculation"))
   initial_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
-
+  if(progress) cli::cli_li(paste0("Initial volume: ", round(sum(initial_volume_spp)), " m3"))
+  
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
   for(yi in 1:length(years)) {
@@ -613,8 +614,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     }
 
     # B.5 Update extraction rates and actual satisfied demand
-    if(progress) cli::cli_li(paste0("Final volume calculation"))
     final_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
+    if(progress) cli::cli_li(paste0("Final volume: ", round(sum(final_volume_spp)), " m3"))
     growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi] + dead[,yi]
     extracted_sum[yi] <- sum(extracted[,yi], na.rm=TRUE)
     dead_sum[yi] <- sum(dead[,yi], na.rm=TRUE)
