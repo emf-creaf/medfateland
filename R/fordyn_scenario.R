@@ -328,6 +328,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   rownames(growth) <- SpParams$Name
   extracted = matrix(0, nspp, length(years))
   rownames(extracted) <- SpParams$Name
+  dead = matrix(0, nspp, length(years))
+  rownames(dead) <- SpParams$Name
   
   # Demand growth, target and extracted volumes by target entity and year
   if(scenario_type != "bottom-up") {
@@ -337,14 +339,18 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     rownames(demand_target) <- target_taxon_names
     extracted_target <- matrix(0, length(target_taxon_names), length(years))
     rownames(extracted_target) <- target_taxon_names
+    dead_target <- matrix(0, length(target_taxon_names), length(years))
+    rownames(dead_target) <- target_taxon_names
   }
   
   initial_sum <- rep(0, length(years))
   growth_sum <- rep(0, length(years))
+  dead_sum <- rep(0, length(years))
   final_sum <- rep(0, length(years))
   extracted_sum <- rep(0, length(years))
   initial_target_sum <- rep(0, length(years))
   growth_target_sum <- rep(0, length(years))
+  dead_target_sum <- rep(0, length(years))
   final_target_sum <- rep(0, length(years))
   nominal_target_sum <- rep(0, length(years))
   volume_target_sum <- rep(0, length(years))
@@ -584,7 +590,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       cst_i$Step <- yi
       cut_shrub_table <- dplyr::bind_rows(cut_shrub_table, cst_i)
     }
-    # B.4 Store actual extraction
+    # B.4 Store actual extraction and mortality
     for(i in 1:n){
       ctt <- fds$result[[i]]$CutTreeTable
       if(!is.null(ctt)) {
@@ -595,13 +601,23 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
       }
+      dtt <- fds$result[[i]]$DeadTreeTable
+      if(!is.null(dtt)) {
+        argList <- list(x = dtt, SpParams = SpParams)
+        if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
+        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
+        nsp_i <- medfate::species_characterParameter(dtt$Species, SpParams, "Name")
+        vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
+        dead[names(vol_sp_i), yi] <- dead[names(vol_sp_i), yi] + vol_sp_i
+      }
     }
 
     # B.5 Update extraction rates and actual satisfied demand
     if(progress) cli::cli_li(paste0("Final volume calculation"))
     final_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
-    growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi]
+    growth[,yi] <- final_volume_spp - initial_volume_spp + extracted[,yi] + dead[,yi]
     extracted_sum[yi] <- sum(extracted[,yi], na.rm=TRUE)
+    dead_sum[yi] <- sum(dead[,yi], na.rm=TRUE)
     initial_sum[yi] <- sum(initial_volume_spp, na.rm = TRUE)
     final_sum[yi] <- sum(final_volume_spp, na.rm = TRUE)
     growth_sum[yi] <- sum(growth[,yi], na.rm=TRUE)
@@ -616,8 +632,10 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       # Copy extraction to matrix by demand
       for(j in 1:length(target_taxon_names)) {
         extracted_target[j,yi] <- sum(extracted[which(SpParams$Name %in% target_split_names[[j]]), yi])
+        dead_target[j,yi] <- sum(dead[which(SpParams$Name %in% target_split_names[[j]]), yi])
         growth_target[j,yi] <- sum(growth[which(SpParams$Name %in% target_split_names[[j]]), yi])
       }
+      dead_target_sum[yi] <- sum(dead[target_spp_names, yi], na.rm=TRUE)
       extracted_target_sum[yi] <- sum(extracted[target_spp_names, yi], na.rm=TRUE)
       initial_target_sum[yi] <- sum(initial_volume_spp[target_spp_names], na.rm = TRUE)
       final_target_sum[yi] <- sum(final_volume_spp[target_spp_names], na.rm = TRUE)
@@ -639,6 +657,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       cli::cli_li(paste0("Management statistics (all species):"))
       cat(paste0("      Initial (m3): ", round(initial_sum[yi]),
                  "      Growth (m3): ", round(growth_sum[yi]), 
+                 "      Mortality (m3): ", round(dead_sum[yi]), 
                  "      Extraction (m3): ", round(extracted_sum[yi]), 
                  "      Final (m3): ", round(final_sum[yi]), 
                  "\n"))
@@ -652,6 +671,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                    "\n"))
         cat(paste0("      Initial (m3): ", round(initial_target_sum[yi]),
                    "      Growth (m3): ", round(growth_target_sum[yi]), 
+                   "      Mortality (m3): ", round(dead_target_sum[yi]), 
                    "      Extraction (m3): ", round(extracted_target_sum[yi]), 
                    "      Final (m3): ", round(final_target_sum[yi]), 
                    "\n"))
@@ -701,14 +721,19 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   extracted <- data.frame(Name = SpParams$Name, extracted)
   names(extracted) <- c("species", as.character(years))
   row.names(extracted) <- NULL
+  dead <- data.frame(Name = SpParams$Name, dead)
+  names(dead) <- c("species", as.character(years))
+  row.names(dead) <- NULL
   growth <- data.frame(Name = SpParams$Name, growth)
   names(growth) <- c("species", as.character(years))
   row.names(growth) <- NULL
   extracted_pv <- tidyr::pivot_longer(extracted, as.character(years), names_to="year", values_to = "extracted")
+  dead_pv <- tidyr::pivot_longer(dead, as.character(years), names_to="year", values_to = "dead")
   growth_pv <- tidyr::pivot_longer(growth, as.character(years), names_to="year", values_to = "growth")
   volumes_spp <- growth_pv |>
+    dplyr::full_join(dead_pv, by=c("species", "year")) |>
     dplyr::full_join(extracted_pv, by=c("species", "year")) |>
-    dplyr::filter(growth!=0 | extracted!=0) 
+    dplyr::filter(growth!=0 | dead!=0 | extracted!=0) 
   if(management_scenario$scenario_type != "bottom-up") {
     growth_target <- data.frame(Name = target_taxon_names, growth_target)
     names(growth_target) <- c("species", as.character(years))
@@ -716,26 +741,33 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     extracted_target <- data.frame(Name = target_taxon_names, extracted_target)
     names(extracted_target) <- c("species", as.character(years))
     row.names(extracted_target) <- NULL
+    dead_target <- data.frame(Name = target_taxon_names, dead_target)
+    names(dead_target) <- c("species", as.character(years))
+    row.names(dead_target) <- NULL
     demand_target <- data.frame(Name = target_taxon_names, demand_target)
     names(demand_target) <- c("species", as.character(years))
     row.names(demand_target) <- NULL
     growth_target_pv <- tidyr::pivot_longer(growth_target, as.character(years), names_to="year", values_to = "growth")
     demand_target_pv <- tidyr::pivot_longer(demand_target, as.character(years), names_to="year", values_to = "demand")
+    dead_target_pv <- tidyr::pivot_longer(dead_target, as.character(years), names_to="year", values_to = "dead")
     extracted_target_pv <- tidyr::pivot_longer(extracted_target, as.character(years), names_to="year", values_to = "extracted")
     volumes_demand <- growth_target_pv |>
       dplyr::full_join(demand_target_pv, by=c("species", "year")) |> 
+      dplyr::full_join(dead_target_pv, by=c("species", "year"))|> 
       dplyr::full_join(extracted_target_pv, by=c("species", "year"))
   }  
   
   volumes <- tibble::as_tibble(data.frame(Year = years, 
                                           initial = initial_sum, 
                                           growth = growth_sum, 
+                                          mortality  = dead_sum, 
                                           extracted  = extracted_sum, 
                                           final = final_sum,
                                           cumulative_growth = cumulative_growth, 
                                           cumulative_extraction = cumulative_extraction, 
                                           initial_target = initial_target_sum,
                                           growth_target = growth_target_sum, 
+                                          mortality_target = dead_target_sum, 
                                           extracted_target  = extracted_target_sum, 
                                           final_target = final_sum, 
                                           nominal_demand = nominal_target_sum,
