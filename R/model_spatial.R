@@ -192,10 +192,16 @@
   datesMeteo_1 <- NULL
   for(i in 1:length(meteo_column)) {
     met_i <- meteo_column[[i]]
+    if(is.null(met_i)) stop(paste0("NULL wheather in row ",i))
+    if(!inherits(met_i, "data.frame")) stop(paste0("Weather data of row ", i, " does not inherit 'data.frame' class"))
     if("dates" %in% names(met_i)) {
-      datesMeteo_i <- as.Date(met_i$dates)
+      tryCatch({
+        datesMeteo_i <- as.Date(met_i$dates)
+      },  error = function(e) {stop(paste0("Could not retrieve dates from column 'dates' in row ", i))})
     } else {
-      datesMeteo_i <- as.Date(row.names(met_i))
+      tryCatch({
+        datesMeteo_i <- as.Date(row.names(met_i))
+      },  error = function(e) {stop(paste0("Could not retrieve dates from row.names in row ", i))})
     }
     if(i==1) datesMeteo_1 <- datesMeteo_i
     if(!is.null(dates)) {
@@ -216,16 +222,35 @@
   }
   return(meteo_column)
 }
+
+.check_soil_column_input<- function(soil_column, land_cover_type = NULL) {
+  if(is.null(land_cover_type)) land_cover_type <- rep("wildland", length(soil_column)) # If not supplied assumes wildland
+  for(i in 1:length(soil_column)) {
+    s <- soil_column[[i]]
+    if(land_cover_type[i] %in% c("wildland", "agriculture")) {
+      if(is.null(s)) stop(paste0("NULL soil data in row ", i, " for land cover '", land_cover_type[i], "'"))
+      if(!inherits(s, c("soil", "data.frame")))  stop(paste0("Soil data of row ", i," is not a 'soil' or 'data.frame' object"))
+    }
+  }
+}
+
 .check_sf_input<-function(y) {
   if(!inherits(y, "sf")) stop("'sf' has to be an object of class 'sf'.")
   if(!all(c("elevation","slope","aspect") %in% names(y))) stop("Columns 'elevation', 'slope' and 'aspect' must be defined.")
-  if(!("forest" %in% names(y))) stop("Column 'forest' must be defined.")
   if(!("soil" %in% names(y))) stop("Column 'soil' must be defined.")
+  check_forest <- TRUE
   if("land_cover_type" %in% names(y)) {
+    if(!inherits(y$land_cover_type, "character")) stop("Column 'land_cover_type' should be a character vector.")
     if(sum(y$land_cover_type=="agriculture")>0) {
       if(!("crop_factor" %in% names(y))) stop("Column 'crop_factor' must be defined to simulate soil water balance in agricultural locations.")
+      if(!inherits(y$crop_factor, "numeric")) stop("Column 'crop_factor' should be a numeric vector.")
+      if(sum(y$land_cover_type=="agriculture")==nrow(y)) check_forest <- FALSE
     }
+    .check_soil_column_input(y$soil, y$land_cover_type)
+  } else {
+    .check_soil_column_input(y$soil)
   }
+  if(check_forest && !("forest" %in% names(y))) stop("Column 'forest' must be defined.")
 }
 
 .model_spatial<-function(y, SpParams, meteo = NULL, model = "spwb",
@@ -243,10 +268,18 @@
 
   local_control$verbose = FALSE
 
-  forestlist = y$forest
-  n = length(forestlist)
+  n <- nrow(y)
   
-  soillist  = y$soil
+  if("forest" %in% names(y)) {
+    forestlist <- y$forest
+  } else {
+    forestlist <- vector("list", n)
+  }
+  if("soil" %in% names(y)) {
+    soillist <- y$soil
+  } else {
+    soillist <- vector("list", n)
+  }
   if("land_cover_type" %in% names(y)) {
     landcover <- y$land_cover_type
   } else {
