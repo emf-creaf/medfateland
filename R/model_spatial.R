@@ -217,7 +217,7 @@
       meteo_column[[i]] <- met_i
     } else {
       # check that all items have same dates
-      if(!all(datesMeteo_i==datesMeteo_1)) stop(paste0("Weather data of row ", i, " does not have the same dates as row 1. All spatial elements need to have the same weather dates"))
+      if(!all(datesMeteo_i==datesMeteo_1)) warning(paste0("Weather data of row ", i, " does not have the same dates as row 1."))
     }
   }
   return(meteo_column)
