@@ -172,7 +172,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if("meteo" %in% names(y)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
     meteo <- NULL
-    y$meteo <- .check_meteo_column_input(y$meteo, dates) 
+    y$meteo <- .check_meteo_column_input(y$meteo, dates, TRUE) 
   } else {
     if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
     meteo <- .check_meteo_object_input(meteo, dates)

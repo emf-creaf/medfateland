@@ -188,7 +188,7 @@
   }
   return(meteo)
 }
-.check_meteo_column_input <- function(meteo_column, dates = NULL) {
+.check_meteo_column_input <- function(meteo_column, dates = NULL, check_equal_dates = FALSE) {
   datesMeteo_1 <- NULL
   for(i in 1:length(meteo_column)) {
     met_i <- meteo_column[[i]]
@@ -215,7 +215,7 @@
         met_i <- met_i[as.character(dates), , drop = FALSE]
       }
       meteo_column[[i]] <- met_i
-    } else {
+    } else if(check_equal_dates) {
       # check that all items have same dates
       if(!all(datesMeteo_i==datesMeteo_1)) warning(paste0("Weather data of row ", i, " does not have the same dates as row 1."))
     }
@@ -304,7 +304,7 @@
   if("meteo" %in% names(y)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
     meteo <- NULL
-    meteolist <- .check_meteo_column_input(y$meteo, dates) 
+    meteolist <- .check_meteo_column_input(y$meteo, dates, FALSE) 
   } else {
     if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
     meteo <- .check_meteo_object_input(meteo, dates)

@@ -93,7 +93,7 @@
   if("meteo" %in% names(y)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
     meteo <- NULL
-    meteolist <- .check_meteo_column_input(y$meteo, as.Date(date)) 
+    meteolist <- .check_meteo_column_input(y$meteo, as.Date(date), FALSE) 
   } else {
     if(progress) cli::cli_progress_step(paste0("Checking meteo object input"))
     meteo <- .check_meteo_object_input(meteo, as.Date(date))
