@@ -18,7 +18,7 @@ No spatial processes are simulated."><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
       </span>
     </div>
 
@@ -91,6 +91,7 @@ No spatial processes are simulated.</p>
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  management_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -116,7 +117,11 @@ No spatial processes are simulated.</p>
 <li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
-<li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_spatial</code> only).</p></li>
+<li><p><code>management_arguments</code>: Lists with management arguments. Optional, relevant for <code>fordyn_spatial</code> only.</p></li>
+<li><p><code>represented_area</code>: Area represented by each stand (in hectares). Optional, relevant for <code>fordyn_spatial</code> when
+<code>fire_regime</code> is supplied only).</p></li>
+<li><p><code>ignition_weights</code>: Relative weights to determine stands to be burned. Optional, relevant for <code>fordyn_spatial</code> when
+<code>fire_regime</code> is supplied only).</p></li>
 </ul></dd>
 
 
@@ -168,6 +173,10 @@ No spatial processes are simulated.</p>
 <dd><p>Boolean flag to display progress information for simulations.</p></dd>
 
 
+<dt>fire_regime</dt>
+<dd><p>A list of parameters defining the fire regime (see <code><a href="create_fire_regime.html">create_fire_regime</a></code>) in simulations with <code>fordyn_spatial</code>. If NULL, wildfires are not simulated.</p></dd>
+
+
 <dt>management_function</dt>
 <dd><p>A function that implements forest management actions (see <code>fordyn</code>).
 of such lists, one per spatial unit.</p></dd>
@@ -194,6 +203,9 @@ If a list of such <em>interpolator</em> objects is supplied, the simulation func
 but the user will be responsible for supplying interpolators in the correct temporal order.</p></li>
 </ol><p>Alternatively, the user may leave parameter <code>meteo = NULL</code> and specify a weather data frame for each element of <code>y</code>
 in a column named 'meteo'.</p>
+<p>Fire regimes are only allowed for function <code>fordyn_spatial</code>. If <code>fire_regime</code> is supplied, the function will call
+<code><a href="fire_regime_instance.html">fire_regime_instance</a></code> to generate a realization of the fire regime before conducting simulations. Note that operating
+with fire regimes assumes all forest stands share the same period of simulation, but enforcing this is left to the user.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -245,6 +257,12 @@ in a column named 'meteo'.</p>
 <span class="r-in"><span><span class="co"># Compare table of cuttings with vs. without management</span></span></span>
 <span class="r-in"><span><span class="va">res_noman</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">CutTreeTable</span></span></span>
 <span class="r-in"><span><span class="va">res_man</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">CutTreeTable</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fordyn simulation for one year with fire regime</span></span></span>
+<span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">res_fire</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_ifn</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
+<span class="r-in"><span>                           fire_regime <span class="op">=</span> <span class="fu"><a href="create_fire_regime.html">create_fire_regime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2001"</span> <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

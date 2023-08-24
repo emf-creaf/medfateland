@@ -25,6 +25,9 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/create_fire_regime.html</loc>
+  </url>
+  <url>
     <loc>/reference/create_management_scenario.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>/reference/extract_variables.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fire_regime_instance.html</loc>
   </url>
   <url>
     <loc>/reference/fordyn_scenario.html</loc>

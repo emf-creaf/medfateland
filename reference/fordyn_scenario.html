@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
       </span>
     </div>
 
@@ -60,6 +60,7 @@
 <span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -83,6 +84,8 @@
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>management_unit</code>: Management unit corresponding to each stand.</p></li>
 <li><p><code>represented_area</code>: Area represented by each stand (in hectares).</p></li>
+<li><p><code>ignition_weights</code>: Relative weights to determine stands to be burned. Optional, relevant when
+<code>fire_regime</code> is supplied only).</p></li>
 </ul><p>Alternatively, the user may supply the result of a previous call to <code>fordyn_scenario</code>, where
 to continue simulations.</p></dd>
 
@@ -119,6 +122,10 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 
 <dt>CO2ByYear</dt>
 <dd><p>A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in <code>meteo</code>).</p></dd>
+
+
+<dt>fire_regime</dt>
+<dd><p>A list of parameters defining the fire regime (see <code><a href="create_fire_regime.html">create_fire_regime</a></code>). If NULL, wildfires are not simulated. Details are given in <code><a href="spwb_spatial.html">fordyn_spatial</a></code>.</p></dd>
 
 
 <dt>summary_function</dt>
@@ -178,6 +185,7 @@ the previous state of the forest stand for the next year steps. Finally, the fun
 has been fulfilled and stores the results, including demand offsets to be applied the year after.</p>
 <p>Management is implemented using the <code>defaultManagementFunction</code> in medfate,
 meaning that management parameters need to follow the structure of <code>defaultManagementArguments</code></p>
+<p>Details about the inclusion of fire regimes in simulations are explained in <code><a href="spwb_spatial.html">fordyn_spatial</a></code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
