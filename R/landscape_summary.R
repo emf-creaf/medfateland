@@ -29,6 +29,7 @@
 #' # Apply forest summary function
 #' landscape_summary(example_ifn, "forest", summary.forest, SpParamsMED)
 #'  
+#' @export
 landscape_summary<-function(object, name, summary_function, ..., unlist = FALSE, progress = FALSE) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")
   name = match.arg(name, c("forest", "soil", "state"))

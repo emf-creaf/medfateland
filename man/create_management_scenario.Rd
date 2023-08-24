@@ -79,7 +79,6 @@ scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
 # and a third species
 scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, 
                                            "Pinus nigra" = 2000))
-
 }
 \seealso{
 \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}

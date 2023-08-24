@@ -70,7 +70,7 @@
 #' # and a third species
 #' scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, 
 #'                                            "Pinus nigra" = 2000))
-#' 
+#' @export
 create_management_scenario<-function(units,
                                      annual_demand_by_species = NULL,
                                      extraction_rate_by_year = NULL,

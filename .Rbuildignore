@@ -1,0 +1,12 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^NEWS\.md$
+^README\.md$
+^README\.Rmd$
+^data-raw/*$
+^modeltests/*$
+^docs/*$
+^_pkgdown\.yml$
+^\.github$
+^vignettes/*$

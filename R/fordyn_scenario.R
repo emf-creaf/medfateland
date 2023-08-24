@@ -138,6 +138,7 @@
 #'                        parallelize = TRUE)
 #'}
 #'
+#' @export
 fordyn_scenario<-function(sf, SpParams, meteo = NULL, 
                          management_scenario,
                          volume_function = NULL, volume_arguments = NULL,

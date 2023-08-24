@@ -607,6 +607,7 @@
 #' }
 #' 
 #' @name spwb_land
+#' @export
 spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                     CO2ByYear = numeric(0), 
                     summary_frequency = "years",
@@ -622,6 +623,7 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                   correction_factors = correction_factors, progress = progress, header_footer = progress))
 }
 #' @rdname spwb_land
+#' @export
 growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                       CO2ByYear = numeric(0), 
                       summary_frequency = "years",
@@ -638,6 +640,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
 }
 
 #' @rdname spwb_land
+#' @export
 fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),

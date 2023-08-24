@@ -22,6 +22,7 @@
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{plot_summary}}
 #' 
 #' @name simulation_summary
+#' @export
 simulation_summary<-function(object, summary_function, ...) {
   if(!inherits(object, "sf")) stop("'object' has to be an object of class 'sf'.")
   if(!("result" %in% names(object))) stop("Column 'result' must be defined in 'object'.")

@@ -220,6 +220,7 @@
 #'                   SpParams = SpParamsMED)
 #'                   
 #' @name extract_variables
+#' @export
 extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
   if(!inherits(x, "sf")) stop("'x' has to be of class 'sf'")
   df = sf::st_sf(geometry = sf::st_geometry(x))
@@ -230,6 +231,7 @@ extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
 }
 
 #' @rdname extract_variables
+#' @export
 plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, ...){
   df = extract_variables(x, vars= variable, SpParams = SpParams)
   g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+

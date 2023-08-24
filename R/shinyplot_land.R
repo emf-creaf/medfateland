@@ -97,6 +97,7 @@
 #' 
 #' @seealso \code{\link{plot_summary}}, \code{\link{extract_variables}}
 #' 
+#' @export
 shinyplot_land<-function(x, SpParams = NULL) {
   if(inherits(x, "sf") && ("elevation" %in% names(x))) {
     return(.shinyplot_spatial(x, SpParams))

@@ -53,6 +53,7 @@
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{simulation_summary}}
+#' @export
 plot_summary<-function(x, variable, date, ...) {
   if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
   if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")

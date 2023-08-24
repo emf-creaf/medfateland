@@ -12,6 +12,7 @@
 #'    \item{Output should be a numeric vector of length equal to the number of tree records in 'x'}
 #'  }
 #' 
+#' @export
 default_volume_function<-function(x, SpParams = NULL){
   if(inherits(x, "forest")) x <- x$treeData
   vol <- (1/3) * pi * (x$DBH/200)^2 * (x$Height/100) * x$N

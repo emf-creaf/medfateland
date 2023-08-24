@@ -563,6 +563,7 @@
 #' }
 #' 
 #' @name spwb_spatial
+#' @export
 spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
@@ -573,6 +574,7 @@ spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultContro
 }
 
 #' @rdname spwb_spatial
+#' @export
 growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
@@ -583,6 +585,7 @@ growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 }
 
 #' @rdname spwb_spatial
+#' @export
 fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
@@ -640,6 +643,7 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #'                                     defaultControl(), model = "spwb")
 #' 
 #' @name initialize_landscape
+#' @export
 initialize_landscape<- function(x, SpParams, local_control, model = "spwb", replace = FALSE, progress = TRUE) {
   match.arg(model, c("spwb", "growth"))
   if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")

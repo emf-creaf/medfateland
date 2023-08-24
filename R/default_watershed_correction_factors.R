@@ -14,6 +14,8 @@
 #' @seealso \code{\link{spwb_land}}
 #' 
 #' @examples default_watershed_correction_factors()
+#' 
+#' @export
 default_watershed_correction_factors<-function() {
   l<-list(
     Rdrain = 1.0,

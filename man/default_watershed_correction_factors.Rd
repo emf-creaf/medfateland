@@ -19,6 +19,7 @@ Defines default values for correction factors used to modulate watershed hydraul
 }
 \examples{
 default_watershed_correction_factors()
+
 }
 \seealso{
 \code{\link{spwb_land}}

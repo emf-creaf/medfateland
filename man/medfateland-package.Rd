@@ -2,32 +2,29 @@
 % Please edit documentation in R/medfateland-package.R
 \docType{package}
 \name{medfateland-package}
-\alias{medfateland}
 \alias{medfateland-package}
+\alias{_PACKAGE}
+\alias{medfateland}
 \title{medfateland: Mediterranean Landscape Forest Simulation}
 \description{
-Functions to simulate forest hydrology, forest function and dynamics over landscapes.
+Functions to simulate forest hydrology, forest function and dynamics over landscapes
 }
 \seealso{
-Useful links:
-\itemize{
-  \item \url{https://emf-creaf.github.io/medfateland/index.html}
-}
-
+Useful links: \itemize{ \item{
+\url{https://emf-creaf.github.io/medfateland/index.html}} }
 }
 \author{
-\strong{Maintainer}: Miquel De Cáceres \email{miquelcaceres@gmail.com}
+Maintainer: Miquel De Cáceres
+\email{miquelcaceres@gmail.com}
+\href{https://orcid.org/0000-0001-7132-2080}{ORCID}
 
-Authors:
-\itemize{
-  \item Aitor Améztegui (\href{https://orcid.org/0000-0003-2006-1559}{ORCID})
-  \item María González (\href{https://orcid.org/0000-0002-2227-8404}{ORCID})
-}
+Author: Aitor Améztegui
+\href{https://orcid.org/0000-0003-2006-1559}{ORCID}
 
-Other contributors:
-\itemize{
-  \item Mario Beltrán [contributor]
-}
+Author: María González
+\href{https://orcid.org/0000-0002-2227-8404}{ORCID}
 
+Contributor: Mario Beltrán
+\href{https://orcid.org/0000-0002-2227-8404}{ORCID}
 }
 \keyword{internal}

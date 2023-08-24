@@ -248,12 +248,14 @@
 #' res <- spwb_spatial_day(example_ifn, examplemeteo, date, SpParamsMED)
 #' }
 #' @name spwb_spatial_day
+#' @export
 spwb_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .model_spatial_day(y=sf, meteo = meteo, date = date, model = "spwb", SpParams = SpParams, local_control = local_control, 
                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 #' @rdname spwb_spatial_day
+#' @export
 growth_spatial_day<-function(sf, meteo = NULL, date, SpParams, local_control = defaultControl(),
                            parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   .model_spatial_day(y=sf, meteo = meteo, date = date, model = "growth", SpParams = SpParams, local_control = local_control,

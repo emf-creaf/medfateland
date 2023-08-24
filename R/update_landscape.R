@@ -12,6 +12,7 @@
 #' 
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{spwb_spatial_day}}, \code{\link{spwb_land}}
 #' 
+#' @export
 update_landscape<-function(x, y) {
   if(!inherits(x, "sf")) stop("'x' should be of class 'sf' ")
   if(!inherits(y, "sf") && !inherits(y, "spwb_land") && !inherits(y, "growth_land") 
