@@ -10,7 +10,10 @@
 #'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned (optional).}
 #'   }
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}).
-#'
+#' 
+#' @details
+#' The function randomly determines the landscape units that will burn every year, depending on the specifications
+#' of the fire regime object.
 #' 
 #' @return An integer matrix specifying the day of the year of burning of each landscape unit for every year in the fire regime definition.
 #' Values are interpreted as follows:
@@ -66,7 +69,11 @@ fire_regime_instance <-function(sf, fire_regime) {
       weights <- sf$ignition_weights
     }
     while((target >= min_area) && (length(available) > 0)) {
-      s <- sample(available, 1, prob = weights)
+      if(length(available)==1) {
+        s <- available
+      } else {
+        s <- sample(available, 1, prob = weights)
+      }
       if(is.null(fire_regime$doy)) {
         m[s, iy] <- 0
       } else {
@@ -76,6 +83,7 @@ fire_regime_instance <-function(sf, fire_regime) {
       available <- available[ available!= s]
       target <- target - sf$represented_area[s]
     }
+    if(length(available)==0) warning(paste0("All forest stands selected for year ", years[iy], " (possibly not fulfilling burned area demand)"))
   }
   return(m)
 }

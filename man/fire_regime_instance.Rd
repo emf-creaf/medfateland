@@ -29,6 +29,10 @@ Values are interpreted as follows:
 \description{
 Applies a fire regime object over a set of landscape units to determine a fire realization
 }
+\details{
+The function randomly determines the landscape units that will burn every year, depending on the specifications
+of the fire regime object.
+}
 \examples{
 # Load example data
 data("example_ifn")

@@ -46,6 +46,7 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom rlang duplicate
 #' @importFrom stars st_get_dimension_values
+#' @importFrom stats rpois
 #' @importFrom stats var
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr unnest
