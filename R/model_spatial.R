@@ -407,7 +407,7 @@
     if(progress) {
       cli::cli_progress_step("Generating fire regime instance")
     }
-    fire_instance_matrix <- fire_regime_instance(sf, fire_regime)
+    fire_instance_matrix <- fire_regime_instance(y, fire_regime)
     for(i in 1:n) {
       burn_doy_by_year_list[[i]] <- fire_instance_matrix[i, ]
     }

@@ -12,16 +12,70 @@
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}).
 #'
 #' 
-#' @return An integer matrix specifying the day of the year of burning of each landscape unit for every year in the fire regime definition
+#' @return An integer matrix specifying the day of the year of burning of each landscape unit for every year in the fire regime definition.
+#' Values are interpreted as follows:
+#' \itemize{
+#'  \item{NA - No wildfire this year}
+#'  \item{0 - Wildfire will occur the driest day (i.e. the one with largest vapor pressure deficit).}
+#'  \item{1...366 - Day of the year when wildfire will occur}
+#' } 
 #'
 #' @author 
 #' 
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{create_fire_regime}}
+#' @seealso \code{\link{create_fire_regime}}, \code{\link{fordyn_spatial}}, \code{\link{fordyn_scenario}}
 #' 
 #' @examples 
+#' # Load example data
+#' data("example_ifn")
+#' 
+#' # Assume that each stand represents 1km2 = 100 ha
+#' example_ifn$represented_area <- 100
+#' 
+#' # Define fire regime characteristics
+#' freg <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
+#' 
+#' # Create a fire regime instance
+#' fire_regime_instance(example_ifn, freg)
 #' 
 #' @export
 fire_regime_instance <-function(sf, fire_regime) {
+  
+  if(!inherits(sf, "sf")) stop("'sf' has to be an object of class 'sf'.")
+  if(!inherits(fire_regime, "fire_regime")) stop("'fire_regime' has to be an object of class 'fire_regime'.")
+  if(!("id" %in% names(sf))) stop("Column 'id' must be defined.")
+  if(!("represented_area" %in% names(sf))) stop("Column 'represented_area' must be defined.")
+  
+  years <- names(fire_regime$annual_burned_area)
+  ids <- sf$id
+  min_area <- min(sf$represented_area)
+  n <- length(ids)
+  
+  m <- matrix(NA, nrow = n, ncol = length(years))
+  rownames(m) <- ids
+  colnames(m) <- years
+  for(iy in 1:length(years)) {
+    target <- as.numeric(fire_regime$annual_burned_area[iy])
+    if(fire_regime$stochastic) {
+      target <- rpois(1, target)
+    }
+    available <- 1:n
+    weights <- rep(1.0, n)
+    if("ignition_weights" %in% names(sf)) {
+      weights <- sf$ignition_weights
+    }
+    while((target >= min_area) && (length(available) > 0)) {
+      s <- sample(available, 1, prob = weights)
+      if(is.null(fire_regime$doy)) {
+        m[s, iy] <- 0
+      } else {
+        m[s, iy] <- as.numeric(fire_regime$doy[iy])
+      }
+      weights <- weights[ available!= s]
+      available <- available[ available!= s]
+      target <- target - sf$represented_area[s]
+    }
+  }
+  return(m)
 }
