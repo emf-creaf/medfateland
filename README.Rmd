@@ -19,7 +19,9 @@ The R package **medfateland** has been designed to extend the capabilities of pa
 
 ## Package installation
 
-Since both packages evolve together, installing **medfateland** normally requires an up-to-date version of **medfate**. The package is not available from CRAN because it is still under active development. Beta versions of package **medfateland** can be installed from GitHub as follows:
+Since both packages evolve together, installing **medfateland** normally requires an up-to-date version of **medfate**. 
+
+The package is not available from CRAN because it is still under active development. Beta versions of package **medfateland** can be installed from GitHub as follows:
 
 ```{r installation, eval = FALSE}
 remotes::install_github("emf-creaf/medfateland")
@@ -28,9 +30,9 @@ remotes::install_github("emf-creaf/medfateland")
 
 ## Documentation
 
-+ The package installation includes a number of *vignettes* that illustrate how to run simulation models in **medfateland**.
+A number of *vignettes* illustrate how to run simulation models in **medfateland**. These can be found at the package [website](https://emf-creaf.github.io/medfateland/).
 
-+ The user is also advised to read *vignettes* included in package **medfate**.
+The user is also advised to read articles included in the [website](https://emf-creaf.github.io/medfate/) of package **medfate**.
 
-+ Additional documentation of the package, including a *reference book*, can be found at https://emf-creaf.github.io/medfatebook/index.html. 
+A complete documentation of both packages, including a *reference book*, can be found at https://emf-creaf.github.io/medfatebook/index.html. 
 
