@@ -1,6 +1,6 @@
 .f_spatial<-function(xi, meteo, dates, model,
                      SpParams, local_control, 
-                     CO2ByYear = numeric(0), fire_regime = NULL,
+                     CO2ByYear = numeric(0),
                      keep_results = TRUE,
                      management_function = NULL, summary_function = NULL, summary_arguments = NULL){
   f <- xi$forest
@@ -47,6 +47,40 @@
   } else {
     if(!is.null(dates)) met <- met[as.character(met$dates) %in% as.character(dates),,drop =FALSE] #subset dates
     met$dates <- as.Date(met$dates)
+  }
+  # If burn_doy_by_year is specified reset column FireProbability and fill appropriate values. For each year:
+  #   burn_doy_by_year == NA : No burning
+  #   burn_doy_by_year == 0 : Set the driest day (i.e. with lowest VPD) to burn
+  #   burn_doy_by_year > 0 & burn_doy_by_year < 366 : Set the indicated doy to burn
+  if(!is.null(xi$burn_doy_by_year)) {
+    met$FireProbability <- 0
+    if(!("DOY" %in% names(met))) {
+      met$DOY <- format(met$dates, "%j") 
+    }
+    met$Year <- format(met$dates, "%Y")
+    met$VPD <- NA
+    for(id in 1:nrow(met)) {
+      vp <- meteoland::utils_averageDailyVP(Tmin = met$MinTemperature[id], Tmax = met$MaxTemperature[id],
+                                            RHmin = met$MinRelativeHumidity[id], RHmax = met$MaxRelativeHumidity[id])
+      met$VPD[id] <- max(0, meteoland::utils_saturationVP(met$MaxTemperature[id]) - vp)
+    }
+    for(iy in 1:length(xi$burn_doy_by_year)) {
+      year <- names(xi$burn_doy_by_year)[iy]
+      if(year %in% unique(met$Year)) {
+        doy <- xi$burn_doy_by_year[iy]
+        if(!is.na(doy)) {
+          if(doy == 0) {
+            year_days <- which(met$Year==year)
+            max_VPD <- which.max(met$VPD[year_days])
+            burn_day <- year_days[max_VPD]
+          } else {
+            burn_day <- which((met$Year==year) & (met$DOY == doy))
+          }
+          if(length(burn_day)!=1) stop("Wrong fire regime specification")
+          met$FireProbability[burn_day] <- 1.0
+        }
+      }
+    }
   }
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -368,6 +402,17 @@
     }
   } 
 
+  burn_doy_by_year_list <- vector("list", n)
+  if(!is.null(fire_regime)) {
+    if(progress) {
+      cli::cli_progress_step("Generating fire regime instance")
+    }
+    fire_instance_matrix <- fire_regime_instance(sf, fire_regime)
+    for(i in 1:n) {
+      burn_doy_by_year_list[[i]] <- fire_instance_matrix[i, ]
+    }
+  }
+  
   if(parallelize) {
     if(progress) {
       cli::cli_progress_step("Preparing data for parallelization")
@@ -382,6 +427,7 @@
                      point = sf::st_geometry(y)[i],
                      forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                      meteo = meteolist[[i]],
+                     burn_doy_by_year = burn_doy_by_year_list[[i]],
                      latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                      management_args = managementlist[[i]])
     }
@@ -390,7 +436,7 @@
     reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
                                              SpParams = SpParams, local_control = local_control, 
-                                             CO2ByYear = CO2ByYear, fire_regime = fire_regime,
+                                             CO2ByYear = CO2ByYear,
                                              keep_results = keep_results,
                                              management_function = management_function, 
                                              summary_function = summary_function, summary_arguments = summary_arguments,
@@ -422,12 +468,13 @@
                 point = sf::st_geometry(y)[i],
                 forest = forestlist[[i]], soil = soillist[[i]], x = xlist[[i]],
                 meteo = meteolist[[i]],
+                burn_doy_by_year = burn_doy_by_year_list[[i]],
                 latitude = latitude[i], elevation = y$elevation[i], slope= y$slope[i], aspect = y$aspect[i],
                 management_args = managementlist[[i]])
       sim_out = .f_spatial(xi = xi, 
                            meteo = meteo, dates = dates, model = model,
                            SpParams = SpParams, local_control = local_control, 
-                           CO2ByYear = CO2ByYear, fire_regime = fire_regime,
+                           CO2ByYear = CO2ByYear,
                            keep_results = keep_results,
                            management_function = management_function, 
                            summary_function = summary_function, summary_arguments = summary_arguments)
@@ -480,14 +527,18 @@
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
-#'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}
+#'     \item{\code{management_arguments}: Lists with management arguments. Optional, relevant for \code{fordyn_spatial} only.}
+#'     \item{\code{represented_area}: Area represented by each stand (in hectares). Optional, relevant for \code{fordyn_spatial} when 
+#'     \code{fire_regime} is supplied only).}
+#'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant for \code{fordyn_spatial} when 
+#'     \code{fire_regime} is supplied only).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. 
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated. 
 #' @param keep_results Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
 #' @param summary_function An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
 #' @param summary_arguments List with additional arguments for the summary function.
@@ -508,6 +559,10 @@
 #' }
 #' Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
 #' in a column named 'meteo'.
+#' 
+#' Fire regimes are only allowed for function \code{fordyn_spatial}. If \code{fire_regime} is supplied, the function will call
+#' \code{\link{fire_regime_instance}} to generate a realization of the fire regime before conducting simulations. Note that operating
+#' with fire regimes assumes all forest stands share the same period of simulation, but enforcing this is left to the user.
 #' 
 #' @returns An object of class 'sf' containing four elements:
 #' \itemize{

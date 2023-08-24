@@ -1,11 +1,11 @@
-#' Create fire regime
+#' Create fire regime 
 #' 
-#' Defines a fire regime parameters for simulations of forest dynamics 
+#' Defines an object containing fire regime parameters for simulations of forest dynamics.
 #'
 #' @param annual_burned_area A named vector of burned area in hectares for simulation years.
-#' @param doy A named integer vector with the day of the year when fires will be simulated for simulation years. If NULL
-#'            fires will be simulated on the day with worse weather conditions.
-#' @param stochastic A logical flag to allow for stochasticity. If FALSE, the values in \code{annual_burned_area} are
+#' @param doy A named integer vector with the day of the year (i.e. between 1 and 366) when fires will be simulated for each simulation year in \code{annual_burned_area}. If NULL
+#'            fires will be simulated on the driest day (i.e. when vapor pressure deficit is largest).
+#' @param stochastic A logical flag to allow for stochastic fire simulation. If FALSE, the values in \code{annual_burned_area} are
 #'                   taken directly as target area to be burned. If TRUE, the target area to be burned is assumed to follow
 #'                   a Poisson distribution of lambda equal to the supplied value.
 #'

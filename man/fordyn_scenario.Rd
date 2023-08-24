@@ -37,6 +37,8 @@ fordyn_scenario(
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{management_unit}: Management unit corresponding to each stand.}
 \item{\code{represented_area}: Area represented by each stand (in hectares).}
+\item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when
+\code{fire_regime} is supplied only).}
 }
 Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 to continue simulations.}
@@ -59,7 +61,7 @@ If NULL, the default volume function is used (not recommended!).}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated.}
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.}
 
 \item{summary_function}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).}
 
@@ -112,6 +114,8 @@ has been fulfilled and stores the results, including demand offsets to be applie
 
 Management is implemented using the \code{\link{defaultManagementFunction}} in medfate,
 meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
+
+Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
 }
 \examples{
 \dontrun{

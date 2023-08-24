@@ -36,6 +36,8 @@
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{management_unit}: Management unit corresponding to each stand.}
 #'     \item{\code{represented_area}: Area represented by each stand (in hectares).}
+#'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when 
+#'                 \code{fire_regime} is supplied only).}
 #'   }
 #'   Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 #'   to continue simulations.
@@ -49,7 +51,7 @@
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. 
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.
 #' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
 #' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
@@ -69,6 +71,8 @@
 #' Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
 #' meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
 #' 
+#' Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
+#'  
 #' @returns An list of class 'fordyn_scenario' with the following elements:
 #'  \itemize{
 #'    \item{\code{result_sf}: An object of class 'sf' containing four elements:

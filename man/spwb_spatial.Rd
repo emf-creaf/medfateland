@@ -70,7 +70,11 @@ fordyn_spatial(
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
-\item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_spatial} only).}
+\item{\code{management_arguments}: Lists with management arguments. Optional, relevant for \code{fordyn_spatial} only.}
+\item{\code{represented_area}: Area represented by each stand (in hectares). Optional, relevant for \code{fordyn_spatial} when
+\code{fire_regime} is supplied only).}
+\item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant for \code{fordyn_spatial} when
+\code{fire_regime} is supplied only).}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
@@ -97,7 +101,7 @@ fordyn_spatial(
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
-\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated.}
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
@@ -129,6 +133,10 @@ but the user will be responsible for supplying interpolators in the correct temp
 }
 Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
 in a column named 'meteo'.
+
+Fire regimes are only allowed for function \code{fordyn_spatial}. If \code{fire_regime} is supplied, the function will call
+\code{\link{fire_regime_instance}} to generate a realization of the fire regime before conducting simulations. Note that operating
+with fire regimes assumes all forest stands share the same period of simulation, but enforcing this is left to the user.
 }
 \examples{
 \dontrun{

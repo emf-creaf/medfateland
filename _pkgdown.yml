@@ -30,7 +30,8 @@ reference:
   - default_watershed_correction_factors
   - default_volume_function
   - create_management_scenario
-  - create_fire_scenario
+  - create_fire_regime
+  - fire_regime_instance
   - defaultPrescriptionsBySpecies
 
 - title: Simulation
