@@ -176,6 +176,12 @@ res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
 # Compare table of cuttings with vs. without management
 res_noman$result[[1]]$CutTreeTable
 res_man$result[[1]]$CutTreeTable
+
+# Fordyn simulation for one year with fire regime
+example_ifn$represented_area <- 100
+res_fire <- fordyn_spatial(example_ifn[1:10,], SpParamsMED, examplemeteo, 
+                           fire_regime = create_fire_regime(c("2001" = 200)))
+
 }
 
 }

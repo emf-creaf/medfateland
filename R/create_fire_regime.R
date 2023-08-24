@@ -23,8 +23,12 @@
 #' 
 #' @export
 create_fire_regime<-function(annual_burned_area,
-                               doy = NULL,
-                               stochastic = FALSE) {
+                             doy = NULL,
+                             stochastic = FALSE) {
+  if(is.null(doy)) {
+    doy <- rep(0, length(annual_burned_area))
+    names(doy) <- names(annual_burned_area)
+  }
   l <- list(annual_burned_area = annual_burned_area, 
             doy = doy,
             stochastic = stochastic)

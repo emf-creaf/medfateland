@@ -52,12 +52,12 @@
   #   burn_doy_by_year == NA : No burning
   #   burn_doy_by_year == 0 : Set the driest day (i.e. with lowest VPD) to burn
   #   burn_doy_by_year > 0 & burn_doy_by_year < 366 : Set the indicated doy to burn
-  if(!is.null(xi$burn_doy_by_year)) {
-    met$FireProbability <- 0
+  if(model=="fordyn" && (!is.null(xi$burn_doy_by_year))) {
+    met$FireProbability <- 0.0
     if(!("DOY" %in% names(met))) {
-      met$DOY <- format(met$dates, "%j") 
+      met$DOY <- as.numeric(format.Date(met$dates, "%j"))
     }
-    met$Year <- format(met$dates, "%Y")
+    met$Year <- format.Date(met$dates, "%Y")
     met$VPD <- NA
     for(id in 1:nrow(met)) {
       vp <- meteoland::utils_averageDailyVP(Tmin = met$MinTemperature[id], Tmax = met$MaxTemperature[id],
@@ -69,7 +69,7 @@
       if(year %in% unique(met$Year)) {
         doy <- xi$burn_doy_by_year[iy]
         if(!is.na(doy)) {
-          if(doy == 0) {
+          if(doy == 0.0) {
             year_days <- which(met$Year==year)
             max_VPD <- which.max(met$VPD[year_days])
             burn_day <- year_days[max_VPD]
@@ -81,6 +81,9 @@
         }
       }
     }
+    met$VPD <- NULL
+    met$DOY <- NULL
+    met$Year <- NULL
   }
   if(model=="spwb") {
     if(inherits(x, "spwbInput")){
@@ -409,7 +412,9 @@
     }
     fire_instance_matrix <- fire_regime_instance(y, fire_regime)
     for(i in 1:n) {
-      burn_doy_by_year_list[[i]] <- fire_instance_matrix[i, ]
+      b <- as.vector(fire_instance_matrix[i, ])
+      names(b) <- names(fire_regime$annual_burned_area)
+      burn_doy_by_year_list[[i]] <- b
     }
   }
   
@@ -620,6 +625,12 @@
 #' # Compare table of cuttings with vs. without management
 #' res_noman$result[[1]]$CutTreeTable
 #' res_man$result[[1]]$CutTreeTable
+#' 
+#' # Fordyn simulation for one year with fire regime
+#' example_ifn$represented_area <- 100
+#' res_fire <- fordyn_spatial(example_ifn[1:10,], SpParamsMED, examplemeteo, 
+#'                            fire_regime = create_fire_regime(c("2001" = 200)))
+#' 
 #' }
 #' 
 #' @name spwb_spatial
