@@ -45,6 +45,7 @@ fordyn_spatial(
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
+  fire_regime = NULL,
   keep_results = TRUE,
   management_function = NULL,
   summary_function = NULL,
@@ -95,6 +96,8 @@ fordyn_spatial(
 \item{chunk_size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}

@@ -48,7 +48,7 @@
 #' 
 #' Aitor \enc{Améztegui}{Ameztegui}, UdL
 #' 
-#' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
+#' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_scenario}}
 #' 
 #' @examples 
 #' 

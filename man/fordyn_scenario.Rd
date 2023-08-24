@@ -14,6 +14,7 @@ fordyn_scenario(
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
+  fire_regime = NULL,
   summary_function = NULL,
   summary_arguments = NULL,
   parallelize = FALSE,
@@ -57,6 +58,8 @@ If NULL, the default volume function is used (not recommended!).}
 \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
+
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated.}
 
 \item{summary_function}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).}
 

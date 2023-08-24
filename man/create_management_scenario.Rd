@@ -81,7 +81,7 @@ scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 10
                                            "Pinus nigra" = 2000))
 }
 \seealso{
-\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}
+\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_scenario}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

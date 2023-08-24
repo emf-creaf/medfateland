@@ -3,6 +3,9 @@
 ----------------------------------
 
 
+# Version 2.0.3
+- Fire regimes can be simulated in functions fordyn_spatial and fordyn_scenario
+
 # Version 2.0.2
 - Improvements in fordyn_scenario
 - Allowing management scenarios to specify demand for groups of species

@@ -49,6 +49,7 @@
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. 
 #' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
 #' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
@@ -140,13 +141,14 @@
 #'
 #' @export
 fordyn_scenario<-function(sf, SpParams, meteo = NULL, 
-                         management_scenario,
+                         management_scenario, 
                          volume_function = NULL, volume_arguments = NULL,
                          local_control = defaultControl(), dates = NULL,
-                         CO2ByYear = numeric(0), summary_function=NULL, summary_arguments=NULL,
+                         CO2ByYear = numeric(0), fire_regime = NULL,
+                         summary_function=NULL, summary_arguments=NULL,
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
   
-  if(progress)  cli::cli_h1(paste0("Simulation of a management scenario with fordyn"))
+  if(progress)  cli::cli_h1(paste0("Simulation of a management/fire scenario with fordyn"))
   nspp = nrow(SpParams)
   
   offset_demand <- NULL
@@ -506,7 +508,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     if(progress) cli::cli_li(paste0("Calling fordyn_spatial..."))
     fds <-.model_spatial(y, SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = datesYear,
                         management_function = "defaultManagementFunction",
-                        CO2ByYear = CO2ByYear, keep_results = FALSE, summary_function=table_selection, 
+                        CO2ByYear = CO2ByYear, fire_regime = fire_regime,
+                        keep_results = FALSE, summary_function=table_selection, 
                         summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
                         progress = progress)

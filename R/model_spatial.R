@@ -1,5 +1,6 @@
 .f_spatial<-function(xi, meteo, dates, model,
-                     SpParams, local_control, CO2ByYear = numeric(0), 
+                     SpParams, local_control, 
+                     CO2ByYear = numeric(0), fire_regime = NULL,
                      keep_results = TRUE,
                      management_function = NULL, summary_function = NULL, summary_arguments = NULL){
   f <- xi$forest
@@ -255,7 +256,8 @@
 
 .model_spatial<-function(y, SpParams, meteo = NULL, model = "spwb",
                         local_control = defaultControl(), dates = NULL,
-                        CO2ByYear = numeric(0), keep_results = TRUE,
+                        CO2ByYear = numeric(0), fire_regime = NULL,
+                        keep_results = TRUE,
                         management_function = NULL, 
                         summary_function=NULL, summary_arguments=NULL,
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
@@ -387,7 +389,8 @@
     cl<-parallel::makeCluster(num_cores)
     reslist_parallel <- parallel::parLapplyLB(cl, XI, .f_spatial, 
                                              meteo = meteo, dates = dates, model = model,
-                                             SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear,
+                                             SpParams = SpParams, local_control = local_control, 
+                                             CO2ByYear = CO2ByYear, fire_regime = fire_regime,
                                              keep_results = keep_results,
                                              management_function = management_function, 
                                              summary_function = summary_function, summary_arguments = summary_arguments,
@@ -423,7 +426,8 @@
                 management_args = managementlist[[i]])
       sim_out = .f_spatial(xi = xi, 
                            meteo = meteo, dates = dates, model = model,
-                           SpParams = SpParams, local_control = local_control, CO2ByYear = CO2ByYear, 
+                           SpParams = SpParams, local_control = local_control, 
+                           CO2ByYear = CO2ByYear, fire_regime = fire_regime,
                            keep_results = keep_results,
                            management_function = management_function, 
                            summary_function = summary_function, summary_arguments = summary_arguments)
@@ -483,6 +487,7 @@
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. 
 #' @param keep_results Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
 #' @param summary_function An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
 #' @param summary_arguments List with additional arguments for the summary function.
@@ -587,12 +592,13 @@ growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #' @rdname spwb_spatial
 #' @export
 fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
-                       CO2ByYear = numeric(0), keep_results = TRUE, 
+                       CO2ByYear = numeric(0), fire_regime = NULL, 
+                       keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   if(progress)  cli::cli_h1(paste0("Simulation of model 'fordyn'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
-                CO2ByYear = CO2ByYear, keep_results = keep_results, 
+                CO2ByYear = CO2ByYear, fire_regime = fire_regime, keep_results = keep_results, 
                 management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
