@@ -1,9 +1,7 @@
 medfateland - Mediterranean landscape forest simulation
 ================
 
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/emf-creaf/medfateland/workflows/R-CMD-check/badge.svg)](https://github.com/vegmod/medfateland/actions)
-<!-- badges: end -->
+[![R-CMD-check](https://github.com/emf-creaf/medfateland/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/vegmod/medfateland/actions)
 
 ## Introduction
 
