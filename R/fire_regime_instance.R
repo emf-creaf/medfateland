@@ -14,7 +14,7 @@
 #' @details
 #' The function randomly determines the landscape units that will burn every year, depending on the specifications
 #' of the fire regime object. Users can define their own fire regime instances from other models (e.g. a fire landscape model)
-#' aand then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}-
+#' and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}-
 #' 
 #' @return An integer matrix specifying the day of the year of burning of each landscape unit for every year in the fire regime definition.
 #' Values are interpreted as follows:

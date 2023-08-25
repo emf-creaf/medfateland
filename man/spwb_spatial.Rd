@@ -136,8 +136,9 @@ but the user will be responsible for supplying interpolators in the correct temp
 Alternatively, the user may leave parameter \code{meteo = NULL} and specify a weather data frame for each element of \code{y}
 in a column named 'meteo'.
 
-Fire regimes are only allowed for function \code{fordyn_spatial}. If \code{fire_regime} is supplied, the function will call
-\code{\link{fire_regime_instance}} to generate a realization of the fire regime before conducting simulations. Note that operating
+Fire regimes are only allowed for function \code{fordyn_spatial}. If an object of class \code{fire_regime} is supplied, the function will call
+\code{\link{fire_regime_instance}} to generate a realization of the fire regime before conducting simulations. Alternatively,
+users can directly supply a fire regime instance matrix, derived from another source (e.g. a fire landscape model). Note that operating
 with fire regimes assumes all forest stands share the same period of simulation, but enforcing this is left to the user.
 }
 \examples{
