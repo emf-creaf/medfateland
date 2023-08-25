@@ -41,10 +41,23 @@ data("example_ifn")
 example_ifn$represented_area <- 100
 
 # Define fire regime characteristics
-freg <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
+reg1 <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
 
 # Create a fire regime instance
-fire_regime_instance(example_ifn, freg)
+m1 <- fire_regime_instance(example_ifn, reg1)
+
+# Check number of plots burned
+colSums(!is.na(m1))
+
+# Define fire regime characteristics with stochastic area burned
+reg2 <- create_fire_regime(annual_burned_area = c("2002" = 200, "2003" = 500),
+                           sd_burned_area = c("2002" = 0.4, "2003" = 0.5)) 
+
+# Create a fire regime instance
+m2 <- fire_regime_instance(example_ifn, reg2)
+
+# Check number of plots burned
+colSums(!is.na(m2))
 
 }
 \seealso{

@@ -37,10 +37,23 @@
 #' example_ifn$represented_area <- 100
 #' 
 #' # Define fire regime characteristics
-#' freg <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
+#' reg1 <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
 #' 
 #' # Create a fire regime instance
-#' fire_regime_instance(example_ifn, freg)
+#' m1 <- fire_regime_instance(example_ifn, reg1)
+#' 
+#' # Check number of plots burned
+#' colSums(!is.na(m1))
+#' 
+#' # Define fire regime characteristics with stochastic area burned
+#' reg2 <- create_fire_regime(annual_burned_area = c("2002" = 200, "2003" = 500),
+#'                            sd_burned_area = c("2002" = 0.4, "2003" = 0.5)) 
+#' 
+#' # Create a fire regime instance
+#' m2 <- fire_regime_instance(example_ifn, reg2)
+#' 
+#' # Check number of plots burned
+#' colSums(!is.na(m2))
 #' 
 #' @export
 fire_regime_instance <-function(sf, fire_regime) {
@@ -60,8 +73,9 @@ fire_regime_instance <-function(sf, fire_regime) {
   colnames(m) <- years
   for(iy in 1:length(years)) {
     target <- as.numeric(fire_regime$annual_burned_area[iy])
-    if(fire_regime$stochastic) {
-      target <- rpois(1, target)
+    sd <- as.numeric(fire_regime$sd_burned_area[iy])
+    if(!is.na(sd)) {
+      target <- rlnorm(1, log(target), sd)
     }
     available <- 1:n
     weights <- rep(1.0, n)

@@ -4,17 +4,16 @@
 \alias{create_fire_regime}
 \title{Create fire regime}
 \usage{
-create_fire_regime(annual_burned_area, doy = NULL, stochastic = FALSE)
+create_fire_regime(annual_burned_area, sd_burned_area = NULL, doy = NULL)
 }
 \arguments{
 \item{annual_burned_area}{A named vector of burned area in hectares for simulation years.}
 
+\item{sd_burned_area}{A named vector of standard deviation (in log scale) of burned area. If specified, annual target to burn will be determined
+using a log-normal distribution with mean values given by \code{annual_burned_area}.}
+
 \item{doy}{A named integer vector with the day of the year (i.e. between 1 and 366) when fires will be simulated for each simulation year in \code{annual_burned_area}. If NULL
 fires will be simulated on the driest day (i.e. when vapor pressure deficit is largest).}
-
-\item{stochastic}{A logical flag to allow for stochastic burned area. If FALSE, the values in \code{annual_burned_area} are
-taken directly as target area to be burned. If TRUE, the target area to be burned is assumed to follow
-a Poisson distribution of lambda equal to the supplied value.}
 }
 \value{
 A list with the supplied parameters
@@ -22,8 +21,17 @@ A list with the supplied parameters
 \description{
 Defines an object containing fire regime parameters for simulations of forest dynamics.
 }
+\details{
+Names of \code{annual_burned_area} should be simulation years. If provided, \code{sd_burned_area} should be a vector of the same size as
+\code{annual_burned_area} and have the same names.
+}
 \examples{
-freg <- create_fire_regime(c("2002" = 1000, "2003" = 5000)) 
+# Fire regime with pre-defined burned area values
+reg1 <- create_fire_regime(annual_burned_area = c("2002" = 1000, "2003" = 5000)) 
+
+# Fire regime with log-normal distribution for burned area
+reg2 <- create_fire_regime(annual_burned_area = c("2002" = 1000, "2003" = 5000),
+                           sd_burned_area = c("2002" = 0.9, "2003" = 0.8)) 
 
 }
 \seealso{
