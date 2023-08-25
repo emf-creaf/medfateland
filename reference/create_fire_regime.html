@@ -50,7 +50,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_fire_regime</span><span class="op">(</span><span class="va">annual_burned_area</span>, doy <span class="op">=</span> <span class="cn">NULL</span>, stochastic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_fire_regime</span><span class="op">(</span><span class="va">annual_burned_area</span>, sd_burned_area <span class="op">=</span> <span class="cn">NULL</span>, doy <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -59,15 +59,14 @@
 <dd><p>A named vector of burned area in hectares for simulation years.</p></dd>
 
 
+<dt>sd_burned_area</dt>
+<dd><p>A named vector of standard deviation (in log scale) of burned area. If specified, annual target to burn will be determined
+using a log-normal distribution with mean values given by <code>annual_burned_area</code>.</p></dd>
+
+
 <dt>doy</dt>
 <dd><p>A named integer vector with the day of the year (i.e. between 1 and 366) when fires will be simulated for each simulation year in <code>annual_burned_area</code>. If NULL
 fires will be simulated on the driest day (i.e. when vapor pressure deficit is largest).</p></dd>
-
-
-<dt>stochastic</dt>
-<dd><p>A logical flag to allow for stochastic burned area. If FALSE, the values in <code>annual_burned_area</code> are
-taken directly as target area to be burned. If TRUE, the target area to be burned is assumed to follow
-a Poisson distribution of lambda equal to the supplied value.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -75,6 +74,11 @@ a Poisson distribution of lambda equal to the supplied value.</p></dd>
     
 
 <p>A list with the supplied parameters</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Names of <code>annual_burned_area</code> should be simulation years. If provided, <code>sd_burned_area</code> should be a vector of the same size as
+<code>annual_burned_area</code> and have the same names.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -87,7 +91,12 @@ a Poisson distribution of lambda equal to the supplied value.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">freg</span> <span class="op">&lt;-</span> <span class="fu">create_fire_regime</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span><span class="op">)</span> </span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Fire regime with pre-defined burned area values</span></span></span>
+<span class="r-in"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu">create_fire_regime</span><span class="op">(</span>annual_burned_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fire regime with log-normal distribution for burned area</span></span></span>
+<span class="r-in"><span><span class="va">reg2</span> <span class="op">&lt;-</span> <span class="fu">create_fire_regime</span><span class="op">(</span>annual_burned_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">1000</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           sd_burned_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">0.9</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span> </span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

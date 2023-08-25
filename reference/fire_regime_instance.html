@@ -99,111 +99,27 @@ of the fire regime object.</p>
 <span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Define fire regime characteristics</span></span></span>
-<span class="r-in"><span><span class="va">freg</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_fire_regime.html">create_fire_regime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">200</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_fire_regime.html">create_fire_regime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">200</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span> </span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a fire regime instance</span></span></span>
-<span class="r-in"><span><span class="fu">fire_regime_instance</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">freg</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            2002 2003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081015_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081016_A1     0   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081018_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081019_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081020_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081021_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081022_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081023_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081024_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081025_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081026_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081027_A1    NA    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081028_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081029_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081030_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081031_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081032_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081033_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081034_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081035_A1    NA    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081036_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081037_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081038_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081039_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081040_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081041_A1    NA    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081043_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081044_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081045_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081046_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081047_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081048_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081049_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081050_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081051_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081052_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081053_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081054_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081055_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081056_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081057_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081058_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081059_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081060_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081061_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081062_A1    NA    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081063_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081064_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081065_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081066_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081067_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081068_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081069_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081070_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081071_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081073_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081075_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081076_A1    NA    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081077_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081078_A4C   NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081079_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081080_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081081_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081082_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081083_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081084_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081085_A1     0   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081086_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081087_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081088_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081089_A3C   NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081089_A3E   NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081090_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081091_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081092_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081093_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081094_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081095_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081096_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081097_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081098_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081099_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081100_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081101_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081102_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081103_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081104_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081105_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081106_A3C   NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081106_A3E   NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081107_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081108_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081109_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081110_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081111_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081112_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081113_A4    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081114_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081115_A1    NA   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 081116_A4    NA   NA</span>
+<span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">fire_regime_instance</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">reg1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check number of plots burned</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2002 2003 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2    5 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Define fire regime characteristics with stochastic area burned</span></span></span>
+<span class="r-in"><span><span class="va">reg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_fire_regime.html">create_fire_regime</a></span><span class="op">(</span>annual_burned_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">200</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           sd_burned_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2002"</span> <span class="op">=</span> <span class="fl">0.4</span>, <span class="st">"2003"</span> <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a fire regime instance</span></span></span>
+<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">fire_regime_instance</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">reg2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check number of plots burned</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2002 2003 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    4 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
