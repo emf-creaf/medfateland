@@ -79,7 +79,8 @@ Values are interpreted as follows:</p><ul><li><p>NA - No wildfire this year</p><
     <div id="details">
     <h2>Details</h2>
     <p>The function randomly determines the landscape units that will burn every year, depending on the specifications
-of the fire regime object.</p>
+of the fire regime object. Users can define their own fire regime instances from other models (e.g. a fire landscape model)
+and then use those directly in functions <code><a href="spwb_spatial.html">fordyn_spatial</a></code> or <code><a href="fordyn_scenario.html">fordyn_scenario</a></code>-</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -119,7 +120,7 @@ of the fire regime object.</p>
 <span class="r-in"><span><span class="co"># Check number of plots burned</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2002 2003 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2    5 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
