@@ -19,7 +19,7 @@
 #' 
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{fordyn_scenario}}, \code{\link{fordyn_spatial}}
+#' @seealso \code{\link{fire_regime_instance}}, \code{\link{fordyn_scenario}}, \code{\link{fordyn_spatial}}
 #' 
 #' @examples 
 #' # Fire regime with pre-defined burned area values

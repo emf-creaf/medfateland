@@ -35,7 +35,7 @@ reg2 <- create_fire_regime(annual_burned_area = c("2002" = 1000, "2003" = 5000),
 
 }
 \seealso{
-\code{\link{fordyn_scenario}}, \code{\link{fordyn_spatial}}
+\code{\link{fire_regime_instance}}, \code{\link{fordyn_scenario}}, \code{\link{fordyn_spatial}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

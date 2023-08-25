@@ -31,7 +31,8 @@ Applies a fire regime object over a set of landscape units to determine a fire r
 }
 \details{
 The function randomly determines the landscape units that will burn every year, depending on the specifications
-of the fire regime object.
+of the fire regime object. Users can define their own fire regime instances from other models (e.g. a fire landscape model)
+aand then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}-
 }
 \examples{
 # Load example data

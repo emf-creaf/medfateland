@@ -61,7 +61,9 @@ If NULL, the default volume function is used (not recommended!).}
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.}
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or
+a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}).
+If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.}
 
 \item{summary_function}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).}
 

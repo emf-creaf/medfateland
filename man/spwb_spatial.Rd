@@ -101,7 +101,9 @@ fordyn_spatial(
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
-\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated.}
+\item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or
+a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}),
+to be used in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
@@ -159,7 +161,7 @@ res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month"
 # Plot summaries
 plot_summary(res_sum, "Transpiration", "2001-03-01")
 
-# Fordyn simulation for one year (one stand) without management
+# Perform fordyn simulation for one year (one stand) without management
 res_noman <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo)
 
 # Add management arguments to all stands
@@ -169,7 +171,7 @@ for(i in 1:nrow(example_ifn)) example_ifn$management_arguments[[i]] <- defaultMa
 # Change thinning threshold for stand #1
 example_ifn$management_arguments[[1]]$thinningThreshold <- 15
 
-# Fordyn simulation for one year (one stand) with management
+# Perform fordyn simulation for one year (one stand) with management
 res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
                           management_function = defaultManagementFunction)
 
@@ -177,11 +179,17 @@ res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
 res_noman$result[[1]]$CutTreeTable
 res_man$result[[1]]$CutTreeTable
 
-# Fordyn simulation for one year with fire regime
-example_ifn$represented_area <- 100
-res_fire <- fordyn_spatial(example_ifn[1:10,], SpParamsMED, examplemeteo, 
-                           fire_regime = create_fire_regime(c("2001" = 200)))
+# Perform fordyn simulation for one year with fire regime
+example_ifn10 <- example_ifn[1:10,]
+example_ifn10$represented_area <- 100
+regime <- create_fire_regime(c("2001" = 200))
+res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
+                           fire_regime = regime)
 
+# Perform fordyn simulation for one year with fire regime instance
+regime_instance <- fire_regime_instance(example_ifn10, regime)
+res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
+                           fire_regime = regime_instance)
 }
 
 }

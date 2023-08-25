@@ -407,13 +407,24 @@
 
   burn_doy_by_year_list <- vector("list", n)
   if(!is.null(fire_regime)) {
-    if(progress) {
-      cli::cli_progress_step("Generating fire regime instance")
+    if(inherits(fire_regime, "fire_regime")) {
+      if(progress) {
+        cli::cli_progress_step("Generating fire regime instance")
+      }
+      fire_instance_matrix <- fire_regime_instance(y, fire_regime)
+    } else if(inherits(fire_regime, "matrix")) {
+      if(progress) {
+        cli::cli_progress_step("Checking fire regime instance")
+      }
+      if(nrow(fire_regime)!=n) stop("Fire regime instance matrix should have the same number of rows as 'sf'")
+      if(!all(rownames(fire_regime)== y$id)) stop("Fire regime row names should be equal to values in 'id' column of 'sf'")
+      fire_instance_matrix <- fire_regime
+    } else {
+      stop("Wrong class for 'fire_regime'. Has to be of class 'fire_regime' or 'matrix'")
     }
-    fire_instance_matrix <- fire_regime_instance(y, fire_regime)
     for(i in 1:n) {
       b <- as.vector(fire_instance_matrix[i, ])
-      names(b) <- names(fire_regime$annual_burned_area)
+      names(b) <- colnames(fire_instance_matrix)
       burn_doy_by_year_list[[i]] <- b
     }
   }
@@ -543,7 +554,9 @@
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated. 
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or 
+#'                    a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}), 
+#'                    to be used in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated. 
 #' @param keep_results Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
 #' @param summary_function An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
 #' @param summary_arguments List with additional arguments for the summary function.
@@ -608,7 +621,7 @@
 #' # Plot summaries
 #' plot_summary(res_sum, "Transpiration", "2001-03-01")
 #' 
-#' # Fordyn simulation for one year (one stand) without management
+#' # Perform fordyn simulation for one year (one stand) without management
 #' res_noman <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo)
 #' 
 #' # Add management arguments to all stands
@@ -618,7 +631,7 @@
 #' # Change thinning threshold for stand #1
 #' example_ifn$management_arguments[[1]]$thinningThreshold <- 15
 #' 
-#' # Fordyn simulation for one year (one stand) with management
+#' # Perform fordyn simulation for one year (one stand) with management
 #' res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
 #'                           management_function = defaultManagementFunction)
 #' 
@@ -626,11 +639,17 @@
 #' res_noman$result[[1]]$CutTreeTable
 #' res_man$result[[1]]$CutTreeTable
 #' 
-#' # Fordyn simulation for one year with fire regime
-#' example_ifn$represented_area <- 100
-#' res_fire <- fordyn_spatial(example_ifn[1:10,], SpParamsMED, examplemeteo, 
-#'                            fire_regime = create_fire_regime(c("2001" = 200)))
+#' # Perform fordyn simulation for one year with fire regime
+#' example_ifn10 <- example_ifn[1:10,]
+#' example_ifn10$represented_area <- 100
+#' regime <- create_fire_regime(c("2001" = 200))
+#' res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
+#'                            fire_regime = regime)
 #' 
+#' # Perform fordyn simulation for one year with fire regime instance
+#' regime_instance <- fire_regime_instance(example_ifn10, regime)
+#' res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
+#'                            fire_regime = regime_instance)
 #' }
 #' 
 #' @name spwb_spatial

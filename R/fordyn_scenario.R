@@ -51,7 +51,9 @@
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}). If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.
+#' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or 
+#'                    a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}). 
+#'                    If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.
 #' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
 #' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
