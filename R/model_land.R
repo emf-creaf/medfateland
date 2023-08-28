@@ -839,6 +839,18 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
         }
         # 3.1 Simulate species local recruitment
         if(local_control$allowRecruitment) {
+          # Reduce seed bank according to longevity
+          forest <- regeneration_seedmortality(forest, SpParams)
+          
+          # Seed local production
+          seed_local <- regeneration_seedproduction(forest, SpParams, local_control)
+          # Seed rain from control
+          seed_rain <- local_control$seedRain
+          if(!is.null(seed_rain)) seed <- unique(c(seed_local, seed_rain)) 
+          else seed <- seed_local
+          # Refill seed bank with new seeds
+          forest <- regeneration_seedrefill(forest, seed)
+          # Seed recruitment
           summary_i <- GL$sf$summary[[i]]
           monthlyMinTemp <- summary_i[, "MinTemperature"]
           monthlyMaxTemp <- summary_i[, "MaxTemperature"]
@@ -847,14 +859,15 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
           monthlyTemp <- 0.606*monthlyMaxTemp + 0.394*monthlyMinTemp
           minMonthTemp <- min(monthlyTemp, na.rm=TRUE)
           moistureIndex <- sum(monthlyPrecipitation, na.rm=TRUE)/sum(monthlyPET, na.rm=TRUE)
-          recr_forest <- medfate::recruitment(forest, SpParams, local_control, minMonthTemp, moistureIndex, verbose = FALSE)
+          recr_forest <- medfate::regeneration_recruitment(forest, SpParams, local_control, minMonthTemp, moistureIndex, verbose = FALSE)
+          
         } else {
           recr_forest <- emptyforest()
         }
         # 3.2 Simulate species resprouting
         if(local_control$allowResprouting) {
-          resp_forest <- medfate::resprouting(forest, xo$internalMortality, SpParams, local_control,
-                                              management_result)
+          resp_forest <- medfate::regeneration_resprouting(forest, xo$internalMortality, SpParams, local_control,
+                                                           management_result)
         } else {
           resp_forest <- emptyforest()
         }
