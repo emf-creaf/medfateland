@@ -778,6 +778,50 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
         cell_summary[[i]] <- rbind(cell_summary[[i]], GL$sf$summary[[i]])
       }
     }
+    if(progress) cli::cli_li(paste0("Seed production/dispersal"))
+    # Seed production
+    seed_production <- vector("list", nCells)
+    for(i in 1:nCells) { 
+      if(sf$land_cover_type[i] == "wildland")  {
+        forest <- sf$forest[[i]]
+        # Seed local production
+        seed_production[[i]] <- regeneration_seedproduction(forest, SpParams, local_control)
+      }
+    }
+    # Neighbours and distances
+    neighbours_4 <- .extended_neighbours(sf, order = 4)
+    distances_4 <- .neighbour_distances(sf, neighbours_4, patchsize)
+    # Dispersal and seed bank dynamics
+    for(i in 1:nCells) { 
+      if(sf$land_cover_type[i] == "wildland")  {
+        forest <- sf$forest[[i]]
+        # Reduce seed bank according to longevity
+        forest <- regeneration_seedmortality(forest, SpParams)
+        # Seed rain from control
+        seed_rain <- local_control$seedRain
+        if(!is.null(seed_rain)) local_seed <- unique(c(seed_production[[i]], seed_rain)) 
+        else local_seed <-  seed_production[[i]]
+        # Refill seed bank with new local seeds
+        forest <- regeneration_seedrefill(forest, local_seed)
+        n_i <- neighbours_4[[i]]
+        d_i <- distances_4[[i]]
+        for(j in n_i) {
+          if(sf$land_cover_type[j] == "wildland") {
+            seeds_neigh <- seed_production[[j]]
+            n_seeds <- length(seeds_neigh)
+            if(n_seeds > 0) {
+              seeds_perc <- rep(NA,n_seeds)
+              for(k in 1:n_seeds) {
+                seeds_perc[k] <- .kernel(d_i[j]) #Kernel parameters missing
+              }
+            }
+            forest <- regeneration_seedrefill(forest, seeds_neigh, percent = seeds_perc)
+          }
+        }
+        # Store forest with updated seed bank
+        sf$forest[[i]] <- forest
+      }
+    }
     if(progress) cli::cli_li(paste0("Management/recruitment/resprouting"))
     for(i in 1:nCells) { 
       if(sf$land_cover_type[i] == "wildland")  {
@@ -839,17 +883,6 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
         }
         # 3.1 Simulate species local recruitment
         if(local_control$allowRecruitment) {
-          # Reduce seed bank according to longevity
-          forest <- regeneration_seedmortality(forest, SpParams)
-          
-          # Seed local production
-          seed_local <- regeneration_seedproduction(forest, SpParams, local_control)
-          # Seed rain from control
-          seed_rain <- local_control$seedRain
-          if(!is.null(seed_rain)) seed <- unique(c(seed_local, seed_rain)) 
-          else seed <- seed_local
-          # Refill seed bank with new seeds
-          forest <- regeneration_seedrefill(forest, seed)
           # Seed recruitment
           summary_i <- GL$sf$summary[[i]]
           monthlyMinTemp <- summary_i[, "MinTemperature"]
