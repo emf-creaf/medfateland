@@ -180,7 +180,7 @@ res <- spwb_land(example_watershed, SpParamsMED, examplemeteo,
 }
 \seealso{
 \code{\link{spwb_day}},  \code{\link{growth_day}},
-\code{\link{spwb_spatial}}
+\code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

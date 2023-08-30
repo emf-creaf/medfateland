@@ -581,7 +581,7 @@
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
 #' @seealso \code{\link{spwb_day}},  \code{\link{growth_day}},
-#' \code{\link{spwb_spatial}}
+#' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 #' 
 #' @examples 
 #' \dontrun{
@@ -779,49 +779,10 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
       }
     }
     if(progress) cli::cli_li(paste0("Seed production/dispersal"))
-    # Seed production
-    seed_production <- vector("list", nCells)
-    for(i in 1:nCells) { 
-      if(sf$land_cover_type[i] == "wildland")  {
-        forest <- sf$forest[[i]]
-        # Seed local production
-        seed_production[[i]] <- regeneration_seedproduction(forest, SpParams, local_control)
-      }
-    }
-    # Neighbours and distances
-    neighbours_4 <- .extended_neighbours(sf, order = 4)
-    distances_4 <- .neighbour_distances(sf, neighbours_4, patchsize)
-    # Dispersal and seed bank dynamics
-    for(i in 1:nCells) { 
-      if(sf$land_cover_type[i] == "wildland")  {
-        forest <- sf$forest[[i]]
-        # Reduce seed bank according to longevity
-        forest <- regeneration_seedmortality(forest, SpParams)
-        # Seed rain from control
-        seed_rain <- local_control$seedRain
-        if(!is.null(seed_rain)) local_seed <- unique(c(seed_production[[i]], seed_rain)) 
-        else local_seed <-  seed_production[[i]]
-        # Refill seed bank with new local seeds
-        forest <- regeneration_seedrefill(forest, local_seed)
-        n_i <- neighbours_4[[i]]
-        d_i <- distances_4[[i]]
-        for(j in n_i) {
-          if(sf$land_cover_type[j] == "wildland") {
-            seeds_neigh <- seed_production[[j]]
-            n_seeds <- length(seeds_neigh)
-            if(n_seeds > 0) {
-              seeds_perc <- rep(NA,n_seeds)
-              for(k in 1:n_seeds) {
-                seeds_perc[k] <- .kernel(d_i[j]) #Kernel parameters missing
-              }
-            }
-            forest <- regeneration_seedrefill(forest, seeds_neigh, percent = seeds_perc)
-          }
-        }
-        # Store forest with updated seed bank
-        sf$forest[[i]] <- forest
-      }
-    }
+    
+    # Seed production and dispersal
+    sf$forest <- dispersal(sf, SpParams, local_control)
+
     if(progress) cli::cli_li(paste0("Management/recruitment/resprouting"))
     for(i in 1:nCells) { 
       if(sf$land_cover_type[i] == "wildland")  {
