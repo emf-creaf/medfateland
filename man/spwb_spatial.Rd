@@ -72,7 +72,7 @@ fordyn_spatial(
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{management_arguments}: Lists with management arguments. Optional, relevant for \code{fordyn_spatial} only.}
-\item{\code{represented_area}: Area represented by each stand (in hectares). Optional, relevant for \code{fordyn_spatial} when
+\item{\code{represented_area_ha}: Area represented by each stand in hectares. Optional, relevant for \code{fordyn_spatial} when
 \code{fire_regime} is supplied only).}
 \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant for \code{fordyn_spatial} when
 \code{fire_regime} is supplied only).}
@@ -183,7 +183,7 @@ res_man$result[[1]]$CutTreeTable
 
 # Perform fordyn simulation for one year with fire regime
 example_ifn10 <- example_ifn[1:10,]
-example_ifn10$represented_area <- 100
+example_ifn10$represented_area_ha <- 100
 regime <- create_fire_regime(c("2001" = 200))
 res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
                            fire_regime = regime)

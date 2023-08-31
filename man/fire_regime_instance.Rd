@@ -11,7 +11,7 @@ fire_regime_instance(sf, fire_regime)
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand identifiers.}
-\item{\code{represented_area}: Area represented by each stand (in hectares).}
+\item{\code{represented_area_ha}: Area represented by each stand (in hectares).}
 \item{\code{ignition_weights}: Relative weights to determine stands to be burned (optional).}
 }}
 
@@ -39,7 +39,7 @@ and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\
 data("example_ifn")
 
 # Assume that each stand represents 1km2 = 100 ha
-example_ifn$represented_area <- 100
+example_ifn$represented_area_ha <- 100
 
 # Define fire regime characteristics
 reg1 <- create_fire_regime(c("2002" = 200, "2003" = 500)) 

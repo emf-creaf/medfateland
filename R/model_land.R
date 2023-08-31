@@ -79,7 +79,7 @@
   isOutlet <- (unlist(lapply(y$waterQ, sum))==0)
   outlets <- which(isOutlet)
 
-  patchsize <- mean(y$represented_area, na.rm=TRUE)
+  patchsize <- mean(y$represented_area_m2, na.rm=TRUE)
 
   #Print information area
   if(header_footer) {
@@ -511,7 +511,7 @@
 #'     \item{\code{bedrock_porosity}: Bedrock porosity.}
 #'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
-#'     \item{\code{represented_area}: Area represented by each cell (in m2).}
+#'     \item{\code{represented_area_m2}: Area represented by each cell in m2.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
@@ -522,6 +522,7 @@
 #'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param correction_factors A list of watershed correction factors for hydraulic parameters.
+#' @param maximumDispersalDistance Maximum dispersal distance in meters.
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
@@ -645,6 +646,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),
                         correction_factors = default_watershed_correction_factors(),
+                        maximumDispersalDistance = 1000,
                         management_function = NULL,
                         progress = TRUE) {
   
@@ -659,7 +661,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   nArti <- sum(sf$land_cover_type %in% c("artificial"))
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  patchsize <- mean(sf$represented_area, na.rm=TRUE)
+  patchsize <- mean(sf$represented_area_m2, na.rm=TRUE)
   
   if(is.null(dates)) {
     # Try to get dates from input

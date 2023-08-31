@@ -36,7 +36,7 @@ fordyn_scenario(
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{management_unit}: Management unit corresponding to each stand.}
-\item{\code{represented_area}: Area represented by each stand (in hectares).}
+\item{\code{represented_area_ha}: Area represented by each stand in hectares.}
 \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when
 \code{fire_regime} is supplied only).}
 }
@@ -142,7 +142,7 @@ data("SpParamsMED")
 example_ifn$management_unit <- 1 
 
 # Assume that each stand represents 1km2 = 100 ha
-example_ifn$represented_area <- 100
+example_ifn$represented_area_ha <- 100
 
 # Creates scenario with one management unit and annual demand for P. nigra 
 scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))

@@ -17,7 +17,7 @@ data("SpParamsMED")
 data("defaultPrescriptionsBySpecies")
 
 # Assume that each stand represents 1km2 = 100 ha
-example_ifn$represented_area <- 100
+example_ifn$represented_area_ha <- 100
 
 
 test_that("Can build different scenario definitions",{

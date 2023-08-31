@@ -9,7 +9,7 @@
         argList <- list(x = f$treeData, SpParams = SpParams)
         if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
         vols_i <- do.call(what = volume_function, 
-                          args = argList)*y$represented_area[i]
+                          args = argList)*y$represented_area_ha[i]
         nsp_i <- medfate::species_characterParameter(f$treeData$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         if(length(vol_sp_i)>0) volume_spp[names(vol_sp_i)] = volume_spp[names(vol_sp_i)] + vol_sp_i
@@ -35,7 +35,7 @@
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{management_unit}: Management unit corresponding to each stand.}
-#'     \item{\code{represented_area}: Area represented by each stand (in hectares).}
+#'     \item{\code{represented_area_ha}: Area represented by each stand in hectares.}
 #'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when 
 #'                 \code{fire_regime} is supplied only).}
 #'   }
@@ -129,7 +129,7 @@
 #' example_ifn$management_unit <- 1 
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
-#' example_ifn$represented_area <- 100
+#' example_ifn$represented_area_ha <- 100
 #' 
 #' # Creates scenario with one management unit and annual demand for P. nigra 
 #' scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
@@ -171,9 +171,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   # A.1 Check inputs
   if(progress) cli::cli_progress_step(paste0("Checking sf input"))
   .check_sf_input(y)
-  if(!("represented_area" %in% names(y))) stop("Column 'represented_area' must be defined in 'y'")
+  if(!("represented_area_ha" %in% names(y))) stop("Column 'represented_area_ha' must be defined in 'y'")
   if(!("management_unit" %in% names(y))) stop("Column 'management_unit' must be defined in 'y'")
-  if(any(is.na(y$represented_area))) stop("Column 'represented_area' cannot include missing values")
+  if(any(is.na(y$represented_area_ha))) stop("Column 'represented_area_ha' cannot include missing values")
   scenario_type = match.arg(management_scenario$scenario_type, c("bottom-up", "input_rate", "input_demand"))
   
   if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'sf' if not supplied separately")
@@ -227,7 +227,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(progress) {
     cli::cli_h2("Scenario parameters")
     cli::cli_li(paste0("  Number of stands: ", n))
-    cli::cli_li(paste0("  Represented area: ", round(sum(y$represented_area)), " ha"))
+    cli::cli_li(paste0("  Represented area: ", round(sum(y$represented_area_ha)), " ha"))
     cli::cli_li(paste0("  Number of years: ", length(years)))
     cli::cli_li(paste0("  Management scenario type: ", scenario_type))
   }
@@ -434,7 +434,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
             ctd$N <- man$N_tree_cut
             argList <- list(x = ctd, SpParams = SpParams)
             if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
-            vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
+            vols_i <- do.call(what = volume_function, args = argList)*y$represented_area_ha[i]
             nsp_i <- medfate::plant_speciesName(f, SpParams)[1:nrow(f$treeData)]
             vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
             vol_sp_i <- vol_sp_i[names(vol_sp_i) %in% target_spp_names]
@@ -607,7 +607,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(!is.null(ctt)) {
         argList <- list(x = ctt, SpParams = SpParams)
         if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
-        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
+        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area_ha[i]
         nsp_i <- medfate::species_characterParameter(ctt$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         extracted[names(vol_sp_i), yi] <- extracted[names(vol_sp_i), yi] + vol_sp_i
@@ -616,7 +616,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(!is.null(dtt)) {
         argList <- list(x = dtt, SpParams = SpParams)
         if(!is.null(volume_arguments)) argList = c(argList, volume_arguments)
-        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area[i]
+        vols_i <- do.call(what = volume_function, args = argList)*y$represented_area_ha[i]
         nsp_i <- medfate::species_characterParameter(dtt$Species, SpParams, "Name")
         vol_sp_i <- tapply(vols_i, nsp_i, FUN = sum, na.rm=TRUE)
         dead[names(vol_sp_i), yi] <- dead[names(vol_sp_i), yi] + vol_sp_i

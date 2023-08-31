@@ -143,7 +143,7 @@ Before running simulations, it is necessary to specify the area (in ha) that eac
 
 In this example, we will assume a constant area of 100 ha for all stands:
 ```{r}
-example_subset$represented_area <- 100
+example_subset$represented_area_ha <- 100
 ```
 
 ## Performing simulations

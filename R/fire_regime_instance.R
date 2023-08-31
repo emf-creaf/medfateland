@@ -6,7 +6,7 @@
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
 #'     \item{\code{id}: Stand identifiers.}
-#'     \item{\code{represented_area}: Area represented by each stand (in hectares).}
+#'     \item{\code{represented_area_ha}: Area represented by each stand (in hectares).}
 #'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned (optional).}
 #'   }
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}).
@@ -35,7 +35,7 @@
 #' data("example_ifn")
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
-#' example_ifn$represented_area <- 100
+#' example_ifn$represented_area_ha <- 100
 #' 
 #' # Define fire regime characteristics
 #' reg1 <- create_fire_regime(c("2002" = 200, "2003" = 500)) 
@@ -62,11 +62,11 @@ fire_regime_instance <-function(sf, fire_regime) {
   if(!inherits(sf, "sf")) stop("'sf' has to be an object of class 'sf'.")
   if(!inherits(fire_regime, "fire_regime")) stop("'fire_regime' has to be an object of class 'fire_regime'.")
   if(!("id" %in% names(sf))) stop("Column 'id' must be defined.")
-  if(!("represented_area" %in% names(sf))) stop("Column 'represented_area' must be defined.")
+  if(!("represented_area_ha" %in% names(sf))) stop("Column 'represented_area_ha' must be defined.")
   
   years <- names(fire_regime$annual_burned_area)
   ids <- sf$id
-  min_area <- min(sf$represented_area)
+  min_area <- min(sf$represented_area_ha)
   n <- length(ids)
   
   m <- matrix(NA, nrow = n, ncol = length(years))
@@ -96,7 +96,7 @@ fire_regime_instance <-function(sf, fire_regime) {
       }
       weights <- weights[ available!= s]
       available <- available[ available!= s]
-      target <- target - sf$represented_area[s]
+      target <- target - sf$represented_area_ha[s]
     }
     if(length(available)==0) warning(paste0("All forest stands selected for year ", years[iy], " (possibly not fulfilling burned area demand)"))
   }

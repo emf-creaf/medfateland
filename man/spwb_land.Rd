@@ -38,6 +38,7 @@ fordyn_land(
   CO2ByYear = numeric(0),
   local_control = medfate::defaultControl(),
   correction_factors = default_watershed_correction_factors(),
+  maximumDispersalDistance = 1000,
   management_function = NULL,
   progress = TRUE
 )
@@ -64,7 +65,7 @@ fordyn_land(
 \item{\code{bedrock_porosity}: Bedrock porosity.}
 \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
-\item{\code{represented_area}: Area represented by each cell (in m2).}
+\item{\code{represented_area_m2}: Area represented by each cell in m2.}
 \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 }}
 
@@ -84,6 +85,8 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 \item{correction_factors}{A list of watershed correction factors for hydraulic parameters.}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+
+\item{maximumDispersalDistance}{Maximum dispersal distance in meters.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
