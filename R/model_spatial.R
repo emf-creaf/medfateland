@@ -667,11 +667,12 @@ spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultContro
 #' @rdname spwb_spatial
 #' @export
 growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
-                       CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
+                       CO2ByYear = numeric(0), fire_regime = NULL,
+                       keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
   if(progress)  cli::cli_h1(paste0("Simulation of model 'growth'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
-                CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
+                CO2ByYear = CO2ByYear, fire_regime = fire_regime, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
                 parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
 }
 

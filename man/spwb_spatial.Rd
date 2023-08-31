@@ -29,6 +29,7 @@ growth_spatial(
   local_control = defaultControl(),
   dates = NULL,
   CO2ByYear = numeric(0),
+  fire_regime = NULL,
   keep_results = TRUE,
   summary_function = NULL,
   summary_arguments = NULL,

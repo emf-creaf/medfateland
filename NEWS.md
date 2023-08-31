@@ -5,6 +5,7 @@
 # Version 2.0.5
 - Seed production and seed bank dynamics (from medfate v.3.2.0)
 - Dispersal process implemented for fordyn_land
+- Fire regime in growth_spatial
 
 # Version 2.0.3
 - Fire regimes can be simulated in functions fordyn_spatial and fordyn_scenario
