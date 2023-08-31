@@ -42,23 +42,19 @@ neighbour_distances<- function(sf, neighbours, patchsize) {
   }
   return(distances)
 }
-kernel_fun<- function(r, alpha = 100, c = 2) exp(-(r/alpha)^c)
-kernel_sums <- function(neighbours, distances, areas) {
-  k_sums <- numeric(length(neighbours))
-  for(i in 1:length(neighbours)) {
-    n_i <- neighbours[[i]]
-    d_i <- distances[[i]]
-    k_sums[i] <- kernel_fun(0)*areas[i] # Local value
-    for(j in 1:length(n_i)) {
-      n_ij <- n_i[j]
-      d_ij <- d_i[j]
-      k_ij <- kernel_fun(d_ij)*areas[n_ij] #Kernel parameters missing
-      if(!is.na(k_ij)){
-        k_sums[i] <- k_sums[i] + k_ij 
-      }
+kernel_fun<- function(r, alpha, c) exp(-(r/alpha)^c)
+kernel_sum <- function(target_index, neighbours, distances, areas,
+                       alpha, c) {
+  k_sum <- kernel_fun(0, alpha = alpha, c = c)*areas[target_index] # Local value
+  for(j in 1:length(neighbours)) {
+    n_ij <- neighbours[j]
+    d_ij <- distances[j]
+    k_ij <- kernel_fun(d_ij, alpha = alpha, c = c)*areas[n_ij] #Kernel parameters missing
+    if(!is.na(k_ij)){
+      k_sum <- k_sum + k_ij 
     }
   }
-  return(k_sums)
+  return(k_sum)
 }
 
 #' Seed production and dispersal
@@ -123,40 +119,45 @@ dispersal <- function(sf, SpParams,
   # Neighbours and distances
   neighbours <- extended_neighbours(sf, order = order)
   distances <- neighbour_distances(sf, neighbours, patchsize)
-  # Kernel sums
-  k_sums <- kernel_sums(neighbours, distances, sf$represented_area)
-  
+
   # Dispersal and seed bank dynamics
   for(i in 1:n) { 
     if(sf$land_cover_type[i] == "wildland")  {
       forest <- sf$forest[[i]]
+      n_i <- neighbours[[i]]
+      d_i <- distances[[i]]
       
       # Reduce seed bank according to longevity
       forest <- medfate::regeneration_seedmortality(forest, SpParams, minPercent)
       
       # Refill seed bank with new local seeds
       seeds_local <- seed_production[[i]]
+      seeds_disp_dist <- species_parameter(seeds_local, SpParams, "DispersalDistance")
+      seeds_disp_shape <- species_parameter(seeds_local, SpParams, "DispersalShape")
       n_seeds <- length(seeds_local)
       seeds_perc <- rep(NA,n_seeds)
       for(k in 1:n_seeds) {
-        #Kernel parameters missing
-        seeds_perc[k] <- 100*(kernel_fun(0)*sf$represented_area[i])/k_sums[i] 
+        k_sum <- kernel_sum(i, n_i, d_i, sf$represented_area,
+                            alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])
+        seeds_perc[k] <- 100*(kernel_fun(0, alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])*sf$represented_area[i])/k_sum 
       }
       forest <- medfate::regeneration_seedrefill(forest, seeds_local, seeds_perc)
 
       # Refill seed bank with neighbour seeds
-      n_i <- neighbours[[i]]
-      d_i <- distances[[i]]
       for(j in 1:length(n_i)) {
         n_ij <- n_i[j]
         d_ij <- d_i[j]
         if(sf$land_cover_type[n_ij] == "wildland") {
           seeds_neigh <- seed_production[[n_ij]]
+          seeds_disp_dist <- species_parameter(seeds_neigh, SpParams, "DispersalDistance")
+          seeds_disp_shape <- species_parameter(seeds_neigh, SpParams, "DispersalShape")
           n_seeds <- length(seeds_neigh)
           if(n_seeds > 0) {
             seeds_perc <- rep(NA,n_seeds)
             for(k in 1:n_seeds) {
-              seeds_perc[k] <- 100*(kernel_fun(d_ij)*sf$represented_area[n_ij])/k_sums[i] #Kernel parameters missing
+              k_sum <- kernel_sum(i, n_i, d_i, sf$represented_area,
+                                  alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])
+              seeds_perc[k] <- 100*(kernel_fun(d_ij, alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])*sf$represented_area[n_ij])/k_sum 
             }
           }
           forest <- medfate::regeneration_seedrefill(forest, seeds_neigh, percent = seeds_perc)
