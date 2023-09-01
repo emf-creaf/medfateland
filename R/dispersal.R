@@ -25,30 +25,30 @@ kernel_int <- function(r, alpha, c) {
   return(min(k_sum, 1.0))
 }
 
-kernel_percentile <- function(alpha, c, prob = 0.5) {
-  k_sum <- kernel_fun(0, alpha = alpha, c = c)*pi*(dist_vec[1]^2)
-  for(j in 1:length(dist_vec)) {
-    d_ij <- dist_vec[j]
-    if(j==length(dist_vec)) d_next <- 2*dist_vec[j] - dist_vec[j-1]
-    else d_next <- dist_vec[j+1]
-    k_ij <- kernel_fun((dist_vec[j]+d_next)/2, alpha = alpha, c = c)*pi*(d_next^2 - d_ij^2)
-    if(!is.na(k_ij)){
-      k_sum <- k_sum + k_ij 
-    }
-    if(k_sum>= prob) return(d_ij)
-  }
-  return(NA)
-}
-kernel_plot <- function(alpha, c, log = "xy", xmax = 100) {
-  inc <- alpha/10
-  step <- inc
-  dist_vec <- step
-  while(dist_vec[length(dist_vec)] < xmax) {
-    step <- min(step*2,xmax/100)
-    dist_vec <- c(dist_vec, dist_vec[length(dist_vec)]+ step)
-  }
-  plot(dist_vec, kernel_fun(dist_vec, alpha,c), type = "l", log = log)
-}
+# kernel_percentile <- function(alpha, c, prob = 0.5) {
+#   k_sum <- kernel_fun(0, alpha = alpha, c = c)*pi*(dist_vec[1]^2)
+#   for(j in 1:length(dist_vec)) {
+#     d_ij <- dist_vec[j]
+#     if(j==length(dist_vec)) d_next <- 2*dist_vec[j] - dist_vec[j-1]
+#     else d_next <- dist_vec[j+1]
+#     k_ij <- kernel_fun((dist_vec[j]+d_next)/2, alpha = alpha, c = c)*pi*(d_next^2 - d_ij^2)
+#     if(!is.na(k_ij)){
+#       k_sum <- k_sum + k_ij 
+#     }
+#     if(k_sum>= prob) return(d_ij)
+#   }
+#   return(NA)
+# }
+# kernel_plot <- function(alpha, c, log = "xy", xmax = 100) {
+#   inc <- alpha/10
+#   step <- inc
+#   dist_vec <- step
+#   while(dist_vec[length(dist_vec)] < xmax) {
+#     step <- min(step*2,xmax/100)
+#     dist_vec <- c(dist_vec, dist_vec[length(dist_vec)]+ step)
+#   }
+#   plot(dist_vec, kernel_fun(dist_vec, alpha,c), type = "l", log = log)
+# }
 #' Seed production, dispersal and seed bank dynamics
 #' 
 #' Simulates seed bank mortality, seed production and dispersal among stands
@@ -70,7 +70,7 @@ kernel_plot <- function(alpha, c, log = "xy", xmax = 100) {
 #' for appropriate function behavior.
 #'
 #' Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbors) are defined up to a given grid distance order. 
-#' A maximum value of 100\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
+#' A maximum value of 100% seed bank refill is attained for species with seed production in all seed donors and the local cell.
 #' 
 #' @return A list with forest objects (for wildland cover type) containing a modified seed bank
 #' 

@@ -45,6 +45,7 @@ reference:
   - ends_with("_day")
   - update_landscape
   - initialize_landscape
+  - dispersal
 
 - title: Post-processing
   desc:  Plot and summary functions for simulation results
