@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-08-25</h4>
+            <h4 data-toc-skip class="date">2023-09-01</h4>
       
       
       <div class="hidden name"><code>LandscapeWaterBalance.Rmd</code></div>
@@ -387,7 +387,7 @@ watershed included with the package:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 14 more variables: forest &lt;list&gt;, soil &lt;list&gt;, state &lt;list&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   waterOrder &lt;int&gt;, waterQ &lt;list&gt;, queenNeigh &lt;list&gt;, channel &lt;lgl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   depth_to_bedrock &lt;dbl&gt;, bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, represented_area &lt;dbl&gt;, crop_factor &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, represented_area_m2 &lt;dbl&gt;, crop_factor &lt;dbl&gt;</span></span></span></code></pre>
 <p>Here is a map of elevation values:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="st">"elevation"</span><span class="op">)</span></span></code></pre></div>
@@ -418,16 +418,17 @@ single month.</p>
 <pre><code><span><span class="co">## • Number of summaries: 1</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking spwb input <span style="color: #B2B2B2;">[674ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking spwb input <span style="color: #B2B2B2;">[816ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 65 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[25ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  32% | ETA:  4s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% | ETA:  1s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  19% | ETA:  5s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  48% | ETA:  4s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% | ETA:  1s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
 <pre><code><span><span class="co">##   Change in snowpack water content (mm): 0.05</span></span>
@@ -472,7 +473,7 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET Runon Runoff Infiltration</span></span>
 <span><span class="co">## 2001-01-01      -3.203556       2.427977 44.91317     0      0     53.67129</span></span>
@@ -488,7 +489,7 @@ summaries for a given landscape cell using:</p>
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
 water volume for the simulated month:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="LandscapeWaterBalance_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>

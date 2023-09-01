@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-08-25</h4>
+            <h4 data-toc-skip class="date">2023-09-01</h4>
       
       
       <div class="hidden name"><code>ManagementScenario.Rmd</code></div>
@@ -324,7 +324,7 @@ represents, in order to know how much of the demand is fulfilled</p>
 <p>In this example, we will assume a constant area of 100 ha for all
 stands:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">example_subset</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">example_subset</span><span class="op">$</span><span class="va">represented_area_ha</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -345,10 +345,10 @@ simulations.</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of a management/fire scenario with fordyn</span> <span style="color: #00BBBB;">────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[20ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Scenario parameters</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -379,21 +379,37 @@ simulations.</p>
 <pre><code><span><span class="co">## • Volume by target species/group:</span></span></code></pre>
 <pre><code><span><span class="co">##       Pinus nigra/Pinus sylvestris - demand 1300 m3, expected 827 m3 from 1 stand(s).</span></span>
 <span><span class="co">##       Pinus halepensis - demand 500 m3, expected 0 m3 from 0 stand(s).</span></span></code></pre>
+<pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed production</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Neighbor resampling</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Neighbor resampling <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[666ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[167ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[25ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[32.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[38.2s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <pre><code><span><span class="co">## • Final volume: 64675 m3</span></span></code></pre>
@@ -417,31 +433,47 @@ simulations.</p>
 <pre><code><span><span class="co">## • Volume by target species/group:</span></span></code></pre>
 <pre><code><span><span class="co">##       Pinus nigra/Pinus sylvestris - demand 1754 m3, expected 1797 m3 from 1 stand(s).</span></span>
 <span><span class="co">##       Pinus halepensis - demand 1000 m3, expected 797 m3 from 1 stand(s).</span></span></code></pre>
+<pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed production</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Neighbor resampling</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Neighbor resampling <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[758ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[175ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[26ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[33.1s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[41.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 63213 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 63217 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (all species):</span></span></code></pre>
-<pre><code><span><span class="co">##       Initial (m3): 64675      Growth (m3): 1227      Mortality (m3): 50      Extraction (m3): 2639      Final (m3): 63213</span></span>
-<span><span class="co">##       Extraction rate: 215%      Average extraction rate: 216%</span></span></code></pre>
+<pre><code><span><span class="co">##       Initial (m3): 64675      Growth (m3): 1231      Mortality (m3): 50      Extraction (m3): 2639      Final (m3): 63217</span></span>
+<span><span class="co">##       Extraction rate: 214%      Average extraction rate: 215%</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (target species with demand):</span></span></code></pre>
 <pre><code><span><span class="co">##       Nominal demand (m3): 1800      Offset (m3): 954      Actual demand (m3): 2754</span></span>
-<span><span class="co">##       Initial (m3): 63248      Growth (m3): 1213      Mortality (m3): 49      Extraction (m3): 2639      Final (m3): 61774</span></span>
-<span><span class="co">##       Extraction rate: 218%      Average extraction rate: 130%</span></span>
+<span><span class="co">##       Initial (m3): 63248      Growth (m3): 1217      Mortality (m3): 49      Extraction (m3): 2639      Final (m3): 61778</span></span>
+<span><span class="co">##       Extraction rate: 217%      Average extraction rate: 130%</span></span>
 <span><span class="co">##       Demand satisfaction: 96%      Nominal satisfaction: 147%      Average nominal satisfaction: 97%</span></span>
 <span><span class="co">##       Next year offset (m3): 116</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -458,7 +490,7 @@ first decides and reports how many forest stands will be simulated and,
 after these are completed, it summarizes the results.</p>
 <p>Function <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code> returns a list whose elements
 are:</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fs_12</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "result_sf"             "result_volumes"        "result_volumes_spp"   </span></span>
 <span><span class="co">## [4] "result_volumes_demand" "next_demand"           "next_sf"</span></span></code></pre>
@@ -469,7 +501,7 @@ for subsequent simulations (see next section).</p>
 The column names of this <code>sf</code> object should be easy to
 interpret if you have experience with functions <code>fordyn()</code> or
 <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>:</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_sf</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 10 features and 8 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -480,15 +512,15 @@ interpret if you have experience with functions <code>fordyn()</code> or
 <span><span class="co">##               geometry id        tree_table          shrub_table dead_tree_table</span></span>
 <span><span class="co">##            <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (1.901727 41.96974) 081047_A1 <span style="color: #949494;">&lt;tibble [72 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (1.925861 41.96997) 081048_A1 <span style="color: #949494;">&lt;tibble [79 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (1.925861 41.96997) 081048_A1 <span style="color: #949494;">&lt;tibble [75 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (1.937928 41.97008) 081049_A1 <span style="color: #949494;">&lt;tibble [15 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (1.949995 41.97019) 081050_A1 <span style="color: #949494;">&lt;tibble [75 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (1.949995 41.97019) 081050_A1 <span style="color: #949494;">&lt;tibble [76 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  (1.962062 41.9703) 081051_A1 <span style="color: #949494;">&lt;tibble [63 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (1.974129 41.97041) 081052_A1 <span style="color: #949494;">&lt;tibble [78 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (1.974129 41.97041) 081052_A1 <span style="color: #949494;">&lt;tibble [80 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (1.986197 41.97052) 081053_A1 <span style="color: #949494;">&lt;tibble [104 × 10]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (1.998264 41.97062) 081054_A1 <span style="color: #949494;">&lt;tibble [110 × 10]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (2.010331 41.97073) 081055_A1 <span style="color: #949494;">&lt;tibble [63 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (2.022399 41.97083) 081056_A1 <span style="color: #949494;">&lt;tibble [114 × 10]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (2.010331 41.97073) 081055_A1 <span style="color: #949494;">&lt;tibble [64 × 10]&gt;</span>  <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (2.022399 41.97083) 081056_A1 <span style="color: #949494;">&lt;tibble [115 × 10]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: dead_shrub_table &lt;list&gt;, cut_tree_table &lt;list&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   cut_shrub_table &lt;list&gt;, summary &lt;list&gt;</span></span></span></code></pre>
 <p>Another important element of the results is
@@ -497,22 +529,22 @@ interpret if you have experience with functions <code>fordyn()</code> or
 <p>First, we can inspect for each year the volume corresponding to the
 initial and final standing stock, the forest growth and the extracted
 wood:</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_volumes</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
 <span><span class="co">##    Year initial growth mortality extracted  final cumulative_growth</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001  <span style="text-decoration: underline;">66</span>449.  <span style="text-decoration: underline;">1</span>483.      52.6     <span style="text-decoration: underline;">3</span>205. <span style="text-decoration: underline;">64</span>675.             <span style="text-decoration: underline;">1</span>483.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002  <span style="text-decoration: underline;">64</span>675.  <span style="text-decoration: underline;">1</span>227.      49.7     <span style="text-decoration: underline;">2</span>639. <span style="text-decoration: underline;">63</span>213.             <span style="text-decoration: underline;">2</span>709.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002  <span style="text-decoration: underline;">64</span>675.  <span style="text-decoration: underline;">1</span>231.      49.8     <span style="text-decoration: underline;">2</span>639. <span style="text-decoration: underline;">63</span>217.             <span style="text-decoration: underline;">2</span>714.</span></span></code></pre>
 <p>The same figures can be inspected, but corresponding to those species
 for which demand has been defined:</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_volumes</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">8</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">##    Year cumulative_extraction initial_target growth_target mortality_target</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001                 <span style="text-decoration: underline;">3</span>205.         <span style="text-decoration: underline;">62</span>682.         <span style="text-decoration: underline;">1</span>460.             48.3</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002                 <span style="text-decoration: underline;">5</span>843.         <span style="text-decoration: underline;">63</span>248.         <span style="text-decoration: underline;">1</span>213.             48.5</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002                 <span style="text-decoration: underline;">5</span>843.         <span style="text-decoration: underline;">63</span>248.         <span style="text-decoration: underline;">1</span>217.             48.6</span></span></code></pre>
 <p>Finally, we can display for each step what was the nominal demand
 (according to the input), the actual demand (once the offset of previous
 years was included), as well as the cumulative nominal demand and
@@ -520,13 +552,13 @@ cumulative extracted volumes. While strong disagreements can exist
 between demand and extracted wood at the annual level, the cumulative
 columns mentioned are important to check whether simulations fulfilled
 the required demand in the long term.</p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_volumes</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">12</span><span class="op">:</span><span class="fl">16</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
 <span><span class="co">##    Year extracted_target final_target nominal_demand demand_offset actual_demand</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001             846.       <span style="text-decoration: underline;">64</span>675.           <span style="text-decoration: underline;">1</span>800            0          <span style="text-decoration: underline;">1</span>800 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002            <span style="text-decoration: underline;">2</span>639.       <span style="text-decoration: underline;">63</span>213.           <span style="text-decoration: underline;">1</span>800          954.         <span style="text-decoration: underline;">2</span>754.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002            <span style="text-decoration: underline;">2</span>639.       <span style="text-decoration: underline;">63</span>217.           <span style="text-decoration: underline;">1</span>800          954.         <span style="text-decoration: underline;">2</span>754.</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="continuing-previous-simulation">Continuing previous simulation<a class="anchor" aria-label="anchor" href="#continuing-previous-simulation"></a>
@@ -536,7 +568,7 @@ the required demand in the long term.</p>
 simulation starting at the point where the previous one finished. The
 element <code>next_sf</code> contains the <code>sf</code> object
 corresponding to the final state of the simulation:</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">next_sf</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 10 features and 12 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -557,18 +589,18 @@ corresponding to the final state of the simulation:</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (2.010331 41.97073) 081055_A1       593  5.73  265.  wildland        <span style="color: #949494;">&lt;soil&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> (2.022399 41.97083) 081056_A1       601  5.26   84.8 wildland        <span style="color: #949494;">&lt;soil&gt;</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 6 more variables: forest &lt;list&gt;, dominant_tree_species &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   management_unit &lt;dbl&gt;, represented_area &lt;dbl&gt;, management_arguments &lt;list&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   state &lt;list&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   management_unit &lt;dbl&gt;, represented_area_ha &lt;dbl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   management_arguments &lt;list&gt;, state &lt;list&gt;</span></span></span></code></pre>
 <p>On the other hand, in demand-based scenarios there may be demand
 offsets that need to be carried on to the next simulations:</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">next_demand</span></span></code></pre></div>
 <pre><code><span><span class="co">## $offset</span></span>
 <span><span class="co">## Pinus nigra/Pinus sylvestris             Pinus halepensis </span></span>
-<span><span class="co">##                     -76.8887                     192.6190 </span></span>
+<span><span class="co">##                    -76.81429                    192.62317 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $last_growth</span></span>
-<span><span class="co">## [1] 1212.685</span></span></code></pre>
+<span><span class="co">## [1] 1217.227</span></span></code></pre>
 <p>In addition to the demand offset for each species or species group,
 note that <code>next_demand</code> also contains information about the
 last growth. This is necessary for scenarios where demand is modulated
@@ -577,20 +609,20 @@ depending on intended extraction rates and past growth.</p>
 in our example), we can simply call <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code> along
 with the result of the previous simulation instead of the original
 <code>sf</code> object:</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fordyn_scenario.html">fordyn_scenario</a></span><span class="op">(</span><span class="va">fs_12</span>, <span class="va">SpParamsMED</span>, meteo <span class="op">=</span> <span class="va">meteo_03</span>, </span>
 <span>                        management_scenario <span class="op">=</span> <span class="va">scen</span>,</span>
 <span>                        parallelize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of a management/fire scenario with fordyn</span> <span style="color: #00BBBB;">────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Recovering previous run</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Recovering previous run <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Recovering previous run <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[27ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Scenario parameters</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -606,7 +638,7 @@ with the result of the previous simulation instead of the original
 <span><span class="co">##      7 stand(s) in unit [Pinus nigra]</span></span>
 <span><span class="co">##      1 stand(s) without prescriptions</span></span></code></pre>
 <pre><code><span><span class="co">## • Default volume function</span></span></code></pre>
-<pre><code><span><span class="co">## • Initial volume: 63213 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Initial volume: 63217 m3</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Simulation</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -616,30 +648,46 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## • Demand (after final cuts): 1916 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Determining thinning operations</span></span></code></pre>
 <pre><code><span><span class="co">## • No stand(s) with management to be simulated</span></span></code></pre>
+<pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed production</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Neighbor resampling</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Neighbor resampling <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[712ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[190ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[37.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[42.7s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[20ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 64345 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 64343 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (all species):</span></span></code></pre>
-<pre><code><span><span class="co">##       Initial (m3): 63213      Growth (m3): 1180      Mortality (m3): 47      Extraction (m3): 0      Final (m3): 64345</span></span>
+<pre><code><span><span class="co">##       Initial (m3): 63217      Growth (m3): 1173      Mortality (m3): 48      Extraction (m3): 0      Final (m3): 64343</span></span>
 <span><span class="co">##       Extraction rate: 0%      Average extraction rate: 0%</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (target species with demand):</span></span></code></pre>
 <pre><code><span><span class="co">##       Nominal demand (m3): 1800      Offset (m3): 116      Actual demand (m3): 1916</span></span>
-<span><span class="co">##       Initial (m3): 61774      Growth (m3): 1169      Mortality (m3): 46      Extraction (m3): 0      Final (m3): 62896</span></span>
+<span><span class="co">##       Initial (m3): 61778      Growth (m3): 1161      Mortality (m3): 46      Extraction (m3): 0      Final (m3): 62893</span></span>
 <span><span class="co">##       Extraction rate: 0%      Average extraction rate: 0%</span></span>
 <span><span class="co">##       Demand satisfaction: 0%      Nominal satisfaction: 0%      Average nominal satisfaction: 0%</span></span>
 <span><span class="co">##       Next year offset (m3): 1916</span></span></code></pre>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
 <li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>management_unit</code>: Management unit corresponding to each stand.</p></li>
-<li><p><code>represented_area</code>: Area represented by each stand (in hectares).</p></li>
+<li><p><code>represented_area_ha</code>: Area represented by each stand in hectares.</p></li>
 <li><p><code>ignition_weights</code>: Relative weights to determine stands to be burned. Optional, relevant when
 <code>fire_regime</code> is supplied only).</p></li>
 </ul><p>Alternatively, the user may supply the result of a previous call to <code>fordyn_scenario</code>, where
@@ -158,7 +158,7 @@ If NULL, wildfires are not simulated. Details are given in <code><a href="spwb_s
     <h2>Value</h2>
     
 
-<p>An list of class 'fordyn_scenario' with the following elements:</p><ul><li><p><code>result_sf</code>: An object of class 'sf' containing four elements:
+<p>An list of class 'fordyn_scenario' with the following elements:</p><ul><li><p><code>result_sf</code>: An object of class 'sf' using a UTM projection and containing four elements:
 </p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand id, taken from the input.</p></li>
 <li><p><code>tree_table</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>
@@ -180,6 +180,8 @@ to modify demand in subsequent calls to <code>fordyn_scenario</code>.</p></li>
     <h2>Details</h2>
     <p>This function allows coordinating the dynamics of simulated forest stands via a management scenario
 defined at the landscape/regional level (see different kinds of scenarios and how to specify them in <code><a href="create_management_scenario.html">create_management_scenario</a></code>).</p>
+<p>The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+for appropriate behavior of dispersal sub-model.</p>
 <p>For each year to be simulated, the function determines which forest stands will be managed, possibly depending on the demand,
 and then calls function <code><a href="spwb_spatial.html">fordyn_spatial</a></code> for one year (normally including parallelization).
 If the simulation of some stands results in an error, the function will try to restore
@@ -191,7 +193,7 @@ meaning that management parameters need to follow the structure of <code>default
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="spwb_spatial.html">fordyn_spatial</a></code>, <code><a href="create_management_scenario.html">create_management_scenario</a></code></p></div>
+    <div class="dont-index"><p><code><a href="spwb_spatial.html">fordyn_spatial</a></code>, <code><a href="create_management_scenario.html">create_management_scenario</a></code>, <code><a href="dispersal.html">dispersal</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -219,17 +221,20 @@ meaning that management parameters need to follow the structure of <code>default
 <span class="r-in"><span><span class="co"># Load default medfate parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Creates scenario with one management unit and annual demand for P. nigra </span></span></span>
+<span class="r-in"><span><span class="va">scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra/Pinus sylvestris"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assign management unit to all stands</span></span></span>
 <span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">management_unit</span> <span class="op">&lt;-</span> <span class="fl">1</span> </span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Assume that each stand represents 1km2 = 100 ha</span></span></span>
-<span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">represented_area</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">represented_area_ha</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Creates scenario with one management unit and annual demand for P. nigra </span></span></span>
-<span class="r-in"><span><span class="va">scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_management_scenario.html">create_management_scenario</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinus nigra/Pinus sylvestris"</span> <span class="op">=</span> <span class="fl">2300</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Transform to UTM31 (necessary for dispersal)</span></span></span>
+<span class="r-in"><span><span class="va">example_ifn_utm31</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">example_ifn</span>, crs <span class="op">=</span> <span class="fl">32631</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch simulation scenario (years 2001 and 2002)</span></span></span>
-<span class="r-in"><span><span class="va">fs_12</span> <span class="op">&lt;-</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, meteo <span class="op">=</span> <span class="va">meteo_01_02</span>, </span></span>
+<span class="r-in"><span><span class="va">fs_12</span> <span class="op">&lt;-</span> <span class="fu">fordyn_scenario</span><span class="op">(</span><span class="va">example_ifn_utm31</span>, <span class="va">SpParamsMED</span>, meteo <span class="op">=</span> <span class="va">meteo_01_02</span>, </span></span>
 <span class="r-in"><span>                       volume_function <span class="op">=</span> <span class="cn">NULL</span>, management_scenario <span class="op">=</span> <span class="va">scen</span>,</span></span>
 <span class="r-in"><span>                       parallelize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>                       </span></span>

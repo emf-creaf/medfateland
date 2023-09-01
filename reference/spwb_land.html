@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
       </span>
     </div>
 
@@ -82,6 +82,7 @@
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  correction_factors <span class="op">=</span> <span class="fu"><a href="default_watershed_correction_factors.html">default_watershed_correction_factors</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  maximumDispersalDistance <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  management_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -109,7 +110,7 @@
 <li><p><code>bedrock_porosity</code>: Bedrock porosity.</p></li>
 <li><p><code>snowpack</code>: A numeric vector with the snow water equivalent content of the snowpack in each cell.</p></li>
 <li><p><code>aquifer</code>: A numeric vector with the water content of the aquifer in each cell.</p></li>
-<li><p><code>represented_area</code>: Area represented by each cell (in m2).</p></li>
+<li><p><code>represented_area_m2</code>: Area represented by each cell in m2.</p></li>
 <li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_land</code> only).</p></li>
 </ul></dd>
 
@@ -145,6 +146,10 @@ In <code>fordyn_land</code> summaries are always produced at monthly resolution.
 
 <dt>progress</dt>
 <dd><p>Boolean flag to display progress information for simulations.</p></dd>
+
+
+<dt>maximumDispersalDistance</dt>
+<dd><p>Maximum dispersal distance in meters.</p></dd>
 
 
 <dt>management_function</dt>
@@ -209,11 +214,13 @@ on grid cells of a watershed while accounting for overland runoff, subsurface fl
 provided by <code>growth_day</code>.</p></li>
 <li><p>Function <code>fordyn_land</code> extends the previous two functions with the simulation of management, recruitment
 and resprouting.</p></li>
-</ul></div>
+</ul><p>When running <code>fordyn_land</code>, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+for appropriate behavior of dispersal sub-model.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code>spwb_day</code>,  <code>growth_day</code>,
-<code><a href="spwb_spatial.html">spwb_spatial</a></code></p></div>
+<code><a href="spwb_spatial.html">spwb_spatial</a></code>, <code><a href="spwb_spatial.html">fordyn_spatial</a></code>, <code><a href="dispersal.html">dispersal</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
