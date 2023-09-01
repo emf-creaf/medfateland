@@ -64,6 +64,9 @@
 #' @details This function allows coordinating the dynamics of simulated forest stands via a management scenario 
 #' defined at the landscape/regional level (see different kinds of scenarios and how to specify them in \code{\link{create_management_scenario}}).
 #' 
+#' The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+#' for appropriate behavior of dispersal sub-model.
+#'
 #' For each year to be simulated, the function determines which forest stands will be managed, possibly depending on the demand,
 #' and then calls function \code{\link{fordyn_spatial}} for one year (normally including parallelization). 
 #' If the simulation of some stands results in an error, the function will try to restore 
@@ -77,7 +80,7 @@
 #'  
 #' @returns An list of class 'fordyn_scenario' with the following elements:
 #'  \itemize{
-#'    \item{\code{result_sf}: An object of class 'sf' containing four elements:
+#'    \item{\code{result_sf}: An object of class 'sf' using a UTM projection and containing four elements:
 #'      \itemize{
 #'        \item{\code{geometry}: Spatial geometry.}
 #'        \item{\code{id}: Stand id, taken from the input.}
@@ -104,7 +107,7 @@
 #' 
 #' Aitor \enc{Améztegui}{Ameztegui}, UdL
 #' 
-#' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}
+#' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}, \code{\link{dispersal}}
 #' 
 #' @examples 
 #' \dontrun{
@@ -125,17 +128,20 @@
 #' # Load default medfate parameters
 #' data("SpParamsMED")
 #' 
+#' # Creates scenario with one management unit and annual demand for P. nigra 
+#' scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
+#' 
 #' # Assign management unit to all stands
 #' example_ifn$management_unit <- 1 
 #' 
 #' # Assume that each stand represents 1km2 = 100 ha
 #' example_ifn$represented_area_ha <- 100
 #' 
-#' # Creates scenario with one management unit and annual demand for P. nigra 
-#' scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
+#' # Transform to UTM31 (necessary for dispersal)
+#' example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
 #' 
 #' # Launch simulation scenario (years 2001 and 2002)
-#' fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 
+#' fs_12 <- fordyn_scenario(example_ifn_utm31, SpParamsMED, meteo = meteo_01_02, 
 #'                        volume_function = NULL, management_scenario = scen,
 #'                        parallelize = TRUE)
 #'                        
@@ -157,6 +163,9 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   if(progress)  cli::cli_h1(paste0("Simulation of a management/fire scenario with fordyn"))
   nspp = nrow(SpParams)
   
+  # Disable seed bank dynamics inside fordyn (it is dealt with in dispersal)
+  local_control$allowSeedBankDynamics <- FALSE
+    
   offset_demand <- NULL
   last_growth <- NULL 
   if(inherits(sf, "sf")) {
@@ -510,6 +519,12 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     prev_management_args <- y$management_arguments
     y$management_arguments[managed & (!managed_step)] <- list(NULL) # Deactivates management on plots that were not selected
     
+    if(progress) cli::cli_li(paste0("Seed bank dynamics and seed dispersal..."))
+    seedbank_list <- dispersal(y, SpParams, local_control, progress = progress)
+    for(i in 1:n) { 
+      y$forest[[i]]$seedBank <- seedbank_list[[i]]
+    }
+    
     # B.2 Call fordyn_spatial()
     if(progress) cli::cli_li(paste0("Calling fordyn_spatial..."))
     fds <-.model_spatial(y, SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = datesYear,
@@ -524,6 +539,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     # y_backup <- rlang::duplicate(y)
     y_backup <- y
     y <- update_landscape(y, fds) # This updates forest, soil, growthInput and management_arguments
+    
+    
     # B.3b Check for null forest objects (from errors in previous step)
     restored <- 0
     for(i in 1:n) {

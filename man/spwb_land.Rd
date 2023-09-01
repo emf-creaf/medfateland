@@ -156,6 +156,9 @@ provided by \code{\link{growth_day}}.}
 \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
 and resprouting.}
 }
+
+When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+for appropriate behavior of dispersal sub-model.
 }
 \examples{
 \dontrun{

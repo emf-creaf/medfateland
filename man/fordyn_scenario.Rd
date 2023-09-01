@@ -80,7 +80,7 @@ If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_sp
 \value{
 An list of class 'fordyn_scenario' with the following elements:
 \itemize{
-\item{\code{result_sf}: An object of class 'sf' containing four elements:
+\item{\code{result_sf}: An object of class 'sf' using a UTM projection and containing four elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand id, taken from the input.}
@@ -107,6 +107,9 @@ Evaluates forest dynamics over a landscape including climate and management scen
 \details{
 This function allows coordinating the dynamics of simulated forest stands via a management scenario
 defined at the landscape/regional level (see different kinds of scenarios and how to specify them in \code{\link{create_management_scenario}}).
+
+The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+for appropriate behavior of dispersal sub-model.
 
 For each year to be simulated, the function determines which forest stands will be managed, possibly depending on the demand,
 and then calls function \code{\link{fordyn_spatial}} for one year (normally including parallelization).
@@ -138,17 +141,20 @@ row.names(meteo_03) <- seq(as.Date("2003-01-01"),
 # Load default medfate parameters
 data("SpParamsMED")
 
+# Creates scenario with one management unit and annual demand for P. nigra 
+scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
+
 # Assign management unit to all stands
 example_ifn$management_unit <- 1 
 
 # Assume that each stand represents 1km2 = 100 ha
 example_ifn$represented_area_ha <- 100
 
-# Creates scenario with one management unit and annual demand for P. nigra 
-scen <- create_management_scenario(1, c("Pinus nigra/Pinus sylvestris" = 2300))
+# Transform to UTM31 (necessary for dispersal)
+example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
 
 # Launch simulation scenario (years 2001 and 2002)
-fs_12 <- fordyn_scenario(example_ifn, SpParamsMED, meteo = meteo_01_02, 
+fs_12 <- fordyn_scenario(example_ifn_utm31, SpParamsMED, meteo = meteo_01_02, 
                        volume_function = NULL, management_scenario = scen,
                        parallelize = TRUE)
                        
@@ -160,7 +166,7 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
 }
 \seealso{
-\code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}
+\code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}, \code{\link{dispersal}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

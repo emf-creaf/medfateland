@@ -579,6 +579,10 @@
 #'   \item{\code{daily_runoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 #' }
 #' 
+#' @details
+#' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+#' for appropriate behavior of dispersal sub-model.
+#'
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
 #' @seealso \code{\link{spwb_day}},  \code{\link{growth_day}},
@@ -782,9 +786,14 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
     }
     if(progress) cli::cli_li(paste0("Seed production/dispersal"))
     
-    # Seed production and dispersal
-    sf$forest <- dispersal(sf, SpParams, local_control)
-
+    # Seedbank dynamics, seed production and dispersal
+    seedbank_list <- dispersal(sf, SpParams, local_control, progress = FALSE)
+    for(i in 1:nCells) { 
+      if(sf$land_cover_type[i] == "wildland")  {
+        sf$forest[[i]]$seedBank <- seedbank_list[[i]]
+      }
+    }
+    
     if(progress) cli::cli_li(paste0("Management/recruitment/resprouting"))
     for(i in 1:nCells) { 
       if(sf$land_cover_type[i] == "wildland")  {

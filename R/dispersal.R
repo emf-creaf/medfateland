@@ -1,40 +1,76 @@
 kernel_fun<- function(r, alpha, c) {
   (c*exp(-(r/alpha)^c))/(2*pi*(alpha^2)*gamma(2/c))
 }
-kernel_sum <- function(target_index, neighbours, distances, areas,
-                       alpha, c) {
-  k_sum <- kernel_fun(0, alpha = alpha, c = c)*areas[target_index] # Local value
-  for(j in 1:length(neighbours)) {
-    n_ij <- neighbours[j]
-    d_ij <- distances[j]
-    k_ij <- kernel_fun(d_ij, alpha = alpha, c = c)*areas[n_ij] #Kernel parameters missing
+kernel_int <- function(r, alpha, c) {
+  #Define suitable steps for integration
+  inc <- min(alpha/10, 0.1)
+  step <- inc
+  dist_vec <- step
+  while(dist_vec[length(dist_vec)] < r) {
+    step <- min(step*2,r/100)
+    dist_vec <- c(dist_vec, dist_vec[length(dist_vec)]+ step)
+  }
+  dist_vec[length(dist_vec)] <- r
+  #Integration
+  k_sum <- kernel_fun(0, alpha = alpha, c = c)*pi*(dist_vec[1]^2)
+  for(j in 1:length(dist_vec)) {
+    d_ij <- dist_vec[j]
+    if(j==length(dist_vec)) d_next <- 2*dist_vec[j] - dist_vec[j-1]
+    else d_next <- dist_vec[j+1]
+    k_ij <- kernel_fun((dist_vec[j]+d_next)/2, alpha = alpha, c = c)*pi*(d_next^2 - d_ij^2)
     if(!is.na(k_ij)){
       k_sum <- k_sum + k_ij 
     }
   }
-  return(k_sum)
+  return(min(k_sum, 1.0))
 }
 
-#' Seed production and dispersal
+kernel_percentile <- function(alpha, c, prob = 0.5) {
+  k_sum <- kernel_fun(0, alpha = alpha, c = c)*pi*(dist_vec[1]^2)
+  for(j in 1:length(dist_vec)) {
+    d_ij <- dist_vec[j]
+    if(j==length(dist_vec)) d_next <- 2*dist_vec[j] - dist_vec[j-1]
+    else d_next <- dist_vec[j+1]
+    k_ij <- kernel_fun((dist_vec[j]+d_next)/2, alpha = alpha, c = c)*pi*(d_next^2 - d_ij^2)
+    if(!is.na(k_ij)){
+      k_sum <- k_sum + k_ij 
+    }
+    if(k_sum>= prob) return(d_ij)
+  }
+  return(NA)
+}
+kernel_plot <- function(alpha, c, log = "xy", xmax = 100) {
+  inc <- alpha/10
+  step <- inc
+  dist_vec <- step
+  while(dist_vec[length(dist_vec)] < xmax) {
+    step <- min(step*2,xmax/100)
+    dist_vec <- c(dist_vec, dist_vec[length(dist_vec)]+ step)
+  }
+  plot(dist_vec, kernel_fun(dist_vec, alpha,c), type = "l", log = log)
+}
+#' Seed production, dispersal and seed bank dynamics
 #' 
 #' Simulates seed bank mortality, seed production and dispersal among stands
 #'
-#' @param sf_utm An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
+#' @param sf An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
 #'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
-#'     \item{\code{represented_area_m2}: Area represented by each stand in m2 (alternatively \code{represented_area_ha} for hectare units is also allowed).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}})
+#' @param distanceStep Distance step in meters.
 #' @param maximumDispersalDistance Maximum dispersal distance in meters.
 #' @param minPercent A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.
+#' @param progress Boolean flag to display progress information.
 #' 
 #' @details
+#' The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+#' for appropriate function behavior.
+#'
 #' Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbors) are defined up to a given grid distance order. 
-#' The sum of dispersal kernel values over the neighbors plus the kernel of the local 
-#' grid cell is used to define the normalizing constant for the kernel. A maximum value of 100\% seed bank refill is attained for
-#' species with seed production in all seed donors and the local cell.
+#' A maximum value of 100\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
 #' 
 #' @return A list with forest objects (for wildland cover type) containing a modified seed bank
 #' 
@@ -48,6 +84,7 @@ kernel_sum <- function(target_index, neighbours, distances, areas,
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' data(example_watershed)
 #' data(SpParamsMED)
 #' 
@@ -55,105 +92,124 @@ kernel_sum <- function(target_index, neighbours, distances, areas,
 #' example_watershed_utm31 <- sf::st_transform(example_watershed, crs = 32631)
 #'
 #' # Estimate seed production and dispersal over the watershed
-#' forest_list <- dispersal(example_watershed_utm31, SpParamsMED)
+#' seedbank_list <- dispersal(example_watershed_utm31, SpParamsMED)
 #' 
-#' forest_list[[1]]$seedBank
-dispersal <- function(sf_utm, SpParams, 
+#' seedbank_list[[1]]
+#' 
+#' # Transform to UTM31
+#' example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
+#' 
+#' # Estimate seed production and dispersal over the set of forest inventory plots
+#' seedbank_list <- dispersal(example_ifn_utm31, SpParamsMED)
+#' 
+#' seedbank_list[[1]]
+#' }
+dispersal <- function(sf, SpParams, 
                       local_control = medfate::defaultControl(), 
-                      maximumDispersalDistance = 1000, minPercent = 1) {
+                      distanceStep = 25, maximumDispersalDistance = 3000, minPercent = 1, 
+                      progress = TRUE) {
 
-  if(!inherits(sf_utm, "sf")) stop("'sf_utm' has to be of class 'sf'.")
-  if(!("forest" %in% names(sf_utm))) stop("Column 'forest' must be defined.")
-  if(!("represented_area_m2" %in% names(sf_utm))) {
-    if("represented_area_ha" %in% names(sf_utm)) {
-      sf_utm$represented_area_m2 <- sf_utm$represented_area_ha*10000
-    } else {
-      stop("Please, supply column 'represented_area_m2' or 'represented_area_ha'")
-    }
-  }
+  if(!inherits(sf, "sf")) stop("'sf' has to be of class 'sf'.")
+  if(!("forest" %in% names(sf))) stop("Column 'forest' must be defined.")
+
+  n <- nrow(sf)
   
-  n <- nrow(sf_utm)
-  
-  forest_list_out <- vector("list", n)
+  seedbank_list <- vector("list", n)
   seed_production <- vector("list", n)
   
-  # Seed local production
+  # Reduce seed bank according to longevity
+  if(progress) cli::cli_progress_step(paste0("Seed bank mortality"))
   for(i in 1:n) { 
-    forest <- sf_utm$forest[[i]]
+    forest <- sf$forest[[i]]
+    if(!is.null(forest))  {
+      seedBank <- forest$seedBank
+      seedBank <- medfate::regeneration_seedmortality(seedBank, SpParams, minPercent)
+      seedbank_list[[i]] <- seedBank
+    }
+  }
+  # Seed local production
+  if(progress) cli::cli_progress_step(paste0("Seed production"))
+  for(i in 1:n) { 
+    forest <- sf$forest[[i]]
     if(!is.null(forest))  {
       seed_production[[i]] <- medfate::regeneration_seedproduction(forest, SpParams, local_control)
+    } else {
+      seed_production[[i]] <- character(0)
     }
   }
   
+  spp <- sort(unique(unlist(seed_production)))
+  
   # Neighbours and distances
-  neighbours <- vector("list", n)
-  distances <- vector("list", n)
-  coords <- sf::st_coordinates(sf_utm)
+  if(progress) cli::cli_progress_step(paste0("Neighbor resampling"))
+  dist_vec <- seq(distanceStep, maximumDispersalDistance, by = distanceStep)
+  neigh_matrix <- matrix(nrow = n, ncol = length(dist_vec))
+  coords <- sf::st_coordinates(sf)
   for(i in 1:n) {
-    d_vec <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
-    sel_vec <- (d_vec < maximumDispersalDistance)
-    sel_vec[i] <- FALSE
-    distances[[i]] <- d_vec[sel_vec]
-    neighbours[[i]] <- which(sel_vec)
+    di_vec <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
+    for(j in 1:length(dist_vec)) {
+      d_ij <- abs(dist_vec[j] - di_vec)
+      if(any(d_ij==0)) {
+        probs_ij <- rep(0, length(d_ij))
+        probs_ij[d_ij==0] <- 1/sum(d_ij==0)
+      } else {
+        probs_ij <- 1/(d_ij^2)
+      }
+      neigh_matrix[i,j] <- sample(length(d_ij), 1, prob = probs_ij)
+    }
   }
   
-  # Dispersal and seed bank dynamics
-  for(i in 1:n) { 
-    forest <- sf_utm$forest[[i]]
+  # Kernel parameters
+  if(progress) cli::cli_progress_step(paste0("Kernel estimation"))
+  kernel_params <- data.frame(Species = spp)
+  kernel_params$DispersalDistance  <- species_parameter(spp, SpParams, "DispersalDistance")
+  kernel_params$DispersalShape  <- species_parameter(spp, SpParams, "DispersalShape")
+  
+  # Kernel F values
+  F_kernel <- matrix(nrow = length(spp), ncol = length(dist_vec))
+  F_kernel_inc <- matrix(nrow = length(spp), ncol = length(dist_vec))
+  for(i in 1:length(spp)) {
+    for(j in 1:length(dist_vec)) {
+      F_kernel[i,j] <- kernel_int(dist_vec[j], kernel_params$DispersalDistance[i], kernel_params$DispersalShape[i])
+    }
+  }
+  F_kernel_inc[,1] <- F_kernel[,1]
+  F_kernel_inc[,-1] <-  F_kernel[,2:ncol(F_kernel)] - F_kernel[,1:(ncol(F_kernel)-1)]
     
-    if(!is.null(forest)) {
-      n_i <- neighbours[[i]]
-      d_i <- distances[[i]]
-
-      # Reduce seed bank according to longevity
-      forest <- medfate::regeneration_seedmortality(forest, SpParams, minPercent)
-      
-      # Refill seed bank with new local seeds
-      seeds_local <- seed_production[[i]]
-      seeds_disp_dist <- species_parameter(seeds_local, SpParams, "DispersalDistance")
-      seeds_disp_shape <- species_parameter(seeds_local, SpParams, "DispersalShape")
-      n_seeds <- length(seeds_local)
-      seeds_perc <- rep(NA,n_seeds)
-      for(k in 1:n_seeds) {
-        k_sum <- kernel_sum(i, n_i, d_i, sf_utm$represented_area_m2,
-                            alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])
-        seeds_perc[k] <- 100*(kernel_fun(0, alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])*sf_utm$represented_area_m2[i])/k_sum 
-      }
-      forest <- medfate::regeneration_seedrefill(forest, seeds_local, seeds_perc)
-
-      # Refill seed bank with neighbor seeds
-      for(j in 1:length(n_i)) {
-        n_ij <- n_i[j]
-        d_ij <- d_i[j]
-        seeds_neigh <- seed_production[[n_ij]]
-        if(!is.null(seeds_neigh)) {
-          seeds_disp_dist <- species_parameter(seeds_neigh, SpParams, "DispersalDistance")
-          seeds_disp_shape <- species_parameter(seeds_neigh, SpParams, "DispersalShape")
-          n_seeds <- length(seeds_neigh)
-          if(n_seeds > 0) {
-            seeds_perc <- rep(NA,n_seeds)
-            for(k in 1:n_seeds) {
-              k_sum <- kernel_sum(i, n_i, d_i, sf_utm$represented_area_m2,
-                                  alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])
-              seeds_perc[k] <- 100*(kernel_fun(d_ij, alpha = seeds_disp_dist[k], c = seeds_disp_shape[k])*sf_utm$represented_area_m2[n_ij])/k_sum 
-            }
+  # Dispersal and seed bank dynamics
+  if(progress) cli::cli_progress_step(paste0("Seed dispersal"))
+  for(i in 1:n) { 
+    seedBank <- seedbank_list[[i]]
+    if(!is.null(seedBank)) {
+      for(j in 1:length(dist_vec)) {
+        nij <- neigh_matrix[i,j]
+        seeds_neigh<- seed_production[[nij]]
+        n_seeds <- length(seeds_neigh)
+        seeds_perc <- rep(NA,n_seeds)
+        if(n_seeds > 0) {
+          for(k in 1:n_seeds) {
+            i_spp <- which(spp==seeds_neigh[[k]])
+            seeds_perc[k] <- 100*F_kernel_inc[i_spp, j]
           }
-          forest <- medfate::regeneration_seedrefill(forest, seeds_neigh, percent = seeds_perc)
+          seedBank <- medfate::regeneration_seedrefill(seedBank, seeds_neigh, seeds_perc)
         }
       }
       # Add seed rain from control
       if(!is.null(local_control$seedRain)) {
-        forest <- regeneration_seedrefill(forest, local_control$seedRain)
+        seedBank <- regeneration_seedrefill(seedBank, local_control$seedRain)
       }
+      
       # Filter species not reaching minimum percent
-      forest$seedBank <- forest$seedBank[forest$seedBank$Percent >= minPercent, , drop = FALSE]
+      seedBank <- seedBank[seedBank$Percent >= minPercent, , drop = FALSE]
       
       # Sort by alphabetical species order
-      if(nrow(forest$seedBank) > 0) forest$seedBank <- forest$seedBank[order(forest$seedBank$Species),]
+      if(nrow(seedBank) > 0) seedBank <- seedBank[order(seedBank$Species),]
+      row.names(seedBank) <- NULL
       
-      # Store forest with updated seed bank
-      forest_list_out[[i]] <- forest
+      # Store updated seed bank
+      seedbank_list[[i]] <- seedBank
     }
   }
-  return(forest_list_out)
+  if(progress) cli::cli_progress_done()
+  return(seedbank_list)
 }

@@ -2,31 +2,36 @@
 % Please edit documentation in R/dispersal.R
 \name{dispersal}
 \alias{dispersal}
-\title{Seed production and dispersal}
+\title{Seed production, dispersal and seed bank dynamics}
 \usage{
 dispersal(
-  sf_utm,
+  sf,
   SpParams,
   local_control = medfate::defaultControl(),
-  maximumDispersalDistance = 1000,
-  minPercent = 1
+  distanceStep = 25,
+  maximumDispersalDistance = 3000,
+  minPercent = 1,
+  progress = TRUE
 )
 }
 \arguments{
-\item{sf_utm}{An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
+\item{sf}{An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{represented_area_m2}: Area represented by each stand in m2 (alternatively \code{represented_area_ha} for hectare units is also allowed).}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}})}
 
+\item{distanceStep}{Distance step in meters.}
+
 \item{maximumDispersalDistance}{Maximum dispersal distance in meters.}
 
 \item{minPercent}{A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+
+\item{progress}{Boolean flag to display progress information.}
 }
 \value{
 A list with forest objects (for wildland cover type) containing a modified seed bank
@@ -35,12 +40,14 @@ A list with forest objects (for wildland cover type) containing a modified seed 
 Simulates seed bank mortality, seed production and dispersal among stands
 }
 \details{
+The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+for appropriate function behavior.
+
 Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbors) are defined up to a given grid distance order.
-The sum of dispersal kernel values over the neighbors plus the kernel of the local
-grid cell is used to define the normalizing constant for the kernel. A maximum value of 100\\% seed bank refill is attained for
-species with seed production in all seed donors and the local cell.
+A maximum value of 100\\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
 }
 \examples{
+\dontrun{
 data(example_watershed)
 data(SpParamsMED)
 
@@ -48,9 +55,18 @@ data(SpParamsMED)
 example_watershed_utm31 <- sf::st_transform(example_watershed, crs = 32631)
 
 # Estimate seed production and dispersal over the watershed
-forest_list <- dispersal(example_watershed_utm31, SpParamsMED)
+seedbank_list <- dispersal(example_watershed_utm31, SpParamsMED)
 
-forest_list[[1]]$seedBank
+seedbank_list[[1]]
+
+# Transform to UTM31
+example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
+
+# Estimate seed production and dispersal over the set of forest inventory plots
+seedbank_list <- dispersal(example_ifn_utm31, SpParamsMED)
+
+seedbank_list[[1]]
+}
 }
 \references{
 Clark et al. (1999). Seed dispersal near and far: Patterns across temperate and tropical forests. Ecology 80(5):1475-1494
