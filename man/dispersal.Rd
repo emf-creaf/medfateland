@@ -11,6 +11,7 @@ dispersal(
   distanceStep = 25,
   maximumDispersalDistance = 3000,
   minPercent = 1,
+  stochasticResampling = FALSE,
   progress = TRUE
 )
 }
@@ -31,6 +32,8 @@ dispersal(
 
 \item{minPercent}{A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
 
+\item{stochasticResampling}{A flag to indicate that stochastic resampling of stands is performed.}
+
 \item{progress}{Boolean flag to display progress information.}
 }
 \value{
@@ -44,7 +47,7 @@ The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordin
 for appropriate function behavior.
 
 Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbors) are defined up to a given grid distance order.
-A maximum value of 100\\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
+A maximum value of 100\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
 }
 \examples{
 \dontrun{

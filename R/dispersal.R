@@ -63,6 +63,7 @@ kernel_int <- function(r, alpha, c) {
 #' @param distanceStep Distance step in meters.
 #' @param maximumDispersalDistance Maximum dispersal distance in meters.
 #' @param minPercent A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.
+#' @param stochasticResampling A flag to indicate that stochastic resampling of stands is performed.
 #' @param progress Boolean flag to display progress information.
 #' 
 #' @details
@@ -107,7 +108,7 @@ kernel_int <- function(r, alpha, c) {
 dispersal <- function(sf, SpParams, 
                       local_control = medfate::defaultControl(), 
                       distanceStep = 25, maximumDispersalDistance = 3000, minPercent = 1, 
-                      progress = TRUE) {
+                      stochasticResampling = FALSE, progress = TRUE) {
 
   if(!inherits(sf, "sf")) stop("'sf' has to be of class 'sf'.")
   if(!("forest" %in% names(sf))) stop("Column 'forest' must be defined.")
@@ -141,23 +142,25 @@ dispersal <- function(sf, SpParams,
   spp <- sort(unique(unlist(seed_production)))
   
   # Neighbours and distances
-  if(progress) cli::cli_progress_step(paste0("Neighbor resampling"))
-  dist_vec <- seq(distanceStep, maximumDispersalDistance, by = distanceStep)
-  neigh_matrix <- matrix(nrow = n, ncol = length(dist_vec))
   coords <- sf::st_coordinates(sf)
-  for(i in 1:n) {
-    di_vec <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
-    for(j in 1:length(dist_vec)) {
-      d_ij <- abs(dist_vec[j] - di_vec)
-      if(any(d_ij==0)) {
-        probs_ij <- rep(0, length(d_ij))
-        probs_ij[d_ij==0] <- 1/sum(d_ij==0)
-      } else {
-        probs_ij <- 1/(d_ij^2)
+  dist_vec <- seq(distanceStep, maximumDispersalDistance, by = distanceStep)
+  if(stochasticResampling) {
+    if(progress) cli::cli_progress_step(paste0("Neighbor stochastic resampling"))
+    neigh_matrix <- matrix(nrow = n, ncol = length(dist_vec))
+    for(i in 1:n) {
+      di_vec <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
+      for(j in 1:length(dist_vec)) {
+        d_ij <- abs(dist_vec[j] - di_vec)
+        if(any(d_ij==0)) {
+          probs_ij <- rep(0, length(d_ij))
+          probs_ij[d_ij==0] <- 1/sum(d_ij==0)
+        } else {
+          probs_ij <- 1/d_ij
+        }
+        neigh_matrix[i,j] <- sample(length(d_ij), 1, prob = probs_ij)
       }
-      neigh_matrix[i,j] <- sample(length(d_ij), 1, prob = probs_ij)
     }
-  }
+  } 
   
   # Kernel parameters
   if(progress) cli::cli_progress_step(paste0("Kernel estimation"))
@@ -181,19 +184,45 @@ dispersal <- function(sf, SpParams,
   for(i in 1:n) { 
     seedBank <- seedbank_list[[i]]
     if(!is.null(seedBank)) {
-      for(j in 1:length(dist_vec)) {
-        nij <- neigh_matrix[i,j]
-        seeds_neigh<- seed_production[[nij]]
-        n_seeds <- length(seeds_neigh)
-        seeds_perc <- rep(NA,n_seeds)
-        if(n_seeds > 0) {
-          for(k in 1:n_seeds) {
-            i_spp <- which(spp==seeds_neigh[[k]])
-            seeds_perc[k] <- 100*F_kernel_inc[i_spp, j]
+      seeds_perc <- rep(0, length(spp))
+      if(stochasticResampling) {
+        for(j in 1:length(dist_vec)) {
+          nij <- neigh_matrix[i,j]
+          seeds_neigh<- seed_production[[nij]]
+          n_seeds <- length(seeds_neigh)
+          if(n_seeds > 0) {
+            for(k in 1:n_seeds) {
+              i_spp <- which(spp==seeds_neigh[[k]])
+              seeds_perc[i_spp] <- seeds_perc[i_spp] + 100*F_kernel_inc[i_spp, j]
+            }
           }
-          seedBank <- medfate::regeneration_seedrefill(seedBank, seeds_neigh, seeds_perc)
+        }
+      } else {
+        di_vec <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
+        for(j in 1:length(dist_vec)) {
+          d_ij <- abs(dist_vec[j] - di_vec)
+          if(any(d_ij==0)) {
+            probs_ij <- rep(0, length(d_ij))
+            probs_ij[d_ij==0] <- 1/sum(d_ij==0)
+          } else {
+            probs_ij <- 1/d_ij
+          }
+          probs_ij <- probs_ij/sum(probs_ij) # Normalize to sum 1
+          for(k in 1:n) {
+            seeds_neigh<- seed_production[[k]]
+            n_seeds <- length(seeds_neigh)
+            if(n_seeds > 0) {
+              for(l in 1:n_seeds) {
+                i_spp <- which(spp==seeds_neigh[[l]])
+                seeds_perc[i_spp] <- seeds_perc[i_spp] + 100*probs_ij[k]*F_kernel_inc[i_spp, j]
+              }
+            }
+          }
         }
       }
+      # Add dispersed seeds to seed bank
+      seedBank <- medfate::regeneration_seedrefill(seedBank, spp, seeds_perc)
+      
       # Add seed rain from control
       if(!is.null(local_control$seedRain)) {
         seedBank <- regeneration_seedrefill(seedBank, local_control$seedRain)
