@@ -14,7 +14,7 @@ spwb_land(
   CO2ByYear = numeric(0),
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
-  correction_factors = default_watershed_correction_factors(),
+  watershed_control = default_watershed_control(),
   progress = TRUE
 )
 
@@ -26,7 +26,7 @@ growth_land(
   CO2ByYear = numeric(0),
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
-  correction_factors = default_watershed_correction_factors(),
+  watershed_control = default_watershed_control(),
   progress = TRUE
 )
 
@@ -37,7 +37,7 @@ fordyn_land(
   dates = NULL,
   CO2ByYear = numeric(0),
   local_control = medfate::defaultControl(),
-  correction_factors = default_watershed_correction_factors(),
+  watershed_control = default_watershed_control(),
   maximumDispersalDistance = 1000,
   management_function = NULL,
   progress = TRUE
@@ -82,7 +82,7 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
-\item{correction_factors}{A list of watershed correction factors for hydraulic parameters.}
+\item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 

@@ -25,6 +25,8 @@ Author: María González
 \href{https://orcid.org/0000-0002-2227-8404}{ORCID}
 
 Contributor: Mario Beltrán
-\href{https://orcid.org/0000-0002-2227-8404}{ORCID}
+
+Contributor: Roberto Molowny
+\href{https://orcid.org/0000-0003-2626-6379}{ORCID}
 }
 \keyword{internal}

@@ -233,8 +233,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // watershedDay
-List watershedDay(String localModel, CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity, NumericVector aquifer, NumericVector snowpack, List correction_factors, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
-RcppExport SEXP _medfateland_watershedDay(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP depth_to_bedrockSEXP, SEXP bedrock_conductivitySEXP, SEXP bedrock_porositySEXP, SEXP aquiferSEXP, SEXP snowpackSEXP, SEXP correction_factorsSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
+List watershedDay(String localModel, CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity, NumericVector aquifer, NumericVector snowpack, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
+RcppExport SEXP _medfateland_watershedDay(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP depth_to_bedrockSEXP, SEXP bedrock_conductivitySEXP, SEXP bedrock_porositySEXP, SEXP aquiferSEXP, SEXP snowpackSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -250,7 +250,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type bedrock_porosity(bedrock_porositySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type aquifer(aquiferSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type snowpack(snowpackSEXP);
-    Rcpp::traits::input_parameter< List >::type correction_factors(correction_factorsSEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type latitude(latitudeSEXP);
@@ -259,7 +259,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type progress(progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(watershedDay(localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, correction_factors, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
+    rcpp_result_gen = Rcpp::wrap(watershedDay(localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
     return rcpp_result_gen;
 END_RCPP
 }

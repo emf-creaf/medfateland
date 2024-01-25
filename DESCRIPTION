@@ -8,7 +8,8 @@ Authors@R: c(
 	email='miquelcaceres@gmail.com'),
 	person('Aitor', 'Améztegui', role=c('aut'), comment = c(ORCID = "0000-0003-2006-1559")),
 	person('María', 'González', role=c('aut'), comment = c(ORCID = "0000-0002-2227-8404")),
-	person('Mario', 'Beltrán', role=c('ctb')))
+	person('Mario', 'Beltrán', role=c('ctb')),
+	person('Roberto', 'Molowny', role=c('ctb'), comment = c(ORCID = "0000-0003-2626-6379")))
 Description: Functions to simulate forest hydrology, forest function and dynamics over landscapes.
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html

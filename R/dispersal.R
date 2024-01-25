@@ -75,7 +75,10 @@ kernel_int <- function(r, alpha, c) {
 #' 
 #' @return A list with forest objects (for wildland cover type) containing a modified seed bank
 #' 
-#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' @author 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' Roberto Molowny-Horas, CREAF.
 #' 
 #' @references 
 #' Clark et al. (1999). Seed dispersal near and far: Patterns across temperate and tropical forests. Ecology 80(5):1475-1494

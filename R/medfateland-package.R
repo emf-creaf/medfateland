@@ -17,7 +17,9 @@
 #' [ORCID](https://orcid.org/0000-0002-2227-8404)
 #' 
 #' Contributor: Mario Beltrán
-#' [ORCID](https://orcid.org/0000-0002-2227-8404)
+#' 
+#' Contributor: Roberto Molowny
+#' [ORCID](https://orcid.org/0000-0003-2626-6379)
 #' 
 #' @seealso Useful links: \itemize{ \item{
 #' \url{https://emf-creaf.github.io/medfateland/index.html}} }

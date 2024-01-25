@@ -3,7 +3,7 @@
 export(create_fire_regime)
 export(create_management_scenario)
 export(default_volume_function)
-export(default_watershed_correction_factors)
+export(default_watershed_control)
 export(dispersal)
 export(extract_variables)
 export(fire_regime_instance)

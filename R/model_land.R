@@ -3,7 +3,7 @@
                    CO2ByYear = numeric(0), 
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
-                   correction_factors = default_watershed_correction_factors(),
+                   watershed_control= default_watershed_control(),
                    progress = TRUE, header_footer = progress) {
 
   #check input
@@ -303,7 +303,7 @@
                            y$waterOrder, y$queenNeigh, y$waterQ,
                            y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
                            y$aquifer, y$snowpack,
-                           correction_factors,
+                           watershed_control,
                            datechar,
                            gridMeteo,
                            latitude, y$elevation, y$slope, y$aspect,
@@ -521,7 +521,7 @@
 #' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 #'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
-#' @param correction_factors A list of watershed correction factors for hydraulic parameters.
+#' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}).
 #' @param maximumDispersalDistance Maximum dispersal distance in meters.
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
@@ -617,7 +617,7 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                     CO2ByYear = numeric(0), 
                     summary_frequency = "years",
                     local_control = medfate::defaultControl(),
-                    correction_factors = default_watershed_correction_factors(),
+                    watershed_control = default_watershed_control(),
                     progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'spwb' over a watershed"))
   return(.landSim("spwb_land",
@@ -625,7 +625,8 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                   CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
-                  correction_factors = correction_factors, progress = progress, header_footer = progress))
+                  watershed_control = watershed_control, 
+                  progress = progress, header_footer = progress))
 }
 #' @rdname spwb_land
 #' @export
@@ -633,7 +634,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                       CO2ByYear = numeric(0), 
                       summary_frequency = "years",
                       local_control = medfate::defaultControl(),
-                      correction_factors = default_watershed_correction_factors(),
+                      watershed_control = default_watershed_control(),
                       progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'growth' over a watershed"))
   return(.landSim("growth_land",
@@ -641,7 +642,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                   CO2ByYear = CO2ByYear,
                   summary_frequency = summary_frequency, 
                   local_control = local_control,
-                  correction_factors = correction_factors, progress = progress, header_footer = progress))
+                  watershed_control = watershed_control, progress = progress, header_footer = progress))
 }
 
 #' @rdname spwb_land
@@ -649,7 +650,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
 fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),
-                        correction_factors = default_watershed_correction_factors(),
+                        watershed_control = default_watershed_control(),
                         maximumDispersalDistance = 1000,
                         management_function = NULL,
                         progress = TRUE) {
@@ -764,7 +765,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                    CO2ByYear = CO2ByYear,
                    summary_frequency = "month", # Summary frequency to use statistics
                    local_control = local_control,
-                   correction_factors = correction_factors, progress = progress, header_footer = FALSE)
+                   watershed_control = watershed_control, progress = progress, header_footer = FALSE)
     
     # Store snowpack and aquifer state
     sf$aquifer <- GL$sf$aquifer

@@ -79,4 +79,6 @@ Clark et al. (1999). Seed dispersal near and far: Patterns across temperate and 
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+
+Roberto Molowny-Horas, CREAF.
 }

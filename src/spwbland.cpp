@@ -80,7 +80,7 @@ List watershedDay(String localModel,
                   IntegerVector waterO, List queenNeigh, List waterQ,
                   NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,
                   NumericVector aquifer, NumericVector snowpack,
-                  List correction_factors,
+                  List watershed_control,
                   CharacterVector date,
                   DataFrame gridMeteo,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
@@ -94,6 +94,7 @@ List watershedDay(String localModel,
   NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
   double runoffExport = 0.0;
 
+  List correction_factors = watershed_control["tetis_correction_factors"];
   double Rdrain = correction_factors["Rdrain"];
   double Rinterflow = correction_factors["Rinterflow"];
   double Rbaseflow = correction_factors["Rbaseflow"];
