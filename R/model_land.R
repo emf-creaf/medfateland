@@ -6,6 +6,8 @@
                    watershed_control= default_watershed_control(),
                    progress = TRUE, header_footer = progress) {
 
+  ## SERGHEI: Enforce same soil layer definition
+  
   #check input
   if(!inherits(y, "sf")) stop("'y' has to be of class 'sf'.")
   if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")

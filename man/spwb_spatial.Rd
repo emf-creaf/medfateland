@@ -19,7 +19,8 @@ spwb_spatial(
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
-  progress = TRUE
+  progress = TRUE,
+  local_verbose = FALSE
 )
 
 growth_spatial(
@@ -36,7 +37,8 @@ growth_spatial(
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
-  progress = TRUE
+  progress = TRUE,
+  local_verbose = FALSE
 )
 
 fordyn_spatial(
@@ -54,7 +56,8 @@ fordyn_spatial(
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
-  progress = TRUE
+  progress = TRUE,
+  local_verbose = FALSE
 )
 }
 \arguments{
@@ -100,7 +103,9 @@ fordyn_spatial(
 
 \item{chunk_size}{Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
-\item{progress}{Boolean flag to display progress information for simulations.}
+\item{progress}{Boolean flag to display progress information of simulations.}
+
+\item{local_verbose}{Boolean flag to display detailed progress information in local simulations.}
 
 \item{fire_regime}{A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or
 a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}),

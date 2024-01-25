@@ -140,11 +140,13 @@
       }
       if(is.null(ma)) mf = NULL
       res <- tryCatch({
+        # print("entering fordyn")
         medfate::fordyn(forest = f_in, soil = s, SpParams = SpParams, meteo=met, control = local_control,
                         latitude = xi$latitude, elevation = xi$elevation,
                         slope = xi$slope, aspect = xi$aspect,
                         CO2ByYear = CO2ByYear,
                         management_function = mf, management_args = ma)
+        # print("after fordyn")
       },
       error = function(e){
         simpleError(e$message,"fordyn")
@@ -298,14 +300,14 @@
                         management_function = NULL, 
                         summary_function=NULL, summary_arguments=NULL,
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
-                        progress = TRUE) {
+                        progress = TRUE, local_verbose = FALSE) {
   
   if(progress) cli::cli_progress_step(paste0("Checking sf input"))
   .check_sf_input(y)
   
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
-  local_control$verbose = FALSE
+  local_control$verbose = local_verbose
 
   n <- nrow(y)
   
@@ -563,7 +565,8 @@
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
-#' @param progress Boolean flag to display progress information for simulations.
+#' @param progress Boolean flag to display progress information of simulations.
+#' @param local_verbose Boolean flag to display detailed progress information in local simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
 #' 
@@ -657,11 +660,13 @@
 #' @export
 spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                      CO2ByYear = numeric(0), keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
-                     parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
+                     parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE,
+                     local_verbose = FALSE) {
   if(progress)  cli::cli_h1(paste0("Simulation of model 'spwb'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "spwb", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
-                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress,
+                local_verbose = local_verbose)
 }
 
 #' @rdname spwb_spatial
@@ -669,11 +674,13 @@ spwb_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultContro
 growth_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                        CO2ByYear = numeric(0), fire_regime = NULL,
                        keep_results = TRUE, summary_function=NULL, summary_arguments=NULL,
-                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
+                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE,
+                       local_verbose = FALSE) {
   if(progress)  cli::cli_h1(paste0("Simulation of model 'growth'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "growth", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, fire_regime = fire_regime, keep_results = keep_results, summary_function = summary_function, summary_arguments = summary_arguments, 
-                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress,
+                local_verbose = local_verbose)
 }
 
 #' @rdname spwb_spatial
@@ -682,12 +689,14 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
                        CO2ByYear = numeric(0), fire_regime = NULL, 
                        keep_results = TRUE, 
                        management_function = NULL, summary_function=NULL, summary_arguments=NULL,
-                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE) {
+                       parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE,
+                       local_verbose = FALSE) {
   if(progress)  cli::cli_h1(paste0("Simulation of model 'fordyn'"))
   .model_spatial(y=sf, SpParams = SpParams, meteo = meteo, model = "fordyn", local_control = local_control, dates = dates,
                 CO2ByYear = CO2ByYear, fire_regime = fire_regime, keep_results = keep_results, 
                 management_function = management_function, summary_function = summary_function, summary_arguments = summary_arguments, 
-                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress)
+                parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, progress = progress,
+                local_verbose = local_verbose)
 }
 
 #' Initialization of model inputs for spatially-distributed forest stands
