@@ -74,8 +74,8 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
   return(DDSsp);
 }
 
-// [[Rcpp::export(".watershedDay")]]
-List watershedDay(String localModel,
+// [[Rcpp::export(".watershedDayTetis")]]
+List watershedDayTetis(String localModel,
                   CharacterVector lct, List xList, List soilList,
                   IntegerVector waterO, List queenNeigh, List waterQ,
                   NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,
@@ -425,4 +425,148 @@ List watershedDay(String localModel,
                       _["LocalResults"] = localResults));
 }
 
+// [[Rcpp::export(".initSerghei")]]
+void initSerghei(String localModel,
+                 CharacterVector lct, List xList, List soilList) {
+}  
+// [[Rcpp::export(".watershedDaySerghei")]]
+List watershedDaySerghei(String localModel,
+                       CharacterVector lct, List xList, List soilList,
+                       NumericVector snowpack,
+                       List watershed_control,
+                       CharacterVector date,
+                       DataFrame gridMeteo,
+                       NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
+                       double patchsize, bool progress = true) {
+  int nX = xList.size();
+  NumericVector MinTemperature(nX, NA_REAL), MaxTemperature(nX, NA_REAL), PET(nX, NA_REAL);
+  NumericVector Precipitation(nX, NA_REAL), Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
+  NumericVector NetRain(nX,NA_REAL), Runon(nX,0.0), Infiltration(nX,NA_REAL);
+  NumericVector SaturationExcess(nX, 0.0);
+  NumericVector Runoff(nX,NA_REAL), DeepDrainage(nX,0.0), AquiferDischarge(nX, 0.0);
+  NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
+  double runoffExport = 0.0;
+  
+  List correction_factors = watershed_control["tetis_correction_factors"];
+  double Rdrain = correction_factors["Rdrain"];
+  double Rinterflow = correction_factors["Rinterflow"];
+  double Rbaseflow = correction_factors["Rbaseflow"];
+  
+  //A. Subsurface fluxes
+  double cellArea = patchsize; //cell size in m2
+  double cellWidth = sqrt(patchsize); //cell width in m
+  double n = 3.0;
+  
+  NumericVector tminVec = gridMeteo["MinTemperature"];
+  NumericVector tmaxVec = gridMeteo["MaxTemperature"];
+  NumericVector rhminVec = gridMeteo["MinRelativeHumidity"];
+  NumericVector rhmaxVec = gridMeteo["MaxRelativeHumidity"];
+  NumericVector precVec = gridMeteo["Precipitation"];
+  NumericVector radVec = gridMeteo["Radiation"];
+  NumericVector wsVec = gridMeteo["WindSpeed"];
+  NumericVector C02Vec = gridMeteo["CO2"];
+  
+  // Rcout<<"\n";
+  
+  //B. Vertical and surface fluxes
+  List localResults(nX);
+  if(progress) Rcout<<"+";
+  for(int i=0;i<nX;i++) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      List soil = soilList[i];
+      soil["SWE"] = snowpack[i];
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      double Kdrain = soil["Kdrain"];
+      double D = soil["SoilDepth"]; //Soil depth in mm
+
+      //Run daily soil water balance for the current cell
+      List res;
+      NumericVector meteovec = NumericVector::create(
+              _["MinTemperature"] = tminVec[i],
+              _["MaxTemperature"] = tmaxVec[i],
+              _["MinRelativeHumidity"] = rhminVec[i],
+              _["MaxRelativeHumidity"] = rhmaxVec[i],
+              _["Precipitation"]  =precVec[i],
+              _["Radiation"] = radVec[i],
+              _["WindSpeed"] = wsVec[i],
+              _["CO2"] = C02Vec[i]
+      );
+      if(lct[i]=="agriculture") {
+        res = aspwb_day(x, date, meteovec,
+                        latitude[i], elevation[i], slope[i], aspect[i],
+                        Runon[i]+SaturationExcess[i], true);
+      } else {
+        if(localModel=="spwb") {
+          res = medfate::spwb_day(x, date, meteovec,
+                                  latitude[i], elevation[i], slope[i], aspect[i],
+                                  Runon[i]+SaturationExcess[i], true);
+        } else if(localModel =="growth") {
+          res = medfate::growth_day(x, date, meteovec,
+                                    latitude[i], elevation[i], slope[i], aspect[i],
+                                    Runon[i]+SaturationExcess[i], true);
+        }
+      }
+      localResults[i] = res; //Store for output
+      soil["Kdrain"] = Kdrain; //Restore value
+      snowpack[i] = soil["SWE"]; //Copy back snowpack
+      NumericVector DB = res["WaterBalance"];
+      DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
+      MinTemperature[i] = tminVec[i];
+      MaxTemperature[i] = tmaxVec[i];
+      Snow[i] = DB["Snow"];
+      Snowmelt[i] = DB["Snowmelt"];
+      PET[i] = DB["PET"];
+      Rain[i] = DB["Rain"];
+      Infiltration[i] = DB["Infiltration"];
+      Runoff[i] = DB["Runoff"];
+      DeepDrainage[i] = DB["DeepDrainage"];
+      SoilEvaporation[i] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
+      
+      if(lct[i]=="wildland") {
+        NetRain[i] = DB["NetRain"];
+        DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
+        NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
+        Transpiration[i] = sum(EplantCoh);
+      }
+    } else {
+      Rain[i] = 0.0;
+      Snow[i] = 0.0;
+      Snowmelt[i] = 0.0;
+      SoilEvaporation[i] = 0.0;
+      double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
+      if(tday<0.0) {
+        Snow[i] = precVec[i];
+        snowpack[i] += Snow[i];
+      } else {
+        Rain[i] = precVec[i];
+      }
+      NetRain[i] = Rain[i];
+      if(snowpack[i]>0.0) {
+        double melt = medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i]);
+        Snowmelt[i] = std::min(melt, snowpack[i]);
+        snowpack[i] -= Snowmelt[i];
+      }
+      if(lct[i]=="rock" || lct[i]=="artificial") {
+        Infiltration[i] = 0.0;
+        //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
+        Runoff[i] =  SaturationExcess[i]+Runon[i]+Snowmelt[i]+Rain[i];
+        DeepDrainage[i] = 0.0;
+      } else if(lct[i]=="water") {
+        // water cells receive water from other cells or Precipitation
+        // but do not export to the atmosphere contribute nor to other cells.
+        // any received water drains directly to the aquifer so that it can feed base flow
+        Infiltration[i] = SaturationExcess[i]+Runon[i] + Snowmelt[i]+ Rain[i];
+        DeepDrainage[i] = Infiltration[i];
+      }
+    }
+  }
+
+  DataFrame waterBalance = DataFrame::create(_["MinTemperature"] = MinTemperature, _["MaxTemperature"] = MaxTemperature, _["PET"] = PET,
+                                             _["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,
+                                             _["NetRain"] = NetRain, _["Runon"] = Runon, _["Infiltration"] = Infiltration,
+                                             _["Runoff"] = Runoff, _["SaturationExcess"] = SaturationExcess,
+                                             _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
+  return(List::create(_["WatershedWaterBalance"] = waterBalance,
+                      _["LocalResults"] = localResults));
+}
 

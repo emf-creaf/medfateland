@@ -3,9 +3,11 @@
                    CO2ByYear = numeric(0), 
                    summary_frequency = "years",
                    local_control = medfate::defaultControl(),
-                   watershed_control= default_watershed_control(),
+                   watershed_control = default_watershed_control(),
                    progress = TRUE, header_footer = progress) {
 
+  watershed_model <- watershed_control$watershed_model
+  
   ## SERGHEI: Enforce same soil layer definition
   
   #check input
@@ -300,16 +302,27 @@
                            Radiation = gridRadiation,
                            WindSpeed = gridWindSpeed,
                            CO2 = gridCO2)
-    ws_day <- .watershedDay(localModel,
-                           y$land_cover_type, y$state, y$soil,
-                           y$waterOrder, y$queenNeigh, y$waterQ,
-                           y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
-                           y$aquifer, y$snowpack,
-                           watershed_control,
-                           datechar,
-                           gridMeteo,
-                           latitude, y$elevation, y$slope, y$aspect,
-                           patchsize, FALSE)
+    if(watershed_model=="tetis") {
+      ws_day <- .watershedDayTetis(localModel,
+                                   y$land_cover_type, y$state, y$soil,
+                                   y$waterOrder, y$queenNeigh, y$waterQ,
+                                   y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
+                                   y$aquifer, y$snowpack,
+                                   watershed_control,
+                                   datechar,
+                                   gridMeteo,
+                                   latitude, y$elevation, y$slope, y$aspect,
+                                   patchsize, FALSE)
+    } else if(watershed_model=="serghei") {
+      ws_day <- .watershedDaySerghei(localModel,
+                                     y$land_cover_type, y$state, y$soil,
+                                     y$snowpack,
+                                     watershed_control,
+                                     datechar,
+                                     gridMeteo,
+                                     latitude, y$elevation, y$slope, y$aspect,
+                                     patchsize, FALSE)
+    }
     
     res_day <- ws_day[["WatershedWaterBalance"]]
     
