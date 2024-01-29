@@ -17,12 +17,12 @@ List watershedDayTetis(String localModel,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                   double patchsize, bool progress = true);
 
-void initSerghei(String localModel,
-                 CharacterVector lct, List xList, List soilList);
+List initSerghei(List soilList);
 
 List watershedDaySerghei(String localModel,
                        CharacterVector lct, List xList, List soilList,
                        NumericVector snowpack,
+                       List serghei_interface,
                        List watershed_control,
                        CharacterVector date,
                        DataFrame gridMeteo,

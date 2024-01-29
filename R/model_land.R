@@ -141,17 +141,28 @@
   rownames(DailyRunoff) <- as.character(dates)
   
   summarylist <- vector("list", nCells)
-  vars <- c("MinTemperature","MaxTemperature","PET", "Runon", "Runoff", 
-            "Infiltration", "Rain", "NetRain", "Snow",
-            "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
-            "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
-            "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
-  varsSum <- c("PET","Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
-               "Infiltration", "DeepDrainage", "SaturationExcess",
-               "AquiferDischarge", "SoilEvaporation", "Transpiration",
-               "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
-  varsMean <- c( "MinTemperature", "MaxTemperature")
-  varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
+  if(watershed_model =="tetis") {
+    vars <- c("MinTemperature","MaxTemperature","PET", "Runon", "Runoff", 
+              "Infiltration", "Rain", "NetRain", "Snow",
+              "Snowmelt", "Interception", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
+              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
+              "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+    varsSum <- c("PET","Runon", "Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
+                 "Infiltration", "DeepDrainage", "SaturationExcess",
+                 "AquiferDischarge", "SoilEvaporation", "Transpiration",
+                 "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+    varsMean <- c( "MinTemperature", "MaxTemperature")
+    varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
+  } else {
+    vars <- c("MinTemperature","MaxTemperature","PET", 
+              "Rain", "NetRain", "Snow",
+              "Snowmelt",
+              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1")
+    varsSum <- c("PET","Rain", "NetRain", "Snow", "Snowmelt",
+                 "SoilEvaporation", "Transpiration")
+    varsMean <- c( "MinTemperature", "MaxTemperature")
+    varsState <- c("SWE", "Psi1", "SoilVol")
+  }
   for(i in 1:nCells) {
     m <- matrix(0, nrow = nSummary, ncol = length(vars))
     colnames(m) <- vars
@@ -207,6 +218,11 @@
   initialAquiferContent <- mean(extract_variables(y, "aquifer_volume")$aquifer_volume, na.rm=T)
   initialLandscapeContent <- initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
   
+  serghei_interface <-NULL
+  if(watershed_model=="serghei") {
+    nlayers  <- 4 # TO BE DONE: CHECK NUMBER OF SOIL LAYERS and dVec
+    serghei_interface <- .initSerghei(y$soil, nlayers)
+  }
   if(progress) {
     # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
     # cli::cli_li(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2)))
@@ -317,6 +333,7 @@
       ws_day <- .watershedDaySerghei(localModel,
                                      y$land_cover_type, y$state, y$soil,
                                      y$snowpack,
+                                     serghei_interface,
                                      watershed_control,
                                      datechar,
                                      gridMeteo,
@@ -338,14 +355,16 @@
       for(v in varsMean) {
         summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
       }
-      summarylist[[i]][ifactor,"Interception"] <- summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
       for(v in varsState) {
         summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_df[[v]][i]/t.df[ifactor]
       }  
-      summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+      if(watershed_model=="tetis") {
+        summarylist[[i]][ifactor,"Interception"] <- summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
+        summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+      }
     }
 
-    DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
+    if(watershed_model=="tetis") DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
     LandscapeBalance$Rain[ifactor] <- LandscapeBalance$Rain[ifactor] + sum(res_day$Rain, na.rm=T)/nCells
@@ -480,14 +499,21 @@
   
   sf <- sf::st_sf(geometry=sf::st_geometry(y))
   sf$state <- y$state
-  sf$aquifer <- y$aquifer
+  if(watershed_model=="tetis") sf$aquifer <- y$aquifer
   sf$snowpack <- y$snowpack
   sf$summary <- summarylist
 
-  l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
-            watershed_balance = LandscapeBalance,
-            watershed_soil_balance = SoilLandscapeBalance,
-            daily_runoff = DailyRunoff)
+  if(watershed_model=="tetis") {
+    l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
+              watershed_balance = LandscapeBalance,
+              watershed_soil_balance = SoilLandscapeBalance,
+              daily_runoff = DailyRunoff)
+  } else {
+    l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
+              watershed_balance = LandscapeBalance,
+              watershed_soil_balance = NA,
+              daily_runoff = NA)
+  }
   class(l)<-c(landModel, "list")
   return(l)
 }

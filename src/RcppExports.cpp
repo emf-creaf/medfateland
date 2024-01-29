@@ -264,21 +264,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // initSerghei
-void initSerghei(String localModel, CharacterVector lct, List xList, List soilList);
-RcppExport SEXP _medfateland_initSerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP) {
+List initSerghei(List soilList, int nlayer);
+RcppExport SEXP _medfateland_initSerghei(SEXP soilListSEXP, SEXP nlayerSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< String >::type localModel(localModelSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
-    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
-    initSerghei(localModel, lct, xList, soilList);
-    return R_NilValue;
+    Rcpp::traits::input_parameter< int >::type nlayer(nlayerSEXP);
+    rcpp_result_gen = Rcpp::wrap(initSerghei(soilList, nlayer));
+    return rcpp_result_gen;
 END_RCPP
 }
 // watershedDaySerghei
-List watershedDaySerghei(String localModel, CharacterVector lct, List xList, List soilList, NumericVector snowpack, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
-RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP snowpackSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
+List watershedDaySerghei(String localModel, CharacterVector lct, List xList, List soilList, NumericVector snowpack, List serghei_interface, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
+RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP snowpackSEXP, SEXP serghei_interfaceSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -287,6 +286,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type snowpack(snowpackSEXP);
+    Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
@@ -296,7 +296,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type progress(progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, soilList, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
+    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -319,8 +319,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_watershedDayTetis", (DL_FUNC) &_medfateland_watershedDayTetis, 21},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 4},
-    {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 14},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 2},
+    {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 15},
     {NULL, NULL, 0}
 };
 

@@ -69,11 +69,11 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_watershedDayTetis`, localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
 }
 
-.initSerghei <- function(localModel, lct, xList, soilList) {
-    invisible(.Call(`_medfateland_initSerghei`, localModel, lct, xList, soilList))
+.initSerghei <- function(soilList, nlayer) {
+    .Call(`_medfateland_initSerghei`, soilList, nlayer)
 }
 
-.watershedDaySerghei <- function(localModel, lct, xList, soilList, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
-    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, soilList, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
+.watershedDaySerghei <- function(localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
+    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
 }
 

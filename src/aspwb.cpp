@@ -128,6 +128,9 @@ List aspwb_day_internal(List x, NumericVector meteovec,
   //Evaporation from bare soil (if there is no snow)
   NumericVector EsoilVec = medfate::hydrology_soilEvaporation(soil, soilFunctions, pet, LgroundSWR, true);
   
+  //Define plant net extraction 
+  NumericVector ExtractionVec(nlayers, 0.0);
+  
   // Transpiration is the product of PET and CROP FACTOR. HOWEVER, it is reduced with 
   double transp_max = pet*crop_factor; 
   //Calculate current soil water potential for transpiration
@@ -137,7 +140,8 @@ List aspwb_day_internal(List x, NumericVector meteovec,
   NumericVector Ws = soil["W"];
   // Rcout << pet << " "<< psiVec[0] <<" "<< transp<< "\n";
   Ws[0] = Ws[0] - (transp/Water_FC[0]); 
-  
+  ExtractionVec[0] = transp;
+    
   //Recalculate current soil water potential for output
   psiVec = medfate::soil_psi(soil, soilFunctions); 
   
@@ -149,6 +153,7 @@ List aspwb_day_internal(List x, NumericVector meteovec,
                                            _["SoilEvaporation"] = sum(EsoilVec), _["Transpiration"] = transp);
   
   DataFrame SB = DataFrame::create(_["SoilEvaporation"] = EsoilVec, 
+                                   _["PlantExtraction"] = ExtractionVec, 
                                    _["psi"] = psiVec);
   List l = List::create(_["WaterBalance"] = DB, 
                         _["Soil"] = SB);
@@ -169,19 +174,13 @@ List aspwb_day(List x, CharacterVector date, NumericVector meteovec,
   double prec = meteovec["Precipitation"];
   double wind = NA_REAL;
   if(meteovec.containsElementNamed("WindSpeed")) wind = meteovec["WindSpeed"];
-  double Catm = NA_REAL; 
-  if(meteovec.containsElementNamed("CO2")) Catm = meteovec["CO2"];
-  double Patm = NA_REAL; 
-  if(meteovec.containsElementNamed("Patm")) Patm = meteovec["Patm"];
-  
+
   List control = x["control"];
   bool verbose = control["verbose"];
   
   
   std::string c = as<std::string>(date[0]);
   int J = meteoland::radiation_julianDay(std::atoi(c.substr(0, 4).c_str()),std::atoi(c.substr(5,2).c_str()),std::atoi(c.substr(8,2).c_str()));
-  double delta = meteoland::radiation_solarDeclination(J);
-  double solarConstant = meteoland::radiation_solarConstant(J);
   double latrad = latitude * (M_PI/180.0);
   if(NumericVector::is_na(aspect)) aspect = 0.0;
   if(NumericVector::is_na(slope)) slope = 0.0;
@@ -472,9 +471,7 @@ List apwb(List x, DataFrame meteo, double latitude, double elevation = NA_REAL, 
       std::string c = as<std::string>(dateStrings[i]);
       J = meteoland::radiation_julianDay(std::atoi(c.substr(0, 4).c_str()),std::atoi(c.substr(5,2).c_str()),std::atoi(c.substr(8,2).c_str())); 
     }
-    double delta = meteoland::radiation_solarDeclination(J);
-    double solarConstant = meteoland::radiation_solarConstant(J);
-    
+
     double tmin = MinTemperature[i];
     double tmax = MaxTemperature[i];
     double tday = meteoland::utils_averageDaylightTemperature(tmin, tmax);
