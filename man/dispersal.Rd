@@ -8,10 +8,10 @@ dispersal(
   sf,
   SpParams,
   local_control = medfate::defaultControl(),
-  distanceStep = 25,
-  maximumDispersalDistance = 3000,
-  minPercent = 1,
-  stochasticResampling = FALSE,
+  distance_step = 25,
+  maximum_dispersal_distance = 3000,
+  min_percent = 1,
+  stochastic_resampling = FALSE,
   progress = TRUE
 )
 }
@@ -26,13 +26,13 @@ dispersal(
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}})}
 
-\item{distanceStep}{Distance step in meters.}
+\item{distance_step}{Distance step in meters.}
 
-\item{maximumDispersalDistance}{Maximum dispersal distance in meters.}
+\item{maximum_dispersal_distance}{Maximum dispersal distance in meters.}
 
-\item{minPercent}{A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+\item{min_percent}{A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
 
-\item{stochasticResampling}{A flag to indicate that stochastic resampling of stands is performed.}
+\item{stochastic_resampling}{A flag to indicate that stochastic resampling of stands is performed.}
 
 \item{progress}{Boolean flag to display progress information.}
 }

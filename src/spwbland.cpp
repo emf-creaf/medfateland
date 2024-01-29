@@ -94,10 +94,10 @@ List watershedDayTetis(String localModel,
   NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
   double runoffExport = 0.0;
 
-  List correction_factors = watershed_control["tetis_correction_factors"];
-  double Rdrain = correction_factors["Rdrain"];
-  double Rinterflow = correction_factors["Rinterflow"];
-  double Rbaseflow = correction_factors["Rbaseflow"];
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double R_drain = tetis_parameters["R_drain"];
+  double R_interflow = tetis_parameters["R_interflow"];
+  double R_baseflow = tetis_parameters["R_baseflow"];
 
   //A. Subsurface fluxes
   double cellArea = patchsize; //cell size in m2
@@ -142,7 +142,7 @@ List watershedDayTetis(String localModel,
       NumericVector sand = soil["sand"];
       NumericVector om = soil["om"];
       double Ks1 = 0.01*medfate::soil_saturatedConductivitySX(clay[1], sand[1], om[1], false); //cm/day to m/day
-      double Kinterflow = Rinterflow*Ks1;
+      double Kinterflow = R_interflow*Ks1;
       if(WTD[i]<D) {
         double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
         List x = Rcpp::as<Rcpp::List>(xList[i]);
@@ -178,7 +178,7 @@ List watershedDayTetis(String localModel,
   NumericVector baseflowInput(nX, 0.0);
   NumericVector baseflowOutput(nX, 0.0);
   for(int i=0;i<nX;i++){
-    double Kbaseflow = Rbaseflow*bedrock_conductivity[i]; //m/day
+    double Kbaseflow = R_baseflow*bedrock_conductivity[i]; //m/day
     if(aquifer[i]>0) {
       double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n); //Transmissivity in m2
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
@@ -294,8 +294,8 @@ List watershedDayTetis(String localModel,
       if(DTA < D) {
         soil["Kdrain"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
       } else {
-        soil["Kdrain"] = 1000.0*bedrock_conductivity[iCell]*Rdrain; //Saturated vertical hydraulic conductivity in mm/day
-        // Rcout<<Kdrain<< " "<<1000.0*bedrock_conductivity[i]*Rdrain<<"\n";
+        soil["Kdrain"] = 1000.0*bedrock_conductivity[iCell]*R_drain; //Saturated vertical hydraulic conductivity in mm/day
+        // Rcout<<Kdrain<< " "<<1000.0*bedrock_conductivity[i]*R_drain<<"\n";
       }
       //copy snowpack
       soil["SWE"] = snowpack[iCell];
@@ -426,7 +426,8 @@ List watershedDayTetis(String localModel,
 }
 
 // [[Rcpp::export(".initSerghei")]]
-List initSerghei(List soilList, int nlayer) {
+List initSerghei(List soilList, int nlayer,
+                 String input_dir, String output_dir) {
   List soilListSerghei = clone(soilList);
   // "rock" should have a soil with all rock and zero Ksat
   // "artificial" should have a missing soil
@@ -440,12 +441,16 @@ List initSerghei(List soilList, int nlayer) {
     uptake[i] = vup;
   }
   // Initialize SERGHEI (call to interface function)
+  // Use input_dir and output_dir
   // initializeSerghei(soilListSerghei, uptake, throughfall);
   List serghei_interface = List::create(_["soilList"] = soilListSerghei,
                                         _["throughfall"] = throughfall,
                                         _["uptake"] = uptake);
   return(serghei_interface);
 }  
+void callSergheiDay() {
+  //TO BE DONE
+}
 // [[Rcpp::export(".watershedDaySerghei")]]
 List watershedDaySerghei(String localModel,
                        CharacterVector lct, List xList, List soilList,
@@ -543,8 +548,8 @@ List watershedDaySerghei(String localModel,
       }
     }
   }
-  //B. Serghei
-  //B.0 - Recover pointers to serghei interface
+  //B. SERGHEI
+  //B.0 - Recover pointers to SERGHEI interface
   List soilListSerghei = serghei_interface["soilList"];
   NumericVector throughfallSerghei = serghei_interface["throughfall"];
   List uptakeSerghei = serghei_interface["uptake"];
@@ -575,9 +580,13 @@ List watershedDaySerghei(String localModel,
     
   }
 
-  //B.2 - Call serghei for 1 day using the interface
-  //B.3 - Recover new soil moisture state from serghei, calculate the difference between 
-  //serghei and medfate and apply the differences to the soil moisture (overall or water pools)
+  //B.2 - Call SERGHEI for 1 day using the interface
+  // This should update the values of listSoilSerghei
+  callSergheiDay();
+  
+  //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between 
+  //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
+  
   
   DataFrame waterBalance = DataFrame::create(_["MinTemperature"] = MinTemperature, _["MaxTemperature"] = MaxTemperature, _["PET"] = PET,
                                              _["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,

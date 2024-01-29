@@ -17,7 +17,8 @@ List watershedDayTetis(String localModel,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                   double patchsize, bool progress = true);
 
-List initSerghei(List soilList);
+List initSerghei(List soilList, int nlayer,
+                 String input_dir, String output_dir);
 
 List watershedDaySerghei(String localModel,
                        CharacterVector lct, List xList, List soilList,

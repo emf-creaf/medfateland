@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.1.0
+- SERGHEI coupling 
+
 # Version 2.0.5
 - Seed production and seed bank dynamics (from medfate v.3.2.0)
 - Dispersal process implemented for fordyn_land and fordyn_scenario

@@ -60,10 +60,10 @@ kernel_int <- function(r, alpha, c) {
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}})
-#' @param distanceStep Distance step in meters.
-#' @param maximumDispersalDistance Maximum dispersal distance in meters.
-#' @param minPercent A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.
-#' @param stochasticResampling A flag to indicate that stochastic resampling of stands is performed.
+#' @param distance_step Distance step in meters.
+#' @param maximum_dispersal_distance Maximum dispersal distance in meters.
+#' @param min_percent A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.
+#' @param stochastic_resampling A flag to indicate that stochastic resampling of stands is performed.
 #' @param progress Boolean flag to display progress information.
 #' 
 #' @details
@@ -110,8 +110,8 @@ kernel_int <- function(r, alpha, c) {
 #' }
 dispersal <- function(sf, SpParams, 
                       local_control = medfate::defaultControl(), 
-                      distanceStep = 25, maximumDispersalDistance = 3000, minPercent = 1, 
-                      stochasticResampling = FALSE, progress = TRUE) {
+                      distance_step = 25, maximum_dispersal_distance = 3000, min_percent = 1, 
+                      stochastic_resampling = FALSE, progress = TRUE) {
 
   if(!inherits(sf, "sf")) stop("'sf' has to be of class 'sf'.")
   if(!("forest" %in% names(sf))) stop("Column 'forest' must be defined.")
@@ -127,7 +127,7 @@ dispersal <- function(sf, SpParams,
     forest <- sf$forest[[i]]
     if(!is.null(forest))  {
       seedBank <- forest$seedBank
-      seedBank <- medfate::regeneration_seedmortality(seedBank, SpParams, minPercent)
+      seedBank <- medfate::regeneration_seedmortality(seedBank, SpParams, min_percent)
       seedbank_list[[i]] <- seedBank
     }
   }
@@ -146,8 +146,8 @@ dispersal <- function(sf, SpParams,
   
   # Neighbours and distances
   coords <- sf::st_coordinates(sf)
-  dist_vec <- seq(distanceStep, maximumDispersalDistance, by = distanceStep)
-  if(stochasticResampling) {
+  dist_vec <- seq(distance_step, maximum_dispersal_distance, by = distance_step)
+  if(stochastic_resampling) {
     if(progress) cli::cli_progress_step(paste0("Neighbor stochastic resampling"))
     neigh_matrix <- matrix(nrow = n, ncol = length(dist_vec))
     for(i in 1:n) {
@@ -188,7 +188,7 @@ dispersal <- function(sf, SpParams,
     seedBank <- seedbank_list[[i]]
     if(!is.null(seedBank)) {
       seeds_perc <- rep(0, length(spp))
-      if(stochasticResampling) {
+      if(stochastic_resampling) {
         for(j in 1:length(dist_vec)) {
           nij <- neigh_matrix[i,j]
           seeds_neigh<- seed_production[[nij]]
@@ -232,7 +232,7 @@ dispersal <- function(sf, SpParams,
       }
       
       # Filter species not reaching minimum percent
-      seedBank <- seedBank[seedBank$Percent >= minPercent, , drop = FALSE]
+      seedBank <- seedBank[seedBank$Percent >= min_percent, , drop = FALSE]
       
       # Sort by alphabetical species order
       if(nrow(seedBank) > 0) seedBank <- seedBank[order(seedBank$Species),]

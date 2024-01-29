@@ -264,14 +264,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // initSerghei
-List initSerghei(List soilList, int nlayer);
-RcppExport SEXP _medfateland_initSerghei(SEXP soilListSEXP, SEXP nlayerSEXP) {
+List initSerghei(List soilList, int nlayer, String input_dir, String output_dir);
+RcppExport SEXP _medfateland_initSerghei(SEXP soilListSEXP, SEXP nlayerSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
     Rcpp::traits::input_parameter< int >::type nlayer(nlayerSEXP);
-    rcpp_result_gen = Rcpp::wrap(initSerghei(soilList, nlayer));
+    Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
+    Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
+    rcpp_result_gen = Rcpp::wrap(initSerghei(soilList, nlayer, input_dir, output_dir));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -319,7 +321,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_watershedDayTetis", (DL_FUNC) &_medfateland_watershedDayTetis, 21},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 2},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 4},
     {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 15},
     {NULL, NULL, 0}
 };

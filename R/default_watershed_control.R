@@ -6,34 +6,54 @@
 #' @return A list with the following items:
 #'  \itemize{
 #'    \item{\code{watershed_model}: A string with the watershed model.}
-#'    \item{\code{tetis_correction_factors}: A list with the following elements: 
+#'    \item{\code{tetis_parameters}: A numeric vector of TETIS parameters with the following elements: 
 #'      \itemize{
-#'        \item{\code{Rdrain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
-#'        \item{\code{Rinterflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-#'        \item{\code{Rbaseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+#'        \item{\code{R_drain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
+#'        \item{\code{R_interflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
+#'        \item{\code{R_baseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 #'      }
 #'    }
-#'    \item{\code{serghei_input_dir}: Path to SERGHEI input files.}
-#'    \item{\code{serghei_output_dir}: Path to SERGHEI output files.}
+#'    \item{\code{serghei_parameters}: A character vector of SERGHEI parameters with the following elements: 
+#'      \itemize{
+#'        \item{\code{input_dir}: Path to SERGHEI input files.}
+#'        \item{\code{output_dir}: Path to SERGHEI output files.}
+#'      }
+#'    }
+#'    \item{\code{dispersal_parameters}: A numeric vector of dispersal parameters (only for \code{\link{fordyn_land}}) with the following elements: 
+#'      \itemize{
+#'        \item{\code{distance_step}: Distance step in meters.}
+#'        \item{\code{maximum_dispersal_distance}: Maximum dispersal distance in meters.}
+#'        \item{\code{min_percent}: A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+#'      }
+#'    }
 #'  }
 #'
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #'
-#' @seealso \code{\link{spwb_land}}
+#' @seealso \code{\link{spwb_land}},  \code{\link{dispersal}}
 #' 
 #' @examples default_watershed_control()
 #' 
 #' @export
 default_watershed_control<-function(watershed_model = "tetis") {
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
-  tetis_correction_factors<-list(
-    Rdrain = 1.0,
-    Rinterflow = 1.0,
-    Rbaseflow = 10.0
+  tetis_parameters<-c(
+    R_drain = 1.0,
+    R_interflow = 1.0,
+    R_baseflow = 10.0
+  )
+  serghei_parameters <- c(
+    input_dir = "",
+    output_dir = ""
+  ) 
+  dispersal_parameters <- c(
+    distance_step = 25, 
+    maximum_dispersal_distance = 3000, 
+    min_percent = 1
   )
   l <- list(watershed_model = watershed_model,
-            tetis_correction_factors = tetis_correction_factors, 
-            serghei_input_dir = "",
-            serghei_output_dir = "")
+            tetis_parameters = tetis_parameters, 
+            serghei_parameters = serghei_parameters,
+            dispersal_parameters = dispersal_parameters)
   return(l)
 }

@@ -87,6 +87,7 @@
 
   #Print information area
   if(header_footer) {
+    cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
     cli::cli_li(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha"))
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
@@ -220,8 +221,11 @@
   
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
+    serghei_parameters <- watershed_control$serghei_parameters
     nlayers  <- 4 # TO BE DONE: CHECK NUMBER OF SOIL LAYERS and dVec
-    serghei_interface <- .initSerghei(y$soil, nlayers)
+    serghei_interface <- .initSerghei(y$soil, nlayers,
+                                      input_dir = serghei_parameters["input_dir"],
+                                      output_dir = serghei_parameters["output_dir"])
   }
   if(progress) {
     # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
@@ -453,47 +457,52 @@
   #   cli::cli_li(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2)))
   # }
   
-  snowpack_wb <- Snowsum - Snowmeltsum
-  if(header_footer) {
-    cli::cli_li("Water balance check")
-    cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
-    cat(paste0("  Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
-    cat(paste0("  Snowpack water balance components:\n"))
-    cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+  if(watershed_model=="tetis") {
+    snowpack_wb <- Snowsum - Snowmeltsum
+    if(header_footer) {
+      cli::cli_li("Water balance check")
+      cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
+      cat(paste0("  Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
+      cat(paste0("  Snowpack water balance components:\n"))
+      cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+    }
+    soil_input <- (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
+    soil_output <- (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
+    soil_wb <-  soil_input - soil_output
+    if(header_footer) {
+      cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
+      cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
+      cat(paste0("  Soil water balance components:\n"))
+      cat(paste0("    Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
+      cat(paste0("    Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
+      cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
+      cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
+    }
+    
+    aquifer_wb <- DeepDrainagesum - AquiferDischargesum
+    if(header_footer){
+      cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
+      cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
+      cat(paste0("  Aquifer water balance components:\n"))
+      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
+    }
+    
+    landscape_wb <- Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
+    if(header_footer) {
+      cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
+      cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
+      cat(paste0("  Watershed water balance components:\n"))
+      cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
+      cat(paste0("    Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
+      cat(paste0("    Export (mm) ", round(Exportsum,2),"\n"))
+      cat(paste0("  Watershed lateral flows:\n"))
+      cat(paste0("    Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
+      cat(paste0("    Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
+    }
   }
-  soil_input <- (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
-  soil_output <- (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
-  soil_wb <-  soil_input - soil_output
-  if(header_footer) {
-    cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
-    cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
-    cat(paste0("  Soil water balance components:\n"))
-    cat(paste0("    Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
-    cat(paste0("    Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
-    cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-    cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
-    cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
-  }
-  
-  aquifer_wb <- DeepDrainagesum - AquiferDischargesum
-  if(header_footer){
-    cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
-    cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
-    cat(paste0("  Aquifer water balance components:\n"))
-    cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
-  }
-  
-  landscape_wb <- Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
-  if(header_footer) {
-    cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
-    cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
-    cat(paste0("  Watershed water balance components:\n"))
-    cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
-    cat(paste0("    Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2), " Plant Transpiration (mm) ",round(Transpirationsum,2),"\n"))
-    cat(paste0("    Export (mm) ", round(Exportsum,2),"\n"))
-    cat(paste0("  Watershed lateral flows:\n"))
-    cat(paste0("    Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
-    cat(paste0("    Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
+  if(watershed_model=="serghei") {
+    if(header_footer) cli::cli_li("Water balance check not possible with SERGHEI")
   }
   if(header_footer)  cli::cli_li("Done")
   
@@ -520,7 +529,9 @@
 
 #' Watershed simulations
 #' 
-#' Functions to perform simulations on a watershed described by a set of connected grid cells
+#' Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
+#' are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "tetis" 
+#' (\enc{Francés}{Frances} et al. 2007) or "serghei" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 #' 
 #' @details
 #' \itemize{
@@ -562,8 +573,8 @@
 #' @param summary_frequency Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 #'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
-#' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}).
-#' @param maximumDispersalDistance Maximum dispersal distance in meters.
+#' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
+#'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
@@ -623,11 +634,26 @@
 #' @details
 #' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 #' for appropriate behavior of dispersal sub-model.
-#'
-#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{spwb_day}},  \code{\link{growth_day}},
+#' IMPORTANT: medfateland needs to be compiled along with SERGHEI model in order to launch simulations with using this
+#' distributed hydrological model.
+#'
+#' @author 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' Maria \enc{González-Sanchís}{Gonzalez-Sanchis}, Universitat Politecnica de Valencia. 
+#' 
+#' Daniel \enc{Caviedes-Voullième}{Caviedes-Voullieme}, Forschungszentrum Julich.
+#' 
+#' Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
+#' 
+#' @seealso \code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
 #' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
+#' 
+#' @references 
+#' \enc{Francés}{Frances}, F., \enc{Vélez}{Velez}, J.I. & \enc{Vélez}{Velez}, J.J. (2007). Split-parameter structure for the automatic calibration of distributed hydrological models. Journal of Hydrology, 332, 226–240. 
+#' 
+#' \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 #' 
 #' @examples 
 #' \dontrun{
@@ -647,7 +673,7 @@
 #' # Set simulation period
 #' dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 #' 
-#' # Launch simulations
+#' # Launch simulations (TETIS model; Frances et al. 2007)
 #' res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
 #'                  dates = dates, summary_frequency = "month")
 #' }
@@ -692,7 +718,6 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),
                         watershed_control = default_watershed_control(),
-                        maximumDispersalDistance = 1000,
                         management_function = NULL,
                         progress = TRUE) {
   
@@ -708,6 +733,8 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
   patchsize <- mean(sf$represented_area_m2, na.rm=TRUE)
+  
+  dispersal_params <- watershed_control$dispersal_parameters
   
   if(is.null(dates)) {
     # Try to get dates from input
@@ -829,7 +856,12 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
     if(progress) cli::cli_li(paste0("Seed production/dispersal"))
     
     # Seedbank dynamics, seed production and dispersal
-    seedbank_list <- dispersal(sf, SpParams, local_control, progress = FALSE)
+    seedbank_list <- dispersal(sf, SpParams, 
+                               local_control, 
+                               distance_step = dispersal_params$distance_step,
+                               maximum_dispersal_distance = dispersal_params$maximum_dispersal_distance,
+                               min_percent = dispersal_params$min_percent,
+                               progress = FALSE)
     for(i in 1:nCells) { 
       if(sf$land_cover_type[i] == "wildland")  {
         sf$forest[[i]]$seedBank <- seedbank_list[[i]]

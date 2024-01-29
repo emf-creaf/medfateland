@@ -38,7 +38,6 @@ fordyn_land(
   CO2ByYear = numeric(0),
   local_control = medfate::defaultControl(),
   watershed_control = default_watershed_control(),
-  maximumDispersalDistance = 1000,
   management_function = NULL,
   progress = TRUE
 )
@@ -82,11 +81,10 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
 
-\item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}).}
+\item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
+for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
-
-\item{maximumDispersalDistance}{Maximum dispersal distance in meters.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
@@ -145,7 +143,9 @@ In function \code{fordyn_land} the \code{\link{sf}} object contains additional c
 }
 }
 \description{
-Functions to perform simulations on a watershed described by a set of connected grid cells
+Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
+are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "tetis"
+(\enc{Francés}{Frances} et al. 2007) or "serghei" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 }
 \details{
 \itemize{
@@ -159,6 +159,9 @@ and resprouting.}
 
 When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate behavior of dispersal sub-model.
+
+IMPORTANT: medfateland needs to be compiled along with SERGHEI model in order to launch simulations with using this
+distributed hydrological model.
 }
 \examples{
 \dontrun{
@@ -178,16 +181,27 @@ data("SpParamsMED")
 # Set simulation period
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
-# Launch simulations
+# Launch simulations (TETIS model; Frances et al. 2007)
 res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
                  dates = dates, summary_frequency = "month")
 }
 
 }
+\references{
+\enc{Francés}{Frances}, F., \enc{Vélez}{Velez}, J.I. & \enc{Vélez}{Velez}, J.J. (2007). Split-parameter structure for the automatic calibration of distributed hydrological models. Journal of Hydrology, 332, 226–240.
+
+\enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
+}
 \seealso{
-\code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
 \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+
+Maria \enc{González-Sanchís}{Gonzalez-Sanchis}, Universitat Politecnica de Valencia.
+
+Daniel \enc{Caviedes-Voullième}{Caviedes-Voullieme}, Forschungszentrum Julich.
+
+Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
 }

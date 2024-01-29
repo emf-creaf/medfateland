@@ -13,15 +13,26 @@ default_watershed_control(watershed_model = "tetis")
 A list with the following items:
 \itemize{
 \item{\code{watershed_model}: A string with the watershed model.}
-\item{\code{tetis_correction_factors}: A list with the following elements:
+\item{\code{tetis_parameters}: A numeric vector of TETIS parameters with the following elements:
 \itemize{
-\item{\code{Rdrain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
-\item{\code{Rinterflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-\item{\code{Rbaseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+\item{\code{R_drain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
+\item{\code{R_interflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
+\item{\code{R_baseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 }
 }
-\item{\code{serghei_input_dir}: Path to SERGHEI input files.}
-\item{\code{serghei_output_dir}: Path to SERGHEI output files.}
+\item{\code{serghei_parameters}: A character vector of SERGHEI parameters with the following elements:
+\itemize{
+\item{\code{input_dir}: Path to SERGHEI input files.}
+\item{\code{output_dir}: Path to SERGHEI output files.}
+}
+}
+\item{\code{dispersal_parameters}: A numeric vector of dispersal parameters (only for \code{\link{fordyn_land}}) with the following elements:
+\itemize{
+\item{\code{distance_step}: Distance step in meters.}
+\item{\code{maximum_dispersal_distance}: Maximum dispersal distance in meters.}
+\item{\code{min_percent}: A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+}
+}
 }
 }
 \description{
@@ -32,7 +43,7 @@ default_watershed_control()
 
 }
 \seealso{
-\code{\link{spwb_land}}
+\code{\link{spwb_land}},  \code{\link{dispersal}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
