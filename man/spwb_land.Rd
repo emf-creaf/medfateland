@@ -55,6 +55,13 @@ fordyn_land(
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+\item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
+\item{\code{represented_area_m2}: Area represented by each cell in m2.}
+\item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
+\item{\code{result_cell}: A boolean flag to indicate that daily results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
+}
+When using TETIS watershed model, the following columns are also required:
+\itemize{
 \item{\code{waterOrder}: Integer vector indicating cell processing order.}
 \item{\code{waterQ}: A list of water discharge values to neighbors.}
 \item{\code{queenNeigh}: A list of integers identifying the (up to 8) queen neighbors, for each cell.}
@@ -62,10 +69,7 @@ fordyn_land(
 \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
 \item{\code{bedrock_porosity}: Bedrock porosity.}
-\item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
-\item{\code{represented_area_m2}: Area represented by each cell in m2.}
-\item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
@@ -99,6 +103,7 @@ with the following columns:
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
+\item{\code{result}: A list of cell results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{summary}: A list of cell summaries, containing the following variables:
 \itemize{
 \item{\code{Rain}: Rainfall (in mm).}
@@ -171,6 +176,10 @@ data("example_watershed")
 # Set crop factor 
 example_watershed$crop_factor <- NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] <- 0.75
+
+# Set request for daily model results in cells number 3 and 9
+example_watershed$result_cell <- FALSE
+example_watershed$result_cell[c(3,9)] <- TRUE
 
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
