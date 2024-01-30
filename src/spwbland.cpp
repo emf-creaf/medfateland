@@ -76,7 +76,7 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
 
 // [[Rcpp::export(".watershedDayTetis")]]
 List watershedDayTetis(String localModel,
-                  CharacterVector lct, List xList, List soilList,
+                  CharacterVector lct, List xList,
                   IntegerVector waterO, List queenNeigh, List waterQ,
                   NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,
                   NumericVector aquifer, NumericVector snowpack,
@@ -122,7 +122,7 @@ List watershedDayTetis(String localModel,
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[i]);
-      List soil = Rcpp::as<Rcpp::List>(soilList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       List control = x["control"];
       WTD[i] = medfate::soil_waterTableDepth(soil, control["soilFunctions"]);
       SoilWaterTableElevation[i] = elevation[i]-(WTD[i]/1000.0);
@@ -136,7 +136,8 @@ List watershedDayTetis(String localModel,
   NumericVector interflowOutput(nX, 0.0);
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      List soil = Rcpp::as<Rcpp::List>(soilList[i]);
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       double D = soil["SoilDepth"]; //Soil depth in mm
       NumericVector clay = soil["clay"];
       NumericVector sand = soil["sand"];
@@ -145,7 +146,6 @@ List watershedDayTetis(String localModel,
       double Kinterflow = R_interflow*Ks1;
       if(WTD[i]<D) {
         double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
-        List x = Rcpp::as<Rcpp::List>(xList[i]);
         List control = x["control"];
         String model = control["soilFunctions"];
         NumericVector saturatedVolume = medfate::soil_waterSAT(soil, model);
@@ -208,7 +208,7 @@ List watershedDayTetis(String localModel,
       if(deltaS != 0.0) {
         // Rcout<<inflow[i]<< " "<<outflow[i]<< " "<<cellArea<<" "<<deltaS<<"_";
         List x = Rcpp::as<Rcpp::List>(xList[i]);
-        List soil = Rcpp::as<Rcpp::List>(soilList[i]);
+        List soil = Rcpp::as<Rcpp::List>(x["soil"]);
         NumericVector W = soil["W"]; //Access to soil state variable
         NumericVector dVec = soil["dVec"];
         NumericVector macro = soil["macro"];
@@ -241,10 +241,10 @@ List watershedDayTetis(String localModel,
     aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
     double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); // New depth to aquifer (mm)
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      List soil = Rcpp::as<Rcpp::List>(soilList[i]);
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       double D = soil["SoilDepth"];
       if(DTAn<D){
-        List x = Rcpp::as<Rcpp::List>(xList[i]);
         NumericVector W = soil["W"]; //Access to soil state variable
         NumericVector dVec = soil["dVec"];
         NumericVector macro = soil["macro"];
@@ -287,7 +287,7 @@ List watershedDayTetis(String localModel,
     int iCell = waterO[i]-1; //Decrease index!!!!
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
-      List soil = soilList[iCell];
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       double Kdrain = soil["Kdrain"];
       double D = soil["SoilDepth"]; //Soil depth in mm
       double DTA = depth_to_bedrock[i] - (aquifer[iCell]/bedrock_porosity[iCell]);
@@ -426,19 +426,30 @@ List watershedDayTetis(String localModel,
 }
 
 // [[Rcpp::export(".initSerghei")]]
-List initSerghei(List soilList, int nlayer,
+List initSerghei(List xList,
                  String input_dir, String output_dir) {
-  List soilListSerghei = clone(soilList);
   // "rock" should have a soil with all rock and zero Ksat
   // "artificial" should have a missing soil
   // "water", "agriculture" and "wildland" should have normal soil
-  int n = soilListSerghei.size();
+  int n = xList.size();
   //Initialize Uptake and throughfall
   NumericVector throughfall(n, NA_REAL);
+  List soilListSerghei(n);
   List uptake(n);
   for(int i=0;i<n; i++) {
-    NumericVector vup(nlayer, NA_REAL);
-    uptake[i] = vup;
+    List x = Rcpp::as<Rcpp::List>(xList[i]);
+    if(!x.isNULL()) {
+      if(x.containsElementNamed("soil")) {
+        List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+        soilListSerghei[i] = clone(soil);
+        NumericVector W = soil["W"];
+        // NumericVector dVec = soil["dVec"];
+        // for(int l=0;l<dVec.size();l++) Rcout<< dVec[l]<<" ";
+        // Rcout<<"\n";
+        NumericVector vup(W.size(), NA_REAL);
+        uptake[i] = vup;
+      }
+    }
   }
   // Initialize SERGHEI (call to interface function)
   // Use input_dir and output_dir
@@ -447,13 +458,15 @@ List initSerghei(List soilList, int nlayer,
                                         _["throughfall"] = throughfall,
                                         _["uptake"] = uptake);
   return(serghei_interface);
-}  
+}
+
 void callSergheiDay() {
   //TO BE DONE
 }
+
 // [[Rcpp::export(".watershedDaySerghei")]]
 List watershedDaySerghei(String localModel,
-                       CharacterVector lct, List xList, List soilList,
+                       CharacterVector lct, List xList,
                        NumericVector snowpack,
                        List serghei_interface,
                        List watershed_control,
@@ -483,9 +496,10 @@ List watershedDaySerghei(String localModel,
   if(progress) Rcout<<"+";
   for(int i=0;i<nX;i++) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      List soil = soilList[i];
-      soil["SWE"] = snowpack[i];
       List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      // Rcout<<".";
+      soil["SWE"] = snowpack[i];
       //Run daily soil water balance for the current cell
       List res;
       NumericVector meteovec = NumericVector::create(
@@ -529,6 +543,7 @@ List watershedDaySerghei(String localModel,
         Transpiration[i] = sum(EplantCoh);
       }
     } else { // Fill output vectors for non-wildland cells
+      // Rcout<<"+";
       Rain[i] = 0.0;
       Snow[i] = 0.0;
       Snowmelt[i] = 0.0;
@@ -548,6 +563,7 @@ List watershedDaySerghei(String localModel,
       }
     }
   }
+  // Rcout<<"k";
   //B. SERGHEI
   //B.0 - Recover pointers to SERGHEI interface
   List soilListSerghei = serghei_interface["soilList"];
@@ -556,8 +572,9 @@ List watershedDaySerghei(String localModel,
   
   //B.1 - Fill uptake and throughfall lists
   for(int i=0;i<nX;i++) {
-    NumericVector vup = Rcpp::as<Rcpp::NumericVector>(uptakeSerghei[i]);
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      NumericVector vup = Rcpp::as<Rcpp::NumericVector>(uptakeSerghei[i]);
+      // Rcout<<".";
       List res_i = localResults[i];
       NumericVector DB = res_i["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res_i["Soil"]);
@@ -572,21 +589,53 @@ List watershedDaySerghei(String localModel,
       }
       vup[0] += snowmelt; //snowmelt is a positive flow (inflow)
     } else {
+      // Rcout<<"+";
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"
       throughfallSerghei[i] = Rain[i];
       // No uptake in "rock", "artificial" or "water"
-      for(int l=0;l<vup.size();l++) vup[l] = 0.0;
+      // for(int l=0;l<vup.size();l++) vup[l] = 0.0;
     }
     
   }
-
+  // Rcout<<"k2";
+  
   //B.2 - Call SERGHEI for 1 day using the interface
   // This should update the values of listSoilSerghei
   callSergheiDay();
   
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between 
   //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
-  
+  for(int i=0;i<nX;i++) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      // Rcout<<".";
+      List soilSerghei = soilListSerghei[i];
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      if(!x.isNULL()) {
+        if(x.containsElementNamed("soil")) {
+          List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+          NumericVector W_soil = soil["W"];
+          NumericVector W_soilSerghei = soilSerghei["W"];
+          NumericVector W_diff = W_soilSerghei - W_soil;
+          for(int l; l<W_soil.size();l++) {
+            //Add difference to overall soil
+            W_soil[l] = W_soil[i] + W_diff[l];
+          }
+          //Update water pools if present
+          if(x.containsElementNamed("belowLayers")) {
+            List belowLayers = Rcpp::as<Rcpp::List>(x["belowLayers"]);
+            if(belowLayers.containsElementNamed("Wpool")) {
+              NumericMatrix W_mat = belowLayers["Wpool"];
+              for(int c=0;c<W_mat.nrow();c++) {
+                for(int l; l<W_soil.size();l++) {
+                  W_mat(c,l) = W_mat(c,l) + W_diff[l];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   
   DataFrame waterBalance = DataFrame::create(_["MinTemperature"] = MinTemperature, _["MaxTemperature"] = MaxTemperature, _["PET"] = PET,
                                              _["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,

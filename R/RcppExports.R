@@ -65,15 +65,15 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_getTrackSpeciesDDS`, trackSpecies, DDS, x)
 }
 
-.watershedDayTetis <- function(localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
-    .Call(`_medfateland_watershedDayTetis`, localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
+.watershedDayTetis <- function(localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
+    .Call(`_medfateland_watershedDayTetis`, localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
 }
 
-.initSerghei <- function(soilList, nlayer, input_dir, output_dir) {
-    .Call(`_medfateland_initSerghei`, soilList, nlayer, input_dir, output_dir)
+.initSerghei <- function(xList, input_dir, output_dir) {
+    .Call(`_medfateland_initSerghei`, xList, input_dir, output_dir)
 }
 
-.watershedDaySerghei <- function(localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
-    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
+.watershedDaySerghei <- function(localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
+    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
 }
 

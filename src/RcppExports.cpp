@@ -233,15 +233,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // watershedDayTetis
-List watershedDayTetis(String localModel, CharacterVector lct, List xList, List soilList, IntegerVector waterO, List queenNeigh, List waterQ, NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity, NumericVector aquifer, NumericVector snowpack, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
-RcppExport SEXP _medfateland_watershedDayTetis(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP depth_to_bedrockSEXP, SEXP bedrock_conductivitySEXP, SEXP bedrock_porositySEXP, SEXP aquiferSEXP, SEXP snowpackSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
+List watershedDayTetis(String localModel, CharacterVector lct, List xList, IntegerVector waterO, List queenNeigh, List waterQ, NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity, NumericVector aquifer, NumericVector snowpack, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
+RcppExport SEXP _medfateland_watershedDayTetis(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP depth_to_bedrockSEXP, SEXP bedrock_conductivitySEXP, SEXP bedrock_porositySEXP, SEXP aquiferSEXP, SEXP snowpackSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type localModel(localModelSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
-    Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
@@ -259,34 +258,32 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type progress(progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(watershedDayTetis(localModel, lct, xList, soilList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
+    rcpp_result_gen = Rcpp::wrap(watershedDayTetis(localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
     return rcpp_result_gen;
 END_RCPP
 }
 // initSerghei
-List initSerghei(List soilList, int nlayer, String input_dir, String output_dir);
-RcppExport SEXP _medfateland_initSerghei(SEXP soilListSEXP, SEXP nlayerSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
+List initSerghei(List xList, String input_dir, String output_dir);
+RcppExport SEXP _medfateland_initSerghei(SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
-    Rcpp::traits::input_parameter< int >::type nlayer(nlayerSEXP);
+    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
     Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
-    rcpp_result_gen = Rcpp::wrap(initSerghei(soilList, nlayer, input_dir, output_dir));
+    rcpp_result_gen = Rcpp::wrap(initSerghei(xList, input_dir, output_dir));
     return rcpp_result_gen;
 END_RCPP
 }
 // watershedDaySerghei
-List watershedDaySerghei(String localModel, CharacterVector lct, List xList, List soilList, NumericVector snowpack, List serghei_interface, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
-RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP soilListSEXP, SEXP snowpackSEXP, SEXP serghei_interfaceSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
+List watershedDaySerghei(String localModel, CharacterVector lct, List xList, NumericVector snowpack, List serghei_interface, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
+RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP snowpackSEXP, SEXP serghei_interfaceSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type localModel(localModelSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
-    Rcpp::traits::input_parameter< List >::type soilList(soilListSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type snowpack(snowpackSEXP);
     Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
@@ -298,7 +295,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type progress(progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, soilList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
+    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -320,9 +317,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_drainageCells", (DL_FUNC) &_medfateland_drainageCells, 3},
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
-    {"_medfateland_watershedDayTetis", (DL_FUNC) &_medfateland_watershedDayTetis, 21},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 4},
-    {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 15},
+    {"_medfateland_watershedDayTetis", (DL_FUNC) &_medfateland_watershedDayTetis, 20},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 3},
+    {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 14},
     {NULL, NULL, 0}
 };
 

@@ -60,7 +60,9 @@ landscape_summary<-function(object, name, summary_function, ..., unlist = FALSE,
     nms = names(d1)
     for(nm in nms) res[[nm]] = NA
     for(i in 1:length(sm)) {
-      res[i, nms] = unlist(sm[[i]])
+      if(!is.null(sm[[i]])) {
+        res[i, nms] = unlist(sm[[i]])
+      }
       if(progress) cli::cli_progress_update()
     }
     if(progress) {

@@ -2,28 +2,30 @@
 #' 
 #' Defines default control parameters for watershed processes
 #' 
-#' @param watershed_model Either "tetis" or "serghei"
+#' @param watershed_model Hydrological model for watershed processes. Only "tetis" or "serghei" are accepted.
 #' @return A list with the following items:
 #'  \itemize{
 #'    \item{\code{watershed_model}: A string with the watershed model.}
-#'    \item{\code{tetis_parameters}: A numeric vector of TETIS parameters with the following elements: 
+#'    \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements: 
 #'      \itemize{
 #'        \item{\code{R_drain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
 #'        \item{\code{R_interflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
 #'        \item{\code{R_baseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 #'      }
 #'    }
-#'    \item{\code{serghei_parameters}: A character vector of SERGHEI parameters with the following elements: 
+#'    \item{\code{serghei_parameters}: A list of SERGHEI parameters with the following elements: 
 #'      \itemize{
 #'        \item{\code{input_dir}: Path to SERGHEI input files.}
 #'        \item{\code{output_dir}: Path to SERGHEI output files.}
+#'        \item{\code{force_equal_layer_widths}: A boolean flag to force equal layer widths (taken from the first soil element) in all soils.}
 #'      }
 #'    }
-#'    \item{\code{dispersal_parameters}: A numeric vector of dispersal parameters (only for \code{\link{fordyn_land}}) with the following elements: 
+#'    \item{\code{dispersal_parameters}: A list of dispersal parameters (only for \code{\link{fordyn_land}}) with the following elements: 
 #'      \itemize{
 #'        \item{\code{distance_step}: Distance step in meters.}
 #'        \item{\code{maximum_dispersal_distance}: Maximum dispersal distance in meters.}
 #'        \item{\code{min_percent}: A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+#'        \item{\code{stochastic_resampling}: A flag to indicate that stochastic resampling of stands is performed.}
 #'      }
 #'    }
 #'  }
@@ -37,19 +39,21 @@
 #' @export
 default_watershed_control<-function(watershed_model = "tetis") {
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
-  tetis_parameters<-c(
+  tetis_parameters<-list(
     R_drain = 1.0,
     R_interflow = 1.0,
     R_baseflow = 10.0
   )
-  serghei_parameters <- c(
+  serghei_parameters <- list(
     input_dir = "",
-    output_dir = ""
+    output_dir = "",
+    force_equal_layer_widths = TRUE
   ) 
-  dispersal_parameters <- c(
+  dispersal_parameters <- list(
     distance_step = 25, 
     maximum_dispersal_distance = 3000, 
-    min_percent = 1
+    min_percent = 1,
+    stochastic_resampling = FALSE
   )
   l <- list(watershed_model = watershed_model,
             tetis_parameters = tetis_parameters, 
