@@ -563,7 +563,6 @@ List watershedDaySerghei(String localModel,
       }
     }
   }
-  // Rcout<<"k";
   //B. SERGHEI
   //B.0 - Recover pointers to SERGHEI interface
   List soilListSerghei = serghei_interface["soilList"];
@@ -616,7 +615,7 @@ List watershedDaySerghei(String localModel,
           NumericVector W_soil = soil["W"];
           NumericVector W_soilSerghei = soilSerghei["W"];
           NumericVector W_diff = W_soilSerghei - W_soil;
-          for(int l; l<W_soil.size();l++) {
+          for(int l=0; l<W_soil.size();l++) {
             //Add difference to overall soil
             W_soil[l] = W_soil[i] + W_diff[l];
           }
@@ -626,7 +625,7 @@ List watershedDaySerghei(String localModel,
             if(belowLayers.containsElementNamed("Wpool")) {
               NumericMatrix W_mat = belowLayers["Wpool"];
               for(int c=0;c<W_mat.nrow();c++) {
-                for(int l; l<W_soil.size();l++) {
+                for(int l=0; l<W_soil.size();l++) {
                   W_mat(c,l) = W_mat(c,l) + W_diff[l];
                 }
               }

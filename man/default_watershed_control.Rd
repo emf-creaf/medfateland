@@ -15,24 +15,24 @@ A list with the following items:
 \item{\code{watershed_model}: A string with the watershed model.}
 \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements:
 \itemize{
-\item{\code{R_drain}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
-\item{\code{R_interflow}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-\item{\code{R_baseflow}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+\item{\code{R_drain [= 1.0]}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
+\item{\code{R_interflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
+\item{\code{R_baseflow [= 10.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 }
 }
 \item{\code{serghei_parameters}: A list of SERGHEI parameters with the following elements:
 \itemize{
-\item{\code{input_dir}: Path to SERGHEI input files.}
-\item{\code{output_dir}: Path to SERGHEI output files.}
-\item{\code{force_equal_layer_widths}: A boolean flag to force equal layer widths (taken from the first soil element) in all soils.}
+\item{\code{input_dir [= ""]}: Path to SERGHEI input files.}
+\item{\code{output_dir [= ""]}: Path to SERGHEI output files.}
+\item{\code{force_equal_layer_widths [= FALSE]}: A boolean flag to force equal layer widths (taken from the first soil element) in all soils.}
 }
 }
 \item{\code{dispersal_parameters}: A list of dispersal parameters (only for \code{\link{fordyn_land}}) with the following elements:
 \itemize{
-\item{\code{distance_step}: Distance step in meters.}
-\item{\code{maximum_dispersal_distance}: Maximum dispersal distance in meters.}
-\item{\code{min_percent}: A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
-\item{\code{stochastic_resampling}: A flag to indicate that stochastic resampling of stands is performed.}
+\item{\code{distance_step  [= 25]}: Distance step in meters.}
+\item{\code{maximum_dispersal_distance [= 3000]}: Maximum dispersal distance in meters.}
+\item{\code{min_percent [= 1]}: A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.}
+\item{\code{stochastic_resampling [= FALSE]}: A flag to indicate that stochastic resampling of stands is performed.}
 }
 }
 }

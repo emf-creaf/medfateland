@@ -181,9 +181,13 @@ data("SpParamsMED")
 # Set simulation period
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 
-# Launch simulations (TETIS model; Frances et al. 2007)
+# Watershed control parameters (TETIS model; Frances et al. 2007)
+ws_control <- default_watershed_control("tetis")
+
+# Launch simulations 
 res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
-                 dates = dates, summary_frequency = "month")
+                 dates = dates, summary_frequency = "month",
+                 watershed_control = ws_control)
 }
 
 }

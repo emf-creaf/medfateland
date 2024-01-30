@@ -240,6 +240,7 @@
                                        Rain = rep(0, nSummary),
                                        NetRain = rep(0, nSummary),
                                        Interception = rep(0, nSummary),
+                                       Infiltration = rep(0, nSummary),
                                        SoilEvaporation = rep(0,nSummary),
                                        Transpiration = rep(0, nSummary),
                                        InterflowInput = rep(0, nSummary),
@@ -431,7 +432,7 @@
                                      latitude, y$elevation, y$slope, y$aspect,
                                      patchsize, FALSE)
     }
-    
+
     res_day <- ws_day[["WatershedWaterBalance"]]
     
     summary_df <- landscape_summary(y, "state", state_soil_summary_function, local_control$soilFunctions, 
@@ -454,7 +455,7 @@
         summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
       }
     }
-
+    
     if(watershed_model=="tetis") DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
 
     #Landscape balance
@@ -465,6 +466,7 @@
     LandscapeBalance$SoilEvaporation[ifactor] <- LandscapeBalance$SoilEvaporation[ifactor] + sum(res_day$SoilEvaporation, na.rm=T)/nCells
     LandscapeBalance$Transpiration[ifactor] <- LandscapeBalance$Transpiration[ifactor] + sum(res_day$Transpiration, na.rm=T)/nCells
     LandscapeBalance$Interception[ifactor] <- LandscapeBalance$Interception[ifactor] + (sum(res_day$Rain, na.rm=T) - sum(res_day$NetRain, na.rm=T))/nCells
+
     
     if(watershed_model=="tetis") {
       LandscapeBalance$DeepDrainage[ifactor] <- LandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage, na.rm=T)/nCells
@@ -563,15 +565,14 @@
       cat(paste0("  Snowpack water balance components:\n"))
       cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
     }
-    soil_input <- (SoilNetRainsum + SoilSnowmeltsum + SoilRunonsum + SoilAquiferDischargesum+SoilInterflowInputsum)
-    soil_output <- (SoilRunoffsum + SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
+    soil_input <- (SoilInfiltrationsum + SoilAquiferDischargesum+SoilInterflowInputsum)
+    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
     soil_wb <-  soil_input - soil_output
     if(header_footer) {
       cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
       cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
       cat(paste0("  Soil water balance components:\n"))
-      cat(paste0("    Net rainfall (mm) ", round(SoilNetRainsum,2)," Snow melt (mm) ", round(SoilSnowmeltsum,2),"\n"))
-      cat(paste0("    Runon (mm) ", round(SoilRunonsum,2)," Runoff (mm) ",round(SoilRunoffsum,2),"\n"))
+      cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"\n"))
       cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
       cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
       cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
@@ -769,9 +770,13 @@
 #' # Set simulation period
 #' dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 #' 
-#' # Launch simulations (TETIS model; Frances et al. 2007)
+#' # Watershed control parameters (TETIS model; Frances et al. 2007)
+#' ws_control <- default_watershed_control("tetis")
+#' 
+#' # Launch simulations 
 #' res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
-#'                  dates = dates, summary_frequency = "month")
+#'                  dates = dates, summary_frequency = "month",
+#'                  watershed_control = ws_control)
 #' }
 #' 
 #' @name spwb_land
@@ -828,7 +833,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   nArti <- sum(sf$land_cover_type %in% c("artificial"))
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  patchsize <- .check_patchsize(y)
+  patchsize <- .check_patchsize(sf)
 
   dispersal_params <- watershed_control[["dispersal_parameters"]]
   
