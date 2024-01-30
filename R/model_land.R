@@ -287,7 +287,13 @@
     summarylist[[i]] <- m
     # result cells
     if(result_cell[i]) {
-      resultlist[[i]] <- medfate:::.defineDailyOutput(dates, y$state[[i]])
+      if(local_model=="spwb") {
+        resultlist[[i]] <- medfate:::.defineSPWBDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+                                                            dates, y$state[[i]])
+      } else if(local_model=="growth") {
+        resultlist[[i]] <- medfate:::.defineGrowthDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+                                                              dates, y$state[[i]])
+      }
     }
   }
   
@@ -452,7 +458,11 @@
     # Fill local daily results for result cells
     for(i in 1:nCells) {
       if(result_cell[i]) {
-        medfate:::.fillDailyOutput(resultlist[[i]], sDay = local_res_day[[i]], iday = day)
+        if(local_model=="spwb") {
+          medfate:::.fillSPWBDailyOutput(resultlist[[i]], sDay = local_res_day[[i]], iday = day-1)
+        } else if(local_model =="growth") {
+          medfate:::.fillGrowthDailyOutput(resultlist[[i]], sDay = local_res_day[[i]], iday = day-1)
+        }
       }
     }
     
