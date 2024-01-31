@@ -23,20 +23,36 @@ library(meteoland)
 
 The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
 
-### Example watershed data set
+## Data preparation
 
-To illustrate this kind of simulation we first load a small example watershed included with the package:
+Preparing inputs for watershed simulations can be tedious. Here we load a small example watershed included with the package, that can be used to understand the inputs required:
 
 ```{r, warning=FALSE}
 data("example_watershed")
 example_watershed
 ```
 
-Here is a map of elevation values:
+Some of the columns like `forest`, `soil`, `elevation`, or `state`, were also present in the example for spatially-uncoupled simulations, so we will not repeat them. The following sub-sections present additional columns that are relevant here.
 
-```{r, warning=FALSE, fig.align="center", fig.width=7}
-plot_variable(example_watershed, "elevation")
+### Land cover type
+
+Simulations over grids normally include different land cover types. These are described in column `land_cover_type`:
+
+```{r}
+table(example_watershed$land_cover_type)
 ```
+
+Local and landscape processes will behave differently depending on the land cover type. 
+
+### Grid description
+
+Note that the `sf` structure does not imply a grid *per se*. Point geometry is used to describe the central coordinates of grid cells, and two additional columns are used to convey information about the grid. Column `queenNeigh` is used to specify adjacency relationships between grid cells, while `represented_area_m2` is used to define the area of cells in square meters.
+
+### Aquifer and snowpack
+
+Columns `aquifer` and `snowpack` are used as state variables to store the water content in the aquifer and snowpack, respectively.
+
+### Crop factors
 
 Since the landscape contains agricultural lands, we need to define *crop factors*, which will determine transpiration flow as a proportion of potential evapotranspiration:
 
@@ -45,9 +61,9 @@ example_watershed$crop_factor = NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
 ```
 
+
 ## Simulation of watershed hydrology
 
-### Simulation function
 As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.
 
 ```{r, warning=FALSE}
@@ -67,3 +83,5 @@ Several plots can be drawn from the result of function `spwb_land()` in a simila
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
 plot_summary(res_ws$sf, "SoilVol", "2001-01-01")
 ```
+
+
