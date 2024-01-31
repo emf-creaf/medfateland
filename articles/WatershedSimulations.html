@@ -79,298 +79,23 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> to carry out simulations of forest dynamics
-on a set of forest stands while evaluating a demand-based management
-scenario.</p>
+<strong>medfateland</strong> to carry out simulations of forest function
+and dynamics on a set of forest stands while including lateral water
+transfer processes. This is done using functions
+<code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
+<code><a href="../reference/spwb_land.html">fordyn_land()</a></code>; which are counterparts of functions
+<code>spwb()</code>, <code>growth()</code> and <code>fordyn()</code> in
+package <strong>medfate</strong>. As an example, we will use function
+<code><a href="../reference/spwb_land.html">spwb_land()</a></code>, but the other two functions would be used
+similarly.</p>
 </div>
 <div class="section level2">
-<h2 id="displaying-properties-of-spatial-objects">Displaying properties of spatial objects<a class="anchor" aria-label="anchor" href="#displaying-properties-of-spatial-objects"></a>
+<h2 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
 </h2>
-<p>We begin by loading an example data set of 100 forest stands
-distributed on points in the landscape:</p>
+<p>Preparing inputs for watershed simulations can be tedious. Here we
+load a small example watershed included with the package, that can be
+used to understand the inputs required:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ifn"</span><span class="op">)</span></span>
-<span><span class="va">example_ifn</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 100 features and 7 fields</span></span>
-<span><span class="co">## Geometry type: POINT</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: 1.817095 ymin: 41.93301 xmax: 2.142956 ymax: 41.99881</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 8</span></span></span>
-<span><span class="co">##                   geom id        elevation slope aspect land_cover_type soil  </span></span>
-<span><span class="co">##  <span style="color: #BCBCBC;">*</span>         <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (2.130641 41.99872) 081015_A1       680  7.73  281.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (2.142714 41.99881) 081016_A1       736 15.6   212.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (1.828998 41.98704) 081018_A1       532 17.6   291.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (1.841068 41.98716) 081019_A1       581  4.79  174.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (1.853138 41.98728) 081020_A1       613  4.76   36.9 wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (1.901418 41.98775) 081021_A1       617 10.6   253.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (1.937629 41.98809) 081022_A1       622 20.6   360   wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  (1.949699 41.9882) 081023_A1       687 14.4   324.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  (1.96177 41.98831) 081024_A1       597 11.8    16.3 wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  (1.97384 41.98842) 081025_A1       577 14.6   348.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: forest &lt;list&gt;</span></span></span></code></pre>
-<p>Using <code><a href="../reference/extract_variables.html">plot_variable()</a></code> functions for spatial landscape
-objects, we can draw maps of some variables using:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_ifn</span>, <span class="st">"basal_area"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>The set of maps available can be known by inspecting the help of
-function <code><a href="../reference/extract_variables.html">extract_variables()</a></code>. Alternatively, the package
-provides function <code><a href="../reference/shinyplot_land.html">shinyplot_land()</a></code> to display maps
-interactively.</p>
-</div>
-<div class="section level2">
-<h2 id="simulations-on-a-set-of-forest-stands">Simulations on a set of forest stands<a class="anchor" aria-label="anchor" href="#simulations-on-a-set-of-forest-stands"></a>
-</h2>
-<p>Package <code>medfate</code> includes functions <code>spwb()</code>,
-<code>growth()</code> and <code>fordyn()</code> to simulate soil water
-balance, carbon balance and forest dynamics on a single forest stand,
-respectively. This section describe how to run simulations on a set of
-forest stands in one call. This is done using functions
-<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and
-<code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, respectively.</p>
-<p>As an example, we will use function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>,
-which simulates soil plant water balance on forests distributed in
-particular locations. The function takes an object of class
-<code>sf</code> as input.</p>
-<div class="section level3">
-<h3 id="weather-inputs-and-local-control-parameters">Weather inputs and local control parameters<a class="anchor" aria-label="anchor" href="#weather-inputs-and-local-control-parameters"></a>
-</h3>
-<p>As before, we need meteorological data, species parameters and
-control parameters for local simulations (which will apply to all forest
-stands):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span>
-<span><span class="va">local_control</span> <span class="op">&lt;-</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="calling-the-simulation-function">Calling the simulation function<a class="anchor" aria-label="anchor" href="#calling-the-simulation-function"></a>
-</h3>
-<p>The call to <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> can be done as follows (here
-we restrict the dates for simplicity):</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-28"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,  progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> first initializes model inputs
-by calling <code>forest2spwbInput()</code> for each forest stand
-described in the <code>sf</code> landscape object. Then it calls
-function <code>spwb()</code> for each forest stand and stores the
-result. The fact that we used <code>examplemeteo</code> as
-meteorological input involves that the same weather was applied to all
-forest stands, but different weather could have been specified for each
-one (see documentation of function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>).</p>
-<p>The result of calling <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> is an object of
-class <code>sf</code> with the following columns:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "geometry" "id"       "state"    "result"</span></span></code></pre>
-<p>Column <code>geometry</code> contains the geometry given as input to
-simulations, column <code>id</code> contains the identification label of
-each stand, column <code>state</code> contains the
-<code>spwbInput</code> corresponding to each forest stand (which can be
-used in subsequent simulations) and column <code>result</code> contains
-the output of <code>spwb()</code> function for each forest stand
-(i.e. its elements are objects of the S3 class <code>spwb</code>).</p>
-</div>
-<div class="section level3">
-<h3 id="temporal-summaries-plots-and-maps">Temporal summaries, plots and maps<a class="anchor" aria-label="anchor" href="#temporal-summaries-plots-and-maps"></a>
-</h3>
-<p>The structure of the output of <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> allows
-querying information for the simulation of any particular forest stand.
-For example, we may use function <code>plot.spwb()</code>, from package
-<strong>medfate</strong>, to display the simulation results on a
-particular plot:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"Evapotranspiration"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
-<p>Similarly, if we want a monthly summary of water balance for the
-first stand, we can use function <code>summary.spwb()</code> from
-package <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, freq<span class="op">=</span><span class="st">"months"</span>,FUN<span class="op">=</span><span class="va">sum</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
-<span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
-<span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    54.009813      0   44.3649928           29.24931    17.182031</span></span>
-<span><span class="co">## 2001-02-01     6.502505      0    0.5773042           17.13589     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        5.327602                 0        6.739673      6.739673</span></span>
-<span><span class="co">## 2001-02-01        1.764114                 0       13.863578     13.863578</span></span>
-<span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01             0.008910586</span></span>
-<span><span class="co">## 2001-02-01             0.006677006</span></span></code></pre>
-<p>However, a more convenient way of generating summaries is by
-calculating them on all forest stands in one step, using function
-<code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> on objects issued from
-simulations:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, </span>
-<span>                              freq<span class="op">=</span><span class="st">"months"</span>, output<span class="op">=</span><span class="st">"WaterBalance"</span><span class="op">)</span></span></code></pre></div>
-<p>where the argument <code>summary_function</code> points to the
-function to be used to generate local summaries and the remaining
-arguments are those of the local summary function. The result of using
-<code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> is again an object of class
-<code>sf</code> that contains the spatial geometry and the list of
-summaries for all stands:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_sum</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "geometry" "id"       "summary"</span></span></code></pre>
-<p>The summary for the first stand can now be accessed through the first
-element of column <code>summary</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_sum</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
-<span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
-<span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    54.009813      0   44.3649928           29.24931    17.182031</span></span>
-<span><span class="co">## 2001-02-01     6.502505      0    0.5773042           17.13589     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        5.327602                 0        6.739673      6.739673</span></span>
-<span><span class="co">## 2001-02-01        1.764114                 0       13.863578     13.863578</span></span>
-<span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01             0.008910586</span></span>
-<span><span class="co">## 2001-02-01             0.006677006</span></span></code></pre>
-<p>Summary objects are handy because their <code><a href="../reference/plot_summary.html">plot_summary()</a></code>
-function allows us to display maps of summaries for specific dates:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-01-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;"></p>
-<p>To avoid displaying maps one by one, the package includes function
-<code><a href="../reference/shinyplot_land.html">shinyplot_land()</a></code> that allows displaying maps of temporal
-summaries interactively.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="advanced-simulation-features">Advanced simulation features<a class="anchor" aria-label="anchor" href="#advanced-simulation-features"></a>
-</h2>
-<div class="section level3">
-<h3 id="simulation-with-integrated-temporal-summaries">Simulation with integrated temporal summaries<a class="anchor" aria-label="anchor" href="#simulation-with-integrated-temporal-summaries"></a>
-</h3>
-<p>If one needs to save memory, it is possible with
-<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> to generate temporal summaries automatically
-after the simulation of soil water balance of each stand, and storing
-those summaries instead of all the output of function
-<code>spwb()</code>.</p>
-<p>For example the following code will keep temporal summaries of water
-balance components instead of simulation results:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                  dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>,                  </span>
-<span>                  keep_results <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                  summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Parameter <code>keep_results = FALSE</code> tells
-<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> not to keep the simulation results of forest
-stands, whereas <code>summary_function = summary.spwb</code> tells
-<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> to perform and store summaries before
-discarding the results of any stand. The output has slightly different
-column names:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "geometry" "id"       "state"    "result"   "summary"</span></span></code></pre>
-<p>In particular, <code>result</code> is not included. Now the temporal
-summaries can be directly accessed through the column
-<code>summary</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_2</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
-<span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
-<span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    54.009813      0   44.3649928           29.24931    17.182031</span></span>
-<span><span class="co">## 2001-02-01     6.502505      0    0.5773042           17.13589     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        5.327602                 0        6.739673      6.739673</span></span>
-<span><span class="co">## 2001-02-01        1.764114                 0       13.863578     13.863578</span></span>
-<span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01             0.008910586</span></span>
-<span><span class="co">## 2001-02-01             0.006677006</span></span></code></pre>
-<p>And one can produce maps with summary results directly from the
-output of the simulation function:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_2</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>The possibility of running a summary function after the simulation of
-each stand is not limited to <code>summary.spwb()</code>. Users can
-define their own summary functions, provided the first argument is
-<code>object</code>, which will contain the result of the simulation
-(i.e., the result of calling <code>spwb()</code>, <code>growth()</code>
-or <code>fordyn()</code>). For example, the following function calls
-<code>droughtStress()</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">f_stress</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">droughtStress</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span>, draw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>Now we can call again <code>spwb_spatial</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># res_3 &lt;- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, </span></span>
-<span><span class="co">#                   dates = dates, local_control = local_control,                  </span></span>
-<span><span class="co">#                   keep_results = FALSE, progress = FALSE,</span></span>
-<span><span class="co">#                   summary_function = f_stress, </span></span>
-<span><span class="co">#                   summary_arguments = list(index = "ADS", freq = "months", bySpecies=TRUE))</span></span></code></pre></div>
-<p>The drought stress summary of stand #1 is:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># res_3$summary[[1]]</span></span></code></pre></div>
-<p>And we can draw a map with the monthly drought stress of <em>Quercus
-ilex</em> across space using:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plot_summary(res_3, "Quercus ilex", "2001-02-01")</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="simulation-in-several-steps">Simulation in several steps<a class="anchor" aria-label="anchor" href="#simulation-in-several-steps"></a>
-</h3>
-<p>The result of a simulation includes an element <code>state</code>,
-which stores the state of soil and stand variables at the end of the
-simulation. This information can be used to perform a new simulation
-from the point where the first one ended. In order to do so, we need to
-update the state variables in spatial object with their values at the
-end of the simulation, using function
-<code><a href="../reference/update_landscape.html">update_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">example_ifn_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">res</span><span class="op">)</span></span></code></pre></div>
-<p>The resulting object <code>w</code> is the same as <code>y</code>
-except for the state variables. For example we can compare the water
-potential in the first soil layer:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plot_variable(example_ifn, "psi1")</span></span>
-<span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_ifn_mod</span>, <span class="st">"psi1"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>By using <code>w</code> as input we can now simulate water balance in
-the set of stands for an extra month:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
-<span><span class="va">res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_spatial.html">spwb_spatial</a></span><span class="op">(</span><span class="va">example_ifn_mod</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                      dates <span class="op">=</span> <span class="va">dates</span>, local_control <span class="op">=</span> <span class="va">local_control</span>, </span>
-<span>                      summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, summary_arguments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="st">"months"</span><span class="op">)</span>,</span>
-<span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>And display a map with the resulting month transpiration:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_3</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;"></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="simulation-of-watershed-hydrology">Simulation of watershed hydrology<a class="anchor" aria-label="anchor" href="#simulation-of-watershed-hydrology"></a>
-</h2>
-<p>Simulation of watershed hydrology involves describing a watershed in
-a gridded mode and simulating soil water balance water while including
-additional compartments and hydrological processes, such as routing
-runoff from one cell to the other.</p>
-<div class="section level3">
-<h3 id="example-data-set">Example data set<a class="anchor" aria-label="anchor" href="#example-data-set"></a>
-</h3>
-<p>To illustrate this kind of simulation, which is carried out using
-function <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, we first load a small example
-watershed included with the package:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed"</span><span class="op">)</span></span>
 <span><span class="va">example_watershed</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 19 fields</span></span>
@@ -396,25 +121,61 @@ watershed included with the package:</p>
 <span><span class="co">## <span style="color: #949494;">#   waterOrder &lt;int&gt;, waterQ &lt;list&gt;, queenNeigh &lt;list&gt;, channel &lt;lgl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   depth_to_bedrock &lt;dbl&gt;, bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, represented_area_m2 &lt;dbl&gt;, crop_factor &lt;dbl&gt;</span></span></span></code></pre>
-<p>Here is a map of elevation values:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="st">"elevation"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Some of the columns like <code>forest</code>, <code>soil</code>,
+<code>elevation</code>, or <code>state</code>, were also present in the
+example for spatially-uncoupled simulations, so we will not repeat them.
+The following sub-sections present additional columns that are relevant
+here.</p>
+<div class="section level3">
+<h3 id="land-cover-type">Land cover type<a class="anchor" aria-label="anchor" href="#land-cover-type"></a>
+</h3>
+<p>Simulations over grids normally include different land cover types.
+These are described in column <code>land_cover_type</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">example_watershed</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## agriculture        rock    wildland </span></span>
+<span><span class="co">##          17           1          48</span></span></code></pre>
+<p>Local and landscape processes will behave differently depending on
+the land cover type.</p>
+</div>
+<div class="section level3">
+<h3 id="grid-description">Grid description<a class="anchor" aria-label="anchor" href="#grid-description"></a>
+</h3>
+<p>Note that the <code>sf</code> structure does not imply a grid <em>per
+se</em>. Point geometry is used to describe the central coordinates of
+grid cells, and two additional columns are used to convey information
+about the grid. Column <code>queenNeigh</code> is used to specify
+adjacency relationships between grid cells, while
+<code>represented_area_m2</code> is used to define the area of cells in
+square meters.</p>
+</div>
+<div class="section level3">
+<h3 id="aquifer-and-snowpack">Aquifer and snowpack<a class="anchor" aria-label="anchor" href="#aquifer-and-snowpack"></a>
+</h3>
+<p>Columns <code>aquifer</code> and <code>snowpack</code> are used as
+state variables to store the water content in the aquifer and snowpack,
+respectively.</p>
+</div>
+<div class="section level3">
+<h3 id="crop-factors">Crop factors<a class="anchor" aria-label="anchor" href="#crop-factors"></a>
+</h3>
 <p>Since the landscape contains agricultural lands, we need to define
 <em>crop factors</em>, which will determine transpiration flow as a
 proportion of potential evapotranspiration:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_watershed</span><span class="op">$</span><span class="va">crop_factor</span> <span class="op">=</span> <span class="cn">NA</span></span>
 <span><span class="va">example_watershed</span><span class="op">$</span><span class="va">crop_factor</span><span class="op">[</span><span class="va">example_watershed</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">==</span><span class="st">"agriculture"</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0.75</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="simulation-function">Simulation function<a class="anchor" aria-label="anchor" href="#simulation-function"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="simulation-of-watershed-hydrology">Simulation of watershed hydrology<a class="anchor" aria-label="anchor" href="#simulation-of-watershed-hydrology"></a>
+</h2>
 <p>As for the call to function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> we will use
 the same weather (i.e. <code>examplemeteo</code>) across the watershed.
 To speed up calculations we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> for a
 single month.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -436,18 +197,18 @@ single month.</p>
 ##  [36mℹ [39m Checking inputs
 • Number of outlet cells: 1
 ##  [36mℹ [39m Checking inputs
- [32m✔ [39m Checking inputs  [38;5;249m[24ms] [39m
+ [32m✔ [39m Checking inputs  [38;5;249m[35ms] [39m
 ## 
 ##  [36mℹ [39m Checking topology
-##  [32m✔ [39m Checking topology  [38;5;249m[17ms] [39m
+##  [32m✔ [39m Checking topology  [38;5;249m[10ms] [39m
 ## 
 ##  [36mℹ [39m Checking spwb input
-##  [32m✔ [39m Checking spwb input  [38;5;249m[415ms] [39m
+##  [32m✔ [39m Checking spwb input  [38;5;249m[424ms] [39m
 ## 
 ##  [36mℹ [39m 65 cells needed initialization
 ##  [32m✔ [39m 65 cells needed initialization  [38;5;249m[12ms] [39m
 ## 
-## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■           [39m  71% | ETA:  1s
+## Daily simulations  [32m■■■■■■■■■■■■■■                   [39m  42% | ETA:  2s
 ## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m 100% | ETA:  0s
 ## • Water balance check</code></pre>
 <pre><code><span><span class="co">##   Change in snowpack water content (mm): 3.34</span></span>
@@ -482,7 +243,6 @@ single month.</p>
 parameter <code>summary_frequency</code> allows storing results at
 coarser temporal scales, to reduce the amount of memory in spatial
 results.</p>
-</div>
 <div class="section level3">
 <h3 id="summaries-and-plots">Summaries and plots<a class="anchor" aria-label="anchor" href="#summaries-and-plots"></a>
 </h3>
@@ -491,7 +251,7 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET Runon Runoff Infiltration</span></span>
 <span><span class="co">## 2001-01-01      -3.203556       2.427977 31.14151     0      0     54.01675</span></span>
@@ -507,9 +267,9 @@ summaries for a given landscape cell using:</p>
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
 water volume for the simulated month:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </div>

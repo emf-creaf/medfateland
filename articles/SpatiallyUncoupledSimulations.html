@@ -81,7 +81,13 @@ Caceres</h4>
 <p>The aim of this vignette is to illustrate how to use
 <strong>medfateland</strong> to carry out simulations of forest function
 and dynamics on a set of spatial units, without taking into account
-spatial processes.</p>
+spatial processes. This is done using functions
+<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and
+<code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>; which are counterparts of functions
+<code>spwb()</code>, <code>growth()</code> and <code>fordyn()</code> in
+package <strong>medfate</strong>. As an example, we will use function
+<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, but the other two functions would be used
+similarly.</p>
 </div>
 <div class="section level2">
 <h2 id="displaying-properties-of-spatial-objects">Displaying properties of spatial objects<a class="anchor" aria-label="anchor" href="#displaying-properties-of-spatial-objects"></a>
@@ -128,10 +134,8 @@ interactively.</p>
 functions <code>spwb()</code>, <code>growth()</code> and
 <code>fordyn()</code> to simulate soil water balance, carbon balance and
 forest dynamics on a single forest stand, respectively. This section
-describe how to run simulations on a set of forest stands in one call.
-This is done using functions <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>,
-<code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>,
-respectively.</p>
+describe how to run simulations on a set of forest stands in one
+call.</p>
 <p>As an example, we will use function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>,
 which simulates soil plant water balance on forests distributed in
 particular locations. The function takes an object of class

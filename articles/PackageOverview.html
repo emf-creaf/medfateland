@@ -154,8 +154,8 @@ multiple locations in a single function call. In addition, those
 simulations can be performed using <strong>parallel computing</strong>,
 because of the absence of landscape-level processes that would induce
 spatial dependency. Uncoupled simulation functions are detailed in the
-following sub-sections and are illustrated in the vignette
-‘Spatially-uncoupled simulations’.</p>
+following sub-sections and are illustrated the vignette <a href="https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html" class="external-link">Spatially-uncoupled
+simulations</a>.</p>
 <div class="section level3">
 <h3 id="local-water-balance-functions">Local water balance functions<a class="anchor" aria-label="anchor" href="#local-water-balance-functions"></a>
 </h3>
@@ -257,31 +257,42 @@ Management decisions are evaluated once a year, which means that the
 simulation of processes occurring within a year are spatially uncoupled.
 For this reason, <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code> makes internal calls to
 <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code> every year, where local simulations are in
-parallel. These kind of simulations are illustrated in the vignette
-‘Management scenario’.</p>
+parallel. These kind of simulations are illustrated in vignette <a href="https://emf-creaf.github.io/medfateland/articles/ManagementScenario.html" class="external-link">Management
+scenario</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="watershed-simulations-including-spatial-processes">Watershed simulations including spatial processes<a class="anchor" aria-label="anchor" href="#watershed-simulations-including-spatial-processes"></a>
 </h2>
 <p>When input data is in form of continuous spatial variation of forests
 over a landscape, the <strong>medfateland</strong> package allows
-performing local process simulations while accounting for lateral water
-transfer processes. This is done using functions
-<code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
-<code><a href="../reference/spwb_land.html">fordyn_land()</a></code>. Three lateral water flows are considered in
-<strong>medfateland</strong>:</p>
+performing local process simulations while accounting for landscape
+processes. This is done using functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code>,
+<code><a href="../reference/spwb_land.html">growth_land()</a></code> and <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>, which are
+analogous to <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code>
+and <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, respectively.</p>
+<p>Importantly, the three functions allow simulating lateral water
+transfer processes. Here, two sub-models are possible, of different
+complexity. A first sub-model, similar to TETIS (Francés et al. 2007) is
+offered by default, which includes three lateral water flows that are
+solved in a rather crude way:</p>
 <ol style="list-style-type: lower-alpha">
 <li>Overland surface flows from upslope cells</li>
 <li>Lateral saturated soil flows (i.e. interflow) between adjacent
 cells</li>
 <li>Lateral groundwater flow (i.e. baseflow) between adjacent cells</li>
 </ol>
+<p>Alternatively, distributed hydrological simulations can done via a
+coupling with SERGHEI (Caviedes-Voullième et al. 2023). This sub-model
+allows simulating the same processes but in a much greater physical
+detail. In that case, SERGHEI outputs are generated as files and are not
+provided with the output to the function call. Hence, the user is
+responsible for accessing and post-processing those outputs.</p>
 <p>Functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../reference/spwb_land.html">growth_land()</a></code> may
 be used to:</p>
 <ol style="list-style-type: decimal">
 <li>Determine areas where particular plant species have high
-vulnerability to suffer from drought stress, while accounting for
-watershed hydrology.</li>
+vulnerability to suffer from drought stress or fire risk, while
+accounting for watershed hydrology.</li>
 <li>Partition the total rainfall in given watershed among:
 <ol style="list-style-type: lower-roman">
 <li>water evaporated from canopy interception or bare soil
@@ -292,13 +303,20 @@ river streams.</li>
 </ol>
 </li>
 </ol>
-<p>Function <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> may be used to:</p>
+<p>Function <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> includes seed dispersal as an
+additional landscape process. Similarly to the relationship between
+<code>fordyn()</code> and <code>growth()</code>,
+<code><a href="../reference/spwb_land.html">fordyn_land()</a></code> makes a call, once a year, to
+<code><a href="../reference/spwb_land.html">growth_land()</a></code>, which deals with all daily processes. After
+that, dispersal, regeneration and forest management are simulated at the
+level of <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>. This function may be used to:</p>
 <ol style="list-style-type: decimal">
 <li>Determine the effect of forest management alternatives on the forest
-function, dynamics and the water production of watersheds.</li>
+function, dynamics and the water production of forested watersheds.</li>
 </ol>
 <p>Examples of watershed simulations including landscape processes are
-given in vignette ‘Watershed simulations’.</p>
+given in vignette <a href="https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html" class="external-link">Watershed
+simulations</a>.</p>
 </div>
   </div>
 
