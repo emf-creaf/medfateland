@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -54,9 +54,10 @@
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  distanceStep <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  maximumDispersalDistance <span class="op">=</span> <span class="fl">3000</span>,</span>
-<span>  minPercent <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  distance_step <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  maximum_dispersal_distance <span class="op">=</span> <span class="fl">3000</span>,</span>
+<span>  min_percent <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  stochastic_resampling <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -77,16 +78,20 @@
 <dd><p>A list of control parameters (see <code>defaultControl</code>)</p></dd>
 
 
-<dt>distanceStep</dt>
+<dt>distance_step</dt>
 <dd><p>Distance step in meters.</p></dd>
 
 
-<dt>maximumDispersalDistance</dt>
+<dt>maximum_dispersal_distance</dt>
 <dd><p>Maximum dispersal distance in meters.</p></dd>
 
 
-<dt>minPercent</dt>
+<dt>min_percent</dt>
 <dd><p>A minimum percent of seed bank to retain entry in <code>seedBank</code> element of <code>forest</code>.</p></dd>
+
+
+<dt>stochastic_resampling</dt>
+<dd><p>A flag to indicate that stochastic resampling of stands is performed.</p></dd>
 
 
 <dt>progress</dt>
@@ -104,7 +109,7 @@
     <p>The input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate function behavior.</p>
 <p>Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbors) are defined up to a given grid distance order.
-A maximum value of 100\<!-- % seed bank refill is attained for species with seed production in all seed donors and the local cell. --></p>
+A maximum value of 100% seed bank refill is attained for species with seed production in all seed donors and the local cell.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -117,6 +122,7 @@ A maximum value of 100\<!-- % seed bank refill is attained for species with seed
     <div id="author">
     <h2>Author</h2>
     <p>Miquel De Cáceres Ainsa, CREAF.</p>
+<p>Roberto Molowny-Horas, CREAF.</p>
     </div>
 
     <div id="ref-examples">
@@ -151,7 +157,7 @@ A maximum value of 100\<!-- % seed bank refill is attained for species with seed
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, María González.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Aitor Améztegui, María González, Daniel Caviedes-Voullième, Mario Morales-Hernández.</p>
 </div>
 
 <div class="pkgdown">

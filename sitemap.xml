@@ -4,13 +4,16 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/LandscapeWaterBalance.html</loc>
-  </url>
-  <url>
     <loc>/articles/ManagementScenario.html</loc>
   </url>
   <url>
     <loc>/articles/PackageOverview.html</loc>
+  </url>
+  <url>
+    <loc>/articles/SpatiallyUncoupledSimulations.html</loc>
+  </url>
+  <url>
+    <loc>/articles/WatershedSimulations.html</loc>
   </url>
   <url>
     <loc>/articles/index.html</loc>
@@ -37,7 +40,7 @@
     <loc>/reference/default_volume_function.html</loc>
   </url>
   <url>
-    <loc>/reference/default_watershed_correction_factors.html</loc>
+    <loc>/reference/default_watershed_control.html</loc>
   </url>
   <url>
     <loc>/reference/dispersal.html</loc>

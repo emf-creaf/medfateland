@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2023-09-01</h4>
+            <h4 data-toc-skip class="date">2024-01-31</h4>
       
       
       <div class="hidden name"><code>PackageOverview.Rmd</code></div>
@@ -79,13 +79,16 @@ Caceres</h4>
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The R package <strong>medfateland</strong> has been designed to
-facilitate running model simulations of forest functioning and dynamics
-at the landscape and regional scales. The package allows executing the
-stand-level models available in package <strong>medfate</strong> on
-points and grid cells within a landscape, in either sequential or
-parallel computation. In addition, <strong>medfateland</strong> allows
-performing simulations while accounting for processes relating different
-spatial units.</p>
+facilitate running simulations of forest functioning and dynamics at the
+landscape to regional scales. The package allows executing the
+stand-level models available in the R package <strong>medfate</strong>
+on specific locations within a landscape, using either sequential or
+parallel computation. Spatial units are uncoupled in those simulations,
+where only local processes are represented. However,
+<strong>medfateland</strong> provides additional functions that allow
+performing model simulations while accounting for processes relating
+different spatial units, such as lateral water transfer or seed
+dispersal.</p>
 <p>Complete documentation on the design and formulation of the
 simulation models and their inputs can be found at the <a href="https://emf-creaf.github.io/medfatebook/index.html" class="external-link">medfate
 reference book</a>.</p>
@@ -98,28 +101,68 @@ structures extended those of older version of
 <strong>meteoland</strong>, which in turn depended by then on package
 <strong>sp</strong>. Current versions of <strong>medfateland</strong>
 (ver. &gt; 2.0.0) use package <strong>sf</strong> (simple features) to
-represent spatial structures, both for inputs and outputs. Documentation
-and examples are given in the package of the variables that need to be
-represented.</p>
+represent spatial structures, both for inputs and outputs.</p>
+<p>For simulations over an incomplete or complete grid, a column is
+required in the <strong>sf</strong> object to specify neighborhood
+between adjacent cells. Documentation of the variables that need to be
+represented are given on the help pages of each simulation functions.
+The package also includes point and grid data sets to run examples.</p>
 </div>
 <div class="section level2">
-<h2 id="simulation-functions">Simulation functions<a class="anchor" aria-label="anchor" href="#simulation-functions"></a>
+<h2 id="local-and-landscape-processes">Local and landscape processes<a class="anchor" aria-label="anchor" href="#local-and-landscape-processes"></a>
 </h2>
-<p>Eco-hydrological processes are fundamental for the simulation models
-included in the <strong>medfate</strong> package. Eco-hydrological
-processes can be divided into local and landscape processes.</p>
+<p>The processes represented in simulations with
+<strong>medfateland</strong> can be divided between <em>local</em> and
+<em>landscape</em> processes. Examples of local water processes include
+rainfall, canopy interception, infiltration and runoff, percolation and
+deep drainage, soil evaporation and plant transpiration. Examples of
+landscape processes would be lateral surface flows, sub-surface flows or
+base flows. Seed dispersal is another example of landscape-level
+process, because generates spatial dependency between spatial units.</p>
+<p>Five kinds of land cover are recognized in
+<strong>medfateland</strong>, which determine the set of local or
+landscape processes that are represented:</p>
+<ol style="list-style-type: lower-alpha">
+<li>
+<em>wildland</em>: forests, shrublands or grasslands.</li>
+<li>
+<em>agriculture</em>: agricultural lands.</li>
+<li>
+<em>rock</em>: rock outcrops.</li>
+<li>
+<em>artificial</em>: urban areas.</li>
+<li>
+<em>water</em>: water bodies.</li>
+</ol>
+<p>Local processes represented in <em>wildland</em> cells are those
+described of <strong>medfate</strong> package. Lateral water transfer
+processes and seed dispersal can be included in
+<strong>medfateland</strong> simulations to add spatial dependencies.
+Evapotranspiration and soil hydrology are also represented in
+<em>agriculture</em> locations, although in a strongly simplified
+manner, and lateral water transfer processes will also influence the
+water balance in <em>agriculture</em> locations. The remaining land
+covers are not the main focus of <strong>medfateland</strong>. They are
+relevant to determine the water transfer between neighboring cells but
+do not entail simulation of local processes.</p>
+</div>
+<div class="section level2">
+<h2 id="spatially-uncoupled-simulation-functions">Spatially uncoupled simulation functions<a class="anchor" aria-label="anchor" href="#spatially-uncoupled-simulation-functions"></a>
+</h2>
+<p>Package <strong>medfateland</strong> allows performing simulations on
+multiple locations in a single function call. In addition, those
+simulations can be performed using <strong>parallel computing</strong>,
+because of the absence of landscape-level processes that would induce
+spatial dependency. Uncoupled simulation functions are detailed in the
+following sub-sections and are illustrated in the vignette
+‘Spatially-uncoupled simulations’.</p>
 <div class="section level3">
-<h3 id="local-water-balance">Local water balance<a class="anchor" aria-label="anchor" href="#local-water-balance"></a>
+<h3 id="local-water-balance-functions">Local water balance functions<a class="anchor" aria-label="anchor" href="#local-water-balance-functions"></a>
 </h3>
-<p>By local water balance we refer to the water balance of soils and
-plants within forest stands. Processes affecting soil water content
-include rainfall, canopy interception, infiltration and runoff,
-percolation and deep drainage, soil evaporation and plant
-transpiration.</p>
 <p>In package <strong>medfate</strong>, the local soil water balance of
-a forest is primarily used to predict forest hydrological flows and
-drought stress for living plants in it; and the main simulation function
-is <code>spwb()</code>. Package <strong>medfateland</strong> extends the
+a forest is primarily used to predict forest water flows and plant
+drought stress; and the main simulation function is called
+<code>spwb()</code>. Package <strong>medfateland</strong> extends the
 former function by allowing the simulation of soil water balance for
 multiple stands distributed spatially over a given time period using
 function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, which makes internal calls to
@@ -184,8 +227,7 @@ to monitor wildfire risk).</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="local-forest-dynamics-and-spatial-coordination-via-management-scenarios">Local forest dynamics and spatial coordination via management
-scenarios<a class="anchor" aria-label="anchor" href="#local-forest-dynamics-and-spatial-coordination-via-management-scenarios"></a>
+<h3 id="local-forest-dynamics">Local forest dynamics<a class="anchor" aria-label="anchor" href="#local-forest-dynamics"></a>
 </h3>
 <p>Changes in forest structure and composition result from the interplay
 of natural demographic processes (growth, mortality and recruitment) and
@@ -196,19 +238,31 @@ management.</p>
 time steps on a given forest stand, building on previous models. Package
 <strong>medfateland</strong> extends the former function by providing
 function <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, which operates on spatial
-classes and make internal calls to function <code>fordyn()</code>. In
-addition, <strong>medfateland</strong> provides function
-<code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>, which allows performing simulations of
-forest dynamics for a set of forest stands, while coordinating
+classes and make internal calls to function <code>fordyn()</code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="spatial-coordination-via-management-scenarios">Spatial coordination via management scenarios<a class="anchor" aria-label="anchor" href="#spatial-coordination-via-management-scenarios"></a>
+</h2>
+<p>In addition to the former spatially-uncoupled simulation functions,
+<strong>medfateland</strong> provides function
+<code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code> for landscape to regional-scale
+simulations. This function allows performing simulations of forest
+function and dynamics for a set of forest stands, while coordinating
 management actions in the set of stands following a timber demand-based
 approach, which defines the amount of wood to be cut annually for target
 tree species. In addition, stands are classified into management units,
-which can be associated with different silvicultural practices.</p>
+which can be associated with different silvicultural practices.
+Management decisions are evaluated once a year, which means that the
+simulation of processes occurring within a year are spatially uncoupled.
+For this reason, <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code> makes internal calls to
+<code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code> every year, where local simulations are in
+parallel. These kind of simulations are illustrated in the vignette
+‘Management scenario’.</p>
 </div>
-<div class="section level3">
-<h3 id="watershed-simulations-including-lateral-water-transfer-processes">Watershed simulations including lateral water transfer
-processes<a class="anchor" aria-label="anchor" href="#watershed-simulations-including-lateral-water-transfer-processes"></a>
-</h3>
+<div class="section level2">
+<h2 id="watershed-simulations-including-spatial-processes">Watershed simulations including spatial processes<a class="anchor" aria-label="anchor" href="#watershed-simulations-including-spatial-processes"></a>
+</h2>
 <p>When input data is in form of continuous spatial variation of forests
 over a landscape, the <strong>medfateland</strong> package allows
 performing local process simulations while accounting for lateral water
@@ -243,7 +297,8 @@ river streams.</li>
 <li>Determine the effect of forest management alternatives on the forest
 function, dynamics and the water production of watersheds.</li>
 </ol>
-</div>
+<p>Examples of watershed simulations including landscape processes are
+given in vignette ‘Watershed simulations’.</p>
 </div>
   </div>
 
@@ -259,7 +314,7 @@ function, dynamics and the water production of watersheds.</li>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Miquel De Cáceres, Aitor Améztegui, María González.</p>
+<p>Developed by Miquel De Cáceres, Aitor Améztegui, María González, Daniel Caviedes-Voullième, Mario Morales-Hernández.</p>
 </div>
 
 <div class="pkgdown">
