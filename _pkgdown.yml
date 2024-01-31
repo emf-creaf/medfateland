@@ -9,8 +9,9 @@ articles:
     - starts_with("Package")
 - title: Simulation models
   contents:
-    - starts_with("LandscapeWaterBalance")
+    - starts_with("SpatiallyUncoupled")
     - starts_with("ManagementScenario")
+    - starts_with("Watershed")
 
 reference:
 - title: Example data
@@ -27,7 +28,7 @@ reference:
 - title: Model inputs defaults
   desc:  Defaults for model inputs
   contents:
-  - default_watershed_correction_factors
+  - default_watershed_control
   - default_volume_function
   - create_management_scenario
   - create_fire_regime

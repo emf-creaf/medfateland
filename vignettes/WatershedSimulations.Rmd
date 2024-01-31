@@ -1,0 +1,69 @@
+---
+title: "Watershed simulations"
+author: "Miquel De Caceres"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Watershed simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignettePackage{medfateland}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(medfate)
+library(medfateland)
+library(meteoland)
+```
+
+## Aim
+
+The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
+
+### Example watershed data set
+
+To illustrate this kind of simulation we first load a small example watershed included with the package:
+
+```{r, warning=FALSE}
+data("example_watershed")
+example_watershed
+```
+
+Here is a map of elevation values:
+
+```{r, warning=FALSE, fig.align="center", fig.width=7}
+plot_variable(example_watershed, "elevation")
+```
+
+Since the landscape contains agricultural lands, we need to define *crop factors*, which will determine transpiration flow as a proportion of potential evapotranspiration:
+
+```{r}
+example_watershed$crop_factor = NA
+example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
+```
+
+## Simulation of watershed hydrology
+
+### Simulation function
+As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.
+
+```{r, warning=FALSE}
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
+res_ws <- spwb_land(example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+```
+
+Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
+
+### Summaries and plots
+Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
+```{r}
+res_ws$sf$summary[[1]]
+```
+
+Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of soil water volume for the simulated month:
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+plot_summary(res_ws$sf, "SoilVol", "2001-01-01")
+```

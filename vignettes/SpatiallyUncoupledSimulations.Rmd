@@ -1,12 +1,12 @@
 ---
-title: "Landscape water balance"
+title: "Spatially-uncoupled simulations"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Landscape water balance}
+  %\VignetteIndexEntry{Spatially-uncoupled simulations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignettePackage{medfateland}
   \usepackage[utf8]{inputenc}
@@ -19,10 +19,13 @@ library(medfateland)
 library(meteoland)
 ```
 
+## Aim
+
+The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest function and dynamics on a set of spatial units, without taking into account spatial processes. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_spatial()`, but the other two functions would be used similarly.
 
 ## Displaying properties of spatial objects
 
-We begin by loading an example dataset of 100 forest stands distributed on points in the landscape:
+We begin by loading an example data set of 100 forest stands distributed on points in the landscape:
 
 ```{r, fig.align='center', fig.width=7}
 data("example_ifn")
@@ -37,9 +40,9 @@ plot_variable(example_ifn, "basal_area")
 
 The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot_land()` to display maps interactively.
 
-## Simulations on a set of forest stands
+## Simulations on a set of locations
 
-Package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`, respectively. 
+As you should already know, package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call.  
 
 As an example, we will use function `spwb_spatial()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `sf` as input.
 
@@ -197,51 +200,4 @@ And display a map with the resulting month transpiration:
 
 ```{r, fig.align='center', fig.width=7}
 plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
-```
-
-## Simulation of watershed hydrology
-
-Simulation of watershed hydrology involves describing a watershed in a gridded mode and simulating soil water balance water while including additional compartments and hydrological processes, such as routing runoff from one cell to the other. 
-
-### Example data set
-To illustrate this kind of simulation, which is carried out using function `spwb_land()`, we first load a small example watershed included with the package:
-
-```{r, warning=FALSE}
-data("example_watershed")
-example_watershed
-```
-
-Here is a map of elevation values:
-
-```{r, warning=FALSE, fig.align="center", fig.width=7}
-plot_variable(example_watershed, "elevation")
-```
-
-Since the landscape contains agricultural lands, we need to define *crop factors*, which will determine transpiration flow as a proportion of potential evapotranspiration:
-
-```{r}
-example_watershed$crop_factor = NA
-example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
-```
-
-
-### Simulation function
-As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.
-
-```{r, warning=FALSE}
-dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws <- spwb_land(example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
-```
-
-Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
-
-### Summaries and plots
-Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
-```{r}
-res_ws$sf$summary[[1]]
-```
-
-Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of soil water volume for the simulated month:
-```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot_summary(res_ws$sf, "SoilVol", "2001-01-01")
 ```

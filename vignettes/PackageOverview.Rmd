@@ -18,23 +18,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-The R package **medfateland** has been designed to facilitate running model simulations of forest functioning and dynamics at the landscape and regional scales. The package allows executing the stand-level models available in package **medfate** on points and grid cells within a landscape, in either sequential or parallel computation. In addition, **medfateland** allows performing simulations while accounting for processes relating different spatial units. 
+The R package **medfateland** has been designed to facilitate running simulations of forest functioning and dynamics at the landscape to regional scales. The package allows executing the stand-level models available in the R package **medfate** on specific locations within a landscape, using either sequential or parallel computation. Spatial units are uncoupled in those simulations, where only local processes are represented. However, **medfateland** provides additional functions that allow performing model simulations while accounting for processes relating different spatial units, such as lateral water transfer or seed dispersal. 
 
 Complete documentation on the design and formulation of the simulation models and their inputs can be found at the [medfate reference book](https://emf-creaf.github.io/medfatebook/index.html). 
 
 ## Data structures
 
-In previous versions of **medfateland** package, data structures extended those of older version of **meteoland**, which in turn depended by then on package **sp**. Current versions of **medfateland** (ver. > 2.0.0) use package **sf** (simple features) to represent spatial structures, both for inputs and outputs. Documentation and examples are given in the package of the variables that need to be represented. 
+In previous versions of **medfateland** package, data structures extended those of older version of **meteoland**, which in turn depended by then on package **sp**. Current versions of **medfateland** (ver. > 2.0.0) use package **sf** (simple features) to represent spatial structures, both for inputs and outputs. 
 
-## Simulation functions
+For simulations over an incomplete or complete grid, a column is required in the **sf** object to specify neighborhood between adjacent cells. Documentation of the variables that need to be represented are given on the help pages of each simulation functions. The package also includes point and grid data sets to run examples. 
 
-Eco-hydrological processes are fundamental for the simulation models included in the **medfate** package. Eco-hydrological processes can be divided into local and landscape processes. 
+## Local and landscape processes
 
-### Local water balance 
+The processes represented in simulations with **medfateland** can be divided between *local* and *landscape* processes. Examples of local water processes include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. Examples of landscape processes would be lateral surface flows, sub-surface flows or base flows. Seed dispersal is another example of landscape-level process, because generates spatial dependency between spatial units.
 
-By local water balance we refer to the water balance of soils and plants within forest stands. Processes affecting soil water content include rainfall, canopy interception, infiltration and runoff, percolation and deep drainage, soil evaporation and plant transpiration. 
+Five kinds of land cover are recognized in **medfateland**, which determine the set of local or landscape processes that are represented:
 
-In package **medfate**, the local soil water balance of a forest is primarily used to predict forest hydrological flows and drought stress for living plants in it; and the main simulation function is `spwb()`. Package **medfateland**  extends the former function by allowing the simulation of soil water balance for multiple stands distributed spatially over a given time period using function `spwb_spatial()`, which makes internal calls to `spwb()` on elements the spatial classes introduced above. Function `spwb_spatial_day()` is analogous to the former, but is used for the simulation of a single day, using internal calls to function `spwb_day()` of **medfate**. Function `spwb_spatial()` and its one-day counterpart may be used to:
+  a. *wildland*: forests, shrublands or grasslands.
+  b. *agriculture*: agricultural lands.
+  c. *rock*: rock outcrops.
+  d. *artificial*: urban areas.
+  e. *water*: water bodies. 
+
+Local processes represented in *wildland* cells are those described of **medfate** package. Lateral water transfer processes and seed dispersal can be included in **medfateland** simulations to add spatial dependencies. Evapotranspiration and soil hydrology are also represented in *agriculture* locations, although in a strongly simplified manner, and lateral water transfer processes will also influence the water balance in *agriculture* locations. The remaining land covers are not the main focus of **medfateland**. They are relevant to determine the water transfer between neighboring cells but do not entail simulation of local processes.
+
+## Spatially uncoupled simulation functions
+
+Package **medfateland** allows performing simulations on multiple locations in a single function call. In addition, those simulations can be performed using **parallel computing**, because of the absence of landscape-level processes that would induce spatial dependency. Uncoupled simulation functions are detailed in the following sub-sections and are illustrated the vignette [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html).
+
+### Local water balance functions
+
+In package **medfate**, the local soil water balance of a forest is primarily used to predict forest water flows and plant drought stress; and the main simulation function is called `spwb()`. Package **medfateland**  extends the former function by allowing the simulation of soil water balance for multiple stands distributed spatially over a given time period using function `spwb_spatial()`, which makes internal calls to `spwb()` on elements the spatial classes introduced above. Function `spwb_spatial_day()` is analogous to the former, but is used for the simulation of a single day, using internal calls to function `spwb_day()` of **medfate**. Function `spwb_spatial()` and its one-day counterpart may be used to:
 
 1. Monitor or forecast temporal variation in soil water content in particular stands (for example to estimate mushroom yield) or over continuous areas.
 2. Monitor or forecast temporal variation of plant drought stress in particular stands (for example to anticipate mortality events) or over continuous areas.
@@ -52,28 +66,38 @@ Package **medfate** allows simulating carbon balance, growth and mortality of a 
 3. Monitor or forecast temporal variation of live fuel moisture and the amount of standing dead and live fuels in particular stands (for example to monitor wildfire risk).
 
 
-### Local forest dynamics and spatial coordination via management scenarios
+### Local forest dynamics 
 
 Changes in forest structure and composition result from the interplay of natural demographic processes (growth, mortality and recruitment) and natural or anthropogenic disturbances, including the effects of forest management. 
 
-Package **medfate** includes function `fordyn()`, which allows simulating these processes at yearly time steps on a given forest stand, building on previous models. Package **medfateland** extends the former function by providing function `fordyn_spatial()`, which operates on spatial classes and make internal calls to function `fordyn()`. In addition, **medfateland** provides function `fordyn_scenario()`, which allows performing simulations of forest dynamics for a set of forest stands, while coordinating management actions in the set of stands following a timber demand-based approach, which defines the amount of wood to be cut annually for target tree species. In addition, stands are classified into management units, which can be associated with different silvicultural practices.
+Package **medfate** includes function `fordyn()`, which allows simulating these processes at yearly time steps on a given forest stand, building on previous models. Package **medfateland** extends the former function by providing function `fordyn_spatial()`, which operates on spatial classes and make internal calls to function `fordyn()`. 
 
-### Watershed simulations including lateral water transfer processes
+## Spatial coordination via management scenarios
 
-When input data is in form of continuous spatial variation of forests over a landscape, the **medfateland** package allows performing local process simulations while accounting for lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`. Three lateral water flows are considered in **medfateland**:
+In addition to the former spatially-uncoupled simulation functions, **medfateland** provides function `fordyn_scenario()` for landscape to regional-scale simulations. This function allows performing simulations of forest function and dynamics for a set of forest stands, while coordinating management actions in the set of stands following a timber demand-based approach, which defines the amount of wood to be cut annually for target tree species. In addition, stands are classified into management units, which can be associated with different silvicultural practices. Management decisions are evaluated once a year, which means that the simulation of processes occurring within a year are spatially uncoupled. For this reason, `fordyn_scenario()` makes internal calls to `fordyn_spatial()` every year, where local simulations are in parallel. These kind of simulations are illustrated in vignette [Management scenario](https://emf-creaf.github.io/medfateland/articles/ManagementScenario.html).
+
+## Watershed simulations including spatial processes
+
+When input data is in form of continuous spatial variation of forests over a landscape, the **medfateland** package allows performing local process simulations while accounting for landscape processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`, which are analogous to `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`, respectively. 
+
+Importantly, the three functions allow simulating lateral water transfer processes. Here, two sub-models are possible, of different complexity. A first sub-model, similar to TETIS (Francés et al. 2007) is offered by default, which includes three lateral water flows that are solved in a rather crude way:
 
   a. Overland surface flows from upslope cells
   b. Lateral saturated soil flows (i.e. interflow) between adjacent cells
   c. Lateral groundwater flow (i.e. baseflow) between adjacent cells
 
+Alternatively, distributed hydrological simulations can done via a coupling with SERGHEI (Caviedes-Voullième et al. 2023). This sub-model allows simulating the same processes but in a much greater physical detail. In that case, SERGHEI outputs are generated as files and are not provided with the output to the function call. Hence, the user is responsible for accessing and post-processing those outputs.
+
 Functions `spwb_land()` and `growth_land()` may be used to:
 
-1. Determine areas where particular plant species have high vulnerability to suffer from drought stress, while accounting for watershed hydrology.
+1. Determine areas where particular plant species have high vulnerability to suffer from drought stress or fire risk, while accounting for watershed hydrology.
 2. Partition the total rainfall in given watershed among: 
    i) water evaporated from canopy interception or bare soil evaporation
    ii) water transpired by plants
    iii) water exported via runoff or deep drainage into the water table and river streams.
 
-Function `fordyn_land()` may be used to:
+Function `fordyn_land()` includes seed dispersal as an additional landscape process. Similarly to the relationship between `fordyn()` and `growth()`, `fordyn_land()` makes a call, once a year, to `growth_land()`, which deals with all daily processes. After that, dispersal, regeneration and forest management are simulated at the level of `fordyn_land()`. This function may be used to:
 
-1. Determine the effect of forest management alternatives on the forest function, dynamics and the water production of watersheds.
+1. Determine the effect of forest management alternatives on the forest function, dynamics and the water production of forested watersheds.
+
+Examples of watershed simulations including landscape processes are given in vignette [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html).
