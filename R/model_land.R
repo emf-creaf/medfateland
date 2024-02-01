@@ -85,6 +85,7 @@
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
   
   #check input
+  
   if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
   if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
   if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
@@ -922,7 +923,33 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         management_function = NULL,
                         progress = TRUE) {
   
+  #watershed model
+  watershed_model <- watershed_control$watershed_model
+  watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
+  
   if(progress) cli::cli_h1(paste0("Simulation of model 'fordyn' over a watershed"))
+  
+  #check input
+  
+  if(progress) cli::cli_progress_step(paste0("Checking topology"))
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
+  if(!inherits(sf, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
+  if(sf::st_crs(sf)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(sf)
+  sf2cell <- terra::cellFromXY(r, sf_coords)
+  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  nrastercells <- prod(dim(r)[1:2])
+  cell2sf <- rep(NA, nrastercells)
+  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
+  
+
+  if(progress) cli::cli_progress_step(paste0("Checking 'sf' data"))
+  .check_sf_input(sf)
+  if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("'dates' has to be of class 'Date'.")
+  if(!("snowpack" %in% names(sf))) cli::cli_abort("'snowpack' has to be defined in 'sf'.")
+  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
+  patchsize <- mean(represented_area_m2, na.rm=TRUE)
   
   nCells <- nrow(sf)
   isSoilCell <- sf$land_cover_type %in% c("wildland", "agriculture")
@@ -933,8 +960,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   nArti <- sum(sf$land_cover_type %in% c("artificial"))
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r, unit="m")))
-
   dispersal_params <- watershed_control[["dispersal_parameters"]]
   
   if(is.null(dates)) {
@@ -974,9 +999,14 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   nYears <- length(yearsUnique)
   
   if(progress) {
-    cli::cli_li(paste0("Grid cells: ", nCells,", mean cell size: ", mean(represented_area_m2, na.rm=TRUE)," m2, area: ", nCells*patchsize/10000," ha"))
+    cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
+    cli::cli_li(paste0("Number of grid cells: ", nrastercells, " Number of target cells: ", nCells))
+    cli::cli_li(paste0("Average cell area: ", round(patchsize),
+                       " m2, Total area: ", round(sum(represented_area_m2, na.rm=TRUE)/10000),
+                       " ha, Target area: ", round(sum(represented_area_m2[!is.na(cell2sf)], na.rm=TRUE)/10000)," ha"))
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
+    
     cli::cli_li(paste0("Number of years to simulate: ",nYears))
   }
   # Init growth 
