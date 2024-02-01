@@ -90,8 +90,11 @@ package <strong>medfate</strong>. As an example, we will use function
 similarly.</p>
 </div>
 <div class="section level2">
-<h2 id="displaying-properties-of-spatial-objects">Displaying properties of spatial objects<a class="anchor" aria-label="anchor" href="#displaying-properties-of-spatial-objects"></a>
+<h2 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h2>
+<div class="section level3">
+<h3 id="input-structures">Input structures<a class="anchor" aria-label="anchor" href="#input-structures"></a>
+</h3>
 <p>We begin by loading an example data set of 100 forest stands
 distributed on points in the landscape:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -117,6 +120,10 @@ distributed on points in the landscape:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>  (1.97384 41.98842) 081025_A1       577 14.6   348.  wildland        <span style="color: #949494;">&lt;df&gt;</span>  </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: forest &lt;list&gt;</span></span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="displaying-properties-of-spatial-objects">Displaying properties of spatial objects<a class="anchor" aria-label="anchor" href="#displaying-properties-of-spatial-objects"></a>
+</h3>
 <p>Using <code><a href="../reference/extract_variables.html">plot_variable()</a></code> functions for spatial landscape
 objects, we can draw maps of some variables using:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -127,8 +134,9 @@ function <code><a href="../reference/extract_variables.html">extract_variables()
 provides function <code><a href="../reference/shinyplot_land.html">shinyplot_land()</a></code> to display maps
 interactively.</p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="simulations-on-a-set-of-locations">Simulations on a set of locations<a class="anchor" aria-label="anchor" href="#simulations-on-a-set-of-locations"></a>
+<h2 id="carrying-out-simulations">Carrying out simulations<a class="anchor" aria-label="anchor" href="#carrying-out-simulations"></a>
 </h2>
 <p>As you should already know, package <code>medfate</code> includes
 functions <code>spwb()</code>, <code>growth()</code> and
@@ -253,10 +261,6 @@ function allows us to display maps of summaries for specific dates:</p>
 <code><a href="../reference/shinyplot_land.html">shinyplot_land()</a></code> that allows displaying maps of temporal
 summaries interactively.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="advanced-simulation-features">Advanced simulation features<a class="anchor" aria-label="anchor" href="#advanced-simulation-features"></a>
-</h2>
 <div class="section level3">
 <h3 id="simulation-with-integrated-temporal-summaries">Simulation with integrated temporal summaries<a class="anchor" aria-label="anchor" href="#simulation-with-integrated-temporal-summaries"></a>
 </h3>
@@ -329,9 +333,10 @@ ilex</em> across space using:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot_summary(res_3, "Quercus ilex", "2001-02-01")</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="simulation-in-several-steps">Simulation in several steps<a class="anchor" aria-label="anchor" href="#simulation-in-several-steps"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="continuing-a-previous-simulation">Continuing a previous simulation<a class="anchor" aria-label="anchor" href="#continuing-a-previous-simulation"></a>
+</h2>
 <p>The result of a simulation includes an element <code>state</code>,
 which stores the state of soil and stand variables at the end of the
 simulation. This information can be used to perform a new simulation
@@ -360,7 +365,6 @@ the set of stands for an extra month:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_3</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;"></p>
-</div>
 </div>
   </div>
 

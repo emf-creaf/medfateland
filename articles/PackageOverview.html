@@ -102,11 +102,11 @@ structures extended those of older version of
 <strong>sp</strong>. Current versions of <strong>medfateland</strong>
 (ver. &gt; 2.0.0) use package <strong>sf</strong> (simple features) to
 represent spatial structures, both for inputs and outputs.</p>
-<p>For simulations over an incomplete or complete grid, a column is
-required in the <strong>sf</strong> object to specify neighborhood
-between adjacent cells. Documentation of the variables that need to be
-represented are given on the help pages of each simulation functions.
-The package also includes point and grid data sets to run examples.</p>
+<p>For simulations over an incomplete or complete grid, an additional
+input, in form of a raster topology (from package
+<strong>terra</strong>), is required to specify the neighborhood between
+adjacent cells and cell size. Both spatial inputs need to be
+compatible.</p>
 </div>
 <div class="section level2">
 <h2 id="local-and-landscape-processes">Local and landscape processes<a class="anchor" aria-label="anchor" href="#local-and-landscape-processes"></a>
@@ -147,7 +147,7 @@ relevant to determine the water transfer between neighboring cells but
 do not entail simulation of local processes.</p>
 </div>
 <div class="section level2">
-<h2 id="spatially-uncoupled-simulation-functions">Spatially uncoupled simulation functions<a class="anchor" aria-label="anchor" href="#spatially-uncoupled-simulation-functions"></a>
+<h2 id="spatially-uncoupled-simulation-functions">Spatially-uncoupled simulation functions<a class="anchor" aria-label="anchor" href="#spatially-uncoupled-simulation-functions"></a>
 </h2>
 <p>Package <strong>medfateland</strong> allows performing simulations on
 multiple locations in a single function call. In addition, those
