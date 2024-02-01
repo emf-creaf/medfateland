@@ -158,6 +158,7 @@ This object has class `spwb` and the same structure returned by function `spwb()
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
 plot(S)
 ```
+
 ### Simulations of watershed forest dynamics
 
 Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here (we subset the input to speed-up calculations):
