@@ -1,12 +1,12 @@
 ---
-title: "Management scenario"
+title: "Management scenarios"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Management scenario}
+  %\VignetteIndexEntry{Management scenarios}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignettePackage{medfateland}
   \usepackage[utf8]{inputenc}
