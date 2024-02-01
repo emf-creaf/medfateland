@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-01-31</h4>
+            <h4 data-toc-skip class="date">2024-02-01</h4>
       
       
       <div class="hidden name"><code>WatershedSimulations.Rmd</code></div>
@@ -79,9 +79,9 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> to carry out simulations of forest function
-and dynamics on a set of forest stands while including lateral water
-transfer processes. This is done using functions
+<strong>medfateland</strong> (v. 2.1.0) to carry out simulations of
+forest function and dynamics on a set of forest stands while including
+lateral water transfer processes. This is done using functions
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
 <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>; which are counterparts of functions
 <code>spwb()</code>, <code>growth()</code> and <code>fordyn()</code> in
@@ -90,47 +90,48 @@ package <strong>medfate</strong>. As an example, we will use function
 similarly.</p>
 </div>
 <div class="section level2">
-<h2 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
+<h2 id="data-inputs">Data inputs<a class="anchor" aria-label="anchor" href="#data-inputs"></a>
 </h2>
-<p>Preparing inputs for watershed simulations can be tedious. Here we
-load a small example watershed included with the package, that can be
-used to understand the inputs required:</p>
+<p>Preparing inputs for watershed simulations can be tedious. Two main
+inputs need to be assembled, described in the following two
+sections.</p>
+<div class="section level3">
+<h3 id="sf-object">sf object<a class="anchor" aria-label="anchor" href="#sf-object"></a>
+</h3>
+<p>Here we load a small example watershed included with the package,
+that can be used to understand the inputs required:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed"</span><span class="op">)</span></span>
 <span><span class="va">example_watershed</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 66 features and 19 fields</span></span>
+<pre><code><span><span class="co">## Simple feature collection with 66 features and 14 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: 1.806159 ymin: 42.19278 xmax: 1.823062 ymax: 42.19923</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 20</span></span></span>
-<span><span class="co">##               geometry    id elevation slope aspect land_cover_type</span></span>
-<span><span class="co">##  <span style="color: #BCBCBC;">*</span>         <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (1.820606 42.19923)     1      <span style="text-decoration: underline;">1</span>162 11.3   79.2  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  (1.81699 42.19829)     2      <span style="text-decoration: underline;">1</span>214 12.4   98.7  agriculture    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  (1.818201 42.1983)     3      <span style="text-decoration: underline;">1</span>197 10.4  102.   wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (1.819412 42.19832)     4      <span style="text-decoration: underline;">1</span>180  8.12  83.3  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (1.820623 42.19833)     5      <span style="text-decoration: underline;">1</span>164 13.9   96.8  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (1.821834 42.19834)     6      <span style="text-decoration: underline;">1</span>146 11.2    8.47 agriculture    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (1.823045 42.19835)     7      <span style="text-decoration: underline;">1</span>153  9.26 356.   agriculture    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (1.815796 42.19738)     8      <span style="text-decoration: underline;">1</span>237 14.5   75.1  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (1.817007 42.19739)     9      <span style="text-decoration: underline;">1</span>213 13.2   78.7  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  (1.818218 42.1974)    10      <span style="text-decoration: underline;">1</span>198  8.56  75.6  agriculture    </span></span>
+<span><span class="co">## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570</span></span>
+<span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 15</span></span></span>
+<span><span class="co">##            geometry    id elevation slope aspect land_cover_type</span></span>
+<span><span class="co">##  <span style="color: #BCBCBC;">*</span>      <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570)     1      <span style="text-decoration: underline;">1</span>162 11.3   79.2  wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470)     2      <span style="text-decoration: underline;">1</span>214 12.4   98.7  agriculture    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470)     3      <span style="text-decoration: underline;">1</span>197 10.4  102.   wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470)     4      <span style="text-decoration: underline;">1</span>180  8.12  83.3  wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470)     5      <span style="text-decoration: underline;">1</span>164 13.9   96.8  wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470)     6      <span style="text-decoration: underline;">1</span>146 11.2    8.47 agriculture    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470)     7      <span style="text-decoration: underline;">1</span>153  9.26 356.   agriculture    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370)     8      <span style="text-decoration: underline;">1</span>237 14.5   75.1  wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370)     9      <span style="text-decoration: underline;">1</span>213 13.2   78.7  wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370)    10      <span style="text-decoration: underline;">1</span>198  8.56  75.6  agriculture    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 14 more variables: forest &lt;list&gt;, soil &lt;list&gt;, state &lt;list&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   waterOrder &lt;int&gt;, waterQ &lt;list&gt;, queenNeigh &lt;list&gt;, channel &lt;lgl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 9 more variables: forest &lt;list&gt;, soil &lt;list&gt;, state &lt;list&gt;, channel &lt;lgl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   depth_to_bedrock &lt;dbl&gt;, bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, represented_area_m2 &lt;dbl&gt;, crop_factor &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;</span></span></span></code></pre>
 <p>Some of the columns like <code>forest</code>, <code>soil</code>,
 <code>elevation</code>, or <code>state</code>, were also present in the
 example for spatially-uncoupled simulations, so we will not repeat them.
-The following sub-sections present additional columns that are relevant
-here.</p>
-<div class="section level3">
-<h3 id="land-cover-type">Land cover type<a class="anchor" aria-label="anchor" href="#land-cover-type"></a>
-</h3>
-<p>Simulations over grids normally include different land cover types.
-These are described in column <code>land_cover_type</code>:</p>
+The following describes additional columns that are relevant here.</p>
+<p><strong>Land cover type</strong></p>
+<p>Simulations over watersheds normally include different land cover
+types. These are described in column <code>land_cover_type</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">example_watershed</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -138,28 +139,11 @@ These are described in column <code>land_cover_type</code>:</p>
 <span><span class="co">##          17           1          48</span></span></code></pre>
 <p>Local and landscape processes will behave differently depending on
 the land cover type.</p>
-</div>
-<div class="section level3">
-<h3 id="grid-description">Grid description<a class="anchor" aria-label="anchor" href="#grid-description"></a>
-</h3>
-<p>Note that the <code>sf</code> structure does not imply a grid <em>per
-se</em>. Point geometry is used to describe the central coordinates of
-grid cells, and two additional columns are used to convey information
-about the grid. Column <code>queenNeigh</code> is used to specify
-adjacency relationships between grid cells, while
-<code>represented_area_m2</code> is used to define the area of cells in
-square meters.</p>
-</div>
-<div class="section level3">
-<h3 id="aquifer-and-snowpack">Aquifer and snowpack<a class="anchor" aria-label="anchor" href="#aquifer-and-snowpack"></a>
-</h3>
+<p><strong>Aquifer and snowpack</strong></p>
 <p>Columns <code>aquifer</code> and <code>snowpack</code> are used as
 state variables to store the water content in the aquifer and snowpack,
 respectively.</p>
-</div>
-<div class="section level3">
-<h3 id="crop-factors">Crop factors<a class="anchor" aria-label="anchor" href="#crop-factors"></a>
-</h3>
+<p><strong>Crop factors</strong></p>
 <p>Since the landscape contains agricultural lands, we need to define
 <em>crop factors</em>, which will determine transpiration flow as a
 proportion of potential evapotranspiration:</p>
@@ -167,50 +151,88 @@ proportion of potential evapotranspiration:</p>
 <code class="sourceCode R"><span><span class="va">example_watershed</span><span class="op">$</span><span class="va">crop_factor</span> <span class="op">=</span> <span class="cn">NA</span></span>
 <span><span class="va">example_watershed</span><span class="op">$</span><span class="va">crop_factor</span><span class="op">[</span><span class="va">example_watershed</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">==</span><span class="st">"agriculture"</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0.75</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="grid-topology">Grid topology<a class="anchor" aria-label="anchor" href="#grid-topology"></a>
+</h3>
+<p>Note that the <code>sf</code> structure does not imply a grid <em>per
+se</em>. Point geometry is used to describe the central coordinates of
+grid cells, but does not describe the grid. This means that another
+spatial input is needed to describe the grid topology, which in our case
+is an object of class <code>SpatRaster</code> from package
+<strong>terra</strong>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">401380</span>, ymin <span class="op">=</span> <span class="fl">4671820</span>, xmax <span class="op">=</span> <span class="fl">402880</span>, ymax <span class="op">=</span> <span class="fl">4672620</span>, </span>
+<span>                nrow <span class="op">=</span> <span class="fl">8</span>, ncol <span class="op">=</span> <span class="fl">15</span>, crs <span class="op">=</span> <span class="st">"epsg:32631"</span><span class="op">)</span></span>
+<span><span class="va">r</span></span></code></pre></div>
+<pre><code><span><span class="co">## class       : SpatRaster </span></span>
+<span><span class="co">## dimensions  : 8, 15, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## resolution  : 100, 100  (x, y)</span></span>
+<span><span class="co">## extent      : 401380, 402880, 4671820, 4672620  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">## coord. ref. : WGS 84 / UTM zone 31N (EPSG:32631)</span></span></code></pre>
+<p>The <code>r</code> object must have the same coordinate reference
+system as the <code>sf</code> object. Moreover, each grid cell can
+contain up to one point of the <code>sf</code> (typically at the cell
+center). Some grid cells may be empty, though, so that the actual
+simulations may be done on an incomplete grid. Note that the raster does
+not contain data, only the topology is needed (to define neighbors and
+cell sizes, for example). All relevant attribute data is already
+included in the <code>sf</code> object.</p>
+</div>
+<div class="section level3">
+<h3 id="watershed-control-options">Watershed control options<a class="anchor" aria-label="anchor" href="#watershed-control-options"></a>
+</h3>
+<p>Analogously to local-scale simulations with <strong>medfate</strong>,
+watershed simulations have overall control parameters. Notably, the user
+needs to decide which sub-model will be used for lateral water transfer
+processes (a decision similar to choosing the plant transpiration
+sub-model in <strong>medfate</strong>), by default “tetis”:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ws_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="st">"tetis"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="simulation-of-watershed-hydrology">Simulation of watershed hydrology<a class="anchor" aria-label="anchor" href="#simulation-of-watershed-hydrology"></a>
+<h2 id="simulation-of-watershed-function-and-dynamics">Simulation of watershed function and dynamics<a class="anchor" aria-label="anchor" href="#simulation-of-watershed-function-and-dynamics"></a>
 </h2>
-<p>As for the call to function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> we will use
-the same weather (i.e. <code>examplemeteo</code>) across the watershed.
-To speed up calculations we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> for a
-single month.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="launching-watershed-simulations">Launching watershed simulations<a class="anchor" aria-label="anchor" href="#launching-watershed-simulations"></a>
+</h3>
+<p>To speed up calculations, we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code>
+for a single month:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
-<span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>,</span>
+<span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
-<pre><code>##  [36mℹ [39m Checking inputs
-• Grid cells: 66, patchsize: 10000 m2, area: 66 ha
-##  [36mℹ [39m Checking inputs
-• Cell land use wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0
-##  [36mℹ [39m Checking inputs
-• Cells with soil: 65
-##  [36mℹ [39m Checking inputs
-• Number of days to simulate: 31
-##  [36mℹ [39m Checking inputs
-• Number of temporal summaries: 1
-##  [36mℹ [39m Checking inputs
-• Number of cells with daily model results: 0
-##  [36mℹ [39m Checking inputs
-• Number of outlet cells: 1
-##  [36mℹ [39m Checking inputs
- [32m✔ [39m Checking inputs  [38;5;249m[35ms] [39m
-## 
-##  [36mℹ [39m Checking topology
-##  [32m✔ [39m Checking topology  [38;5;249m[10ms] [39m
-## 
-##  [36mℹ [39m Checking spwb input
-##  [32m✔ [39m Checking spwb input  [38;5;249m[424ms] [39m
-## 
-##  [36mℹ [39m 65 cells needed initialization
-##  [32m✔ [39m 65 cells needed initialization  [38;5;249m[12ms] [39m
-## 
-## Daily simulations  [32m■■■■■■■■■■■■■■                   [39m  42% | ETA:  2s
-## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m 100% | ETA:  0s
-## • Water balance check</code></pre>
+<pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
+<pre><code><span><span class="co">## • Average cell area: 10006 m2, Total area: 120 ha, Target area: 66 ha</span></span></code></pre>
+<pre><code><span><span class="co">## • Cell land use wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Cells with soil: 65</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of days to simulate: 31</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of temporal summaries: 1</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Building spwb input</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[600ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 65 cells needed initialization</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  35% | ETA:  3s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## • Done</span></span></code></pre>
+<pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
 <pre><code><span><span class="co">##   Change in snowpack water content (mm): 3.34</span></span>
 <span><span class="co">##   Snowpack water balance result (mm): 3.34</span></span>
 <span><span class="co">##   Snowpack water balance components:</span></span>
@@ -238,20 +260,61 @@ single month.</p>
 <span><span class="co">##   Watershed lateral flows:</span></span>
 <span><span class="co">##     Subsurface flow (mm) 0</span></span>
 <span><span class="co">##     Groundwater flow (mm) 11.11</span></span></code></pre>
-<pre><code><span><span class="co">## • Done</span></span></code></pre>
 <p>Although simulations are performed using daily temporal steps,
 parameter <code>summary_frequency</code> allows storing results at
 coarser temporal scales, to reduce the amount of memory in spatial
 results.</p>
+</div>
 <div class="section level3">
-<h3 id="summaries-and-plots">Summaries and plots<a class="anchor" aria-label="anchor" href="#summaries-and-plots"></a>
+<h3 id="structure-of-simulation-outputs">Structure of simulation outputs<a class="anchor" aria-label="anchor" href="#structure-of-simulation-outputs"></a>
+</h3>
+<p>Function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../reference/spwb_land.html">growth_land()</a></code>
+return a list with the following elements:</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "sf"                     "watershed_balance"      "watershed_soil_balance"</span></span>
+<span><span class="co">## [4] "daily_runoff"</span></span></code></pre>
+<p>Where <code>sf</code> is an object of class <code>sf</code>,
+analogous to those of functions <code>*_spatial()</code>:</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span></span></code></pre></div>
+<pre><code><span><span class="co">## Simple feature collection with 66 features and 5 fields</span></span>
+<span><span class="co">## Geometry type: POINT</span></span>
+<span><span class="co">## Dimension:     XY</span></span>
+<span><span class="co">## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570</span></span>
+<span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 6</span></span></span>
+<span><span class="co">##            geometry state           aquifer snowpack summary        result</span></span>
+<span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    45.2     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>     52.5     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    37.3     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    64.0     2.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    65.2     2.57 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>     56.7     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>     54.8     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    60.8     2.84 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>    60.2     2.97 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>     54.1     3.56 <span style="color: #949494;">&lt;dbl [1 × 25]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span></code></pre>
+<p>Columns <code>state</code>, <code>aquifer</code> and
+<code>snowpack</code> contain state variables, whereas
+<code>summary</code> contains temporal water balance summaries for all
+cells. Column <code>result</code> is empty in this case, but see
+below.</p>
+<p>The other elements of the simulation result list
+(<code>watershed_balance</code>, <code>watershed_soil_balance</code> and
+<code>daily_runoff</code>) refer to watershed level results.</p>
+</div>
+<div class="section level3">
+<h3 id="accessing-and-plotting-cell-summaries">Accessing and plotting cell summaries<a class="anchor" aria-label="anchor" href="#accessing-and-plotting-cell-summaries"></a>
 </h3>
 <p>Unlike <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> where summaries could be
 arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET Runon Runoff Infiltration</span></span>
 <span><span class="co">## 2001-01-01      -3.203556       2.427977 31.14151     0      0     54.01675</span></span>
@@ -262,14 +325,110 @@ summaries for a given landscape cell using:</p>
 <span><span class="co">##                 SWE  SoilVol        Psi1  WTD      DTA InterflowInput</span></span>
 <span><span class="co">## 2001-01-01 1.649861 531.3573 -0.03468164 4000 14.99564              0</span></span>
 <span><span class="co">##            InterflowOutput BaseflowInput BaseflowOutput</span></span>
-<span><span class="co">## 2001-01-01               0      6.908687       1.781954</span></span></code></pre>
+<span><span class="co">## 2001-01-01               0      6.908747       1.781939</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
 water volume for the simulated month:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="full-simulation-results-for-specific-cells">Full simulation results for specific cells<a class="anchor" aria-label="anchor" href="#full-simulation-results-for-specific-cells"></a>
+</h3>
+<p>The idea of generating summaries arises from the fact that local
+models can produce a large amount of results, of which only some are of
+interest at the landscape level. Nevertheless, it is possible to specify
+those cells for which full daily results are desired. This is done by
+adding a column <code>result_cell</code> in the input <code>sf</code>
+object:</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set request for daily model results in cells number 3 and 9</span></span>
+<span><span class="va">example_watershed</span><span class="op">$</span><span class="va">result_cell</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">example_watershed</span><span class="op">$</span><span class="va">result_cell</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">9</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></code></pre></div>
+<p>If we launch the simulations again (omiting progress
+information):</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>,</span>
+<span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>We can now retrieve the results of the desired cell, e.g. the third
+one, in column <code>result</code> of <code>sf</code>:</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "spwb" "list"</span></span></code></pre>
+<p>This object has class <code>spwb</code> and the same structure
+returned by function <code>spwb()</code> of <strong>medfate</strong>.
+Hence, we can inspect daily results using functions
+<code>shinyplot()</code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;">
+### Simulations of watershed forest dynamics</p>
+<p>Running <code><a href="../reference/spwb_land.html">growth_land()</a></code> is very similar to running
+<code><a href="../reference/spwb_land.html">spwb_land()</a></code>. However, a few things change when we want to
+simulate forest dynamics using <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>. Regarding the
+<code>sf</code> input, an additional column
+<code>management_arguments</code> may be defined to specify the forest
+management arguments (i.e. silviculture) of cells. Furthermore, the
+function does not allow choosing the temporal scale of summaries. A call
+to <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> for a single year is given here (we subset
+the input to speed-up calculations):</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">fordyn_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
+<span>                      <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>,</span>
+<span>                      watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'fordyn' over a watershed</span> <span style="color: #00BBBB;">───────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
+<pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
+<pre><code>##  [36mℹ [39m Checking 'sf' data
+• Number of grid cells: 120 Number of target cells: 10
+##  [36mℹ [39m Checking 'sf' data
+• Average cell area: 10006 m2, Total area: 120 ha, Target area: 10 ha
+##  [36mℹ [39m Checking 'sf' data
+• Cell land use wildland: 6 agriculture: 4 artificial: 0 rock: 0 water: 0
+##  [36mℹ [39m Checking 'sf' data
+• Cells with soil: 10
+##  [36mℹ [39m Checking 'sf' data
+• Number of years to simulate: 1
+##  [36mℹ [39m Checking 'sf' data
+##  [36mℹ [39m Checking 'sf' data
+── Initialisation 
+##  [36mℹ [39m Checking 'sf' data
+ [36mℹ [39m Creating 10 input objects for model 'growth'.
+##  [32m✔ [39m Creating 10 input objects for model 'growth'.  [38;5;249m[5ms] [39m
+## 
+##  [36mℹ [39m Checking 'sf' data
+ [32m✔ [39m Checking 'sf' data  [38;5;249m[339ms] [39m
+## 
+##  [36mℹ [39m Initializing 'fordyn' output tables
+##  [32m✔ [39m Initializing 'fordyn' output tables  [38;5;249m[20ms] [39m
+## 
+## 
+## ── Simulating year 2001 [1/1] 
+## • Growth/mortality
+## Daily simulations  [32m■■■■■                            [39m  12% | ETA: 13s
+## Daily simulations  [32m■■■■■■■■■■                       [39m  29% | ETA: 12s
+## Daily simulations  [32m■■■■■■■■■■■■■■■                  [39m  47% | ETA:  9s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■            [39m  66% | ETA:  6s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■      [39m  86% | ETA:  2s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m 100% | ETA:  0s
+## • Seed production/dispersal
+## • Management/recruitment/resprouting</code></pre>
+<p>In this case, the <code>sf</code> part of the output contains
+additional columns, analogous to those of
+<code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>.</p>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws</span><span class="op">$</span><span class="va">sf</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "geometry"         "state"            "aquifer"          "snowpack"        </span></span>
+<span><span class="co">##  [5] "summary"          "forest"           "tree_table"       "shrub_table"     </span></span>
+<span><span class="co">##  [9] "dead_tree_table"  "dead_shrub_table" "cut_tree_table"   "cut_shrub_table"</span></span></code></pre>
 </div>
 </div>
   </div>
