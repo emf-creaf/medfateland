@@ -69,11 +69,11 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_watershedDayTetis`, localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
 }
 
-.initSerghei <- function(xList, input_dir, output_dir) {
-    .Call(`_medfateland_initSerghei`, xList, input_dir, output_dir)
+.initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
+    .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
 }
 
-.watershedDaySerghei <- function(localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
-    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
+.watershedDaySerghei <- function(localModel, lct, xList, snowpack, sf2cell, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, progress = TRUE) {
+    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, snowpack, sf2cell, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, progress)
 }
 

@@ -21,7 +21,7 @@ library(meteoland)
 
 ## Aim
 
-The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
+The aim of this vignette is to illustrate how to use **medfateland**  (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
 
 ## Data preparation
 
@@ -46,7 +46,7 @@ Local and landscape processes will behave differently depending on the land cove
 
 ### Grid description
 
-Note that the `sf` structure does not imply a grid *per se*. Point geometry is used to describe the central coordinates of grid cells, and two additional columns are used to convey information about the grid. Column `queenNeigh` is used to specify adjacency relationships between grid cells, while `represented_area_m2` is used to define the area of cells in square meters.
+Note that the `sf` structure does not imply a grid *per se*. Point geometry is used to describe the central coordinates of grid cells, and `represented_area_m2` is used to define the area of cells in square meters (all values should be the same!).
 
 ### Aquifer and snowpack
 
@@ -64,11 +64,11 @@ example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] 
 
 ## Simulation of watershed hydrology
 
-As for the call to function `spwb_spatial()` we will use the same weather (i.e. `examplemeteo`) across the watershed. To speed up calculations we call function `spwb_land()` for a single month.
+To speed up calculations we call function `spwb_land()` for a single month.
 
 ```{r, warning=FALSE}
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws <- spwb_land(example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
+res_ws <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month")
 ```
 
 Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 

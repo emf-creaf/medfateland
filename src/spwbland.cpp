@@ -427,35 +427,39 @@ List watershedDayTetis(String localModel,
 }
 
 // [[Rcpp::export(".initSerghei")]]
-List initSerghei(List xList,
+List initSerghei(NumericVector limits, int nrow, int ncol,
+                 IntegerVector sf2cell, List xList,
                  String input_dir, String output_dir) {
   // "rock" should have a soil with all rock and zero Ksat
   // "artificial" should have a missing soil
   // "water", "agriculture" and "wildland" should have normal soil
-  int n = xList.size();
+  int nTargetCells = xList.size();
+  int nGridCells = nrow*ncol;
   //Initialize Uptake and throughfall
-  NumericVector throughfall(n, NA_REAL);
-  List soilListSerghei(n);
-  List uptake(n);
-  for(int i=0;i<n; i++) {
+  NumericVector throughfall(nGridCells, NA_REAL);
+  List soilListSerghei(nGridCells);
+  List uptake(nGridCells);
+  for(int i=0;i<nTargetCells; i++) {
     List x = Rcpp::as<Rcpp::List>(xList[i]);
     if(!x.isNULL()) {
       if(x.containsElementNamed("soil")) {
         List soil = Rcpp::as<Rcpp::List>(x["soil"]);
-        soilListSerghei[i] = clone(soil);
+        soilListSerghei[sf2cell[i] - 1] = clone(soil); //indices in R
         NumericVector W = soil["W"];
         // NumericVector dVec = soil["dVec"];
         // for(int l=0;l<dVec.size();l++) Rcout<< dVec[l]<<" ";
         // Rcout<<"\n";
         NumericVector vup(W.size(), NA_REAL);
-        uptake[i] = vup;
+        uptake[sf2cell[i] - 1] = vup; //indices in R
       }
     }
   }
   // Initialize SERGHEI (call to interface function)
   // Use input_dir and output_dir
   // initializeSerghei(soilListSerghei, uptake, throughfall);
-  List serghei_interface = List::create(_["soilList"] = soilListSerghei,
+  List serghei_interface = List::create(_["limits"] = limits,
+                                        _["dim"] = IntegerVector::create(nrow,ncol),
+                                        _["soilList"] = soilListSerghei,
                                         _["throughfall"] = throughfall,
                                         _["uptake"] = uptake);
   return(serghei_interface);
@@ -469,12 +473,13 @@ void callSergheiDay() {
 List watershedDaySerghei(String localModel,
                        CharacterVector lct, List xList,
                        NumericVector snowpack,
+                       IntegerVector sf2cell,
                        List serghei_interface,
                        List watershed_control,
                        CharacterVector date,
                        DataFrame gridMeteo,
                        NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                       double patchsize, bool progress = true) {
+                       bool progress = true) {
   int nX = xList.size();
   NumericVector MinTemperature(nX, NA_REAL), MaxTemperature(nX, NA_REAL), PET(nX, NA_REAL);
   NumericVector Precipitation(nX, NA_REAL), Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
@@ -573,13 +578,13 @@ List watershedDaySerghei(String localModel,
   //B.1 - Fill uptake and throughfall lists
   for(int i=0;i<nX;i++) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      NumericVector vup = Rcpp::as<Rcpp::NumericVector>(uptakeSerghei[i]);
+      NumericVector vup = Rcpp::as<Rcpp::NumericVector>(uptakeSerghei[sf2cell[i] - 1]); //indices in R
       // Rcout<<".";
       List res_i = localResults[i];
       NumericVector DB = res_i["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res_i["Soil"]);
       //Copy throughfall
-      throughfallSerghei[i] = DB["NetRain"];
+      throughfallSerghei[sf2cell[i] - 1] = DB["NetRain"]; //indices in R
       //Adding soil evaporation and snowmelt to plant uptake
       double snowmelt = DB["Snowmelt"];
       NumericVector EsoilVec = Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]);
@@ -591,7 +596,7 @@ List watershedDaySerghei(String localModel,
     } else {
       // Rcout<<"+";
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"
-      throughfallSerghei[i] = Rain[i];
+      throughfallSerghei[sf2cell[i] - 1] = Rain[i]; //indices in R
       // No uptake in "rock", "artificial" or "water"
       // for(int l=0;l<vup.size();l++) vup[l] = 0.0;
     }
@@ -608,7 +613,7 @@ List watershedDaySerghei(String localModel,
   for(int i=0;i<nX;i++) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       // Rcout<<".";
-      List soilSerghei = soilListSerghei[i];
+      List soilSerghei = soilListSerghei[sf2cell[i] - 1];  //indices in R
       List x = Rcpp::as<Rcpp::List>(xList[i]);
       if(!x.isNULL()) {
         if(x.containsElementNamed("soil")) {

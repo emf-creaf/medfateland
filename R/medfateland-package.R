@@ -51,6 +51,9 @@
 #' @importFrom stats rlnorm
 #' @importFrom stats rpois
 #' @importFrom stats var
+#' @importFrom terra cellFromRowCol
+#' @importFrom terra cellFromXY
+#' @importFrom terra rast
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr unnest
 #' @useDynLib medfateland, .registration = TRUE

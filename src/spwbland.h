@@ -17,15 +17,17 @@ List watershedDayTetis(String localModel,
                   NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
                   double patchsize, bool progress = true);
 
-List initSerghei(List xList,
+List initSerghei(NumericVector limits, int nrow, int ncol,
+                 IntegerVector sf2cell, List xList,
                  String input_dir, String output_dir);
 
 List watershedDaySerghei(String localModel,
                        CharacterVector lct, List xList,
                        NumericVector snowpack,
+                       IntegerVector sf2cell,
                        List serghei_interface,
                        List watershed_control,
                        CharacterVector date,
                        DataFrame gridMeteo,
                        NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                       double patchsize, bool progress = true);
+                       bool progress = true);

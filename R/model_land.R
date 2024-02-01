@@ -1,12 +1,4 @@
-# Checks that represented area is equal for all cells
-.check_patchsize <-function(y) {
-  represented_area_m2 <- y$represented_area_m2
-  represented_area_m2 <- represented_area_m2[!is.na(represented_area_m2)]
-  if(length(represented_area_m2)==0) stop("Please, provide at least one non-missing value for represented area.")
-  patchsize <- represented_area_m2[1]
-  if(!all(represented_area_m2==patchsize)) stop("All values of cell represented area should be equal.")
-  return(patchsize)
-}
+
 # Checks that soils have equal number of layers and width
 .check_equal_soil_discretization<-function(soil_column, force_equal_layer_widths) {
   nlayers <- NA
@@ -33,15 +25,55 @@
   }
   return(soil_column)
 }
+.waterQFun <-function(queenNeigh, coords, elevation) {
+  Q = vector("list", length(queenNeigh))
+  qfun<-function(xi, yi, zi, X, Y, Z) {
+    n = length(X)
+    Li = sqrt((X-xi)^2+(Y-yi)^2+(Z-zi)^2)
+    dZ = zi-Z #dif. in elevation
+    dZLi = dZ/Li 
+    dZLi[dZ<=0] = 0 #Set to zero for neighbour cells at higher or equal elevation
+    if(sum(dZLi)>0) return(dZLi/sum(dZLi))
+    return(rep(0, n)) #In a flat area no discharge will be applied
+  }
+  for(i in 1:length(queenNeigh)) {
+    wne = queenNeigh[[i]]
+    Q[[i]] = qfun(xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
+                  X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne])
+  }  
+  return(Q)
+}
+.neighFun<-function(r, sf2cell, cell2sf) {
+  ncol <- dim(r)[2]
+  nrow <- dim(r)[1]
+  queenNeigh <- vector("list", length(sf2cell))
+  rowcol <- terra::rowColFromCell(r, sf2cell)
+  m2 <- matrix(c(-1,-1,
+                 0,-1,
+                 1,-1,
+                 -1,0,
+                 1,0,
+                 -1,1,
+                 0,1,
+                 1,1), nrow=8, ncol=2, byrow = TRUE)
+  for(i in 1:length(sf2cell)) {
+    m1 <-matrix(rep(rowcol[i,],8),
+                nrow = 8, ncol=2, byrow = TRUE) 
+    m <- m1 + m2
+    m <- m[m[,1]>0 & m[,1]<=nrow & m[,2]>0 & m[,2]<=ncol, ]
+    v <- cell2sf[terra::cellFromRowCol(r, m[,1], m[,2])]
+    queenNeigh[[i]] <- sort(v[!is.na(v)])
+  }
+  return(queenNeigh)
+}
 .simulate_land<-function(land_model = "spwb_land", 
-                         y, SpParams, meteo, dates = NULL,
+                         r, y, SpParams, meteo, dates = NULL,
                          CO2ByYear = numeric(0), 
                          summary_frequency = "years",
                          local_control = medfate::defaultControl(),
                          watershed_control = default_watershed_control(),
                          progress = TRUE, header_footer = progress) {
 
-  if(header_footer) cli::cli_progress_step(paste0("Checking inputs"))
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land", "growth_land", "fordyn_land"))
   if(land_model == "spwb_land") local_model <- "spwb"
@@ -53,23 +85,32 @@
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
   
   #check input
-  if(!inherits(y, "sf")) stop("'y' has to be of class 'sf'.")
+  if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
+  if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
+  if(sf::st_crs(y)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(y)
+  sf2cell <- terra::cellFromXY(r, sf_coords)
+  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  nrastercells <- prod(dim(r)[1:2])
+  cell2sf <- rep(NA, nrastercells)
+  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
+  
+  if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data"))
   .check_sf_input(y)
-  if(!is.null(dates)) if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
-  if(!("represented_area_m2" %in% names(y))) stop("'represented_area_m2' has to be defined in 'y'.")
-  if(!("snowpack" %in% names(y))) stop("'snowpack' has to be defined in 'y'.")
-  patchsize <- .check_patchsize(y)
-
+  if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("'dates' has to be of class 'Date'.")
+  if(!("snowpack" %in% names(y))) cli::cli_abort("'snowpack' has to be defined in 'y'.")
+  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
+  patchsize <- mean(represented_area_m2, na.rm=TRUE)
+  
   ## TETIS: Check additional elements
   if(watershed_model == "tetis") {
-    if(!("waterOrder" %in% names(y))) stop("'waterOrder' has to be defined in 'y'.")
-    if(!("waterQ" %in% names(y))) stop("'waterQ' has to be defined in 'y'.")
-    if(!("queenNeigh" %in% names(y))) stop("'queenNeigh' has to be defined in 'y'.")
-    if(!("channel" %in% names(y))) stop("'channel' has to be defined in 'y'.")
-    if(!("depth_to_bedrock" %in% names(y))) stop("'depth_to_bedrock' has to be defined in 'y'.")
-    if(!("bedrock_conductivity" %in% names(y))) stop("'bedrock_conductivity' has to be defined in 'y'.")
-    if(!("bedrock_porosity" %in% names(y))) stop("'bedrock_porosity' has to be defined in 'y'.")
-    if(!("aquifer" %in% names(y))) stop("'aquifer' has to be defined in 'y'.")
+    if(!("channel" %in% names(y))) cli::cli_abort("'channel' has to be defined in 'y'.")
+    if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'y'.")
+    if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'y'.")
+    if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'y'.")
+    if(!("aquifer" %in% names(y))) cli::cli_abort("'aquifer' has to be defined in 'y'.")
   }
   ## SERGHEI: Enforce same soil layer definition
   if(watershed_model=="serghei") {
@@ -108,7 +149,7 @@
       }
     }
   } else {
-    if(!("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
+    if(!("meteo" %in% names(y))) cli::cli_abort("Column 'meteo' must be defined in 'y' if not supplied separately")
     if(!("dates" %in% names(y$meteo[[1]]))) {
       datesMeteo <- as.Date(row.names(y$meteo[[1]]))
     } else {
@@ -121,14 +162,14 @@
       } else {
         datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
       }
-      if(!all(datesMeteo_i==datesMeteo)) stop("All spatial elements need to have the same weather dates.")
+      if(!all(datesMeteo_i==datesMeteo)) cli::cli_abort("All spatial elements need to have the same weather dates.")
     }
   }
   if(is.null(dates)) {
     dates <- datesMeteo
   } else {
     if(sum(dates %in% datesMeteo)<length(dates))
-      stop("Dates in 'dates' is not a subset of dates in 'meteo'.")
+      cli::cli_abort("Dates in 'dates' is not a subset of dates in 'meteo'.")
   }
   date.factor <- cut(dates, breaks=summary_frequency)
   df.int <- as.numeric(date.factor)
@@ -145,31 +186,20 @@
   nSummary <- sum(table(date.factor)>0)
   t.df <- as.numeric(table(df.int))
 
+  # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
-    #Determine outlet cells (those without downhill neighbors)
-    isOutlet <- (unlist(lapply(y$waterQ, sum))==0)
-    outlets <- which(isOutlet)
-  }
+    if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
 
-  #Print information area
-  if(header_footer) {
-    cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
-    cli::cli_li(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha"))
-    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
-    cli::cli_li(paste0("Cells with soil: ", nSoil))
-    cli::cli_li(paste0("Number of days to simulate: ",nDays))
-    cli::cli_li(paste0("Number of temporal summaries: ", nSummary))
-    cli::cli_li(paste0("Number of cells with daily model results: ", sum(result_cell)))
-    if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
-  }
-  
-  # TETIS: Check neighbours
-  if(watershed_model=="tetis") {
-    if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
-    if(max(y$waterOrder)>nCells) cli::cli_abort(paste0("Water order values outside valid range [1-",nCells,"]"))
+    waterOrder <- order(y$elevation, decreasing=TRUE)
+    queenNeigh <- .neighFun(r, sf2cell, cell2sf)
+    waterQ <- .waterQFun(queenNeigh, sf_coords, y$elevation)
+    #Determine outlet cells (those without downhill neighbors)
+    isOutlet <- (unlist(lapply(waterQ, sum))==0)
+    outlets <- which(isOutlet)
+    # Check
     for(i in 1:nCells) { 
-      ni <- y$queenNeigh[[i]]
-      qi <- y$waterQ[[i]]
+      ni <- queenNeigh[[i]]
+      qi <- waterQ[[i]]
       if(max(ni)>nCells || min(ni) < 1) {
         cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
       }
@@ -183,8 +213,25 @@
       }
     }
   }
+  if(header_footer) cli::cli_progress_done()
   
-  if(header_footer) cli::cli_progress_step(paste0("Checking ", local_model, " input"))
+  #Print information area
+  if(header_footer) {
+    cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
+    cli::cli_li(paste0("Number of grid cells: ", nrastercells, " Number of target cells: ", nCells))
+    cli::cli_li(paste0("Average cell area: ", round(patchsize),
+                       " m2, Total area: ", round(sum(represented_area_m2, na.rm=TRUE)/10000),
+                       " ha, Target area: ", round(sum(represented_area_m2[!is.na(cell2sf)], na.rm=TRUE)/10000)," ha"))
+    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
+    cli::cli_li(paste0("Cells with soil: ", nSoil))
+    cli::cli_li(paste0("Number of days to simulate: ",nDays))
+    cli::cli_li(paste0("Number of temporal summaries: ", nSummary))
+    cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(result_cell)))
+    if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
+  }
+
+ 
+  if(header_footer) cli::cli_progress_step(paste0("Building ", local_model, " input"))
   initialized_cells <- 0
   for(i in 1:nCells) { #Initialize if not previously initialized
     if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
@@ -312,7 +359,7 @@
     }
     return(l)
   }
-  
+
   if(watershed_model=="tetis") {
     initialSoilContent <- 0 
     for(i in 1:nCells) {
@@ -329,7 +376,11 @@
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
     serghei_parameters <- watershed_control[["serghei_parameters"]]
-    serghei_interface <- .initSerghei(y$state,
+    serghei_interface <- .initSerghei(limits = as.vector(terra::ext(r)),
+                                      nrow = terra::nrow(r),
+                                      ncol = terra::ncol(r),
+                                      sf2cell = sf2cell,
+                                      y$state,
                                       input_dir = serghei_parameters[["input_dir"]],
                                       output_dir = serghei_parameters[["output_dir"]])
   }
@@ -432,7 +483,7 @@
     if(watershed_model=="tetis") {
       ws_day <- .watershedDayTetis(local_model,
                                    y$land_cover_type, y$state,
-                                   y$waterOrder, y$queenNeigh, y$waterQ,
+                                   waterOrder, queenNeigh, waterQ,
                                    y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
                                    y$aquifer, y$snowpack,
                                    watershed_control,
@@ -444,12 +495,13 @@
       ws_day <- .watershedDaySerghei(local_model,
                                      y$land_cover_type, y$state,
                                      y$snowpack,
+                                     sf2cell,
                                      serghei_interface,
                                      watershed_control,
                                      datechar,
                                      gridMeteo,
                                      latitude, y$elevation, y$slope, y$aspect,
-                                     patchsize, FALSE)
+                                     FALSE)
     }
 
     res_day <- ws_day[["WatershedWaterBalance"]]
@@ -528,6 +580,7 @@
     }
   }
   if(progress) cli::cli_progress_done()
+  if(header_footer)  cli::cli_li("Done")
   
   #Average summaries
   LandscapeBalance$Precipitation <- LandscapeBalance$Rain + LandscapeBalance$Snow
@@ -633,7 +686,6 @@
   if(watershed_model=="serghei") {
     if(header_footer) cli::cli_li("Water balance check not possible with SERGHEI")
   }
-  if(header_footer)  cli::cli_li("Done")
   
   sf <- sf::st_sf(geometry=sf::st_geometry(y))
   sf$state <- y$state
@@ -659,8 +711,8 @@
 #' Watershed simulations
 #' 
 #' Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
-#' are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "tetis" 
-#' (\enc{Francés}{Frances} et al. 2007) or "serghei" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
+#' are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS" 
+#' (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 #' 
 #' @details
 #' \itemize{
@@ -671,9 +723,10 @@
 #'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
 #'         and resprouting.}
 #' }
+#' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
-#'     \item{\code{geometry}: Spatial geometry.}
+#'     \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
@@ -684,15 +737,11 @@
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 #'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
-#'     \item{\code{represented_area_m2}: Area represented by each cell in m2.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
-#'     \item{\code{result_cell}: A boolean flag to indicate that daily results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
+#'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
 #'   }
 #'   When using TETIS watershed model, the following columns are also required:
 #'   \itemize{
-#'     \item{\code{waterOrder}: Integer vector indicating cell processing order.}
-#'     \item{\code{waterQ}: A list of water discharge values to neighbors.}
-#'     \item{\code{queenNeigh}: A list of integers identifying the (up to 8) queen neighbors, for each cell.}
 #'     \item{\code{channel}: A logical vector indicating whether each cell belongs to the channel network.}
 #'     \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 #'     \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
@@ -802,6 +851,16 @@
 #' example_watershed$result_cell <- FALSE
 #' example_watershed$result_cell[c(3,9)] <- TRUE
 #' 
+#' # Get bounding box to determine limits
+#' b <- sf::st_bbox(example_watershed)
+#' b
+#' 
+#' # Define a raster topology, using terra package, 
+#' # with the same CRS as the watershed. In this example cells have 100 m side.
+#' # Coordinates in the 'sf' object are assumed to be cell centers
+#' r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+#'                 nrow = 8, ncol = 15, crs = "epsg:32631")
+#' 
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   
@@ -815,14 +874,14 @@
 #' ws_control <- default_watershed_control("tetis")
 #' 
 #' # Launch simulations 
-#' res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
+#' res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
 #'                  dates = dates, summary_frequency = "month",
 #'                  watershed_control = ws_control)
 #' }
 #' 
 #' @name spwb_land
 #' @export
-spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
+spwb_land<-function(r, sf, SpParams, meteo= NULL, dates = NULL,
                     CO2ByYear = numeric(0), 
                     summary_frequency = "years",
                     local_control = medfate::defaultControl(),
@@ -830,7 +889,7 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
                     progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'spwb' over a watershed"))
   return(.simulate_land("spwb_land",
-                        y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
+                        r = r, y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                         CO2ByYear = CO2ByYear,
                         summary_frequency = summary_frequency, 
                         local_control = local_control,
@@ -839,7 +898,7 @@ spwb_land<-function(sf, SpParams, meteo= NULL, dates = NULL,
 }
 #' @rdname spwb_land
 #' @export
-growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
+growth_land<-function(r, sf, SpParams, meteo = NULL, dates = NULL,
                       CO2ByYear = numeric(0), 
                       summary_frequency = "years",
                       local_control = medfate::defaultControl(),
@@ -847,7 +906,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
                       progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'growth' over a watershed"))
   return(.simulate_land("growth_land",
-                        y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
+                        r = r, y = sf, SpParams = SpParams, meteo = meteo, dates = dates,
                         CO2ByYear = CO2ByYear,
                         summary_frequency = summary_frequency, 
                         local_control = local_control,
@@ -856,7 +915,7 @@ growth_land<-function(sf, SpParams, meteo = NULL, dates = NULL,
 
 #' @rdname spwb_land
 #' @export
-fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
+fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),
                         watershed_control = default_watershed_control(),
@@ -874,7 +933,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   nArti <- sum(sf$land_cover_type %in% c("artificial"))
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  patchsize <- .check_patchsize(sf)
+  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r, unit="m")))
 
   dispersal_params <- watershed_control[["dispersal_parameters"]]
   
@@ -915,7 +974,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
   nYears <- length(yearsUnique)
   
   if(progress) {
-    cli::cli_li(paste0("Grid cells: ", nCells,", patchsize: ", patchsize," m2, area: ", nCells*patchsize/10000," ha"))
+    cli::cli_li(paste0("Grid cells: ", nCells,", mean cell size: ", mean(represented_area_m2, na.rm=TRUE)," m2, area: ", nCells*patchsize/10000," ha"))
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
     cli::cli_li(paste0("Number of years to simulate: ",nYears))
@@ -971,7 +1030,7 @@ fordyn_land <- function(sf, SpParams, meteo = NULL, dates = NULL,
     # 1.1 Calls growth_land model
     if(progress) cli::cli_li(paste0("Growth/mortality"))
     GL <- .simulate_land("growth_land",
-                         y = sf, SpParams = SpParams, meteo = meteo, dates = datesYear,
+                         r = r, y = sf, SpParams = SpParams, meteo = meteo, dates = datesYear,
                          CO2ByYear = CO2ByYear,
                          summary_frequency = "month", # Summary frequency to use statistics
                          local_control = local_control,

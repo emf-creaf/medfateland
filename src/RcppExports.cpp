@@ -263,21 +263,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // initSerghei
-List initSerghei(List xList, String input_dir, String output_dir);
-RcppExport SEXP _medfateland_initSerghei(SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
+List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
+RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type limits(limitsSEXP);
+    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
+    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
     Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
-    rcpp_result_gen = Rcpp::wrap(initSerghei(xList, input_dir, output_dir));
+    rcpp_result_gen = Rcpp::wrap(initSerghei(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir));
     return rcpp_result_gen;
 END_RCPP
 }
 // watershedDaySerghei
-List watershedDaySerghei(String localModel, CharacterVector lct, List xList, NumericVector snowpack, List serghei_interface, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, double patchsize, bool progress);
-RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP snowpackSEXP, SEXP serghei_interfaceSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP patchsizeSEXP, SEXP progressSEXP) {
+List watershedDaySerghei(String localModel, CharacterVector lct, List xList, NumericVector snowpack, IntegerVector sf2cell, List serghei_interface, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect, bool progress);
+RcppExport SEXP _medfateland_watershedDaySerghei(SEXP localModelSEXP, SEXP lctSEXP, SEXP xListSEXP, SEXP snowpackSEXP, SEXP sf2cellSEXP, SEXP serghei_interfaceSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -285,6 +289,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type snowpack(snowpackSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
     Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
@@ -293,9 +298,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type slope(slopeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type aspect(aspectSEXP);
-    Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type progress(progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, snowpack, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress));
+    rcpp_result_gen = Rcpp::wrap(watershedDaySerghei(localModel, lct, xList, snowpack, sf2cell, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, progress));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -318,7 +322,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_watershedDayTetis", (DL_FUNC) &_medfateland_watershedDayTetis, 20},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 3},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_watershedDaySerghei", (DL_FUNC) &_medfateland_watershedDaySerghei, 14},
     {NULL, NULL, 0}
 };

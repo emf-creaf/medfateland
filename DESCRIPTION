@@ -30,6 +30,7 @@ Imports:
     sf,
     shiny,
     stars,
+    terra,
     tidyr,
     tibble,
     stats

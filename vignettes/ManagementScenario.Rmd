@@ -22,7 +22,7 @@ library(meteoland)
 
 ## Aim
 
-The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest dynamics on a set of forest stands while evaluating a demand-based management scenario. In particular, we will illustrate the use of functions `create_management_scenario()` and `fordyn_scenario()`.
+The aim of this vignette is to illustrate how to use **medfateland**  (v. `r packageVersion("medfateland")`) to carry out simulations of forest dynamics on a set of forest stands while evaluating a demand-based management scenario. In particular, we will illustrate the use of functions `create_management_scenario()` and `fordyn_scenario()`.
 
 ## Preparation
 

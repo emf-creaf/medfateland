@@ -53,10 +53,7 @@
 }
 
 .getAllowedWatershedVars <-function(){
-  return(c("Number of cell neighbours" = "num_neigh", 
-           "Cell order for lateral water transfer" = "water_order", 
-           "Water outlet (binary)" = "outlets", 
-           "Water channel (binary)" = "channel",
+  return(c("Water channel (binary)" = "channel",
            "Depth to bedrock (m)" = "depth_to_bedrock",
            "Bedrock porosity" = "bedrock_porosity", 
            "Bedrock conductivity" = "bedrock_conductivity",

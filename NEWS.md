@@ -4,6 +4,7 @@
 
 # Version 2.1.0
 - SERGHEI coupling 
+- Raster topology from terra package required in watershed simulations
 
 # Version 2.0.5
 - Seed production and seed bank dynamics (from medfate v.3.2.0)

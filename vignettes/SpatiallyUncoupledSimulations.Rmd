@@ -21,7 +21,7 @@ library(meteoland)
 
 ## Aim
 
-The aim of this vignette is to illustrate how to use **medfateland** to carry out simulations of forest function and dynamics on a set of spatial units, without taking into account spatial processes. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_spatial()`, but the other two functions would be used similarly.
+The aim of this vignette is to illustrate how to use **medfateland** (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of spatial units, without taking into account spatial processes. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_spatial()`, but the other two functions would be used similarly.
 
 ## Displaying properties of spatial objects
 

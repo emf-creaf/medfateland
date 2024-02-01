@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-The R package **medfateland** has been designed to facilitate running simulations of forest functioning and dynamics at the landscape to regional scales. The package allows executing the stand-level models available in the R package **medfate** on specific locations within a landscape, using either sequential or parallel computation. Spatial units are uncoupled in those simulations, where only local processes are represented. However, **medfateland** provides additional functions that allow performing model simulations while accounting for processes relating different spatial units, such as lateral water transfer or seed dispersal. 
+The R package **medfateland** (v. `r packageVersion("medfateland")`) has been designed to facilitate running simulations of forest functioning and dynamics at the landscape to regional scales. The package allows executing the stand-level models available in the R package **medfate** on specific locations within a landscape, using either sequential or parallel computation. Spatial units are uncoupled in those simulations, where only local processes are represented. However, **medfateland** provides additional functions that allow performing model simulations while accounting for processes relating different spatial units, such as lateral water transfer or seed dispersal. 
 
 Complete documentation on the design and formulation of the simulation models and their inputs can be found at the [medfate reference book](https://emf-creaf.github.io/medfatebook/index.html). 
 

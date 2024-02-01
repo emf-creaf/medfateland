@@ -7,6 +7,7 @@
 \title{Watershed simulations}
 \usage{
 spwb_land(
+  r,
   sf,
   SpParams,
   meteo = NULL,
@@ -19,6 +20,7 @@ spwb_land(
 )
 
 growth_land(
+  r,
   sf,
   SpParams,
   meteo = NULL,
@@ -31,6 +33,7 @@ growth_land(
 )
 
 fordyn_land(
+  r,
   sf,
   SpParams,
   meteo = NULL,
@@ -43,9 +46,11 @@ fordyn_land(
 )
 }
 \arguments{
+\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
+
 \item{sf}{An object of class \code{\link{sf}} with the following columns:
 \itemize{
-\item{\code{geometry}: Spatial geometry.}
+\item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
@@ -56,15 +61,11 @@ fordyn_land(
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
-\item{\code{represented_area_m2}: Area represented by each cell in m2.}
 \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
-\item{\code{result_cell}: A boolean flag to indicate that daily results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
+\item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
 }
 When using TETIS watershed model, the following columns are also required:
 \itemize{
-\item{\code{waterOrder}: Integer vector indicating cell processing order.}
-\item{\code{waterQ}: A list of water discharge values to neighbors.}
-\item{\code{queenNeigh}: A list of integers identifying the (up to 8) queen neighbors, for each cell.}
 \item{\code{channel}: A logical vector indicating whether each cell belongs to the channel network.}
 \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
@@ -149,8 +150,8 @@ In function \code{fordyn_land} the \code{\link{sf}} object contains additional c
 }
 \description{
 Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
-are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "tetis"
-(\enc{Francés}{Frances} et al. 2007) or "serghei" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
+are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"
+(similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 }
 \details{
 \itemize{
@@ -181,6 +182,16 @@ example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] 
 example_watershed$result_cell <- FALSE
 example_watershed$result_cell[c(3,9)] <- TRUE
 
+# Get bounding box to determine limits
+b <- sf::st_bbox(example_watershed)
+b
+
+# Define a raster topology, using terra package, 
+# with the same CRS as the watershed. In this example cells have 100 m side.
+# Coordinates in the 'sf' object are assumed to be cell centers
+r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+                nrow = 8, ncol = 15, crs = "epsg:32631")
+
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   
@@ -194,7 +205,7 @@ dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 ws_control <- default_watershed_control("tetis")
 
 # Launch simulations 
-res <- spwb_land(example_watershed, SpParamsMED, examplemeteo, 
+res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
 }
