@@ -206,13 +206,13 @@ for a single month:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
@@ -224,12 +224,12 @@ for a single month:</p>
 <pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Building spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[600ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[508ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 65 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 65 cells needed initialization <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  35% | ETA:  3s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% | ETA:  1s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Done</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
@@ -365,8 +365,11 @@ Hence, we can inspect daily results using functions
 <code>shinyplot()</code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;">
-### Simulations of watershed forest dynamics</p>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>
+</h3>
 <p>Running <code><a href="../reference/spwb_land.html">growth_land()</a></code> is very similar to running
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code>. However, a few things change when we want to
 simulate forest dynamics using <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>. Regarding the
@@ -405,19 +408,19 @@ the input to speed-up calculations):</p>
 ##  [32m✔ [39m Creating 10 input objects for model 'growth'.  [38;5;249m[5ms] [39m
 ## 
 ##  [36mℹ [39m Checking 'sf' data
- [32m✔ [39m Checking 'sf' data  [38;5;249m[339ms] [39m
+ [32m✔ [39m Checking 'sf' data  [38;5;249m[329ms] [39m
 ## 
 ##  [36mℹ [39m Initializing 'fordyn' output tables
-##  [32m✔ [39m Initializing 'fordyn' output tables  [38;5;249m[20ms] [39m
+##  [32m✔ [39m Initializing 'fordyn' output tables  [38;5;249m[27ms] [39m
 ## 
 ## 
 ## ── Simulating year 2001 [1/1] 
 ## • Growth/mortality
-## Daily simulations  [32m■■■■■                            [39m  12% | ETA: 13s
-## Daily simulations  [32m■■■■■■■■■■                       [39m  29% | ETA: 12s
-## Daily simulations  [32m■■■■■■■■■■■■■■■                  [39m  47% | ETA:  9s
-## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■            [39m  66% | ETA:  6s
-## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■      [39m  86% | ETA:  2s
+## Daily simulations  [32m■■■■■                            [39m  12% | ETA: 12s
+## Daily simulations  [32m■■■■■■■■■■■                      [39m  32% | ETA: 10s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■                [39m  52% | ETA:  7s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■          [39m  72% | ETA:  4s
+## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    [39m  92% | ETA:  1s
 ## Daily simulations  [32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m 100% | ETA:  0s
 ## • Seed production/dispersal
 ## • Management/recruitment/resprouting</code></pre>
