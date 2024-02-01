@@ -23,11 +23,11 @@ library(meteoland)
 
 The aim of this vignette is to illustrate how to use **medfateland**  (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
 
-## Data inputs
+## Preparation
 
 Preparing inputs for watershed simulations can be tedious. Two main inputs need to be assembled, described in the following two sections.
 
-### sf object
+### Input sf objects
 
 Here we load a small example watershed included with the package, that can be used to understand the inputs required:
 
@@ -83,7 +83,7 @@ ws_control <- default_watershed_control("tetis")
 ```
 
 
-## Simulation of watershed function and dynamics
+## Carrying out simulations
 
 ### Launching watershed simulations
 

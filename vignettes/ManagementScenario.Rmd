@@ -146,7 +146,7 @@ In this example, we will assume a constant area of 100 ha for all stands:
 example_subset$represented_area_ha <- 100
 ```
 
-## Performing simulations
+## Carrying out simulations
 
 We are now ready to launch the simulation of the management scenario. This is done using a call to function `fordyn_scenario()`. As other simulation functions of **medfateland**, we need to supply the `sf` object, a table of species parameter values and the source of weather information. We also specify the management scenario and set `parallelize = TRUE` to speed-up calculations. This last parameter will also be important in real-case simulations.
 
@@ -190,7 +190,7 @@ fs_12$result_volumes[,c(1, 12:16)]
 ```
 
 
-## Continuing previous simulation
+## Continuing a previous simulation
 
 As mentioned above, other elements of the output of `fordyn_scenario()` allow conducting a new scenario simulation starting at the point where the previous one finished. The element `next_sf` contains the `sf` object corresponding to the final state of the simulation:
 

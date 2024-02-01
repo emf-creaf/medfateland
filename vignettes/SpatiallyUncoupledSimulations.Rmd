@@ -23,7 +23,9 @@ library(meteoland)
 
 The aim of this vignette is to illustrate how to use **medfateland** (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of spatial units, without taking into account spatial processes. This is done using functions `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_spatial()`, but the other two functions would be used similarly.
 
-## Displaying properties of spatial objects
+## Preparation
+
+### Input structures
 
 We begin by loading an example data set of 100 forest stands distributed on points in the landscape:
 
@@ -31,6 +33,8 @@ We begin by loading an example data set of 100 forest stands distributed on poin
 data("example_ifn")
 example_ifn
 ```
+
+### Displaying properties of spatial objects
 
 Using `plot_variable()` functions for spatial landscape objects, we can draw maps of some variables using:
 
@@ -40,7 +44,7 @@ plot_variable(example_ifn, "basal_area")
 
 The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot_land()` to display maps interactively.
 
-## Simulations on a set of locations
+## Carrying out simulations
 
 As you should already know, package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call.  
 
@@ -111,8 +115,6 @@ plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 
 To avoid displaying maps one by one, the package includes function `shinyplot_land()` that allows displaying maps of temporal summaries interactively.
 
-## Advanced simulation features
-
 ### Simulation with integrated temporal summaries
 
 If one needs to save memory, it is possible with `spwb_spatial()` to generate temporal summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of function `spwb()`. 
@@ -171,7 +173,7 @@ And we can draw a map with the monthly drought stress of *Quercus ilex* across s
 ```
 
 
-### Simulation in several steps
+## Continuing a previous simulation
 
 The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
 
