@@ -27,14 +27,35 @@ The aim of this vignette is to illustrate how to use **medfateland** (v. `r pack
 
 ### Input structures
 
-We begin by loading an example data set of 100 forest stands distributed on points in the landscape:
+The fundamental input structure in **medfateland** is an object of class **sf**, i.e. a simple feature collection where geometries (normally points) are described with attributes. In the case of **medfateland**, spatial attributes correspond to model inputs for each of the spatial units represented. We begin by loading an example data set of 100 forest stands distributed on points in the landscape:
 
 ```{r, fig.align='center', fig.width=7}
 data("example_ifn")
 example_ifn
 ```
 
-### Displaying properties of spatial objects
+
+
+Despite the geometries themselves (which have a coordinate reference system), the following columns are required:
+
+  + `id` identifiers of stands (e.g. forest inventory plot codes)
+  + `elevation`, `slope`, `aspect` describe the topography of the stands
+  + `land_cover_type` describes the land cover in each unit (values should be *wildland* or *agriculture* for spatially-uncoupled simulations).
+  + `forest` objects of class **forest** (see package **medfate**) describing the structure and composition of forest stands
+  + `soil` describes the soil of each forest stand, using either data frame of physical attributes or initialized objects of class **soil** (see package **medfate**).
+
+Note that columns `forest` and `soil` contain vectors of lists, where elements are either lists or data.frames. For example, the forest corresponding to the first stand is:
+
+```{r}
+example_ifn$forest[[3]]
+```
+and the soil is:
+
+```{r}
+example_ifn$soil[[3]]
+```
+
+### Displaying maps of landscape properties
 
 Using `plot_variable()` functions for spatial landscape objects, we can draw maps of some variables using:
 
@@ -44,34 +65,46 @@ plot_variable(example_ifn, "basal_area")
 
 The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot_land()` to display maps interactively.
 
-## Carrying out simulations
+### Climate forcing
 
-As you should already know, package `medfate` includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call.  
-
-As an example, we will use function `spwb_spatial()`, which simulates soil plant water balance on forests distributed in particular locations. The function takes an object of class `sf` as input.
-
-### Weather inputs and local control parameters
-
-As before, we need meteorological data, species parameters and control parameters for local simulations (which will apply to all forest stands):
+In **medfateland** there are several alternatives to specify climate forcing. One simple option is to assume the same weather for all stands. In this case we will supply a single data frame with daily weather for all plots:
 
 ```{r}
 data("examplemeteo")
+head(examplemeteo)
+```
+
+More interesting alternatives are described in the help of function `spwb_spatial()`. Notably, a column `meteo` may be defined in the **sf** input object, where for each spatial unit the user can supply a different data frame.
+
+### Species parameters and local control parameters
+
+Since it builds on **medfate**, simulations using **medfateland** require species parameters and control parameters for local simulations:
+
+```{r}
 data("SpParamsMED")
 local_control <- defaultControl()
 ```
 
+Importantly, the same control parameters will apply to all spatial units of the **sf** object.
+
+## Carrying out simulations
+
+As you should already know, package **medfate** includes functions `spwb()`, `growth()` and `fordyn()` to simulate soil water balance, carbon balance and forest dynamics on a single forest stand, respectively. This section describe how to run simulations on a set of forest stands in one call. As an example, we will use function `spwb_spatial()`, which simulates soil plant water balance on forests distributed in particular locations, but `growth_spatial()` and `fordyn_spatial()` are very similar. 
+
+
 ### Calling the simulation function
 
-The call to `spwb_spatial()` can be done as follows (here we restrict the dates for simplicity):
+The call to `spwb_spatial()` can be done as follows (here we use parameter `dates` restrict the simulation period to january and february):
 ```{r, warning=FALSE}
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
 res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, 
-                  dates = dates, local_control = local_control,  progress = FALSE)
+                    dates = dates, local_control = local_control,  
+                    parallelize = TRUE)
 ```
 
-Function `spwb_spatial()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the `sf` landscape object.  Then it calls function `spwb()` for each forest stand and stores the result. The fact that we used `examplemeteo` as meteorological input involves that the same weather was applied to all forest stands, but different weather could have been specified for each one (see documentation of function `spwb_spatial()`).
+Function `spwb_spatial()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the **sf** landscape object.  Then it calls function `spwb()` for each forest stand and stores the result. In this case, we asked for parallel computation via the parameter `parallelize = TRUE`. 
 
-The result of calling `spwb_spatial()` is an object of class `sf` with the following columns:
+The simulation result is also an object of class **sf** with the following columns:
 
 ```{r}
 names(res)
@@ -124,7 +157,7 @@ For example the following code will keep temporal summaries of water balance com
 ```{r, warning=FALSE}
 res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, 
                   dates = dates, local_control = local_control,                  
-                  keep_results = FALSE, progress = FALSE,
+                  keep_results = FALSE, parallelize = TRUE,
                   summary_function = summary.spwb, summary_arguments = list(freq="months"))
 ```
 
@@ -144,32 +177,25 @@ And one can produce maps with summary results directly from the output of the si
 plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
-The possibility of running a summary function after the simulation of each stand is not limited to `summary.spwb()`. Users can define their own summary functions, provided the first argument is `object`, which will contain the result of the simulation (i.e., the result of calling `spwb()`, `growth()` or `fordyn()`). For example, the following function calls `droughtStress()`:
+The possibility of running a summary function after the simulation of each stand is not limited to `summary.spwb()`. Users can define their own summary functions, provided the first argument is `object`, which will contain the result of the simulation (i.e., the result of calling `spwb()`, `growth()` or `fordyn()`). For example, the following function returns the data frame corresponding to plant drought stress:
 
 ```{r}
 f_stress <- function(object, ...) {
-  return(droughtStress(object, ..., draw = FALSE))
+  return(object$Plants$PlantStress)
 }
 ```
 
 Now we can call again `spwb_spatial`:
 ```{r, warning=FALSE}
-# res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, 
-#                   dates = dates, local_control = local_control,                  
-#                   keep_results = FALSE, progress = FALSE,
-#                   summary_function = f_stress, 
-#                   summary_arguments = list(index = "ADS", freq = "months", bySpecies=TRUE))
+res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
+                  dates = dates, local_control = local_control,
+                  keep_results = FALSE, parallelize = TRUE,
+                  summary_function = f_stress)
 ```
 
-The drought stress summary of stand #1 is:
+The drought stress summary of stand 3 is:
 ```{r}
-# res_3$summary[[1]]
-```
-
-And we can draw a map with the monthly drought stress of *Quercus ilex* across space using:
-
-```{r, fig.align='center', fig.width=7}
-# plot_summary(res_3, "Quercus ilex", "2001-02-01")
+head(res_3$summary[[3]])
 ```
 
 
@@ -179,23 +205,23 @@ The result of a simulation includes an element `state`, which stores the state o
 
 ```{r}
 example_ifn_mod <- update_landscape(example_ifn, res)
+names(example_ifn_mod)
 ```
 
-The resulting object `w` is the same as `y` except for the state variables. For example we can compare the water potential in the first soil layer:
+Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the water potential in the first soil layer:
 
 ```{r, fig.align='center', fig.width=7}
-# plot_variable(example_ifn, "psi1")
 plot_variable(example_ifn_mod, "psi1")
 ```
 
-By using `w` as input we can now simulate water balance in the set of stands for an extra month:
+By using this new object as input we can now simulate water balance in the set of stands for an extra month:
 
 ```{r, warning=FALSE}
 dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-31"), by="day")
 res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo, 
                       dates = dates, local_control = local_control, 
                       summary_function = summary.spwb, summary_arguments = list(freq = "months"),
-                      progress = FALSE)
+                      parallelize = TRUE)
 ```
 
 And display a map with the resulting month transpiration:

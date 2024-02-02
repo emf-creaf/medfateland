@@ -28,7 +28,7 @@ The aim of this vignette is to illustrate how to use **medfateland**  (v. `r pac
 
 ### Forest stands, topography and soils
 
-All simulations in **medfateland** an `sf` object containing information of the topography, soils and vegetation of a set of target forest stands. Here we begin by loading the example dataset of 100 forest stands distributed on points in the landscape:
+All simulations in **medfateland** an **sf** object containing information of the topography, soils and vegetation of a set of target forest stands. Here we begin by loading the example data set of 100 forest stands distributed on points in the landscape:
 
 ```{r, fig.align='center', fig.width=7}
 data("example_ifn")
@@ -41,7 +41,7 @@ example_subset <- example_ifn[31:40, ]
 example_subset
 ```
 
-### Weather
+### Climate forcing
 
 In this example we will use, for simplicity, the same weather data for all stands, but normal applications should address spatial variation of weather. In the following code we prepare a three-year meteorological data in two blocks (data frames), using the example weather data provided in **medfate** package:
 
