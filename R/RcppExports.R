@@ -73,7 +73,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
 }
 
-.watershedDaySerghei <- function(localModel, lct, xList, snowpack, sf2cell, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, progress = TRUE) {
-    .Call(`_medfateland_watershedDaySerghei`, localModel, lct, xList, snowpack, sf2cell, serghei_interface, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, progress)
+.callSergheiDay <- function(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface) {
+    invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell, serghei_interface))
 }
 

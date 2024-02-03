@@ -465,110 +465,14 @@ List initSerghei(NumericVector limits, int nrow, int ncol,
   return(serghei_interface);
 }
 
-void callSergheiDay() {
-  //TO BE DONE
-}
-
-// [[Rcpp::export(".watershedDaySerghei")]]
-List watershedDaySerghei(String localModel,
-                       CharacterVector lct, List xList,
-                       NumericVector snowpack,
-                       IntegerVector sf2cell,
-                       List serghei_interface,
-                       List watershed_control,
-                       CharacterVector date,
-                       DataFrame gridMeteo,
-                       NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                       bool progress = true) {
+// [[Rcpp::export(".callSergheiDay")]]
+void callSergheiDay(CharacterVector lct, List xList,
+                    DataFrame gridMeteo, List localResults,
+                    IntegerVector sf2cell, List serghei_interface) {
   int nX = xList.size();
-  NumericVector MinTemperature(nX, NA_REAL), MaxTemperature(nX, NA_REAL), PET(nX, NA_REAL);
-  NumericVector Precipitation(nX, NA_REAL), Rain(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
-  NumericVector NetRain(nX,NA_REAL);
-  NumericVector SoilEvaporation(nX,NA_REAL), Transpiration(nX,NA_REAL);
-
-  NumericVector tminVec = gridMeteo["MinTemperature"];
-  NumericVector tmaxVec = gridMeteo["MaxTemperature"];
-  NumericVector rhminVec = gridMeteo["MinRelativeHumidity"];
-  NumericVector rhmaxVec = gridMeteo["MaxRelativeHumidity"];
-  NumericVector precVec = gridMeteo["Precipitation"];
-  NumericVector radVec = gridMeteo["Radiation"];
-  NumericVector wsVec = gridMeteo["WindSpeed"];
-  NumericVector C02Vec = gridMeteo["CO2"];
   
- 
-  //A. Vertical and surface fluxes
-  //Can be parallelized (see parallelFor from RcppParallel)
-  List localResults(nX);
-  if(progress) Rcout<<"+";
-  for(int i=0;i<nX;i++) {
-    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      List x = Rcpp::as<Rcpp::List>(xList[i]);
-      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
-      // Rcout<<".";
-      soil["SWE"] = snowpack[i];
-      //Run daily soil water balance for the current cell
-      List res;
-      NumericVector meteovec = NumericVector::create(
-              _["MinTemperature"] = tminVec[i],
-              _["MaxTemperature"] = tmaxVec[i],
-              _["MinRelativeHumidity"] = rhminVec[i],
-              _["MaxRelativeHumidity"] = rhmaxVec[i],
-              _["Precipitation"]  =precVec[i],
-              _["Radiation"] = radVec[i],
-              _["WindSpeed"] = wsVec[i],
-              _["CO2"] = C02Vec[i]
-      );
-      if(lct[i]=="agriculture") {
-        res = aspwb_day(x, date, meteovec,
-                        latitude[i], elevation[i], slope[i], aspect[i], 0.0, true);
-      } else {
-        if(localModel=="spwb") {
-          res = medfate::spwb_day(x, date, meteovec,
-                                  latitude[i], elevation[i], slope[i], aspect[i], 0.0, true);
-        } else if(localModel =="growth") {
-          res = medfate::growth_day(x, date, meteovec,
-                                    latitude[i], elevation[i], slope[i], aspect[i], 0.0, true);
-        }
-      }
-      localResults[i] = res; //Store for output
-      snowpack[i] = soil["SWE"]; //Copy back snowpack
-      NumericVector DB = res["WaterBalance"];
-      DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
-      MinTemperature[i] = tminVec[i];
-      MaxTemperature[i] = tmaxVec[i];
-      Snow[i] = DB["Snow"];
-      Snowmelt[i] = DB["Snowmelt"];
-      PET[i] = DB["PET"];
-      Rain[i] = DB["Rain"];
-      SoilEvaporation[i] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
-      
-      if(lct[i]=="wildland") {
-        NetRain[i] = DB["NetRain"];
-        DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
-        NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
-        Transpiration[i] = sum(EplantCoh);
-      }
-    } else { // Fill output vectors for non-wildland cells
-      // Rcout<<"+";
-      Rain[i] = 0.0;
-      Snow[i] = 0.0;
-      Snowmelt[i] = 0.0;
-      SoilEvaporation[i] = 0.0;
-      double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
-      if(tday<0.0) {
-        Snow[i] = precVec[i];
-        snowpack[i] += Snow[i];
-      } else {
-        Rain[i] = precVec[i];
-      }
-      NetRain[i] = Rain[i];
-      if(snowpack[i]>0.0) {
-        double melt = medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i]);
-        Snowmelt[i] = std::min(melt, snowpack[i]);
-        snowpack[i] -= Snowmelt[i];
-      }
-    }
-  }
+  NumericVector precVec = gridMeteo["Precipitation"];
+  
   //B. SERGHEI
   //B.0 - Recover pointers to SERGHEI interface
   List soilListSerghei = serghei_interface["soilList"];
@@ -596,17 +500,14 @@ List watershedDaySerghei(String localModel,
     } else {
       // Rcout<<"+";
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"
-      throughfallSerghei[sf2cell[i] - 1] = Rain[i]; //indices in R
+      throughfallSerghei[sf2cell[i] - 1] = precVec[i]; //indices in R
       // No uptake in "rock", "artificial" or "water"
       // for(int l=0;l<vup.size();l++) vup[l] = 0.0;
     }
     
   }
-  // Rcout<<"k2";
   
-  //B.2 - Call SERGHEI for 1 day using the interface
-  // This should update the values of listSoilSerghei
-  callSergheiDay();
+  // CALL SERGHEI (call to interface function)
   
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between 
   //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
@@ -641,11 +542,5 @@ List watershedDaySerghei(String localModel,
       }
     }
   }
-  
-  DataFrame waterBalance = DataFrame::create(_["MinTemperature"] = MinTemperature, _["MaxTemperature"] = MaxTemperature, _["PET"] = PET,
-                                             _["Rain"] = Rain, _["Snow"] = Snow,_["Snowmelt"] = Snowmelt,
-                                             _["NetRain"] = NetRain, _["SoilEvaporation"] = SoilEvaporation, _["Transpiration"] = Transpiration);
-  return(List::create(_["WatershedWaterBalance"] = waterBalance,
-                      _["LocalResults"] = localResults));
 }
 

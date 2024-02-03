@@ -66,12 +66,167 @@
   }
   return(queenNeigh)
 }
+
+.f_landunit_day<-function(xi, model, date){
+  res = NULL
+  if(model=="spwb") {
+    if(inherits(xi$x, "spwbInput")){
+      res<-medfate::spwb_day(xi$x, date, xi$meteovec,
+                             latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                             modifyInput = TRUE)
+    } else if(inherits(xi$x, "aspwbInput")) {
+      res <- .aspwb_day(xi$x, date, xi$meteovec,
+                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                        modifyInput = TRUE)
+    }
+  } else if(model=="growth") {
+    if(inherits(xi$x, "growthInput")) {
+      res<-medfate::growth_day(xi$x, date, xi$meteovec,
+                               latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                               modifyInput = TRUE)
+    } else if(inherits(xi$x, "aspwbInput")) {
+      res <- .aspwb_day(xi$x, date, meteovec,
+                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                        modifyInput = TRUE)
+      
+    }
+  } 
+  return(res)
+}
+
+## This function is in R to use parallelization
+.watershedDaySerghei<- function(local_model,
+                                lct, xList,
+                                snowpack,
+                                sf2cell,
+                                serghei_interface,
+                                watershed_control,
+                                date,
+                                gridMeteo,
+                                latitude, elevation, slope, aspect,
+                                parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
+                                progress = TRUE) {
+  nX <- length(xList)
+  
+  MinTemperature <- rep(NA, nX)
+  MaxTemperature <- rep(NA, nX)
+  PET <- rep(NA, nX)
+  Precipitation <- rep(NA, nX)
+  Rain <- rep(NA, nX)
+  Snow <- rep(NA, nX)
+  Snowmelt <- rep(NA, nX)
+  NetRain <- rep(NA, nX)
+  SoilEvaporation <- rep(NA, nX)
+  Transpiration <- rep(NA, nX)
+  
+  tminVec <- gridMeteo[["MinTemperature"]]
+  tmaxVec <- gridMeteo[["MaxTemperature"]]
+  rhminVec <- gridMeteo[["MinRelativeHumidity"]]
+  rhmaxVec <- gridMeteo[["MaxRelativeHumidity"]]
+  precVec <- gridMeteo[["Precipitation"]]
+  radVec <- gridMeteo[["Radiation"]]
+  wsVec <- gridMeteo[["WindSpeed"]]
+  C02Vec <- gridMeteo[["CO2"]]
+  
+  XI <- vector("list", nX)
+  for(i in 1:nX) {
+    meteovec <- c(
+      "MinTemperature" = tminVec[i],
+      "MaxTemperature" = tmaxVec[i],
+      "MinRelativeHumidity" = rhminVec[i],
+      "MaxRelativeHumidity" = rhmaxVec[i],
+      "Precipitation"  =precVec[i],
+      "Radiation" = radVec[i],
+      "WindSpeed" = wsVec[i],
+      "CO2" = C02Vec[i]
+    )
+    XI[[i]] <- list(i = i, 
+                    x = xList[[i]],
+                    meteovec = meteovec,
+                    latitude = latitude[i], 
+                    elevation = elevation[i], 
+                    slope= slope[i], 
+                    aspect = aspect[i])
+  }
+  
+  #A. Vertical and surface fluxes
+  if(parallelize) {
+    if(is.null(chunk_size)) chunk_size <- floor(nX/num_cores)
+    cl<-parallel::makeCluster(num_cores)
+    localResults <- parallel::parLapplyLB(cl, XI, .f_landunit_day, 
+                                          date = date, model = local_model,
+                                          chunk.size = chunk_size)
+    parallel::stopCluster(cl)
+  } else {
+    localResults <- vector("list", nX)
+    for(i in 1:nX) {
+      localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model)
+    }
+  }
+  
+  for(i in 1:nX) {
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      res <- localResults[[i]]
+      soil <- xList[[i]]$soil
+      snowpack[i] <- soil[["SWE"]] #Copy back snowpack
+      DB <- res[["WaterBalance"]]
+      SB <- res[["Soil"]]
+      MinTemperature[i] <- tminVec[i]
+      MaxTemperature[i] <- tmaxVec[i]
+      Snow[i] <- DB["Snow"]
+      Snowmelt[i] <- DB["Snowmelt"]
+      PET[i] <- DB["PET"]
+      Rain[i] <- DB["Rain"]
+      SoilEvaporation[i] <- sum(SB["SoilEvaporation"])
+      
+      if(lct[i]=="wildland") {
+        NetRain[i] <- DB["NetRain"]
+        PL <- res[["Plants"]]
+        Transpiration[i] <- sum(PL["Transpiration"])
+      }
+    } else { # Fill output vectors for non-wildland cells
+      Rain[i] = 0.0
+      Snow[i] = 0.0
+      Snowmelt[i] = 0.0
+      SoilEvaporation[i] <- 0.0
+      tday <- meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i])
+      if(tday<0.0) {
+        Snow[i] <- precVec[i]
+        snowpack[i] <- snowpack[i] + Snow[i]
+      } else {
+        Rain[i] <- precVec[i]
+      }
+      NetRain[i] <- Rain[i]
+      if(snowpack[i]>0.0) {
+        melt <- medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i])
+        Snowmelt[i] <- min(melt, snowpack[i])
+        snowpack[i] <- snowpack[i] - Snowmelt[i]
+      }
+    }
+  }
+  
+  # B. Calls SERGHEI
+  .callSergheiDay(lct, xList,
+                  gridMeteo, localResults,
+                  sf2cell, serghei_interface)
+  
+  waterBalance <- data.frame("MinTemperature" = MinTemperature,
+                             "MaxTemperature" = MaxTemperature, 
+                             "PET" = PET, "Rain" = Rain, "Snow" = Snow,
+                             "Snowmelt" = Snowmelt, "NetRain" = NetRain, 
+                             "SoilEvaporation" = SoilEvaporation, "Transpiration" = Transpiration)
+  
+  return(list("WatershedWaterBalance" = waterBalance,
+              "LocalResults" = localResults))
+}
+
 .simulate_land<-function(land_model = "spwb_land", 
                          r, y, SpParams, meteo, dates = NULL,
                          CO2ByYear = numeric(0), 
                          summary_frequency = "years",
                          local_control = medfate::defaultControl(),
                          watershed_control = default_watershed_control(),
+                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                          progress = TRUE, header_footer = progress) {
 
   #land (local) model
@@ -493,16 +648,17 @@
                                    latitude, y$elevation, y$slope, y$aspect,
                                    patchsize, FALSE)
     } else if(watershed_model=="serghei") {
-      ws_day <- .watershedDaySerghei(local_model,
-                                     y$land_cover_type, y$state,
-                                     y$snowpack,
-                                     sf2cell,
-                                     serghei_interface,
-                                     watershed_control,
-                                     datechar,
-                                     gridMeteo,
-                                     latitude, y$elevation, y$slope, y$aspect,
-                                     FALSE)
+      ws_day <- .watershedDaySerghei(local_model = local_model,
+                                     lct = y$land_cover_type, xList = y$state,
+                                     snowpack = y$snowpack,
+                                     sf2cell = sf2cell,
+                                     serghei_interface = serghei_interface,
+                                     watershed_control = watershed_control,
+                                     date = datechar,
+                                     gridMeteo = gridMeteo,
+                                     latitude = latitude, elevation = y$elevation, slope = y$slope, aspect = y$aspect,
+                                     parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                                     progress = FALSE)
     }
 
     res_day <- ws_day[["WatershedWaterBalance"]]
@@ -711,19 +867,16 @@
 
 #' Watershed simulations
 #' 
-#' Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
-#' are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS" 
-#' (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
-#' 
-#' @details
+#' Functions to perform simulations on a watershed described by a set of connected grid cells. 
 #' \itemize{
 #'   \item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
 #'         on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 #'   \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells, 
 #'         provided by \code{\link{growth_day}}.} 
-#'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
+#'   \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, seed dispersal, recruitment
 #'         and resprouting.}
 #' }
+#' 
 #' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
@@ -758,6 +911,9 @@
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 #'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
+#' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
+#' @param num_cores Integer with the number of cores to be used for parallel computation.
+#' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
@@ -816,12 +972,19 @@
 #' }
 #' 
 #' @details
-#' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
-#' for appropriate behavior of dispersal sub-model.
+#' Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS" 
+#' (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 #' 
 #' IMPORTANT: medfateland needs to be compiled along with SERGHEI model in order to launch simulations with using this
 #' distributed hydrological model.
 #'
+#' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
+#' for appropriate behavior of dispersal sub-model.
+#'
+#' Parallel computation is only functional when using SERGHEI, because TETIS requires following a specific
+#' cell processing order. Moreover, parallel computations are only recommended for watersheds with large number of grid cells.
+#' In watershed with a small number of cells, can result in larger processing times than sequential computation.
+#' 
 #' @author 
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
@@ -887,6 +1050,7 @@ spwb_land<-function(r, sf, SpParams, meteo= NULL, dates = NULL,
                     summary_frequency = "years",
                     local_control = medfate::defaultControl(),
                     watershed_control = default_watershed_control(),
+                    parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                     progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'spwb' over a watershed"))
   return(.simulate_land("spwb_land",
@@ -895,6 +1059,7 @@ spwb_land<-function(r, sf, SpParams, meteo= NULL, dates = NULL,
                         summary_frequency = summary_frequency, 
                         local_control = local_control,
                         watershed_control = watershed_control, 
+                        parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                         progress = progress, header_footer = progress))
 }
 #' @rdname spwb_land
@@ -904,6 +1069,7 @@ growth_land<-function(r, sf, SpParams, meteo = NULL, dates = NULL,
                       summary_frequency = "years",
                       local_control = medfate::defaultControl(),
                       watershed_control = default_watershed_control(),
+                      parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                       progress = TRUE) {
   if(progress) cli::cli_h1(paste0("Simulation of model 'growth' over a watershed"))
   return(.simulate_land("growth_land",
@@ -911,7 +1077,9 @@ growth_land<-function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = CO2ByYear,
                         summary_frequency = summary_frequency, 
                         local_control = local_control,
-                        watershed_control = watershed_control, progress = progress, header_footer = progress))
+                        watershed_control = watershed_control, 
+                        parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                        progress = progress, header_footer = progress))
 }
 
 #' @rdname spwb_land
@@ -921,6 +1089,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         local_control = medfate::defaultControl(),
                         watershed_control = default_watershed_control(),
                         management_function = NULL,
+                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                         progress = TRUE) {
   
   #watershed model
@@ -1064,7 +1233,9 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                          CO2ByYear = CO2ByYear,
                          summary_frequency = "month", # Summary frequency to use statistics
                          local_control = local_control,
-                         watershed_control = watershed_control, progress = progress, header_footer = FALSE)
+                         watershed_control = watershed_control, 
+                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
+                         progress = progress, header_footer = FALSE)
     
     # Store snowpack and aquifer state
     sf$aquifer <- GL$sf$aquifer

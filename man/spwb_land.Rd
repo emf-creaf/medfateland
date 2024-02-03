@@ -16,6 +16,9 @@ spwb_land(
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
   watershed_control = default_watershed_control(),
+  parallelize = FALSE,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -29,6 +32,9 @@ growth_land(
   summary_frequency = "years",
   local_control = medfate::defaultControl(),
   watershed_control = default_watershed_control(),
+  parallelize = FALSE,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -42,6 +48,9 @@ fordyn_land(
   local_control = medfate::defaultControl(),
   watershed_control = default_watershed_control(),
   management_function = NULL,
+  parallelize = FALSE,
+  num_cores = detectCores() - 1,
+  chunk_size = NULL,
   progress = TRUE
 )
 }
@@ -88,6 +97,12 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
+
+\item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
+
+\item{num_cores}{Integer with the number of cores to be used for parallel computation.}
+
+\item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
@@ -149,25 +164,29 @@ In function \code{fordyn_land} the \code{\link{sf}} object contains additional c
 }
 }
 \description{
-Functions to perform simulations on a watershed described by a set of connected grid cells. Two sub-models
-are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"
-(similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
-}
-\details{
+Functions to perform simulations on a watershed described by a set of connected grid cells.
 \itemize{
 \item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells,
 provided by \code{\link{growth_day}}.}
-\item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, recruitment
+\item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, seed dispersal, recruitment
 and resprouting.}
 }
+}
+\details{
+Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"
+(similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
+
+IMPORTANT: medfateland needs to be compiled along with SERGHEI model in order to launch simulations with using this
+distributed hydrological model.
 
 When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate behavior of dispersal sub-model.
 
-IMPORTANT: medfateland needs to be compiled along with SERGHEI model in order to launch simulations with using this
-distributed hydrological model.
+Parallel computation is only functional when using SERGHEI, because TETIS requires following a specific
+cell processing order. Moreover, parallel computations are only recommended for watersheds with large number of grid cells.
+In watershed with a small number of cells, can result in larger processing times than sequential computation.
 }
 \examples{
 \dontrun{
