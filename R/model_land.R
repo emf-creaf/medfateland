@@ -85,7 +85,7 @@
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, meteovec,
+      res <- .aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         modifyInput = TRUE)
       
@@ -911,12 +911,12 @@
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 #'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
+#' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
+#' of such lists, one per spatial unit.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
-#' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
-#' of such lists, one per spatial unit.
 #'  
 #' @return Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 #' \itemize{
