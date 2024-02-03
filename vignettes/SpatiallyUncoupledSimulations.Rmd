@@ -199,7 +199,7 @@ head(res_3$summary[[3]])
 ```
 
 
-## Continuing a previous simulation
+### Continuing a previous simulation
 
 The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
 

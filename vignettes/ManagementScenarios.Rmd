@@ -190,7 +190,7 @@ fs_12$result_volumes[,c(1, 12:16)]
 ```
 
 
-## Continuing a previous simulation
+### Continuing a previous simulation
 
 As mentioned above, other elements of the output of `fordyn_scenario()` allow conducting a new scenario simulation starting at the point where the previous one finished. The element `next_sf` contains the `sf` object corresponding to the final state of the simulation:
 

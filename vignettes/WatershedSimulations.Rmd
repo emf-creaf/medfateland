@@ -91,7 +91,7 @@ To speed up calculations, we call function `spwb_land()` for a single month:
 
 ```{r, warning=FALSE}
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws <- spwb_land(r, example_watershed,
+res_ws1 <- spwb_land(r, example_watershed,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control)
 ```
@@ -103,13 +103,13 @@ Although simulations are performed using daily temporal steps, parameter `summar
 Function `spwb_land()` and `growth_land()` return a list with the following elements:
 
 ```{r}
-names(res_ws)
+names(res_ws1)
 ```
 
 Where `sf` is an object of class `sf`, analogous to those of functions `*_spatial()`:
 
 ```{r}
-res_ws$sf
+res_ws1$sf
 ```
 Columns `state`, `aquifer` and `snowpack` contain state variables, whereas `summary` contains temporal water balance summaries for all cells. Column `result` is empty in this case, but see below.
 
@@ -119,13 +119,13 @@ The other elements of the simulation result list (`watershed_balance`, `watershe
 
 Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
 ```{r}
-res_ws$sf$summary[[1]]
+res_ws1$sf$summary[[1]]
 ```
 
 Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of soil water volume for the simulated month:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot_summary(res_ws$sf, "SoilVol", "2001-01-01")
+plot_summary(res_ws1$sf, "SoilVol", "2001-01-01")
 ```
 
 ### Full simulation results for specific cells
@@ -138,10 +138,10 @@ example_watershed$result_cell <- FALSE
 example_watershed$result_cell[c(3,9)] <- TRUE
 ```
 
-If we launch the simulations again (omiting progress information):
+If we launch the simulations again (omitting progress information):
 
 ```{r}
-res_ws <- spwb_land(r, example_watershed,
+res_ws1 <- spwb_land(r, example_watershed,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
 ```
@@ -149,7 +149,7 @@ res_ws <- spwb_land(r, example_watershed,
 We can now retrieve the results of the desired cell, e.g. the third one, in column `result` of `sf`:
 
 ```{r}
-S <- res_ws$sf$result[[3]]
+S <- res_ws1$sf$result[[3]]
 class(S)
 ```
 
@@ -158,21 +158,46 @@ This object has class `spwb` and the same structure returned by function `spwb()
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
 plot(S)
 ```
+### Continuing a previous simulation
 
+The result of a simulation includes an element `state`, which stores the state of soil and stand variables at the end of the simulation. This information can be used to perform a new simulation from the point where the first one ended. In order to do so, we need to update the state variables in spatial object with their values at the end of the simulation, using function `update_landscape()`:
+
+```{r}
+example_watershed_mod <- update_landscape(example_watershed, res_ws1)
+names(example_watershed_mod)
+```
+
+Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the water potential in the first soil layer:
+
+```{r, fig.align='center', fig.width=7}
+plot_variable(example_watershed_mod, "psi1")
+```
+
+Now we can continue our simulation, in this case adding an extra month:
+
+```{r, warning=FALSE}
+dates <- seq(as.Date("2001-02-01"), as.Date("2001-02-28"), by="day")
+res_ws3 <- spwb_land(r, example_watershed_mod,
+                    SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
+                    watershed_control = ws_control)
+```
+
+The fact that no cell required initialization is an indication that we used an already initialized landscape.
 ### Simulations of watershed forest dynamics
 
 Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here (we subset the input to speed-up calculations):
 
 ```{r}
-res_ws <- fordyn_land(r, example_watershed[1:10, ],
-                      SpParamsMED, examplemeteo,
-                      watershed_control = ws_control, progress = TRUE)
+res_ws2 <- fordyn_land(r, example_watershed[1:10, ],
+                       SpParamsMED, examplemeteo,
+                       watershed_control = ws_control, progress = TRUE)
 ```
 
 In this case, the `sf` part of the output contains additional columns, analogous to those of `fordyn_scenario()`.
 
 ```{r}
-names(res_ws$sf)
+names(res_ws2$sf)
 ```
+
 
 
