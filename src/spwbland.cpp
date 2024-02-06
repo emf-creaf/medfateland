@@ -289,15 +289,6 @@ List watershedDayTetis(String localModel,
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = Rcpp::as<Rcpp::List>(x["soil"]);
-      double Kdrain = soil["Kdrain"];
-      double D = soil["SoilDepth"]; //Soil depth in mm
-      double DTA = depth_to_bedrock[i] - (aquifer[iCell]/bedrock_porosity[iCell]);
-      if(DTA < D) {
-        soil["Kdrain"] = 0.0; //If aquifer depth over soil depth do not allow percolation to aquifer
-      } else {
-        soil["Kdrain"] = 1000.0*bedrock_conductivity[iCell]*R_drain; //Saturated vertical hydraulic conductivity in mm/day
-        // Rcout<<Kdrain<< " "<<1000.0*bedrock_conductivity[i]*R_drain<<"\n";
-      }
       //copy snowpack
       soil["SWE"] = snowpack[iCell];
 
@@ -329,7 +320,6 @@ List watershedDayTetis(String localModel,
         }
       }
       localResults[iCell] = res; //Store for output
-      soil["Kdrain"] = Kdrain; //Restore value
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);

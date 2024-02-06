@@ -15,7 +15,6 @@ A list with the following items:
 \item{\code{watershed_model}: A string with the watershed model.}
 \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements:
 \itemize{
-\item{\code{R_drain [= 1.0]}: Correction factor for vertical hydraulic saturated conductivity between soil and aquifer.}
 \item{\code{R_interflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
 \item{\code{R_baseflow [= 10.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 }
