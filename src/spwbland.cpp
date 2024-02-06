@@ -96,7 +96,6 @@ List watershedDayTetis(String localModel,
   double runoffExport = 0.0;
 
   List tetis_parameters = watershed_control["tetis_parameters"];
-  double R_drain = tetis_parameters["R_drain"];
   double R_interflow = tetis_parameters["R_interflow"];
   double R_baseflow = tetis_parameters["R_baseflow"];
 
