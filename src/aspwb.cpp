@@ -100,7 +100,7 @@ List aspwb_day_internal(List x, NumericVector meteovec,
   List control = x["control"];
   List soil = x["soil"];
   bool snowpack = control["snowpack"];
-  bool rockyLayerDrainage = control["rockyLayerDrainage"];
+  String lowerBoundary = control["lowerBoundary"];
   String soilFunctions = control["soilFunctions"];
   
   int nlayers = Rcpp::as<Rcpp::NumericVector>(soil["dVec"]).size();
@@ -114,19 +114,18 @@ List aspwb_day_internal(List x, NumericVector meteovec,
   // Assume SWR is reduced with crop factor
   double LgroundSWR = 100.0 * (1.0 - crop_factor);
   
-  //Snow pack dynamics and hydrology input
+  //Snow pack dynamics and hydrology input (update SWE)
   NumericVector hydroInputs = agricultureSoilWaterInputs(soil, prec,
                                                          tday, rad, elevation,
                                                          LgroundSWR, runon,
                                                          snowpack, true);
 
-  //Soil infiltration and percolation
+  //Soil infiltration and percolation (update W)
   NumericVector infilPerc = medfate::hydrology_soilInfiltrationPercolation(soil, soilFunctions, 
-                                                             hydroInputs["Input"],
-                                                             rockyLayerDrainage, true);
+                                                             hydroInputs["Input"], true);
   
-  //Evaporation from bare soil (if there is no snow)
-  NumericVector EsoilVec = medfate::hydrology_soilEvaporation(soil, soilFunctions, pet, LgroundSWR, true);
+  //Evaporation from bare soil (if there is no snow), do not update soil yet
+  NumericVector EsoilVec = medfate::hydrology_soilEvaporation(soil, soilFunctions, pet, LgroundSWR, false);
   
   //Define plant net extraction 
   NumericVector ExtractionVec(nlayers, 0.0);
@@ -137,10 +136,17 @@ List aspwb_day_internal(List x, NumericVector meteovec,
   NumericVector psiVec = medfate::soil_psi(soil, soilFunctions); 
   NumericVector Water_FC = medfate::soil_waterFC(soil, soilFunctions);
   double transp = transp_max * exp(-0.6931472*pow(std::abs(psiVec[0]/(-2.0)),3.0)); //Reduce transpiration when soil is dry
-  NumericVector Ws = soil["W"];
-  // Rcout << pet << " "<< psiVec[0] <<" "<< transp<< "\n";
-  Ws[0] = Ws[0] - (transp/Water_FC[0]); 
   ExtractionVec[0] = transp;
+    
+  //Modify soil with soil evaporation, herb transpiration and woody plant transpiration
+  //and determine water flows, returning deep drainage
+  NumericVector sourceSinkVec(nlayers, 0.0);
+  for(int l=0;l<nlayers;l++) {
+    sourceSinkVec[l] = ExtractionVec[l] + EsoilVec[l];
+  }
+  double deepDrainage = medfate::hydrology_soilFlows(soil, sourceSinkVec, 24, 
+                                                     lowerBoundary,
+                                                     true);
     
   //Recalculate current soil water potential for output
   psiVec = medfate::soil_psi(soil, soilFunctions); 
@@ -149,7 +155,8 @@ List aspwb_day_internal(List x, NumericVector meteovec,
                                            _["Rain"] = hydroInputs["Rain"], _["Snow"] = hydroInputs["Snow"], 
                                            _["NetRain"] = hydroInputs["NetRain"], _["Snowmelt"] = hydroInputs["Snowmelt"],
                                            _["Runon"] = hydroInputs["Runon"], 
-                                           _["Infiltration"] = infilPerc["Infiltration"], _["Runoff"] = infilPerc["Runoff"], _["DeepDrainage"] = infilPerc["DeepDrainage"],
+                                           _["Infiltration"] = infilPerc["Infiltration"], _["Runoff"] = infilPerc["Runoff"], 
+                                           _["DeepDrainage"] = deepDrainage,
                                            _["SoilEvaporation"] = sum(EsoilVec), _["Transpiration"] = transp);
   
   DataFrame SB = DataFrame::create(_["SoilEvaporation"] = EsoilVec, 

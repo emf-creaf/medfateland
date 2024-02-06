@@ -667,10 +667,11 @@
     # Fill local daily results for result cells
     for(i in 1:nCells) {
       if(result_cell[i]) {
+        x <- y$state[[i]];
         if(local_model=="spwb") {
-          medfate:::.fillSPWBDailyOutput(resultlist[[i]], sDay = local_res_day[[i]], iday = day-1)
+          medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
         } else if(local_model =="growth") {
-          medfate:::.fillGrowthDailyOutput(resultlist[[i]], sDay = local_res_day[[i]], iday = day-1)
+          medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
         }
       }
     }
