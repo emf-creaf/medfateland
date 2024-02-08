@@ -177,7 +177,7 @@
       Snowmelt[i] <- DB["Snowmelt"]
       PET[i] <- DB["PET"]
       Rain[i] <- DB["Rain"]
-      SoilEvaporation[i] <- sum(SB["SoilEvaporation"])
+      SoilEvaporation[i] <- DB["SoilEvaporation"]
       
       if(lct[i]=="wildland") {
         NetRain[i] <- DB["NetRain"]

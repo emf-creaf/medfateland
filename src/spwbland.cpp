@@ -330,7 +330,7 @@ List watershedDayTetis(String localModel,
       Infiltration[iCell] = DB["Infiltration"];
       Runoff[iCell] = DB["Runoff"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
-      SoilEvaporation[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]));
+      SoilEvaporation[iCell] = DB["SoilEvaporation"];
       
       if(lct[iCell]=="wildland") {
         NetRain[iCell] = DB["NetRain"];
@@ -478,13 +478,17 @@ void callSergheiDay(CharacterVector lct, List xList,
       //Copy throughfall
       throughfallSerghei[sf2cell[i] - 1] = DB["NetRain"]; //indices in R
       //Adding soil evaporation and snowmelt to plant uptake
-      double snowmelt = DB["Snowmelt"];
-      NumericVector EsoilVec = Rcpp::as<Rcpp::NumericVector>(SB["SoilEvaporation"]);
+      double Snowmelt = DB["Snowmelt"];
+      double Esoil = DB["SoilEvaporation"];
       NumericVector ExtractionVec = Rcpp::as<Rcpp::NumericVector>(SB["PlantExtraction"]);
-      for(int l=0;l<vup.size();l++) {
-        vup[l] = -1.0*(EsoilVec[l] + ExtractionVec[l]); // Evaporation and uptake are negative flows (outflow)
+      NumericVector EherbVec(ExtractionVec.size(), 0.0);
+      if(lct[i]=="wildland") {
+        EherbVec = Rcpp::as<Rcpp::NumericVector>(SB["HerbTranspiration"]);
       }
-      vup[0] += snowmelt; //snowmelt is a positive flow (inflow)
+      for(int l=0;l<vup.size();l++) {
+        vup[l] = -1.0*(EherbVec[l] + ExtractionVec[l]); // uptake from herbs and plants are negative flows (outflow)
+      }
+      vup[0] += Snowmelt - Esoil; //snowmelt is a positive flow (inflow) and soil evaporation a negative flow (outflow)
     } else {
       // Rcout<<"+";
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"

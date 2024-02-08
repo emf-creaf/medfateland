@@ -97,7 +97,7 @@
         })
     } else if(inherits(x, "aspwbInput")){
       res <- tryCatch({
-          .aspwb(x, meteo=met,
+        medfate::aspwb(x, meteo=met,
                  latitude = xi$latitude, elevation = xi$elevation,
                  slope = xi$slope, aspect = xi$aspect)
       }, error = function(e) {
@@ -117,7 +117,7 @@
       })
     } else if(inherits(x, "aspwbInput")){
       res <- tryCatch({
-        .aspwb(x, meteo=met,
+        medfate::aspwb(x, meteo=met,
                latitude = xi$latitude, elevation = xi$elevation,
                slope = xi$slope, aspect = xi$aspect)
       }, error = function(e) {
@@ -396,7 +396,7 @@
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
       }
       if(progress) {
@@ -812,7 +812,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
         if(progress) cli::cli_progress_update()
       }

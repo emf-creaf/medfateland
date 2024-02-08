@@ -29,7 +29,7 @@
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, meteovec,
+      res <- medfate::aspwb_day(xi$x, date, meteovec,
                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                        modifyInput = TRUE)
     }
@@ -39,7 +39,7 @@
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, meteovec,
+      res <- medfate::aspwb_day(xi$x, date, meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         modifyInput = TRUE)
       
@@ -139,7 +139,7 @@
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- .aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
         }
       }
       if(progress) {
