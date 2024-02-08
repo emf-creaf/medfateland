@@ -3,7 +3,6 @@
 #include <Rcpp.h>
 #include <meteoland.h>
 #include <medfate.h>
-#include "aspwb.h"
 using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
@@ -304,7 +303,7 @@ List watershedDayTetis(String localModel,
         _["CO2"] = C02Vec[iCell]
       );
       if(lct[iCell]=="agriculture") {
-        res = aspwb_day(x, date, meteovec,
+        res = medfate::aspwb_day(x, date, meteovec,
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
                         Runon[iCell]+SaturationExcess[iCell], true);
       } else {

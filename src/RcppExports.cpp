@@ -10,54 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// aspwbInput
-List aspwbInput(double crop_factor, List control, List soil);
-RcppExport SEXP _medfateland_aspwbInput(SEXP crop_factorSEXP, SEXP controlSEXP, SEXP soilSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type crop_factor(crop_factorSEXP);
-    Rcpp::traits::input_parameter< List >::type control(controlSEXP);
-    Rcpp::traits::input_parameter< List >::type soil(soilSEXP);
-    rcpp_result_gen = Rcpp::wrap(aspwbInput(crop_factor, control, soil));
-    return rcpp_result_gen;
-END_RCPP
-}
-// aspwb_day
-List aspwb_day(List x, CharacterVector date, NumericVector meteovec, double latitude, double elevation, double slope, double aspect, double runon, bool modifyInput);
-RcppExport SEXP _medfateland_aspwb_day(SEXP xSEXP, SEXP dateSEXP, SEXP meteovecSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP, SEXP runonSEXP, SEXP modifyInputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type x(xSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type meteovec(meteovecSEXP);
-    Rcpp::traits::input_parameter< double >::type latitude(latitudeSEXP);
-    Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
-    Rcpp::traits::input_parameter< double >::type slope(slopeSEXP);
-    Rcpp::traits::input_parameter< double >::type aspect(aspectSEXP);
-    Rcpp::traits::input_parameter< double >::type runon(runonSEXP);
-    Rcpp::traits::input_parameter< bool >::type modifyInput(modifyInputSEXP);
-    rcpp_result_gen = Rcpp::wrap(aspwb_day(x, date, meteovec, latitude, elevation, slope, aspect, runon, modifyInput));
-    return rcpp_result_gen;
-END_RCPP
-}
-// apwb
-List apwb(List x, DataFrame meteo, double latitude, double elevation, double slope, double aspect);
-RcppExport SEXP _medfateland_apwb(SEXP xSEXP, SEXP meteoSEXP, SEXP latitudeSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP aspectSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type meteo(meteoSEXP);
-    Rcpp::traits::input_parameter< double >::type latitude(latitudeSEXP);
-    Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
-    Rcpp::traits::input_parameter< double >::type slope(slopeSEXP);
-    Rcpp::traits::input_parameter< double >::type aspect(aspectSEXP);
-    rcpp_result_gen = Rcpp::wrap(apwb(x, meteo, latitude, elevation, slope, aspect));
-    return rcpp_result_gen;
-END_RCPP
-}
 // genros
 double genros(double phi, double theta, double a1, double a2, double b, double n1, double n2, double c);
 RcppExport SEXP _medfateland_genros(SEXP phiSEXP, SEXP thetaSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP bSEXP, SEXP n1SEXP, SEXP n2SEXP, SEXP cSEXP) {
@@ -296,9 +248,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_medfateland_aspwbInput", (DL_FUNC) &_medfateland_aspwbInput, 3},
-    {"_medfateland_aspwb_day", (DL_FUNC) &_medfateland_aspwb_day, 9},
-    {"_medfateland_apwb", (DL_FUNC) &_medfateland_apwb, 6},
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
     {"_medfateland_ellipseROS", (DL_FUNC) &_medfateland_ellipseROS, 4},
     {"_medfateland_doubleEllipseROS", (DL_FUNC) &_medfateland_doubleEllipseROS, 4},

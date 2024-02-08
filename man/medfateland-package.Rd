@@ -3,7 +3,6 @@
 \docType{package}
 \name{medfateland-package}
 \alias{medfateland-package}
-\alias{_PACKAGE}
 \alias{medfateland}
 \title{medfateland: Mediterranean Landscape Forest Simulation}
 \description{

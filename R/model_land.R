@@ -75,7 +75,7 @@
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, xi$meteovec,
+      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         modifyInput = TRUE)
     }
@@ -85,9 +85,9 @@
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- .aspwb_day(xi$x, date, xi$meteovec,
-                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                        modifyInput = TRUE)
+      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                                modifyInput = TRUE)
       
     }
   } 
@@ -401,7 +401,7 @@
       s <- y$soil[[i]]
       cf <- y$crop_factor[i]
       if(inherits(s, "data.frame")) s <- medfate::soil(s)
-      y$state[[i]] <- .aspwbInput(cf, local_control, s)
+      y$state[[i]] <- medfate::aspwbInput(cf, local_control, s)
       initialized_cells <- initialized_cells + 1
     } 
   }
