@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-02-08</h4>
+            <h4 data-toc-skip class="date">2024-02-12</h4>
       
       
       <div class="hidden name"><code>SpatiallyUncoupledSimulations.Rmd</code></div>
@@ -203,20 +203,20 @@ daily weather for all plots:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"examplemeteo"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">examplemeteo</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##            MinTemperature MaxTemperature Precipitation MinRelativeHumidity</span></span>
-<span><span class="co">## 2001-01-01     -0.5934215       6.287950      4.869109            65.15411</span></span>
-<span><span class="co">## 2001-01-02     -2.3662458       4.569737      2.498292            57.43761</span></span>
-<span><span class="co">## 2001-01-03     -3.8541036       2.661951      0.000000            58.77432</span></span>
-<span><span class="co">## 2001-01-04     -1.8744860       3.097705      5.796973            66.84256</span></span>
-<span><span class="co">## 2001-01-05      0.3288287       7.551532      1.884401            62.97656</span></span>
-<span><span class="co">## 2001-01-06      0.5461322       7.186784     13.359801            74.25754</span></span>
-<span><span class="co">##            MaxRelativeHumidity Radiation WindSpeed</span></span>
-<span><span class="co">## 2001-01-01           100.00000  12.89251  2.000000</span></span>
-<span><span class="co">## 2001-01-02            94.71780  13.03079  7.662544</span></span>
-<span><span class="co">## 2001-01-03            94.66823  16.90722  2.000000</span></span>
-<span><span class="co">## 2001-01-04            95.80950  11.07275  2.000000</span></span>
-<span><span class="co">## 2001-01-05           100.00000  13.45205  7.581347</span></span>
-<span><span class="co">## 2001-01-06           100.00000  12.84841  6.570501</span></span></code></pre>
+<pre><code><span><span class="co">##        dates MinTemperature MaxTemperature Precipitation MinRelativeHumidity</span></span>
+<span><span class="co">## 1 2001-01-01     -0.5934215       6.287950      4.869109            65.15411</span></span>
+<span><span class="co">## 2 2001-01-02     -2.3662458       4.569737      2.498292            57.43761</span></span>
+<span><span class="co">## 3 2001-01-03     -3.8541036       2.661951      0.000000            58.77432</span></span>
+<span><span class="co">## 4 2001-01-04     -1.8744860       3.097705      5.796973            66.84256</span></span>
+<span><span class="co">## 5 2001-01-05      0.3288287       7.551532      1.884401            62.97656</span></span>
+<span><span class="co">## 6 2001-01-06      0.5461322       7.186784     13.359801            74.25754</span></span>
+<span><span class="co">##   MaxRelativeHumidity Radiation WindSpeed</span></span>
+<span><span class="co">## 1           100.00000  12.89251  2.000000</span></span>
+<span><span class="co">## 2            94.71780  13.03079  7.662544</span></span>
+<span><span class="co">## 3            94.66823  16.90722  2.000000</span></span>
+<span><span class="co">## 4            95.80950  11.07275  2.000000</span></span>
+<span><span class="co">## 5           100.00000  13.45205  7.581347</span></span>
+<span><span class="co">## 6           100.00000  12.84841  6.570501</span></span></code></pre>
 <p>More interesting alternatives are described in the help of function
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. Notably, a column <code>meteo</code> may be
 defined in the <strong>sf</strong> input object, where for each spatial
@@ -261,19 +261,19 @@ january and february):</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.5s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[32ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[16.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[19.7s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
@@ -388,22 +388,22 @@ balance components instead of simulation results:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.6s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[17.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[20.1s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[32ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>Parameter <code>keep_results = FALSE</code> tells
@@ -457,22 +457,22 @@ the data frame corresponding to plant drought stress:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.7s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[18.4s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[19.9s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[34ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[27ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>The drought stress summary of stand 3 is:</p>
@@ -519,21 +519,21 @@ in the set of stands for an extra month:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All input objects are already available for 'spwb'</span></span></code></pre>
 <pre><code>##  [36mℹ [39m Checking meteo object input
- [32m✔ [39m Checking meteo object input  [38;5;249m[17ms] [39m
+ [32m✔ [39m Checking meteo object input  [38;5;249m[19ms] [39m
 ## 
 ##  [36mℹ [39m Preparing data for parallelization
-##  [32m✔ [39m Preparing data for parallelization  [38;5;249m[24ms] [39m
+##  [32m✔ [39m Preparing data for parallelization  [38;5;249m[30ms] [39m
 ## 
 ##  [36mℹ [39m Launching parallel computation (cores = 7; chunk size = 14)
-##  [32m✔ [39m Launching parallel computation (cores = 7; chunk size = 14)  [38;5;249m[13.4s] [39m
+##  [32m✔ [39m Launching parallel computation (cores = 7; chunk size = 14)  [38;5;249m[14.1s] [39m
 ## 
 ##  [36mℹ [39m Retrieval of results
-##  [32m✔ [39m Retrieval of results  [38;5;249m[36ms] [39m
+##  [32m✔ [39m Retrieval of results  [38;5;249m[30ms] [39m
 ## 
 ##  [32m✔ [39m No simulation errors detected</code></pre>
 <p>And display a map with the resulting month transpiration:</p>
