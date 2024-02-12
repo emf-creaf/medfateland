@@ -9,8 +9,8 @@ data("examplemeteo")
 
 #Prepare a three-year meteorological data 
 meteo_01_02 <- rbind(examplemeteo, examplemeteo)
-row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
-                              as.Date("2002-12-31"), by="day")
+meteo_01_02$dates <- seq(as.Date("2001-01-01"), 
+                         as.Date("2002-12-31"), by="day")
 
 # Load default medfate parameters
 data("SpParamsMED")

@@ -9,8 +9,9 @@ yws$crop_factor[yws$land_cover_type=="agriculture"] = 0.75
 
 data("examplemeteo")
 examplemeteo2 <- examplemeteo
-examplemeteo2$dates <- as.Date(row.names(examplemeteo2))
-row.names(examplemeteo2) <- NULL
+row.names(examplemeteo2) <- as.character(examplemeteo2$dates)
+examplemeteo2$dates <- NULL
+
 
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-03"), by="day")
