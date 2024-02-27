@@ -50,10 +50,6 @@ The following string values are available for \code{vars}.
 
 \emph{Watershed}:
 \itemize{
-\item{\code{"num_neigh"}:}{Number of cell neighbours (integer).}
-\item{\code{"water_order"}:}{Cell order for lateral water transfer (integer).}
-\item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
-\item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
 \item{\code{"depth_to_bedrock"}:}{Depth to bedrock (m).}
 \item{\code{"bedrock_porosity"}:}{Bedrock porosity.}
 \item{\code{"bedrock_conductivity"}:}{Bedrock conductivity.}

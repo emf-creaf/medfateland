@@ -75,7 +75,6 @@ fordyn_land(
 }
 When using TETIS watershed model, the following columns are also required:
 \itemize{
-\item{\code{channel}: A logical vector indicating whether each cell belongs to the channel network.}
 \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
 \item{\code{bedrock_porosity}: Bedrock porosity.}

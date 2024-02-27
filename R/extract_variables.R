@@ -53,8 +53,7 @@
 }
 
 .getAllowedWatershedVars <-function(){
-  return(c("Water channel (binary)" = "channel",
-           "Depth to bedrock (m)" = "depth_to_bedrock",
+  return(c("Depth to bedrock (m)" = "depth_to_bedrock",
            "Bedrock porosity" = "bedrock_porosity", 
            "Bedrock conductivity" = "bedrock_conductivity",
            "Aquifer elevation (m)" = "aquifer_elevation", 
@@ -73,8 +72,6 @@
     outlets = which(unlist(lapply(obj$waterQ, sum))==0)
     varplot = rep(FALSE, length(obj$waterQ))
     varplot[outlets] = TRUE
-  } else if(variable=="channel") {
-    varplot = obj$channel
   } else if(variable =="depth_to_bedrock") {
     varplot = obj$depth_to_bedrock/1000.0  # in m
   } else if(variable =="bedrock_porosity") {
@@ -178,10 +175,6 @@
 #'    
 #'  \emph{Watershed}:
 #'    \itemize{
-#'      \item{\code{"num_neigh"}:}{Number of cell neighbours (integer).}
-#'      \item{\code{"water_order"}:}{Cell order for lateral water transfer (integer).}
-#'      \item{\code{"outlets"}:}{Water outlet (TRUE/FALSE).}
-#'      \item{\code{"channel"}:}{Water channel (TRUE/FALSE).}
 #'      \item{\code{"depth_to_bedrock"}:}{Depth to bedrock (m).}
 #'      \item{\code{"bedrock_porosity"}:}{Bedrock porosity.}
 #'      \item{\code{"bedrock_conductivity"}:}{Bedrock conductivity.}

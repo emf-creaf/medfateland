@@ -262,7 +262,6 @@
   
   ## TETIS: Check additional elements
   if(watershed_model == "tetis") {
-    if(!("channel" %in% names(y))) cli::cli_abort("'channel' has to be defined in 'y'.")
     if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'y'.")
     if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'y'.")
     if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'y'.")
@@ -500,12 +499,14 @@
     }
   }
   
-  state_soil_summary_function <- function(object, model="SX") {
+  state_soil_summary_function <- function(object) {
     l = list(SWE=NA, Psi1=NA, SoilVol=NA, WTD=NA)
     if(!is.null(object)) {
       if(inherits(object, "list")) {
-        if("soil" %in% names(object)) {
+        if(("soil" %in% names(object)) && ("control" %in% names(object))) {
           s <- object$soil
+          control <- object$control
+          model <- control$soilFunctions
           l <- list(SWE = s$SWE,
                     Psi1 = soil_psi(s)[1],
                     SoilVol = sum(soil_water(s, model)),
@@ -676,8 +677,6 @@
       }
     }
     
-    summary_df <- landscape_summary(y, "state", state_soil_summary_function, local_control$soilFunctions, 
-                                   unlist = TRUE, progress = FALSE)
     ifactor <- df.int[day]
 
     if(watershed_model=="tetis") DTAday <- (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
@@ -688,9 +687,12 @@
       for(v in varsMean) {
         summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
       }
-      for(v in varsState) {
-        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_df[[v]][i]/t.df[ifactor]
-      }  
+      if(!is.null(y$state[[i]])) {
+        summary_i <- state_soil_summary_function(y$state[[i]])
+        for(v in varsState) {
+          summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_i[[v]]/t.df[ifactor]
+        }  
+      }
       summarylist[[i]][ifactor,"Interception"] <- summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
       if(watershed_model=="tetis") {
         summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
@@ -897,7 +899,6 @@
 #'   }
 #'   When using TETIS watershed model, the following columns are also required:
 #'   \itemize{
-#'     \item{\code{channel}: A logical vector indicating whether each cell belongs to the channel network.}
 #'     \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 #'     \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
 #'     \item{\code{bedrock_porosity}: Bedrock porosity.}

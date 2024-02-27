@@ -1,6 +1,5 @@
 .shinyplot_spatial<-function(x, SpParams) {
   plot_main_choices = c("Topography","Soil", "Forest stand")
-  if("channel" %in% names(x)) plot_main_choices = c(plot_main_choices, "Watershed")
   ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(

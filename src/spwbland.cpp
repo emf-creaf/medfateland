@@ -284,6 +284,10 @@ List watershedDayTetis(String localModel,
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterO[i]-1; //Decrease index!!!!
+
+    MinTemperature[iCell] = tminVec[iCell];
+    MaxTemperature[iCell] = tmaxVec[iCell];
+    
     if((lct[iCell]=="wildland") || (lct[iCell]=="agriculture")) {
       List x = Rcpp::as<Rcpp::List>(xList[iCell]);
       List soil = Rcpp::as<Rcpp::List>(x["soil"]);
@@ -295,7 +299,7 @@ List watershedDayTetis(String localModel,
       NumericVector meteovec = NumericVector::create(
         _["MinTemperature"] = tminVec[iCell],
         _["MaxTemperature"] = tmaxVec[iCell],
-        _["MinRelativeHumidity"] = rhminVec[iCell],
+        _["MinRelativeHumidity"] = rhminVec[iCell], 
         _["MaxRelativeHumidity"] = rhmaxVec[iCell],
         _["Precipitation"]  =precVec[iCell],
         _["Radiation"] = radVec[iCell],
@@ -321,8 +325,6 @@ List watershedDayTetis(String localModel,
       snowpack[iCell] = soil["SWE"]; //Copy back snowpack
       NumericVector DB = res["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res["Soil"]);
-      MinTemperature[iCell] = tminVec[iCell];
-      MaxTemperature[iCell] = tmaxVec[iCell];
       Snow[iCell] = DB["Snow"];
       Snowmelt[iCell] = DB["Snowmelt"];
       PET[iCell] = DB["PET"];
@@ -364,6 +366,7 @@ List watershedDayTetis(String localModel,
         //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
         Runoff[iCell] =  SaturationExcess[iCell]+Runon[iCell]+Snowmelt[iCell]+Rain[iCell];
         DeepDrainage[iCell] = 0.0;
+        Transpiration[iCell] = 0.0;
       } else if(lct[iCell]=="water") {
         // water cells receive water from other cells or Precipitation
         // but do not export to the atmosphere contribute nor to other cells.
