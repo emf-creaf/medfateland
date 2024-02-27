@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.1.1
+- Removing the need to define 'channel'
+
 # Version 2.1.0
 - SERGHEI coupling 
 - Raster topology from terra package required in watershed simulations
