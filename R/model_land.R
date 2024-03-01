@@ -178,11 +178,13 @@
       PET[i] <- DB["PET"]
       Rain[i] <- DB["Rain"]
       SoilEvaporation[i] <- DB["SoilEvaporation"]
+      NetRain[i] <- DB["NetRain"]
       
       if(lct[i]=="wildland") {
-        NetRain[i] <- DB["NetRain"]
         PL <- res[["Plants"]]
         Transpiration[i] <- sum(PL["Transpiration"])
+      } else {
+        Transpiration[i] <- DB["Transpiration"]
       }
     } else { # Fill output vectors for non-wildland cells
       Rain[i] = 0.0

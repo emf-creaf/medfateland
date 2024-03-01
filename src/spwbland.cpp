@@ -333,12 +333,13 @@ List watershedDayTetis(String localModel,
       Runoff[iCell] = DB["Runoff"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
       SoilEvaporation[iCell] = DB["SoilEvaporation"];
-      
+      NetRain[iCell] = DB["NetRain"];
       if(lct[iCell]=="wildland") {
-        NetRain[iCell] = DB["NetRain"];
         DataFrame PL = Rcpp::as<Rcpp::DataFrame>(res["Plants"]);
         NumericVector EplantCoh = Rcpp::as<Rcpp::NumericVector>(PL["Transpiration"]);
         Transpiration[iCell] = sum(EplantCoh);
+      } else {
+        Transpiration[iCell] = DB["Transpiration"];
       }
 
       //Add deep drainage to aquifer of the cell
