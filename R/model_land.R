@@ -331,6 +331,8 @@
   nDays <- length(dates)
   
   nCells <- nrow(y)
+  isAgricultureCell <- y$land_cover_type %in% c("agriculture")
+  isWildlandCell <- y$land_cover_type %in% c("wildland")
   isSoilCell <- y$land_cover_type %in% c("wildland", "agriculture")
   nSoil <- sum(isSoilCell)
   nWild <- sum(y$land_cover_type %in% c("wildland"))
@@ -341,6 +343,9 @@
   nSummary <- sum(table(date.factor)>0)
   t.df <- as.numeric(table(df.int))
 
+  # Do not allow results on cells that are wildland/agriculture
+  result_cell[!isSoilCell] <- FALSE
+  
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
@@ -490,11 +495,21 @@
     # result cells
     if(result_cell[i]) {
       if(local_model=="spwb") {
-        resultlist[[i]] <- medfate:::.defineSPWBDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
-                                                            dates, y$state[[i]])
-      } else if(local_model=="growth") {
-        resultlist[[i]] <- medfate:::.defineGrowthDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+        if(isWildlandCell[i]) {
+          resultlist[[i]] <- medfate:::.defineSPWBDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
                                                               dates, y$state[[i]])
+        } else if(isAgricultureCell[i]) {
+          resultlist[[i]] <- medfate:::.defineASPWBDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+                                                               dates, y$state[[i]])
+        }
+      } else if(local_model=="growth") {
+        if(isWildlandCell[i]) {
+          resultlist[[i]] <- medfate:::.defineGrowthDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+                                                                dates, y$state[[i]])
+        } else if(isAgricultureCell[i]) {
+          resultlist[[i]] <- medfate:::.defineASPWBDailyOutput(latitude[i], y$elevation[i], y$slope[i], y$aspect[i],
+                                                               dates, y$state[[i]])
+        }
       }
     }
   }
@@ -670,9 +685,17 @@
       if(result_cell[i]) {
         x <- y$state[[i]];
         if(local_model=="spwb") {
-          medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          if(isWildlandCell[i]) {
+            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          } else if(isAgricultureCell[i]) {
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          }
         } else if(local_model =="growth") {
-          medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          if(isWildlandCell[i]) {
+            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          } else if(isAgricultureCell[i]) {
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+          }
         }
       }
     }
@@ -895,7 +918,7 @@
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 #'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
-#'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only).}
+#'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }
 #'   }
 #'   When using TETIS watershed model, the following columns are also required:
 #'   \itemize{
