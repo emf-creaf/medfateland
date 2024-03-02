@@ -21,6 +21,7 @@ initialize_landscape(
 \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+\item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
@@ -55,8 +56,8 @@ data("examplemeteo")
 data("SpParamsMED")
   
 # Initialize state for 'spwb' simulations
-example_ifn <- initialize_landscape(example_ifn, SpParamsMED, 
-                                    defaultControl(), model = "spwb")
+example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED, 
+                                         defaultControl(), model = "spwb")
 
 }
 \seealso{

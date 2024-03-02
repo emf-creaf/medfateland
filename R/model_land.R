@@ -396,18 +396,26 @@
   if(header_footer) cli::cli_progress_step(paste0("Building ", local_model, " input"))
   initialized_cells <- 0
   for(i in 1:nCells) { #Initialize if not previously initialized
+    local_control_i <- NULL
+    if("local_control" %in% names(y)) {
+      if(!is.null(y$local_control[[i]])) {
+        if(inherits(y$local_control[[i]], "list")) local_control_i <- y$local_control[[i]]
+      }
+    }
+    if(is.null(local_control_i)) local_control_i <- local_control
+    
     if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
       f <- y$forest[[i]]
       s <- y$soil[[i]]
-      if(local_model=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control)
-      else if(local_model=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control)
+      if(local_model=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control_i)
+      else if(local_model=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control_i)
       initialized_cells <- initialized_cells + 1
     } 
     else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
       s <- y$soil[[i]]
       cf <- y$crop_factor[i]
       if(inherits(s, "data.frame")) s <- medfate::soil(s)
-      y$state[[i]] <- medfate::aspwbInput(cf, local_control, s)
+      y$state[[i]] <- medfate::aspwbInput(cf, local_control_i, s)
       initialized_cells <- initialized_cells + 1
     } 
   }
@@ -918,6 +926,7 @@
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+#'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
 #'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 #'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }

@@ -4,6 +4,7 @@
 
 # Version 2.1.1
 - Removing the need to define 'channel'
+- Input sf can contain column 'local_control' to override control for specific cells/locations.
 
 # Version 2.1.0
 - SERGHEI coupling 

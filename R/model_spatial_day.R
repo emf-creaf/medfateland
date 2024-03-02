@@ -126,6 +126,13 @@
       for(w in 1:length(w_init)) {
         i <- w_init[w]
         s <- soillist[[i]]
+        local_control_i <- NULL
+        if("local_control" %in% names(y)) {
+          if(!is.null(y$local_control[[i]])) {
+            if(inherits(y$local_control[[i]], "list")) local_control_i <- y$local_control[[i]]
+          }
+        }
+        if(is.null(local_control_i)) local_control_i <- local_control
         if(inherits(s, "data.frame")){
           s <- soil(s)
         }
@@ -133,13 +140,13 @@
           f <- forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
             if(model=="spwb") {
-              xlist[[i]] <- medfate::forest2spwbInput(f, s, SpParams, local_control)
+              xlist[[i]] <- medfate::forest2spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] <- medfate::forest2growthInput(f, s, SpParams, local_control)
+              xlist[[i]] <- medfate::forest2growthInput(f, s, SpParams, local_control_i)
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control_i, soil = s)
         }
       }
       if(progress) {

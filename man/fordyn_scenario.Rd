@@ -39,6 +39,7 @@ fordyn_scenario(
 \item{\code{represented_area_ha}: Area represented by each stand in hectares.}
 \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when
 \code{fire_regime} is supplied only).}
+\item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific stands (values can be \code{NULL} for the remaining ones).}
 }
 Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 to continue simulations.}

@@ -38,6 +38,7 @@
 #'     \item{\code{represented_area_ha}: Area represented by each stand in hectares.}
 #'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant when 
 #'                 \code{fire_regime} is supplied only).}
+#'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific stands (values can be \code{NULL} for the remaining ones).}
 #'   }
 #'   Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 #'   to continue simulations.
@@ -533,7 +534,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                         keep_results = FALSE, summary_function=table_selection, 
                         summary_arguments=list(summary_function = summary_function, summary_arguments = summary_arguments),
                         parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size, 
-                        progress = progress)
+                        progress = progress, local_verbose = FALSE)
 
     # B.3 Update final state variables in y and retrieve fordyn tables
     # y_backup <- rlang::duplicate(y)

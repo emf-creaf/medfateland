@@ -307,8 +307,6 @@
   
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
-  local_control$verbose = local_verbose
-
   n <- nrow(y)
   
   if("forest" %in% names(y)) {
@@ -383,6 +381,15 @@
       for(w in 1:length(w_init)) {
         i = w_init[w]
         s = soillist[[i]]
+        local_control_i <- NULL
+        if("local_control" %in% names(y)) {
+          if(!is.null(y$local_control[[i]])) {
+            if(inherits(y$local_control[[i]], "list")) local_control_i <- y$local_control[[i]]
+          }
+        }
+        if(is.null(local_control_i)) local_control_i <- local_control
+        local_control_i$verbose <- local_verbose
+        
         if(inherits(s, "data.frame")) {
           s <- soil(s)
         }
@@ -390,13 +397,13 @@
           f = forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
             if(model=="spwb") {
-              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
+              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
+              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control_i)
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control_i, soil = s)
         }
       }
       if(progress) {
@@ -545,6 +552,7 @@
 #'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+#'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific locations (values can be \code{NULL} for the remaining ones).}
 #'     \item{\code{management_arguments}: Lists with management arguments. Optional, relevant for \code{fordyn_spatial} only.}
 #'     \item{\code{represented_area_ha}: Area represented by each stand in hectares. Optional, relevant for \code{fordyn_spatial} when 
 #'     \code{fire_regime} is supplied only).}
@@ -710,6 +718,7 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #'     \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
 #'     \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+#'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}).
@@ -741,8 +750,8 @@ fordyn_spatial<-function(sf, SpParams, meteo = NULL, local_control = defaultCont
 #' data("SpParamsMED")
 #'   
 #' # Initialize state for 'spwb' simulations
-#' example_ifn <- initialize_landscape(example_ifn, SpParamsMED, 
-#'                                     defaultControl(), model = "spwb")
+#' example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED, 
+#'                                          defaultControl(), model = "spwb")
 #' 
 #' @name initialize_landscape
 #' @export
@@ -799,6 +808,13 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
       for(w in 1:length(w_init)) {
         i = w_init[w]
         s = soillist[[i]]
+        local_control_i <- NULL
+        if("local_control" %in% names(x)) {
+          if(!is.null(x$local_control[[i]])) {
+            if(inherits(x$local_control[[i]], "list")) local_control_i <- x$local_control[[i]]
+          }
+        }
+        if(is.null(local_control_i)) local_control_i <- local_control
         if(inherits(s, "data.frame")) {
           s <- soil(s)
         }
@@ -806,13 +822,13 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
           f = forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
             if(model=="spwb") {
-              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control)
+              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control)
+              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control_i)
             }
           }
         } else if(landcover[i] == "agriculture") {
-          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control, soil = s)
+          xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control_i, soil = s)
         }
         if(progress) cli::cli_progress_update()
       }

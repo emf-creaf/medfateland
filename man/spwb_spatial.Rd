@@ -74,6 +74,7 @@ fordyn_spatial(
 \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
+\item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific locations (values can be \code{NULL} for the remaining ones).}
 \item{\code{management_arguments}: Lists with management arguments. Optional, relevant for \code{fordyn_spatial} only.}
 \item{\code{represented_area_ha}: Area represented by each stand in hectares. Optional, relevant for \code{fordyn_spatial} when
 \code{fire_regime} is supplied only).}
