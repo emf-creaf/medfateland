@@ -129,9 +129,10 @@ and resprouting.</p></li>
 <li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
+<li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific cells (values can be <code>NULL</code> for the remaining ones).</p></li>
 <li><p><code>snowpack</code>: A numeric vector with the snow water equivalent content of the snowpack in each cell.</p></li>
 <li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_land</code> only).</p></li>
-<li><p><code>result_cell</code>: A logical indicating that local model results are desired (optional, relevant for <code>spwb_land</code> and  <code>growth_land</code> only).</p></li>
+<li><p><code>result_cell</code>: A logical indicating that local model results are desired (optional, relevant for <code>spwb_land</code> and  <code>growth_land</code> only). Model results are only produced for wildland and agriculture cells.</p></li>
 </ul><p>When using TETIS watershed model, the following columns are also required:</p><ul><li><p><code>depth_to_bedrock</code>: Depth to bedrock (mm).</p></li>
 <li><p><code>bedrock_conductivity</code>: Bedrock (saturated) conductivity (in m·day-1).</p></li>
 <li><p><code>bedrock_porosity</code>: Bedrock porosity.</p></li>

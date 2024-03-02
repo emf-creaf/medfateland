@@ -121,6 +121,7 @@ No spatial processes are simulated.</p>
 <li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
+<li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific locations (values can be <code>NULL</code> for the remaining ones).</p></li>
 <li><p><code>management_arguments</code>: Lists with management arguments. Optional, relevant for <code>fordyn_spatial</code> only.</p></li>
 <li><p><code>represented_area_ha</code>: Area represented by each stand in hectares. Optional, relevant for <code>fordyn_spatial</code> when
 <code>fire_regime</code> is supplied only).</p></li>
