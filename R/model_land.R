@@ -535,7 +535,7 @@
           l <- list(SWE = s$SWE,
                     Psi1 = soil_psi(s)[1],
                     SoilVol = sum(soil_water(s, model)),
-                    WTD = soil_waterTableDepth(s, model))
+                    WTD = soil_saturatedWaterDepth(s, model))
         }
       }
     }
@@ -732,7 +732,7 @@
       }
     }
     
-    if(watershed_model=="tetis") DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e6 ## Runoff in m3/day
+    if(watershed_model=="tetis") DailyRunoff[day,] <- res_day$Runoff[outlets]*patchsize/1e3 ## Runoff in m3/day
 
     #Landscape balance
     LandscapeBalance$Rain[ifactor] <- LandscapeBalance$Rain[ifactor] + sum(res_day$Rain, na.rm=T)/nCells

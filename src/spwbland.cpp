@@ -123,7 +123,7 @@ List watershedDayTetis(String localModel,
       List x = Rcpp::as<Rcpp::List>(xList[i]);
       List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       List control = x["control"];
-      WTD[i] = medfate::soil_waterTableDepth(soil, control["soilFunctions"]);
+      WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]);
       SoilWaterTableElevation[i] = elevation[i]-(WTD[i]/1000.0);
     }
     AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
