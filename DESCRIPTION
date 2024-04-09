@@ -1,8 +1,8 @@
 Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Simulation
-Version: 2.1.1
-Date: 2024-02-27
+Version: 2.2.0
+Date: 2024-04-09
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -16,7 +16,7 @@ Description: Functions to simulate forest hydrology, forest function and dynamic
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes
-Depends: R (>= 3.4.0), medfate (>= 4.0.0)
+Depends: R (>= 3.4.0), medfate (>= 4.1.0)
 Imports: 
     cli,
     ggplot2,

@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.2.0
+- Compliance with medfate ver. 4.1.0
+
 # Version 2.1.1
 - Removing the need to define 'channel'
 - Input sf can contain column 'local_control' to override control for specific cells/locations.

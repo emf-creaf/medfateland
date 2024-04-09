@@ -309,16 +309,19 @@ List watershedDayTetis(String localModel,
       if(lct[iCell]=="agriculture") {
         res = medfate::aspwb_day(x, date, meteovec,
                         latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                        Runon[iCell]+SaturationExcess[iCell], true);
+                        Runon[iCell]+SaturationExcess[iCell], R_NilValue, NA_REAL, 
+                        true);
       } else {
         if(localModel=="spwb") {
           res = medfate::spwb_day(x, date, meteovec,
                                   latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                                  Runon[iCell]+SaturationExcess[iCell], true);
+                                  Runon[iCell]+SaturationExcess[iCell], R_NilValue, NA_REAL,
+                                  true);
         } else if(localModel =="growth") {
           res = medfate::growth_day(x, date, meteovec,
                                     latitude[iCell], elevation[iCell], slope[iCell], aspect[iCell],
-                                    Runon[iCell]+SaturationExcess[iCell], true);
+                                    Runon[iCell]+SaturationExcess[iCell], R_NilValue, NA_REAL,
+                                    true);
         }
       }
       localResults[iCell] = res; //Store for output
