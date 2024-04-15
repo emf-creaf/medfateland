@@ -53,8 +53,24 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_getTrackSpeciesDDS`, trackSpecies, DDS, x)
 }
 
-.watershedDayTetis <- function(localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress = TRUE) {
-    .Call(`_medfateland_watershedDayTetis`, localModel, lct, xList, waterO, queenNeigh, waterQ, depth_to_bedrock, bedrock_conductivity, bedrock_porosity, aquifer, snowpack, watershed_control, date, gridMeteo, latitude, elevation, slope, aspect, patchsize, progress)
+.copySnowpackToSoil <- function(y) {
+    invisible(.Call(`_medfateland_copySnowpackToSoil`, y))
+}
+
+.copySnowpackFromSoil <- function(y) {
+    invisible(.Call(`_medfateland_copySnowpackFromSoil`, y))
+}
+
+.tetisWatershedFlows <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    .Call(`_medfateland_tetisWatershedFlows`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
+}
+
+.tetisApplyBaseflowChangesToAquifer <- function(y, BaseflowInput, BaseflowOutput, patchsize) {
+    .Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, y, BaseflowInput, BaseflowOutput, patchsize)
+}
+
+.tetisApplyDrainageChangesToAquifer <- function(y, DeepDrainage) {
+    invisible(.Call(`_medfateland_tetisApplyDrainageChangesToAquifer`, y, DeepDrainage))
 }
 
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {

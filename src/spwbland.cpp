@@ -7,6 +7,13 @@ using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
 
+/**
+ * Conversion factor from conductivity in cm·day-1 to molH20·m-2·MPa-1·s-1
+ *  1 day = 86400 sec
+ *  1 mol H20 = 18.01528 g
+ */
+const double cmdTOmmolm2sMPa = 655.2934; //100.0/(18.01528*86400.0*0.00009804139432); 
+
 // [[Rcpp::export("drainageCells")]]
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
   IntegerVector cells = IntegerVector::create(iCell);
@@ -72,10 +79,185 @@ NumericVector getTrackSpeciesDDS(NumericVector trackSpecies, NumericVector DDS, 
   }
   return(DDSsp);
 }
+// [[Rcpp::export(".copySnowpackToSoil")]]
+void copySnowpackToSoil(List y) {
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  NumericVector snowpack = y["snowpack"];
+  int nX = xList.size();
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      soil["SWE"] = snowpack[i];
+    }
+  }
+}
+// [[Rcpp::export(".copySnowpackFromSoil")]]
+void copySnowpackFromSoil(List y) {
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  NumericVector snowpack = y["snowpack"];
+  int nX = xList.size();
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      snowpack[i] = soil["SWE"];
+    }
+  }
+}
 
 
-// [[Rcpp::export(".watershedDayTetis")]]
-List watershedDayTetis(String localModel,
+// [[Rcpp::export(".tetisWatershedFlows")]]
+DataFrame tetisWatershedFlows(List y,
+                              IntegerVector waterO, List queenNeigh, List waterQ,
+                              List watershed_control,
+                              double patchsize) {
+  
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  int nX = xList.size();
+  NumericVector depth_to_bedrock  = y["depth_to_bedrock"];
+  NumericVector bedrock_conductivity = y["bedrock_conductivity"];
+  NumericVector bedrock_porosity = y["bedrock_porosity"];
+  NumericVector aquifer = y["aquifer"];
+  NumericVector elevation = y["elevation"];
+  
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double R_localflow = tetis_parameters["R_localflow"];
+  double R_interflow = tetis_parameters["R_interflow"];
+  double R_baseflow = tetis_parameters["R_baseflow"];
+  
+  //A. Subsurface fluxes
+  double cellArea = patchsize; //cell size in m2
+  double cellWidth = sqrt(patchsize); //cell width in m
+  double n = 3.0;
+  
+  
+  //A1. Calculate soil and aquifer water table elevation (heads)
+  NumericVector WTD(nX,NA_REAL); //Water table depth
+  NumericVector SoilSaturatedLayerElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
+  NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      List control = x["control"];
+      WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]);
+      SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0);
+    }
+    AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
+  }
+  
+  //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
+  NumericVector interflowInput(nX, 0.0);
+  NumericVector interflowOutput(nX, 0.0);
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      double D = soil["SoilDepth"]; //Soil depth in mm
+      NumericVector clay = soil["clay"];
+      NumericVector sand = soil["sand"];
+      NumericVector om = soil["om"];
+      NumericVector Ksat = soil["Ksat"];
+      double Ks1 = 0.01*Ksat[0]/cmdTOmmolm2sMPa; //cm/day to m/day
+      double Kinterflow = R_interflow*Ks1;
+      if(WTD[i]<D) {
+        double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
+        List control = x["control"];
+        String model = control["soilFunctions"];
+        NumericVector saturatedVolume = medfate::soil_waterSAT(soil, model);
+        NumericVector fieldCapacityVolume = medfate::soil_waterFC(soil, model);
+        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
+        //water table slope between target and neighbours
+        NumericVector qni(ni.size(), 0.0);
+        for(int j=0;j<ni.size();j++) {
+          if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
+            double tanBeta = (SoilSaturatedLayerElevation[i]-SoilSaturatedLayerElevation[ni[j]-1])/cellWidth;
+            if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3
+          }
+        }
+        double qntotal = sum(qni);
+        double macroporeVolume = sum(saturatedVolume)-sum(fieldCapacityVolume);
+        double qntotalallowed = std::min(qntotal, (macroporeVolume/1000.0)*cellArea); //avoid excessive outflow
+        double corrfactor = qntotalallowed/qntotal;
+        for(int j=0;j<ni.size();j++) {
+          if(qni[j]>0.0) {
+            interflowInput[ni[j]-1] += qni[j]*corrfactor;
+            interflowOutput[i] += qni[j]*corrfactor;
+          }
+        }
+      }
+    }
+  }
+  
+  //A2b. Calculate BASEFLOW output for each cell (in m3/day)
+  NumericVector baseflowInput(nX, 0.0);
+  NumericVector baseflowOutput(nX, 0.0);
+  for(int i=0;i<nX;i++){
+    double Kbaseflow = R_baseflow*bedrock_conductivity[i]; //m/day
+    if(aquifer[i]>0) {
+      double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n); //Transmissivity in m2
+      IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
+      //water table slope between target and neighbours
+      NumericVector qni(ni.size(), 0.0);
+      for(int j=0;j<ni.size();j++) {
+        double tanBeta = (AquiferWaterTableElevation[i]-AquiferWaterTableElevation[ni[j]-1])/cellWidth;
+        if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
+      }
+      double qntotal = sum(qni);
+      double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*cellArea); //avoid excessive outflow
+      double corrfactor = qntotalallowed/qntotal;
+      for(int j=0;j<ni.size();j++) {
+        if(qni[j]>0.0) {
+          baseflowInput[ni[j]-1] += qni[j]*corrfactor;
+          baseflowOutput[i] += qni[j]*corrfactor;
+        }
+      }
+    }
+  }
+  DataFrame out = DataFrame::create(_["InterflowInput"] = interflowInput, _["InterflowOutput"] = interflowOutput,
+                                    _["BaseflowInput"] = baseflowInput, _["BaseflowOutput"] = baseflowOutput);
+  return(out);
+}
+
+// [[Rcpp::export(".tetisApplyBaseflowChangesToAquifer")]]
+NumericVector tetisApplyBaseflowChangesToAquifer(List y,
+                                                 NumericVector BaseflowInput, NumericVector BaseflowOutput,
+                                                 double patchsize) {
+  NumericVector depth_to_bedrock  = y["depth_to_bedrock"];
+  NumericVector bedrock_porosity = y["bedrock_porosity"];
+  NumericVector aquifer = y["aquifer"];
+
+  int nX = aquifer.size();
+  NumericVector AquiferDischarge(nX, 0.0);
+  for(int i=0;i<nX;i++){
+    double deltaA = 1000.0*((BaseflowInput[i]-BaseflowOutput[i])/patchsize); //change in moisture in mm (L/m2)
+    aquifer[i] = aquifer[i] + deltaA; //New water amount in the aquifer (mm water)
+    double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
+    if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
+      AquiferDischarge[i] = - DTAn*bedrock_porosity[i];
+      aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
+    }
+  }
+  return(AquiferDischarge);
+}
+
+// [[Rcpp::export(".tetisApplyDrainageChangesToAquifer")]]
+void tetisApplyDrainageChangesToAquifer(List y,
+                                        NumericVector DeepDrainage) {
+  NumericVector aquifer = y["aquifer"];
+  
+  int nX = aquifer.size();
+  for(int i=0;i<nX;i++){
+    aquifer[i] += DeepDrainage[i];
+  }
+}
+  
+  
+List tetisOLD(String localModel,
                   CharacterVector lct, List xList,
                   IntegerVector waterO, List queenNeigh, List waterQ,
                   NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,

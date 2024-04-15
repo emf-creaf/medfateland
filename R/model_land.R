@@ -77,22 +77,225 @@
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                        runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                         modifyInput = TRUE)
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
       res<-medfate::growth_day(xi$x, date, xi$meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                               runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                                 latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                 modifyInput = TRUE)
       
     }
   } 
   return(res)
 }
+.watershedDayTetis<- function(local_model,
+                              y,
+                              waterOrder, queenNeigh, waterQ,
+                              watershed_control,
+                              date,
+                              gridMeteo,
+                              latitude, 
+                              parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
+                              patchsize = NA, progress = TRUE) {
+
+  nX <- nrow(y)
+  
+  MinTemperature <- rep(NA, nX)
+  MaxTemperature <- rep(NA, nX)
+  PET <- rep(0, nX)
+  Precipitation <- rep(0, nX)
+  Rain <- rep(0, nX)
+  Snow <- rep(0, nX)
+  Snowmelt <- rep(0, nX)
+  NetRain <- rep(0, nX)
+  Runon <- rep(0, nX)
+  Infiltration <- rep(0, nX)
+  Runoff <- rep(0, nX)
+  InfiltrationExcess <- rep(0, nX)
+  SaturationExcess <- rep(0, nX)
+  DeepDrainage <- rep(0, nX)
+  CapillarityRise <- rep(0, nX)
+  SoilEvaporation <- rep(0, nX)
+  Transpiration <- rep(0, nX)
+
+  
+  # A. Landscape interflow and baseflow
+  watershed_flows <- .tetisWatershedFlows(y,
+                                          waterOrder, queenNeigh, waterQ,
+                                          watershed_control,
+                                          patchsize)
+  InterflowInput <- watershed_flows[["InterflowInput"]]
+  InterflowOutput <- watershed_flows[["InterflowOutput"]]
+  BaseflowInput <- watershed_flows[["BaseflowInput"]]
+  BaseflowOutput <- watershed_flows[["BaseflowOutput"]]
+  # print(watershed_flows)
+  
+  # A3a. Apply changes in soil moisture to each cell
+  # for(i in 1:nX){
+  #   if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
+  #     deltaS <- ((InterflowInput[i]-InterflowOutput[i])/patchsize) #change in moisture in m (L/m2)
+  #     # if(deltaS != 0.0) {
+  #     #   # Rcout<<inflow[i]<< " "<<outflow[i]<< " "<<cellArea<<" "<<deltaS<<"_";
+  #     #   x = xList[i]
+  #     #   soil_i = x["soil"];
+  #     #   NumericVector W = soil["W"]; //Access to soil state variable
+  #     #   NumericVector dVec = soil["dVec"];
+  #     #   NumericVector macro = soil["macro"];
+  #     #   NumericVector rfc = soil["rfc"];
+  #     #   List control = x["control"];
+  #     #   String soilFunctions = control["soilFunctions"];
+  #     #   NumericVector Water_FC = medfate::soil_waterFC(soil, soilFunctions);
+  #     #   NumericVector Water_SAT = medfate::soil_waterSAT(soil, soilFunctions);
+  #     #   int nlayers = dVec.length();
+  #     #   # // Rcout<<W[0]<<" A ";
+  #     #   for(int l=(nlayers-1);l>=0;l--) {
+  #     #     if(dVec[l]>0) {
+  #     #       double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
+  #     #       deltaS = std::max(Wn - Water_SAT[l],0.0); //Update deltaS, using the excess of water over saturation
+  #     #       W[l] = std::max(0.0,std::min(Wn, Water_SAT[l])/Water_FC[l]); //Update theta (this modifies 'soil') here no upper
+  #     #     }
+  #     #   }
+  #     #   # // Rcout<<W[0]<<"\n";
+  #     #   # // stop("kk");
+  #     #   if(deltaS>0) { //If soil is completely saturated increase subsurface return flow to be processed with vertical flows
+  #     #     SaturationExcess[i] += deltaS;
+  #     #   }
+  #     #   # // Rcout<<WTD[i]<<"/"<<waterTableDepth(soil,soilFunctions)<<"\n";
+  #     # }
+  #   }
+  # }
+  
+  # A3b. Apply changes in aquifer to each cell
+  AquiferDischarge <- .tetisApplyBaseflowChangesToAquifer(y,
+                                                          BaseflowInput, BaseflowOutput,
+                                                          patchsize)
+  
+  
+  # B. Weather and local flows
+  .copySnowpackToSoil(y)
+  tminVec <- gridMeteo[["MinTemperature"]]
+  tmaxVec <- gridMeteo[["MaxTemperature"]]
+  rhminVec <- gridMeteo[["MinRelativeHumidity"]]
+  rhmaxVec <- gridMeteo[["MaxRelativeHumidity"]]
+  precVec <- gridMeteo[["Precipitation"]]
+  radVec <- gridMeteo[["Radiation"]]
+  wsVec <- gridMeteo[["WindSpeed"]]
+  C02Vec <- gridMeteo[["CO2"]]
+  
+  XI <- vector("list", nX)
+  for(i in 1:nX) {
+    meteovec <- c(
+      "MinTemperature" = tminVec[i],
+      "MaxTemperature" = tmaxVec[i],
+      "MinRelativeHumidity" = rhminVec[i],
+      "MaxRelativeHumidity" = rhmaxVec[i],
+      "Precipitation"  =precVec[i],
+      "Radiation" = radVec[i],
+      "WindSpeed" = wsVec[i],
+      "CO2" = C02Vec[i]
+    )
+    XI[[i]] <- list(i = i, 
+                    x = y$state[[i]],
+                    meteovec = meteovec,
+                    latitude = latitude[i], 
+                    elevation = y$elevation[i], 
+                    slope= y$slope[i], 
+                    aspect = y$aspect[i],
+                    runon = 0,
+                    lateralFlows = NULL,
+                    waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
+  }
+  
+  if(parallelize) {
+    if(is.null(chunk_size)) chunk_size <- floor(nX/num_cores)
+    cl<-parallel::makeCluster(num_cores)
+    localResults <- parallel::parLapplyLB(cl, XI, .f_landunit_day, 
+                                          date = date, model = local_model,
+                                          chunk.size = chunk_size)
+    parallel::stopCluster(cl)
+  } else {
+    localResults <- vector("list", nX)
+    for(i in 1:nX) {
+      localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model)
+    }
+  }
+  .copySnowpackFromSoil(y)
+  
+  for(i in 1:nX) {
+    if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
+      res <- localResults[[i]]
+      DB <- res[["WaterBalance"]]
+      SB <- res[["Soil"]]
+      MinTemperature[i] <- tminVec[i]
+      MaxTemperature[i] <- tmaxVec[i]
+      Snow[i] <- DB["Snow"]
+      Snowmelt[i] <- DB["Snowmelt"]
+      PET[i] <- DB["PET"]
+      Rain[i] <- DB["Rain"]
+      SoilEvaporation[i] <- DB["SoilEvaporation"]
+      NetRain[i] <- DB["NetRain"]
+      Infiltration[i] <- DB["Infiltration"]
+      Runoff[i] <- DB["Runoff"]
+      InfiltrationExcess [i]<- DB["InfiltrationExcess"]
+      SaturationExcess[i] <- DB["SaturationExcess"]
+      DeepDrainage[i] <- DB["DeepDrainage"]
+      CapillarityRise[i] <- DB["CapillarityRise"]
+      if(y$land_cover_type[i]=="wildland") {
+        PL <- res[["Plants"]]
+        Transpiration[i] <- sum(PL["Transpiration"])
+      } else {
+        Transpiration[i] <- DB["Transpiration"]
+      }
+    } else { # Fill output vectors for non-wildland cells
+    #   Rain[i] = 0.0
+    #   Snow[i] = 0.0
+    #   Snowmelt[i] = 0.0
+    #   SoilEvaporation[i] <- 0.0
+    #   tday <- meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i])
+    #   if(tday<0.0) {
+    #     Snow[i] <- precVec[i]
+    #     snowpack[i] <- snowpack[i] + Snow[i]
+    #   } else {
+    #     Rain[i] <- precVec[i]
+    #   }
+    #   NetRain[i] <- Rain[i]
+    #   if(snowpack[i]>0.0) {
+    #     melt <- medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i])
+    #     Snowmelt[i] <- min(melt, snowpack[i])
+    #     snowpack[i] <- snowpack[i] - Snowmelt[i]
+    #   }
+    }
+  }
+
+  #C. Overland surface runoff diverted to outlets
+  
+  .tetisApplyDrainageChangesToAquifer(y,
+                                      DeepDrainage)
+
+  waterBalance <- data.frame("MinTemperature" = MinTemperature,
+                             "MaxTemperature" = MaxTemperature, 
+                             "PET" = PET, "Rain" = Rain, "Snow" = Snow,
+                             "Snowmelt" = Snowmelt, "NetRain" = NetRain, 
+                             "Runon" = Runon, "Infiltration" = Infiltration,
+                             "Runoff" = Runoff,  "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
+                             "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
+                             "AquiferDischarge" = AquiferDischarge,
+                             "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput,
+                             "BaseflowInput" = BaseflowInput, "BaseflowOutput" = BaseflowOutput,
+                             "SoilEvaporation" = SoilEvaporation, "Transpiration" = Transpiration)
+  
+  return(list("WatershedWaterBalance" = waterBalance,
+              "LocalResults" = localResults))
+}
+
 
 ## This function is in R to use parallelization
 .watershedDaySerghei<- function(local_model,
@@ -146,7 +349,10 @@
                     latitude = latitude[i], 
                     elevation = elevation[i], 
                     slope= slope[i], 
-                    aspect = aspect[i])
+                    aspect = aspect[i],
+                    runon = 0,
+                    lateralFlows = NULL,
+                    waterTableDepth = NA)
   }
   
   #A. Vertical and surface fluxes
@@ -167,8 +373,6 @@
   for(i in 1:nX) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       res <- localResults[[i]]
-      soil <- xList[[i]]$soil
-      snowpack[i] <- soil[["SWE"]] #Copy back snowpack
       DB <- res[["WaterBalance"]]
       SB <- res[["Soil"]]
       MinTemperature[i] <- tminVec[i]
@@ -447,12 +651,15 @@
                                    Rain = rep(0, nSummary),
                                    NetRain = rep(0, nSummary),
                                    Interception = rep(0, nSummary),
+                                   Infiltration = rep(0, nSummary),
                                    SoilEvaporation = rep(0,nSummary),
                                    Transpiration = rep(0, nSummary),
                                    Runoff = rep(0, nSummary),
                                    Runon = rep(0, nSummary),
                                    DeepDrainage = rep(0, nSummary),
+                                   InfiltrationExcess = rep(0, nSummary),
                                    SaturationExcess = rep(0, nSummary),
+                                   CapillarityRise = rep(0, nSummary),
                                    AquiferDischarge = rep(0, nSummary),
                                    Interflow = rep(0, nSummary),
                                    Baseflow = rep(0, nSummary),
@@ -472,7 +679,9 @@
                                        Runon = rep(0, nSummary),
                                        Runoff = rep(0, nSummary),
                                        DeepDrainage = rep(0, nSummary),
+                                       InfiltrationExcess = rep(0, nSummary),
                                        SaturationExcess = rep(0, nSummary),
+                                       CapillarityRise = rep(0, nSummary),
                                        AquiferDischarge = rep(0, nSummary))
   }
   if(watershed_model =="serghei") {
@@ -663,16 +872,15 @@
                            WindSpeed = gridWindSpeed,
                            CO2 = gridCO2)
     if(watershed_model=="tetis") {
-      ws_day <- .watershedDayTetis(local_model,
-                                   y$land_cover_type, y$state,
-                                   waterOrder, queenNeigh, waterQ,
-                                   y$depth_to_bedrock, y$bedrock_conductivity, y$bedrock_porosity, 
-                                   y$aquifer, y$snowpack,
-                                   watershed_control,
-                                   datechar,
-                                   gridMeteo,
-                                   latitude, y$elevation, y$slope, y$aspect,
-                                   patchsize, FALSE)
+      ws_day <- .watershedDayTetis(local_model = local_model,
+                                   y,
+                                   waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
+                                   watershed_control = watershed_control,
+                                   date = datechar,
+                                   gridMeteo = gridMeteo,
+                                   latitude = latitude,
+                                   parallelize = parallelize, num_cores = detectCores()-1, chunk_size = NULL,
+                                   patchsize = patchsize, progress = FALSE)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
                                      lct = y$land_cover_type, xList = y$state,
@@ -693,7 +901,7 @@
     # Fill local daily results for result cells
     for(i in 1:nCells) {
       if(result_cell[i]) {
-        x <- y$state[[i]];
+        x <- y$state[[i]]
         if(local_model=="spwb") {
           if(isWildlandCell[i]) {
             medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
@@ -747,6 +955,8 @@
     if(watershed_model=="tetis") {
       LandscapeBalance$DeepDrainage[ifactor] <- LandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage, na.rm=T)/nCells
       LandscapeBalance$SaturationExcess[ifactor] <- LandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess, na.rm=T)/nCells
+      LandscapeBalance$InfiltrationExcess[ifactor] <- LandscapeBalance$InfiltrationExcess[ifactor] + sum(res_day$InfiltrationExcess, na.rm=T)/nCells
+      LandscapeBalance$CapillarityRise[ifactor] <- LandscapeBalance$CapillarityRise[ifactor] + sum(res_day$CapillarityRise, na.rm=T)/nCells
       LandscapeBalance$AquiferDischarge[ifactor] <- LandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge, na.rm=T)/nCells
       LandscapeBalance$Runoff[ifactor] <- LandscapeBalance$Runoff[ifactor] + sum(res_day$Runoff, na.rm=T)/nCells
       LandscapeBalance$Runon[ifactor] <- LandscapeBalance$Runon[ifactor] + sum(res_day$Runon, na.rm=T)/nCells
@@ -758,7 +968,9 @@
       SoilLandscapeBalance$Rain[ifactor] <- SoilLandscapeBalance$Rain[ifactor] + sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Snow[ifactor] <- SoilLandscapeBalance$Snow[ifactor] + sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$DeepDrainage[ifactor] <- SoilLandscapeBalance$DeepDrainage[ifactor] + sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$InfiltrationExcess[ifactor] <- SoilLandscapeBalance$InfiltrationExcess[ifactor] + sum(res_day$InfiltrationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$SaturationExcess[ifactor] <- SoilLandscapeBalance$SaturationExcess[ifactor] + sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$CapillarityRise[ifactor] <- SoilLandscapeBalance$CapillarityRise[ifactor] + sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$AquiferDischarge[ifactor] <- SoilLandscapeBalance$AquiferDischarge[ifactor] + sum(res_day$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$InterflowInput[ifactor] <- SoilLandscapeBalance$InterflowInput[ifactor] + sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$InterflowOutput[ifactor] <- SoilLandscapeBalance$InterflowOutput[ifactor] + sum(res_day$InterflowOutput[isSoilCell], na.rm=T)/nSoil

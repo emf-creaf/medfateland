@@ -6,16 +6,17 @@
 using namespace Rcpp;
 
 
-List watershedDayTetis(String localModel,
-                  CharacterVector lct, List xList,
-                  IntegerVector waterO, List queenNeigh, List waterQ,
-                  NumericVector depth_to_bedrock, NumericVector bedrock_conductivity, NumericVector bedrock_porosity,
-                  NumericVector aquifer, NumericVector snowpack,
-                  List watershed_control,
-                  CharacterVector date,
-                  DataFrame gridMeteo,
-                  NumericVector latitude, NumericVector elevation, NumericVector slope, NumericVector aspect,
-                  double patchsize, bool progress = true);
+DataFrame tetisWatershedFlows(List y,
+                              IntegerVector waterO, List queenNeigh, List waterQ,
+                              List watershed_control,
+                              double patchsize);
+NumericVector tetisApplyBaseflowChangesToAquifer(List y,
+                                                 NumericVector BaseflowInput, NumericVector BaseflowOutput,
+                                                 double patchsize);
+void tetisApplyDrainageChangesToAquifer(List y,
+                                        NumericVector DeepDrainage);
+void copySnowpackToSoil(List y);
+void copySnowpackFromSoil(List y);
 
 List initSerghei(NumericVector limits, int nrow, int ncol,
                  IntegerVector sf2cell, List xList,
