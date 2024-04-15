@@ -13,8 +13,9 @@ DataFrame tetisWatershedFlows(List y,
 NumericVector tetisApplyBaseflowChangesToAquifer(List y,
                                                  NumericVector BaseflowInput, NumericVector BaseflowOutput,
                                                  double patchsize);
-void tetisApplyDrainageChangesToAquifer(List y,
-                                        NumericVector DeepDrainage);
+void tetisApplyLocalFlowsToAquifer(List y,
+                                   NumericVector CapillarityRise,
+                                   NumericVector DeepDrainage);
 void copySnowpackToSoil(List y);
 void copySnowpackFromSoil(List y);
 

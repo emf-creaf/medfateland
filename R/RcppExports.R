@@ -69,8 +69,8 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, y, BaseflowInput, BaseflowOutput, patchsize)
 }
 
-.tetisApplyDrainageChangesToAquifer <- function(y, DeepDrainage) {
-    invisible(.Call(`_medfateland_tetisApplyDrainageChangesToAquifer`, y, DeepDrainage))
+.tetisApplyLocalFlowsToAquifer <- function(y, CapillarityRise, DeepDrainage) {
+    invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, CapillarityRise, DeepDrainage))
 }
 
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {

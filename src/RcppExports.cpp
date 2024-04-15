@@ -234,14 +234,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// tetisApplyDrainageChangesToAquifer
-void tetisApplyDrainageChangesToAquifer(List y, NumericVector DeepDrainage);
-RcppExport SEXP _medfateland_tetisApplyDrainageChangesToAquifer(SEXP ySEXP, SEXP DeepDrainageSEXP) {
+// tetisApplyLocalFlowsToAquifer
+void tetisApplyLocalFlowsToAquifer(List y, NumericVector CapillarityRise, NumericVector DeepDrainage);
+RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP CapillarityRiseSEXP, SEXP DeepDrainageSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type CapillarityRise(CapillarityRiseSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type DeepDrainage(DeepDrainageSEXP);
-    tetisApplyDrainageChangesToAquifer(y, DeepDrainage);
+    tetisApplyLocalFlowsToAquifer(y, CapillarityRise, DeepDrainage);
     return R_NilValue;
 END_RCPP
 }
@@ -296,7 +297,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_tetisWatershedFlows", (DL_FUNC) &_medfateland_tetisWatershedFlows, 6},
     {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 4},
-    {"_medfateland_tetisApplyDrainageChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyDrainageChangesToAquifer, 2},
+    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
     {NULL, NULL, 0}

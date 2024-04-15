@@ -179,14 +179,14 @@ DataFrame tetisWatershedFlows(List y,
             if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3
           }
         }
-        double qntotal = sum(qni);
-        double macroporeVolume = sum(saturatedVolume)-sum(fieldCapacityVolume);
-        double qntotalallowed = std::min(qntotal, (macroporeVolume/1000.0)*cellArea); //avoid excessive outflow
-        double corrfactor = qntotalallowed/qntotal;
+        // double qntotal = sum(qni);
+        // double macroporeVolume = sum(saturatedVolume)-sum(fieldCapacityVolume);
+        // double qntotalallowed = std::min(qntotal, (macroporeVolume/1000.0)*cellArea); //avoid excessive outflow
+        // double corrfactor = qntotalallowed/qntotal;
         for(int j=0;j<ni.size();j++) {
           if(qni[j]>0.0) {
-            interflowInput[ni[j]-1] += qni[j]*corrfactor;
-            interflowOutput[i] += qni[j]*corrfactor;
+            interflowInput[ni[j]-1] += qni[j]; //*corrfactor;
+            interflowOutput[i] += qni[j]; //*corrfactor;
           }
         }
       }
@@ -245,14 +245,15 @@ NumericVector tetisApplyBaseflowChangesToAquifer(List y,
   return(AquiferDischarge);
 }
 
-// [[Rcpp::export(".tetisApplyDrainageChangesToAquifer")]]
-void tetisApplyDrainageChangesToAquifer(List y,
-                                        NumericVector DeepDrainage) {
+// [[Rcpp::export(".tetisApplyLocalFlowsToAquifer")]]
+void tetisApplyLocalFlowsToAquifer(List y,
+                                   NumericVector CapillarityRise,
+                                   NumericVector DeepDrainage) {
   NumericVector aquifer = y["aquifer"];
   
   int nX = aquifer.size();
   for(int i=0;i<nX;i++){
-    aquifer[i] += DeepDrainage[i];
+    aquifer[i] += DeepDrainage[i] - CapillarityRise[i];
   }
 }
   

@@ -138,40 +138,18 @@
   BaseflowOutput <- watershed_flows[["BaseflowOutput"]]
   # print(watershed_flows)
   
-  # A3a. Apply changes in soil moisture to each cell
-  # for(i in 1:nX){
-  #   if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-  #     deltaS <- ((InterflowInput[i]-InterflowOutput[i])/patchsize) #change in moisture in m (L/m2)
-  #     # if(deltaS != 0.0) {
-  #     #   # Rcout<<inflow[i]<< " "<<outflow[i]<< " "<<cellArea<<" "<<deltaS<<"_";
-  #     #   x = xList[i]
-  #     #   soil_i = x["soil"];
-  #     #   NumericVector W = soil["W"]; //Access to soil state variable
-  #     #   NumericVector dVec = soil["dVec"];
-  #     #   NumericVector macro = soil["macro"];
-  #     #   NumericVector rfc = soil["rfc"];
-  #     #   List control = x["control"];
-  #     #   String soilFunctions = control["soilFunctions"];
-  #     #   NumericVector Water_FC = medfate::soil_waterFC(soil, soilFunctions);
-  #     #   NumericVector Water_SAT = medfate::soil_waterSAT(soil, soilFunctions);
-  #     #   int nlayers = dVec.length();
-  #     #   # // Rcout<<W[0]<<" A ";
-  #     #   for(int l=(nlayers-1);l>=0;l--) {
-  #     #     if(dVec[l]>0) {
-  #     #       double Wn = W[l]*Water_FC[l] + deltaS; //Update water volume
-  #     #       deltaS = std::max(Wn - Water_SAT[l],0.0); //Update deltaS, using the excess of water over saturation
-  #     #       W[l] = std::max(0.0,std::min(Wn, Water_SAT[l])/Water_FC[l]); //Update theta (this modifies 'soil') here no upper
-  #     #     }
-  #     #   }
-  #     #   # // Rcout<<W[0]<<"\n";
-  #     #   # // stop("kk");
-  #     #   if(deltaS>0) { //If soil is completely saturated increase subsurface return flow to be processed with vertical flows
-  #     #     SaturationExcess[i] += deltaS;
-  #     #   }
-  #     #   # // Rcout<<WTD[i]<<"/"<<waterTableDepth(soil,soilFunctions)<<"\n";
-  #     # }
-  #   }
-  # }
+  # A3a. Estimate lateral interflow per layer
+  lateralFlows <- vector("list", nX)
+  for(i in 1:nX){
+    if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
+      x_i <- y$state[[i]]
+      soil_i <- x_i["soil"]
+      W <- soil_i$W
+      deltaS <- ((InterflowInput[i]-InterflowOutput[i])/patchsize)*1000.0 #change in moisture in mm = dm3/m2
+      lf_i <- deltaS*(W/sum(W)) # layer flow
+      lateralFlows[[i]] <- lf_i
+    }
+  }
   
   # A3b. Apply changes in aquifer to each cell
   AquiferDischarge <- .tetisApplyBaseflowChangesToAquifer(y,
@@ -210,7 +188,7 @@
                     slope= y$slope[i], 
                     aspect = y$aspect[i],
                     runon = 0,
-                    lateralFlows = NULL,
+                    lateralFlows = lateralFlows[[i]],
                     waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
   }
   
@@ -250,7 +228,7 @@
       CapillarityRise[i] <- DB["CapillarityRise"]
       if(y$land_cover_type[i]=="wildland") {
         PL <- res[["Plants"]]
-        Transpiration[i] <- sum(PL["Transpiration"])
+        Transpiration[i] <- sum(PL["Transpiration"]) + DB["HerbTranspiration"]
       } else {
         Transpiration[i] <- DB["Transpiration"]
       }
@@ -277,9 +255,11 @@
 
   #C. Overland surface runoff diverted to outlets
   
-  .tetisApplyDrainageChangesToAquifer(y,
-                                      DeepDrainage)
-
+  #D. Applies capillarity rise and deep drainage to aquifer
+  .tetisApplyLocalFlowsToAquifer(y,
+                                 CapillarityRise,
+                                 DeepDrainage)
+  
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
                              "MaxTemperature" = MaxTemperature, 
                              "PET" = PET, "Rain" = Rain, "Snow" = Snow,
@@ -1021,6 +1001,7 @@
     Runonsum <- sum(LandscapeBalance$Runon, na.rm=T)
     Runoffsum <- sum(LandscapeBalance$Runoff, na.rm=T)
     DeepDrainagesum <- sum(LandscapeBalance$DeepDrainage, na.rm=T)
+    CapillarityRisesum <- sum(LandscapeBalance$CapillarityRise, na.rm=T)
     SaturationExcesssum <- sum(LandscapeBalance$SaturationExcess, na.rm=T)
     SoilEvaporationsum <- sum(LandscapeBalance$SoilEvaporation , na.rm=T)
     Transpirationsum <- sum(LandscapeBalance$Transpiration , na.rm=T)
@@ -1040,6 +1021,7 @@
     SoilRunoffsum <- sum(SoilLandscapeBalance$Runoff, na.rm=T)
     SoilSaturationExcesssum <- sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
     SoilDeepDrainagesum <- sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
+    SoilCapillarityRisesum <- sum(SoilLandscapeBalance$CapillarityRise, na.rm=T)
     SoilSoilEvaporationsum <- sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
     SoilAquiferDischargesum <- sum(SoilLandscapeBalance$AquiferDischarge , na.rm=T)
@@ -1054,25 +1036,25 @@
       cat(paste0("  Snowpack water balance components:\n"))
       cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
     }
-    soil_input <- (SoilInfiltrationsum + SoilAquiferDischargesum+SoilInterflowInputsum)
-    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum)
+    soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum+SoilInterflowInputsum)
+    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilTranspirationsum +SoilInterflowOutputsum + SoilRunoffsum)
     soil_wb <-  soil_input - soil_output
     if(header_footer) {
       cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
       cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
       cat(paste0("  Soil water balance components:\n"))
-      cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"\n"))
+      cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"  Surface runoff (mm) ",round(SoilRunoffsum,2),"\n"))
       cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Aquifer discharge (mm) ", round(SoilAquiferDischargesum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
       cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2), " Plant transpiration (mm) ", round(SoilTranspirationsum,2),"\n"))
     }
     
-    aquifer_wb <- DeepDrainagesum - AquiferDischargesum
+    aquifer_wb <- DeepDrainagesum - AquiferDischargesum - CapillarityRisesum
     if(header_footer){
       cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
       cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
       cat(paste0("  Aquifer water balance components:\n"))
-      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Capillarity rise (mm) ",round(CapillarityRisesum,2)," Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
     }
     
     landscape_wb <- Precipitationsum - Exportsum - SoilEvaporationsum - Transpirationsum - Interceptionsum
