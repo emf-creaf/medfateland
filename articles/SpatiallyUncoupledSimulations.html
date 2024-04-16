@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-03-02</h4>
+            <h4 data-toc-skip class="date">2024-04-16</h4>
       
       
       <div class="hidden name"><code>SpatiallyUncoupledSimulations.Rmd</code></div>
@@ -79,7 +79,7 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> (v. 2.1.1) to carry out simulations of
+<strong>medfateland</strong> (v. 2.2.0) to carry out simulations of
 forest function and dynamics on a set of spatial units, without taking
 into account spatial processes. This is done using functions
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and
@@ -261,22 +261,22 @@ january and february):</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.4s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.1s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[15.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[12.3s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[27ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>Function <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code> first initializes model inputs
@@ -317,15 +317,18 @@ package <strong>medfate</strong>:</p>
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
 <span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    40.916807      0   0.09662935           24.95602    17.182031</span></span>
-<span><span class="co">## 2001-02-01     0.949663      0   0.21272330           16.95220     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        1.001663                 0        6.772329      6.772329</span></span>
-<span><span class="co">## 2001-02-01        1.526342                 0       13.917661     13.917661</span></span>
+<span><span class="co">##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage</span></span>
+<span><span class="co">## 2001-01-01    54.009813                  0                0      0   0.03083747</span></span>
+<span><span class="co">## 2001-02-01     6.502505                  0                0      0   0.07464114</span></span>
+<span><span class="co">##            CapillarityRise Evapotranspiration Interception SoilEvaporation</span></span>
+<span><span class="co">## 2001-01-01     0.006202281           24.93681    17.182031        0.980304</span></span>
+<span><span class="co">## 2001-02-01     0.006839998           16.83964     1.508196        1.379351</span></span>
+<span><span class="co">##            HerbTranspiration PlantExtraction Transpiration</span></span>
+<span><span class="co">## 2001-01-01                 0        6.774477      6.774477</span></span>
+<span><span class="co">## 2001-02-01                 0       13.952094     13.952094</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.34320123</span></span>
-<span><span class="co">## 2001-02-01              0.09379441</span></span></code></pre>
+<span><span class="co">## 2001-01-01               0.3758913</span></span>
+<span><span class="co">## 2001-02-01               0.3002900</span></span></code></pre>
 <p>However, a more convenient way of generating summaries is by
 calculating them on all forest stands in one step, using function
 <code><a href="../reference/simulation_summary.html">simulation_summary()</a></code> on objects issued from
@@ -349,15 +352,18 @@ element of column <code>summary</code>:</p>
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
 <span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    40.916807      0   0.09662935           24.95602    17.182031</span></span>
-<span><span class="co">## 2001-02-01     0.949663      0   0.21272330           16.95220     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        1.001663                 0        6.772329      6.772329</span></span>
-<span><span class="co">## 2001-02-01        1.526342                 0       13.917661     13.917661</span></span>
+<span><span class="co">##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage</span></span>
+<span><span class="co">## 2001-01-01    54.009813                  0                0      0   0.03083747</span></span>
+<span><span class="co">## 2001-02-01     6.502505                  0                0      0   0.07464114</span></span>
+<span><span class="co">##            CapillarityRise Evapotranspiration Interception SoilEvaporation</span></span>
+<span><span class="co">## 2001-01-01     0.006202281           24.93681    17.182031        0.980304</span></span>
+<span><span class="co">## 2001-02-01     0.006839998           16.83964     1.508196        1.379351</span></span>
+<span><span class="co">##            HerbTranspiration PlantExtraction Transpiration</span></span>
+<span><span class="co">## 2001-01-01                 0        6.774477      6.774477</span></span>
+<span><span class="co">## 2001-02-01                 0       13.952094     13.952094</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.34320123</span></span>
-<span><span class="co">## 2001-02-01              0.09379441</span></span></code></pre>
+<span><span class="co">## 2001-01-01               0.3758913</span></span>
+<span><span class="co">## 2001-02-01               0.3002900</span></span></code></pre>
 <p>Summary objects are handy because their <code><a href="../reference/plot_summary.html">plot_summary()</a></code>
 function allows us to display maps of summaries for specific dates:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
@@ -388,22 +394,22 @@ balance components instead of simulation results:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.3s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[15.7s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[16.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[43ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[25ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>Parameter <code>keep_results = FALSE</code> tells
@@ -423,15 +429,18 @@ summaries can be directly accessed through the column
 <pre><code><span><span class="co">##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt</span></span>
 <span><span class="co">## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006</span></span>
 <span><span class="co">## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842</span></span>
-<span><span class="co">##            Infiltration Runoff DeepDrainage Evapotranspiration Interception</span></span>
-<span><span class="co">## 2001-01-01    40.916807      0   0.09662935           24.95602    17.182031</span></span>
-<span><span class="co">## 2001-02-01     0.949663      0   0.21272330           16.95220     1.508196</span></span>
-<span><span class="co">##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration</span></span>
-<span><span class="co">## 2001-01-01        1.001663                 0        6.772329      6.772329</span></span>
-<span><span class="co">## 2001-02-01        1.526342                 0       13.917661     13.917661</span></span>
+<span><span class="co">##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage</span></span>
+<span><span class="co">## 2001-01-01    54.009813                  0                0      0   0.03083747</span></span>
+<span><span class="co">## 2001-02-01     6.502505                  0                0      0   0.07464114</span></span>
+<span><span class="co">##            CapillarityRise Evapotranspiration Interception SoilEvaporation</span></span>
+<span><span class="co">## 2001-01-01     0.006202281           24.93681    17.182031        0.980304</span></span>
+<span><span class="co">## 2001-02-01     0.006839998           16.83964     1.508196        1.379351</span></span>
+<span><span class="co">##            HerbTranspiration PlantExtraction Transpiration</span></span>
+<span><span class="co">## 2001-01-01                 0        6.774477      6.774477</span></span>
+<span><span class="co">## 2001-02-01                 0       13.952094     13.952094</span></span>
 <span><span class="co">##            HydraulicRedistribution</span></span>
-<span><span class="co">## 2001-01-01              0.34320123</span></span>
-<span><span class="co">## 2001-02-01              0.09379441</span></span></code></pre>
+<span><span class="co">## 2001-01-01               0.3758913</span></span>
+<span><span class="co">## 2001-02-01               0.3002900</span></span></code></pre>
 <p>And one can produce maps with summary results directly from the
 output of the simulation function:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
@@ -457,22 +466,22 @@ the data frame corresponding to plant drought stress:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.2s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[15.6s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[14.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>The drought stress summary of stand 3 is:</p>
@@ -480,11 +489,11 @@ the data frame corresponding to plant drought stress:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_3</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                 T1_171      S1_165      S2_188      S3_183       S4_79</span></span>
 <span><span class="co">## 2001-01-01 0.009455302 0.003088161 0.012422121 0.010280566 0.012050528</span></span>
-<span><span class="co">## 2001-01-02 0.008644968 0.002843602 0.010688137 0.008702650 0.010208536</span></span>
-<span><span class="co">## 2001-01-03 0.008242425 0.002721013 0.009854024 0.007949052 0.009328407</span></span>
-<span><span class="co">## 2001-01-04 0.008242167 0.002721119 0.009946824 0.008047893 0.009443229</span></span>
-<span><span class="co">## 2001-01-05 0.007414832 0.002466411 0.008173799 0.006441702 0.007567168</span></span>
-<span><span class="co">## 2001-01-06 0.007168446 0.002390143 0.007745672 0.006071497 0.007133957</span></span></code></pre>
+<span><span class="co">## 2001-01-02 0.008642764 0.002842937 0.010686695 0.008701629 0.010207332</span></span>
+<span><span class="co">## 2001-01-03 0.008238486 0.002719819 0.009850111 0.007945853 0.009324658</span></span>
+<span><span class="co">## 2001-01-04 0.008236798 0.002719481 0.009936860 0.008038630 0.009432421</span></span>
+<span><span class="co">## 2001-01-05 0.007408721 0.002464528 0.008164473 0.006433353 0.007557409</span></span>
+<span><span class="co">## 2001-01-06 0.007158879 0.002387248 0.007746999 0.006075700 0.007138743</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="continuing-a-previous-simulation">Continuing a previous simulation<a class="anchor" aria-label="anchor" href="#continuing-a-previous-simulation"></a>
@@ -523,19 +532,18 @@ in the set of stands for an extra month:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All input objects are already available for 'spwb'</span></span></code></pre>
-<pre><code>##  [36mℹ [39m Checking meteo object input
- [32m✔ [39m Checking meteo object input  [38;5;249m[12ms] [39m
-## 
-##  [36mℹ [39m Preparing data for parallelization
-##  [32m✔ [39m Preparing data for parallelization  [38;5;249m[20ms] [39m
-## 
-##  [36mℹ [39m Launching parallel computation (cores = 7; chunk size = 14)
-##  [32m✔ [39m Launching parallel computation (cores = 7; chunk size = 14)  [38;5;249m[11.6s] [39m
-## 
-##  [36mℹ [39m Retrieval of results
-##  [32m✔ [39m Retrieval of results  [38;5;249m[22ms] [39m
-## 
-##  [32m✔ [39m No simulation errors detected</code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input<span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[19ms]</span></span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[13.2s]</span></span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[27ms]</span></span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>And display a map with the resulting month transpiration:</p>
 <div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_3</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
