@@ -77,8 +77,8 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, CapillarityRise, DeepDrainage))
 }
 
-.tetisOverlandFlows <- function(Runoff, AquiferDischarge, waterO, queenNeigh, waterQ) {
-    .Call(`_medfateland_tetisOverlandFlows`, Runoff, AquiferDischarge, waterO, queenNeigh, waterQ)
+.tetisOverlandFlows <- function(Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ) {
+    .Call(`_medfateland_tetisOverlandFlows`, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ)
 }
 
 .tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec) {

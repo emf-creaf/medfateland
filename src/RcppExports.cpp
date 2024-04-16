@@ -259,17 +259,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisOverlandFlows
-NumericVector tetisOverlandFlows(NumericVector Runoff, NumericVector AquiferDischarge, NumericVector waterO, List queenNeigh, List waterQ);
-RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffSEXP, SEXP AquiferDischargeSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
+NumericVector tetisOverlandFlows(NumericVector Runoff, NumericVector AquiferExfiltration, NumericVector waterO, List queenNeigh, List waterQ);
+RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffSEXP, SEXP AquiferExfiltrationSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type Runoff(RunoffSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type AquiferDischarge(AquiferDischargeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type AquiferExfiltration(AquiferExfiltrationSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisOverlandFlows(Runoff, AquiferDischarge, waterO, queenNeigh, waterQ));
+    rcpp_result_gen = Rcpp::wrap(tetisOverlandFlows(Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ));
     return rcpp_result_gen;
 END_RCPP
 }
