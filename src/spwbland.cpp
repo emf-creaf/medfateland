@@ -295,7 +295,6 @@ NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDis
       double ri = ri_tot;
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
       NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
-      // Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
       if(ni.size()>0) {
         for(int j=0;j<ni.size();j++)  {
           Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
@@ -303,6 +302,7 @@ NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDis
         }
       }
       if((sum(qi)>0.0) & (ri > 0.00001)) {
+        Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
         stop("Non-outlet cell with runoff export");
       }
       if(sum(qi)==0.0) { // outlet

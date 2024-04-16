@@ -93,7 +93,7 @@ To speed up calculations, we call function `spwb_land()` for a single month:
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
 res_ws1 <- spwb_land(r, example_watershed,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
-                    watershed_control = ws_control)
+                    watershed_control = ws_control, progress = FALSE)
 ```
 
 Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
@@ -113,7 +113,17 @@ res_ws1$sf
 ```
 Columns `state`, `aquifer` and `snowpack` contain state variables, whereas `summary` contains temporal water balance summaries for all cells. Column `result` is empty in this case, but see below.
 
-The other elements of the simulation result list (`watershed_balance`, `watershed_soil_balance` and `outlet_export_m3`) refer to watershed level results.
+The next two elements of the simulation result list, namely `watershed_balance` and `watershed_soil_balance`, refer to watershed-level results. For example, `watershed_balance` contains the daily elements of the water balance at the watershed level, including the amount of water exported in mm in the last column.
+
+```{r}
+head(res_ws1$watershed_balance)
+```
+
+Values of this output data frame are averages across cells in the landscape. Data frame `watershed_soil_balance` is similar to `watershed_balance` but focusing on cells that have a soil (i.e. excluding artificial, rock or water land cover). Finally, `outlet_export_m3` contains the volume reaching each outlet cell per day:
+
+```{r}
+head(res_ws1$outlet_export_m3)
+```
 
 ### Accessing and plotting cell summaries
 
@@ -180,20 +190,39 @@ Now we can continue our simulation, in this case adding an extra month:
 dates <- seq(as.Date("2001-02-01"), as.Date("2001-02-28"), by="day")
 res_ws3 <- spwb_land(r, example_watershed_mod,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
-                    watershed_control = ws_control)
+                    watershed_control = ws_control, progress = FALSE)
 ```
 
 The fact that no cell required initialization is an indication that we used an already initialized landscape.
 
+### Burn-in periods
+
+Like other distributed hydrological models, watershed simulations with **medfateland** will normally require a burn-in period to allow soil moisture and aquifer levels to reach a dynamic equilibrium. We recommend users to use at least one or two years of burn-in period, but this will depend on the size of the watershed. In **medfate** we provide users with a copy of the example watershed, where burn-in period has already been simulated. This can be seen by inspecting the aquifer level:
+
+```{r, warning=FALSE}
+data("example_watershed_burnin")
+example_watershed_burnin$aquifer
+```
+
+If we run a one-month simulation on this data set we can then compare the output before and after the burn-in period to illustrate its importance:
+
+```{r, warning=FALSE}
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
+res_ws3 <- spwb_land(r, example_watershed_burnin,
+                    SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
+                    watershed_control = ws_control, progress = FALSE)
+data.frame("before" = res_ws1$watershed_balance$WatershedExport, 
+           "after" = res_ws3$watershed_balance$WatershedExport)
+```
 
 ### Simulations of watershed forest dynamics
 
-Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here (we subset the input to speed-up calculations):
+Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here:
 
 ```{r}
-res_ws2 <- fordyn_land(r, example_watershed[1:10, ],
+res_ws2 <- fordyn_land(r, example_watershed,
                        SpParamsMED, examplemeteo,
-                       watershed_control = ws_control, progress = TRUE)
+                       watershed_control = ws_control, progress = FALSE)
 ```
 
 In this case, the `sf` part of the output contains additional columns, analogous to those of `fordyn_scenario()`.
