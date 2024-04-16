@@ -4,6 +4,7 @@
 
 # Version 2.2.0
 - Compliance with medfate ver. 4.1.0
+- spwb_land revisited (tetis)
 
 # Version 2.1.1
 - Removing the need to define 'channel'

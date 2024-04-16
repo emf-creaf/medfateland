@@ -90,7 +90,7 @@ When using TETIS watershed model, the following columns are also required:
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{summary_frequency}{Frequency in which summary layers will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
+\item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
@@ -119,7 +119,7 @@ with the following columns:
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
-\item{\code{result}: A list of cell results (only for those indicated in the input), with contents depending on the local model.}
+\item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{summary}: A list of cell summaries, containing the following variables:
 \itemize{
 \item{\code{Rain}: Rainfall (in mm).}
@@ -127,7 +127,6 @@ with the following columns:
 \item{\code{Snowmelt}: Snow melt (in mm).}
 \item{\code{Interception}: Rainfall interception (in mm).}
 \item{\code{NetRain}: Net rain, i.e. throughfall, (in mm).}
-\item{\code{Runon}: The amount of water imported from other cells via surface runoff (in mm).}
 \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
 \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
 \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
@@ -158,9 +157,9 @@ In function \code{fordyn_land} the \code{\link{sf}} object contains additional c
 \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 }
 }
-\item{\code{watershed_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
-\item{\code{watershed_soil_balance}: A data frame with as many rows as summary points and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-\item{\code{daily_runoff}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+\item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+\item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
+\item{\code{daily_runoff_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 }
 }
 \description{
@@ -197,9 +196,9 @@ data("example_watershed")
 example_watershed$crop_factor <- NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] <- 0.75
 
-# Set request for daily model results in cells number 3 and 9
+# Set request for daily model results in cells number 3, 6 (outlet) and 9
 example_watershed$result_cell <- FALSE
-example_watershed$result_cell[c(3,9)] <- TRUE
+example_watershed$result_cell[c(3,6,9)] <- TRUE
 
 # Get bounding box to determine limits
 b <- sf::st_bbox(example_watershed)

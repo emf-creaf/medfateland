@@ -3,6 +3,7 @@
 \docType{data}
 \name{example_watershed}
 \alias{example_watershed}
+\alias{example_watershed_burnin}
 \title{Example of watershed}
 \format{
 The data format is that of an object \code{\link{sf}}
@@ -19,7 +20,7 @@ The data format is that of an object \code{\link{sf}}
 }
 }
 \description{
-An example of an object of \code{\link{sf}} with data for a small catchment of 53 ha (0.53 km2) in Catalonia.
+An example of an object of \code{\link{sf}} with data for a small catchment of 66 ha (0.66 km2) in Catalonia.
 }
 \references{
 Hengl, T., Mendes De Jesus, J., Heuvelink, G.B.M., Gonzalez, M.R., Kilibarda, M., \enc{Blagotí}{Blagoti}, A., Shangguan, W., Wright, M.N., Geng, X., Bauer-Marschallinger, B., Guevara, M.A., Vargas, R., Macmillan, R.A., Batjes, N.H., Leenaars, J.G.B., Ribeiro, E., Wheeler, I., Mantel, S., Kempen, B., 2017. SoilGrids250m: Global Gridded Soil Information Based on Machine Learning. PLoS One 12, e0169748. doi:10.1371/journal.pone.0169748

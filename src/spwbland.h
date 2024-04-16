@@ -16,6 +16,8 @@ NumericVector tetisApplyBaseflowChangesToAquifer(List y,
 void tetisApplyLocalFlowsToAquifer(List y,
                                    NumericVector CapillarityRise,
                                    NumericVector DeepDrainage);
+NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDischarge,
+                                  NumericVector waterO, List queenNeigh, List waterQ);
 void copySnowpackToSoil(List y);
 void copySnowpackFromSoil(List y);
 

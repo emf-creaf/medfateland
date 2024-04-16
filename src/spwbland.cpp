@@ -93,6 +93,30 @@ void copySnowpackToSoil(List y) {
     }
   }
 }
+
+// [[Rcpp::export(".tetisModifyKsat")]]
+void tetisModifyKsat(List y, List watershed_control, bool reverse) {
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  CharacterVector lct = y["land_cover_type"];
+  double R_localflow = tetis_parameters["R_localflow"];
+  List xList = y["state"];
+  int nX = xList.size();
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+      List x = Rcpp::as<Rcpp::List>(xList[i]);
+      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      NumericVector Ksat = soil["Ksat"];
+      for(int l=0;l < Ksat.size();l++) {
+        if(!reverse) {
+          Ksat[l] = Ksat[l]*R_localflow;
+        } else {
+          Ksat[l] = Ksat[l]/R_localflow;
+        }
+      }
+    }
+  }
+}
+
 // [[Rcpp::export(".copySnowpackFromSoil")]]
 void copySnowpackFromSoil(List y) {
   CharacterVector lct = y["land_cover_type"];
@@ -125,7 +149,6 @@ DataFrame tetisWatershedFlows(List y,
   NumericVector elevation = y["elevation"];
   
   List tetis_parameters = watershed_control["tetis_parameters"];
-  double R_localflow = tetis_parameters["R_localflow"];
   double R_interflow = tetis_parameters["R_interflow"];
   double R_baseflow = tetis_parameters["R_baseflow"];
   
@@ -145,6 +168,7 @@ DataFrame tetisWatershedFlows(List y,
       List soil = Rcpp::as<Rcpp::List>(x["soil"]);
       List control = x["control"];
       WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]);
+      // Rcout<< i << " WTD "<<WTD[i]<<"\n";
       SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0);
     }
     AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
@@ -165,7 +189,7 @@ DataFrame tetisWatershedFlows(List y,
       double Ks1 = 0.01*Ksat[0]/cmdTOmmolm2sMPa; //cm/day to m/day
       double Kinterflow = R_interflow*Ks1;
       if(WTD[i]<D) {
-        double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2
+        double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2/day
         List control = x["control"];
         String model = control["soilFunctions"];
         NumericVector saturatedVolume = medfate::soil_waterSAT(soil, model);
@@ -176,17 +200,17 @@ DataFrame tetisWatershedFlows(List y,
         for(int j=0;j<ni.size();j++) {
           if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
             double tanBeta = (SoilSaturatedLayerElevation[i]-SoilSaturatedLayerElevation[ni[j]-1])/cellWidth;
-            if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3
+            if(!NumericVector::is_na(tanBeta)) {
+              if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
+            } else {
+              qni[j] = 0.0;
+            }
           }
         }
-        // double qntotal = sum(qni);
-        // double macroporeVolume = sum(saturatedVolume)-sum(fieldCapacityVolume);
-        // double qntotalallowed = std::min(qntotal, (macroporeVolume/1000.0)*cellArea); //avoid excessive outflow
-        // double corrfactor = qntotalallowed/qntotal;
         for(int j=0;j<ni.size();j++) {
           if(qni[j]>0.0) {
-            interflowInput[ni[j]-1] += qni[j]; //*corrfactor;
-            interflowOutput[i] += qni[j]; //*corrfactor;
+            interflowInput[ni[j]-1] += qni[j]; 
+            interflowOutput[i] += qni[j];
           }
         }
       }
@@ -256,8 +280,90 @@ void tetisApplyLocalFlowsToAquifer(List y,
     aquifer[i] += DeepDrainage[i] - CapillarityRise[i];
   }
 }
+// [[Rcpp::export(".tetisOverlandFlows")]]
+NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDischarge,
+                                  NumericVector waterO, List queenNeigh, List waterQ) {
+  int nX = Runoff.size();
+  NumericVector Runon(nX,0.0);
+  NumericVector RunoffExport(nX,0.0);
+  for(int i=0;i<nX;i++) {
+    //get next cell in order
+    int iCell = waterO[i]-1; //Decrease index!!!!
+    //Assign runoff to runon of downhill neighbours
+    double ri_tot =  Runon[iCell] + Runoff[iCell] + AquiferDischarge[iCell];
+    if(ri_tot>0.0) {
+      double ri = ri_tot;
+      IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
+      NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
+      // Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+      if(ni.size()>0) {
+        for(int j=0;j<ni.size();j++)  {
+          Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
+          ri -= (qi[j]*ri_tot);
+        }
+      }
+      if((sum(qi)>0.0) & (ri > 0.00001)) {
+        stop("Non-outlet cell with runoff export");
+      }
+      if(sum(qi)==0.0) { // outlet
+        RunoffExport[iCell] = ri;
+      }
+    }
+  }
+  return(RunoffExport);
+}
   
+// [[Rcpp::export(".tetisSimulationNonSoilCells")]]
+DataFrame tetisSimulationNonSoilCells(List y,
+                                      NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec) {
   
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  int nX = xList.size();
+  NumericVector elevation = y["elevation"];
+  NumericVector snowpack = y["snowpack"];
+  NumericVector Rain(nX, NA_REAL);
+  NumericVector Runoff(nX, NA_REAL), DeepDrainage(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
+  
+  for(int i=0;i<nX;i++){
+    if(lct[i]=="rock" || lct[i]=="artificial" || lct[i]=="water") {
+      Rain[i] = 0.0;
+      Snow[i] = 0.0;
+      Snowmelt[i] = 0.0;
+      Runoff[i]  = 0.0;
+      double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
+      if(tday<0.0) {
+        Snow[i] = precVec[i];
+        snowpack[i] += Snow[i];
+      } else {
+        Rain[i] = precVec[i];
+      }
+      if(snowpack[i]>0.0) {
+        double melt = medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i]);
+        Snowmelt[i] = std::min(melt, snowpack[i]);
+        snowpack[i] -= Snowmelt[i];
+      }
+      if(lct[i]=="rock" || lct[i]=="artificial") {
+        //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
+        Runoff[i] =  Snowmelt[i]+Rain[i];
+        DeepDrainage[i] = 0.0;
+      } else if(lct[i]=="water") {
+        // water cells receive water from Precipitation
+        // but do not export to the atmosphere contribute nor to other cells.
+        // any received water drains directly to the aquifer so that it can feed base flow
+        DeepDrainage[i] = Snowmelt[i]+ Rain[i];
+        Runoff[i] = 0.0;
+      }
+      
+       // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
+    }
+  }
+  DataFrame out = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,
+                                    _["Snowmelt"] = Snowmelt, 
+                                    _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage);
+  return(out);
+}
+
 List tetisOLD(String localModel,
                   CharacterVector lct, List xList,
                   IntegerVector waterO, List queenNeigh, List waterQ,

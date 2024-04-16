@@ -57,6 +57,10 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copySnowpackToSoil`, y))
 }
 
+.tetisModifyKsat <- function(y, watershed_control, reverse) {
+    invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
+}
+
 .copySnowpackFromSoil <- function(y) {
     invisible(.Call(`_medfateland_copySnowpackFromSoil`, y))
 }
@@ -71,6 +75,14 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
 
 .tetisApplyLocalFlowsToAquifer <- function(y, CapillarityRise, DeepDrainage) {
     invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, CapillarityRise, DeepDrainage))
+}
+
+.tetisOverlandFlows <- function(Runoff, AquiferDischarge, waterO, queenNeigh, waterQ) {
+    .Call(`_medfateland_tetisOverlandFlows`, Runoff, AquiferDischarge, waterO, queenNeigh, waterQ)
+}
+
+.tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec) {
+    .Call(`_medfateland_tetisSimulationNonSoilCells`, y, tminVec, tmaxVec, precVec, radVec)
 }
 
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {

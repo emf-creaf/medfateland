@@ -18,9 +18,10 @@ NULL
 
 #' Example of watershed
 #' 
-#' An example of an object of \code{\link{sf}} with data for a small catchment of 53 ha (0.53 km2) in Catalonia.
+#' An example of an object of \code{\link{sf}} with data for a small catchment of 66 ha (0.66 km2) in Catalonia.
 #' 
 #' @name example_watershed
+#' @aliases example_watershed example_watershed_burnin
 #' @docType data
 #' @format 
 #' The data format is that of an object \code{\link{sf}} 

@@ -194,6 +194,18 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// tetisModifyKsat
+void tetisModifyKsat(List y, List watershed_control, bool reverse);
+RcppExport SEXP _medfateland_tetisModifyKsat(SEXP ySEXP, SEXP watershed_controlSEXP, SEXP reverseSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
+    Rcpp::traits::input_parameter< bool >::type reverse(reverseSEXP);
+    tetisModifyKsat(y, watershed_control, reverse);
+    return R_NilValue;
+END_RCPP
+}
 // copySnowpackFromSoil
 void copySnowpackFromSoil(List y);
 RcppExport SEXP _medfateland_copySnowpackFromSoil(SEXP ySEXP) {
@@ -246,6 +258,36 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// tetisOverlandFlows
+NumericVector tetisOverlandFlows(NumericVector Runoff, NumericVector AquiferDischarge, NumericVector waterO, List queenNeigh, List waterQ);
+RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffSEXP, SEXP AquiferDischargeSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Runoff(RunoffSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type AquiferDischarge(AquiferDischargeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type waterO(waterOSEXP);
+    Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
+    Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    rcpp_result_gen = Rcpp::wrap(tetisOverlandFlows(Runoff, AquiferDischarge, waterO, queenNeigh, waterQ));
+    return rcpp_result_gen;
+END_RCPP
+}
+// tetisSimulationNonSoilCells
+DataFrame tetisSimulationNonSoilCells(List y, NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec);
+RcppExport SEXP _medfateland_tetisSimulationNonSoilCells(SEXP ySEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type tminVec(tminVecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type tmaxVec(tmaxVecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type precVec(precVecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type radVec(radVecSEXP);
+    rcpp_result_gen = Rcpp::wrap(tetisSimulationNonSoilCells(y, tminVec, tmaxVec, precVec, radVec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // initSerghei
 List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
 RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
@@ -294,10 +336,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
+    {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_tetisWatershedFlows", (DL_FUNC) &_medfateland_tetisWatershedFlows, 6},
     {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 4},
     {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
+    {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
+    {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 5},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
     {NULL, NULL, 0}

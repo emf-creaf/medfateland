@@ -113,7 +113,7 @@ res_ws1$sf
 ```
 Columns `state`, `aquifer` and `snowpack` contain state variables, whereas `summary` contains temporal water balance summaries for all cells. Column `result` is empty in this case, but see below.
 
-The other elements of the simulation result list (`watershed_balance`, `watershed_soil_balance` and `daily_runoff`) refer to watershed level results.
+The other elements of the simulation result list (`watershed_balance`, `watershed_soil_balance` and `daily_export_runoff_m3`) refer to watershed level results.
 
 ### Accessing and plotting cell summaries
 
