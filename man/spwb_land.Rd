@@ -119,31 +119,39 @@ with the following columns:
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
-\item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{summary}: A list of cell summaries, containing the following variables:
 \itemize{
+\item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
+\item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
+\item{\code{PET}: Potential evapotranspiration (in mm).}
 \item{\code{Rain}: Rainfall (in mm).}
 \item{\code{Snow}: Snowfall (in mm).}
 \item{\code{Snowmelt}: Snow melt (in mm).}
 \item{\code{Interception}: Rainfall interception (in mm).}
-\item{\code{NetRain}: Net rain, i.e. throughfall, (in mm).}
-\item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+\item{\code{NetRain}: Net rainfall, i.e. throughfall, (in mm).}
 \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
-\item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+\item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
 \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-\item{\code{AquiferDischarge}: The amount of water that reaches deepest soil layer from a saturated aquifer (in mm).}
+\item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+\item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+\item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
+\item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
+\item{\code{Transpiration}: Woody plant transpiration (in mm).}
+\item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
 \item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
 \item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
 \item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
 \item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
-\item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
-\item{\code{Transpiration}: Plant transpiration (in mm).}
+\item{\code{AquiferExfiltration}: The amount of water that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
 \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
 \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
 \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
-\item{\code{WTD}: Water table depth (in mm from surface).}
+\item{\code{WTD}: Saturated soil water table depth (in mm from surface).}
+\item{\code{DTA}: Depth to aquifer (in m from surface).}
 }
 }
+\item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
+\item{\code{outlet}: A logical vector indicating outlet cells.}
 }
 In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
 \itemize{
@@ -159,7 +167,7 @@ In function \code{fordyn_land} the \code{\link{sf}} object contains additional c
 }
 \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-\item{\code{daily_runoff_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+\item{\code{outlet_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 }
 }
 \description{

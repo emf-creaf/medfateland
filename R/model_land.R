@@ -153,7 +153,7 @@
   }
   
   # A3b. Apply changes in aquifer to each cell
-  AquiferDischarge <- .tetisApplyBaseflowChangesToAquifer(y,
+  AquiferExfiltration <- .tetisApplyBaseflowChangesToAquifer(y,
                                                           BaseflowInput, BaseflowOutput,
                                                           patchsize)
   
@@ -249,7 +249,7 @@
   }
 
   #C. Overland surface runoff diverted to outlets
-  RunoffExport = .tetisOverlandFlows(Runoff, AquiferDischarge,
+  WatershedExport = .tetisOverlandFlows(Runoff, AquiferExfiltration,
                                      waterOrder, queenNeigh, waterQ)
   
   #D. Applies capillarity rise and deep drainage to aquifer for next step
@@ -265,12 +265,12 @@
                              "Infiltration" = Infiltration,
                              "Runoff" = Runoff,  "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
                              "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
-                             "AquiferDischarge" = AquiferDischarge,
+                             "AquiferExfiltration" = AquiferExfiltration,
                              "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput,
                              "BaseflowInput" = BaseflowInput, "BaseflowOutput" = BaseflowOutput,
                              "SoilEvaporation" = SoilEvaporation, "Transpiration" = Transpiration,
                              "HerbTranspiration" = HerbTranspiration,
-                             "RunoffExport" = RunoffExport)
+                             "WatershedExport" = WatershedExport)
   
   return(list("WatershedWaterBalance" = waterBalance,
               "LocalResults" = localResults,
@@ -610,60 +610,62 @@
 
   #Output matrices
   if(watershed_model =="tetis") {
-    DailyRunoffExport_m3 <- matrix(0,nrow = nDays, ncol = length(outlets))
-    colnames(DailyRunoffExport_m3) <- outlets
-    rownames(DailyRunoffExport_m3) <- as.character(dates)
+    OutletExport_m3 <- matrix(0,nrow = nDays, ncol = length(outlets))
+    colnames(OutletExport_m3) <- outlets
+    rownames(OutletExport_m3) <- as.character(dates)
     
-    vars <- c("MinTemperature","MaxTemperature","PET", "Runoff", 
-              "Infiltration", "Rain", "NetRain", "Snow",
-              "Snowmelt", "Interception", "CapillarityRise", "DeepDrainage", "AquiferDischarge", "SaturationExcess",
-              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1", "WTD", "DTA",
-              "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+    vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow",
+              "Snowmelt", "Interception", "NetRain",  
+              "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runoff", 
+              "DeepDrainage", "CapillarityRise", 
+              "SoilEvaporation", "Transpiration", "HerbTranspiration",
+              "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput", "AquiferExfiltration", 
+              "SWE", "SoilVol","Psi1", "WTD", "DTA")
     varsSum <- c("PET","Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
-                 "Infiltration", "CapillarityRise", "DeepDrainage", "SaturationExcess",
-                 "AquiferDischarge", "SoilEvaporation", "Transpiration",
+                 "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepDrainage", "SaturationExcess",
+                 "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
                  "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
     varsMean <- c( "MinTemperature", "MaxTemperature")
     varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
     LandscapeBalance <- data.frame(dates = dates,
                                    Precipitation = rep(0, nDays),
+                                   Rain = rep(0, nDays),
                                    Snow = rep(0, nDays),
                                    Snowmelt = rep(0, nDays),
-                                   Rain = rep(0, nDays),
-                                   NetRain = rep(0, nDays),
                                    Interception = rep(0, nDays),
+                                   NetRain = rep(0, nDays),
                                    Infiltration = rep(0, nDays),
+                                   HerbTranspiration = rep(0, nDays),
+                                   InfiltrationExcess = rep(0, nDays),
+                                   SaturationExcess = rep(0, nDays),
+                                   Runoff = rep(0, nDays),
+                                   DeepDrainage = rep(0, nDays),
+                                   CapillarityRise = rep(0, nDays),
                                    SoilEvaporation = rep(0,nDays),
                                    Transpiration = rep(0, nDays),
                                    HerbTranspiration = rep(0, nDays),
-                                   Runoff = rep(0, nDays),
-                                   DeepDrainage = rep(0, nDays),
-                                   InfiltrationExcess = rep(0, nDays),
-                                   SaturationExcess = rep(0, nDays),
-                                   CapillarityRise = rep(0, nDays),
-                                   AquiferDischarge = rep(0, nDays),
                                    Interflow = rep(0, nDays),
                                    Baseflow = rep(0, nDays),
-                                   RunoffExport = rep(0, nDays))
+                                   AquiferExfiltration = rep(0, nDays),
+                                   WatershedExport = rep(0, nDays))
     SoilLandscapeBalance <- data.frame(dates = dates,
                                        Precipitation = rep(0, nDays),
+                                       Rain = rep(0, nDays),
                                        Snow = rep(0, nDays),
                                        Snowmelt = rep(0, nDays),
-                                       Rain = rep(0, nDays),
-                                       NetRain = rep(0, nDays),
                                        Interception = rep(0, nDays),
+                                       NetRain = rep(0, nDays),
                                        Infiltration = rep(0, nDays),
+                                       InfiltrationExcess = rep(0, nDays),
+                                       SaturationExcess = rep(0, nDays),
+                                       Runoff = rep(0, nDays),
+                                       DeepDrainage = rep(0, nDays),
+                                       CapillarityRise = rep(0, nDays),
                                        SoilEvaporation = rep(0,nDays),
                                        Transpiration = rep(0, nDays),
                                        HerbTranspiration = rep(0, nDays),
-                                       InterflowInput = rep(0, nDays),
-                                       InterflowOutput = rep(0, nDays),
-                                       Runoff = rep(0, nDays),
-                                       DeepDrainage = rep(0, nDays),
-                                       InfiltrationExcess = rep(0, nDays),
-                                       SaturationExcess = rep(0, nDays),
-                                       CapillarityRise = rep(0, nDays),
-                                       AquiferDischarge = rep(0, nDays))
+                                       Interflow = rep(0, nDays),
+                                       AquiferExfiltration = rep(0, nDays))
   }
   if(watershed_model =="serghei") {
     vars <- c("MinTemperature","MaxTemperature","PET", 
@@ -921,8 +923,9 @@
       }
     }
     
+    ## Store watershed runoff reaching each outlet
     if(watershed_model=="tetis") {
-      DailyRunoffExport_m3[day,] <- sum(res_day$RunoffExport)/1e3 ## Runoff in m3/day
+      OutletExport_m3[day,] <- res_day$WatershedExport[outlets]/1e3 
     }
 
     #Landscape balance
@@ -941,10 +944,10 @@
       LandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess, na.rm=T)/nCells
       LandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess, na.rm=T)/nCells
       LandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise, na.rm=T)/nCells
-      LandscapeBalance$AquiferDischarge[day] <- sum(res_day$AquiferDischarge, na.rm=T)/nCells
+      LandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration, na.rm=T)/nCells
       LandscapeBalance$Runoff[day] <- sum(res_day$Runoff, na.rm=T)/nCells
       LandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration, na.rm=T)/nCells
-      LandscapeBalance$RunoffExport[day] <- (sum(res_day$RunoffExport[outlets], na.rm=T)/nCells)
+      LandscapeBalance$WatershedExport[day] <- (sum(res_day$WatershedExport[outlets], na.rm=T)/nCells)
       LandscapeBalance$Interflow[day] <- sum(res_day$InterflowInput, na.rm=T)/nCells
       LandscapeBalance$Baseflow[day] <- sum(res_day$BaseflowInput, na.rm=T)/nCells
       
@@ -954,9 +957,8 @@
       SoilLandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$AquiferDischarge[day] <- sum(res_day$AquiferDischarge[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InterflowInput[day] <- sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InterflowOutput[day] <- sum(res_day$InterflowOutput[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$Interflow[day] <- sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Runoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Snowmelt[day] <- sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$NetRain[day] <- sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
@@ -1008,8 +1010,8 @@
     SoilEvaporationsum <- sum(LandscapeBalance$SoilEvaporation , na.rm=T)
     Transpirationsum <- sum(LandscapeBalance$Transpiration , na.rm=T)
     HerbTranspirationsum <- sum(LandscapeBalance$HerbTranspiration , na.rm=T)
-    AquiferDischargesum <- sum(LandscapeBalance$AquiferDischarge , na.rm=T)
-    RunoffExportsum <- sum(LandscapeBalance$RunoffExport, na.rm=T)
+    AquiferExfiltrationsum <- sum(LandscapeBalance$AquiferExfiltration , na.rm=T)
+    WatershedExportsum <- sum(LandscapeBalance$WatershedExport, na.rm=T)
     Interflowsum <- sum(LandscapeBalance$Interflow , na.rm=T)
     Baseflowsum <- sum(LandscapeBalance$Baseflow , na.rm=T)
     
@@ -1027,48 +1029,45 @@
     SoilSoilEvaporationsum <- sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
-    SoilAquiferDischargesum <- sum(SoilLandscapeBalance$AquiferDischarge , na.rm=T)
-    SoilInterflowInputsum <- sum(SoilLandscapeBalance$InterflowInput , na.rm=T)
-    SoilInterflowOutputsum <- sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
-    
+    SoilAquiferExfiltrationsum <- sum(SoilLandscapeBalance$AquiferExfiltration , na.rm=T)
+
     snowpack_wb <- Snowsum - Snowmeltsum
     if(header_footer) {
       cli::cli_li("Water balance check")
       cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
       cat(paste0("  Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
       cat(paste0("  Snowpack water balance components:\n"))
-      cat(paste0("    Snow fall (mm) ", round(Snowsum,2), " Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+      cat(paste0("    Snow fall (mm) ", round(Snowsum,2), "  Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
     }
-    soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum+SoilInterflowInputsum)
-    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum +SoilInterflowOutputsum + SoilSaturationExcesssum)
+    soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum)
+    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
     soil_wb <-  soil_input - soil_output
     if(header_footer) {
       cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
       cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
       cat(paste0("  Soil water balance components:\n"))
       cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"  Saturation excess (mm) ",round(SoilSaturationExcesssum,2),"\n"))
-      cat(paste0("    Subsurface input (mm) ",round(SoilInterflowInputsum,2),"  Subsurface output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
-      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2)," Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
-      cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2),  " Plant transpiration (mm) ", round(SoilTranspirationsum + SoilHerbTranspirationsum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"  Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
+      cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2),  "  Plant transpiration (mm) ", round(SoilTranspirationsum + SoilHerbTranspirationsum,2),"\n"))
     }
     
-    aquifer_wb <- DeepDrainagesum - AquiferDischargesum - CapillarityRisesum
+    aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum
     if(header_footer){
       cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
       cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
       cat(paste0("  Aquifer water balance components:\n"))
-      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), " Capillarity rise (mm) ",round(CapillarityRisesum,2)," Aquifer discharge (mm) ",round(AquiferDischargesum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"  Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"\n"))
     }
     
-    landscape_wb <- Precipitationsum - RunoffExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum
+    landscape_wb <- Precipitationsum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum
     if(header_footer) {
       cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
       cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
       cat(paste0("  Watershed water balance components:\n"))
       cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
-      cat(paste0("    Interception (mm) ", round(Interceptionsum,2), " Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))
+      cat(paste0("    Interception (mm) ", round(Interceptionsum,2), "  Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))
       cat(paste0("    Plant transpiration (mm) ",round(Transpirationsum + HerbTranspirationsum ,2),"\n"))
-      cat(paste0("    Export runoff (mm) ", round(RunoffExportsum,2),"\n"))
+      cat(paste0("    Export runoff (mm) ", round(WatershedExportsum,2),"\n"))
       cat(paste0("  Watershed lateral flows:\n"))
       cat(paste0("    Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
       cat(paste0("    Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
@@ -1084,12 +1083,13 @@
   sf$snowpack <- y$snowpack
   sf$summary <- summarylist
   sf$result <- resultlist
-
+  sf$outlet <- isOutlet
+  
   if(watershed_model=="tetis") {
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
-              daily_runoff_export_m3 = DailyRunoffExport_m3)
+              outlet_export_m3 = OutletExport_m3)
   } else {
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance)
@@ -1161,31 +1161,39 @@
 #'        \item{\code{state}: A list of model input objects for each simulated stand.}
 #'        \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 #'        \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
-#'        \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'        \item{\code{summary}: A list of cell summaries, containing the following variables:
 #'         \itemize{
+#'           \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
+#'           \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
+#'           \item{\code{PET}: Potential evapotranspiration (in mm).}
 #'           \item{\code{Rain}: Rainfall (in mm).}
 #'           \item{\code{Snow}: Snowfall (in mm).}
 #'           \item{\code{Snowmelt}: Snow melt (in mm).}
 #'           \item{\code{Interception}: Rainfall interception (in mm).}
-#'           \item{\code{NetRain}: Net rain, i.e. throughfall, (in mm).}
-#'           \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+#'           \item{\code{NetRain}: Net rainfall, i.e. throughfall, (in mm).}
 #'           \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
-#'           \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+#'           \item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
 #'           \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-#'           \item{\code{AquiferDischarge}: The amount of water that reaches deepest soil layer from a saturated aquifer (in mm).}
+#'           \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+#'           \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+#'           \item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
+#'           \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
+#'           \item{\code{Transpiration}: Woody plant transpiration (in mm).}
+#'           \item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
 #'           \item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
 #'           \item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
 #'           \item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
 #'           \item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
-#'           \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
-#'           \item{\code{Transpiration}: Plant transpiration (in mm).}
+#'           \item{\code{AquiferExfiltration}: The amount of water that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
 #'           \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
 #'           \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
 #'           \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
-#'           \item{\code{WTD}: Water table depth (in mm from surface).}
+#'           \item{\code{WTD}: Saturated soil water table depth (in mm from surface).}
+#'           \item{\code{DTA}: Depth to aquifer (in m from surface).}
 #'         }
 #'       }
+#'       \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
+#'       \item{\code{outlet}: A logical vector indicating outlet cells.}
 #'     }
 #'     In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
 #'     \itemize{
@@ -1201,7 +1209,7 @@
 #'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 #'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-#'   \item{\code{daily_runoff_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+#'   \item{\code{outlet_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
 #' }
 #' 
 #' @details
@@ -1427,7 +1435,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   
   LandscapeBalance <- NULL 
   SoilLandscapeBalance <- NULL
-  DailyRunoffExport_m3 <- NULL
+  OutletExport_m3 <- NULL
   cell_summary <- NULL
   
   #initial tree/shrub tables
@@ -1476,12 +1484,12 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     
     #Store landscape and cell summaries
     if(iYear==1) {
-      DailyRunoffExport_m3 <- GL$daily_runoff_export_m3
+      OutletExport_m3 <- GL$outlet_export_m3
       LandscapeBalance <- GL$watershed_balance
       SoilLandscapeBalance <- GL$watershed_soil_balance
       cell_summary <- GL$sf$summary
     } else {
-      DailyRunoffExport_m3 <- rbind(DailyRunoffExport_m3, GL$daily_runoff_export_m3)
+      OutletExport_m3 <- rbind(OutletExport_m3, GL$outlet_export_m3)
       LandscapeBalance <- rbind(LandscapeBalance, GL$watershed_balance)
       SoilLandscapeBalance <- rbind(SoilLandscapeBalance, GL$watershed_soil_balance)
       for(i in 1:nCells) { 
@@ -1626,7 +1634,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   l <- list(sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
-            daily_runoff_export_m3 = DailyRunoffExport_m3)
+            outlet_export_m3 = OutletExport_m3)
   class(l)<-c("fordyn_land", "list")
   return(l)
 }
