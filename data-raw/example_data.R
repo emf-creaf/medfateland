@@ -9,6 +9,22 @@
 # examplewatershed@proj4string = crs
 # usethis::use_data(examplewatershed, overwrite = T)
 
+# for(i in 1:nrow(example_watershed)) {
+#   s = example_watershed$soil[[i]]
+#   if(!is.null(s)) {
+#     df = data.frame(width = s$dVec, clay = s$clay, sand = s$sand, om = s$om, bd = s$bd, rfc = s$rfc)
+#     example_watershed$soil[[i]] = df
+#   }
+# }
+
+# for(i in 1:nrow(example_watershed)) {
+#   df = example_watershed$soil[[i]]
+#   if(!is.null(df)) {
+#     names(df)[1] = "widths"
+#     example_watershed$soil[[i]] = df
+#   }
+# }
+
 # Generate burnin dataset
 data("example_watershed")
 data("examplemeteo")
@@ -25,17 +41,27 @@ res1 <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
 example_watershed_burnin <- update_landscape(example_watershed, res1)
+plot(res1$watershed_balance$WatershedExport, type="l")
 # second year
 res2 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
-example_watershed_burnin <- update_landscape(example_watershed, res2)
+example_watershed_burnin <- update_landscape(example_watershed_burnin, res2)
+plot(res2$watershed_balance$WatershedExport, type="l")
+# third year
 res3 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                   dates = dates, summary_frequency = "month",
                   watershed_control = ws_control)
-example_watershed_burnin <- update_landscape(example_watershed, res3)
+example_watershed_burnin <- update_landscape(example_watershed_burnin, res3)
+plot(res3$watershed_balance$WatershedExport, type="l")
+# fourth year
+res4 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+                  dates = dates, summary_frequency = "month",
+                  watershed_control = ws_control)
+example_watershed_burnin <- update_landscape(example_watershed_burnin, res4)
+plot(res4$watershed_balance$WatershedExport, type="l")
 usethis::use_data(example_watershed_burnin, overwrite = T)
-
+# REBUILD!!
 
 #Example sf from IFN3 (original coordinates)
 ifn3 <- readRDS("/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds")
