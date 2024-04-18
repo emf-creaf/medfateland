@@ -73,6 +73,7 @@
     if(inherits(xi$x, "spwbInput")){
       res<-medfate::spwb_day(xi$x, date, xi$meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                             runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                              modifyInput = TRUE)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
