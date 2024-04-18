@@ -68,7 +68,7 @@
 }
 
 .f_landunit_day<-function(xi, model, date){
-  res = NULL
+  res <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
       res<-medfate::spwb_day(xi$x, date, xi$meteovec,
@@ -142,7 +142,7 @@
   # A3a. Estimate lateral interflow per layer
   lateralFlows <- vector("list", nX)
   for(i in 1:nX){
-    if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
+    if(y$land_cover_type[i] %in% c("wildland","agriculture")) {
       x_i <- y$state[[i]]
       soil_i <- x_i["soil"]
       dVec <- soil_i$dVec
@@ -173,26 +173,28 @@
   
   XI <- vector("list", nX)
   for(i in 1:nX) {
-    meteovec <- c(
-      "MinTemperature" = tminVec[i],
-      "MaxTemperature" = tmaxVec[i],
-      "MinRelativeHumidity" = rhminVec[i],
-      "MaxRelativeHumidity" = rhmaxVec[i],
-      "Precipitation"  =precVec[i],
-      "Radiation" = radVec[i],
-      "WindSpeed" = wsVec[i],
-      "CO2" = C02Vec[i]
-    )
-    XI[[i]] <- list(i = i, 
-                    x = y$state[[i]],
-                    meteovec = meteovec,
-                    latitude = latitude[i], 
-                    elevation = y$elevation[i], 
-                    slope= y$slope[i], 
-                    aspect = y$aspect[i],
-                    runon = 0,
-                    lateralFlows = lateralFlows[[i]],
-                    waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
+    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
+      meteovec <- c(
+        "MinTemperature" = tminVec[i],
+        "MaxTemperature" = tmaxVec[i],
+        "MinRelativeHumidity" = rhminVec[i],
+        "MaxRelativeHumidity" = rhmaxVec[i],
+        "Precipitation"  =precVec[i],
+        "Radiation" = radVec[i],
+        "WindSpeed" = wsVec[i],
+        "CO2" = C02Vec[i]
+      )
+      XI[[i]] <- list(i = i, 
+                      x = y$state[[i]],
+                      meteovec = meteovec,
+                      latitude = latitude[i], 
+                      elevation = y$elevation[i], 
+                      slope= y$slope[i], 
+                      aspect = y$aspect[i],
+                      runon = 0,
+                      lateralFlows = lateralFlows[[i]],
+                      waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
+    }
   }
   
   if(parallelize) {
@@ -205,7 +207,9 @@
   } else {
     localResults <- vector("list", nX)
     for(i in 1:nX) {
-      localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model)
+      if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
+        localResults[[i]] <- .f_landunit_day(XI[[i]], date = date, model = local_model)
+      }
     }
   }
   .copySnowpackFromSoil(y)
