@@ -301,8 +301,8 @@ NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferExf
           ri -= (qi[j]*ri_tot);
         }
       }
-      if((sum(qi)>0.0) & (ri > 0.00001)) {
-        Rcout<<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+      if((sum(qi)>0.0) && (ri > 0.00001)) {
+        Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
         stop("Non-outlet cell with runoff export");
       }
       if(sum(qi)==0.0) { // outlet
