@@ -245,7 +245,8 @@ In function <code>fordyn_land</code> the <code>sf</code> object contains additio
 </ul></li>
 <li><p><code>watershed_balance</code>: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).</p></li>
 <li><p><code>watershed_soil_balance</code>: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.</p></li>
-<li><p><code>outlet_export_m3</code>: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.</p></li>
+<li><p><code>outlet_export_m3s</code>: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the
+overall watershed export corresponds to the sum of row values.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -317,6 +318,14 @@ In watershed with a small number of cells, can result in larger processing times
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
 <span class="r-in"><span>                 dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
 <span class="r-in"><span>                 watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                 </span></span>
+<span class="r-in"><span><span class="co"># Compare results with an analogous simulation using a data set where </span></span></span>
+<span class="r-in"><span><span class="co"># a burnin period has been done</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_burnin</span> <span class="op">&lt;-</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
+<span class="r-in"><span>                        dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
+<span class="r-in"><span>                        watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

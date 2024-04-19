@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-04-16</h4>
+            <h4 data-toc-skip class="date">2024-04-19</h4>
       
       
       <div class="hidden name"><code>WatershedSimulations.Rmd</code></div>
@@ -177,6 +177,11 @@ simulations may be done on an incomplete grid. Note that the raster does
 not contain data, only the topology is needed (to define neighbors and
 cell sizes, for example). All relevant attribute data is already
 included in the <code>sf</code> object.</p>
+<p>Combining the <code>r</code> and <code>sf</code> objects allows
+drawing rasterized maps:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed</span>, variable <span class="op">=</span> <span class="st">"elevation"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="watershed-control-options">Watershed control options<a class="anchor" aria-label="anchor" href="#watershed-control-options"></a>
@@ -186,7 +191,7 @@ watershed simulations have overall control parameters. Notably, the user
 needs to decide which sub-model will be used for lateral water transfer
 processes (a decision similar to choosing the plant transpiration
 sub-model in <strong>medfate</strong>), by default “tetis”:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="st">"tetis"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -198,7 +203,7 @@ sub-model in <strong>medfate</strong>), by default “tetis”:</p>
 </h3>
 <p>To speed up calculations, we call function <code><a href="../reference/spwb_land.html">spwb_land()</a></code>
 for a single month:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
@@ -213,13 +218,13 @@ results.</p>
 </h3>
 <p>Function <code><a href="../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../reference/spwb_land.html">growth_land()</a></code>
 return a list with the following elements:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "sf"                     "watershed_balance"      "watershed_soil_balance"</span></span>
-<span><span class="co">## [4] "outlet_export_m3"</span></span></code></pre>
+<span><span class="co">## [4] "outlet_export_m3s"</span></span></code></pre>
 <p>Where <code>sf</code> is an object of class <code>sf</code>,
 analogous to those of functions <code>*_spatial()</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 6 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -229,16 +234,16 @@ analogous to those of functions <code>*_spatial()</code>:</p>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 7</span></span></span>
 <span><span class="co">##            geometry state           aquifer snowpack summary  result outlet</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.243     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>    1.62      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.191     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.215     2.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.250     2.57 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>    2.90      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>    1.51      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.195     2.84 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span>   0.192     2.97 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>    2.34      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.040<span style="text-decoration: underline;">4</span>      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>  0.198       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.056<span style="text-decoration: underline;">6</span>      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.048<span style="text-decoration: underline;">2</span>      2.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.009<span style="text-decoration: underline;">94</span>     2.57 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>  0.243       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>  0.165       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.002<span style="text-decoration: underline;">75</span>     2.84 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [17]&gt;</span> 0.004<span style="text-decoration: underline;">19</span>     2.97 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [3]&gt;</span>  0.239       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span></code></pre>
 <p>Columns <code>state</code>, <code>aquifer</code> and
 <code>snowpack</code> contain state variables, whereas
@@ -251,7 +256,7 @@ refer to watershed-level results. For example,
 <code>watershed_balance</code> contains the daily elements of the water
 balance at the watershed level, including the amount of water exported
 in mm in the last column.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        dates Precipitation      Rain Snow Snowmelt Interception   NetRain</span></span>
 <span><span class="co">## 1 2001-01-01      4.869109  4.869109    0        0    0.7900101  4.079099</span></span>
@@ -260,49 +265,42 @@ in mm in the last column.</p>
 <span><span class="co">## 4 2001-01-04      5.796973  5.796973    0        0    0.7855456  5.011427</span></span>
 <span><span class="co">## 5 2001-01-05      1.884401  1.884401    0        0    0.5571451  1.327256</span></span>
 <span><span class="co">## 6 2001-01-06     13.359801 13.359801    0        0    0.8937189 12.466082</span></span>
-<span><span class="co">##   Infiltration HerbTranspiration InfiltrationExcess SaturationExcess     Runoff</span></span>
-<span><span class="co">## 1     4.005324                 0                  0                0 0.07377438</span></span>
-<span><span class="co">## 2     1.768510                 0                  0                0 0.03785290</span></span>
-<span><span class="co">## 3     0.000000                 0                  0                0 0.00000000</span></span>
-<span><span class="co">## 4     4.923594                 0                  0                0 0.08783292</span></span>
-<span><span class="co">## 5     1.298705                 0                  0                0 0.02855154</span></span>
-<span><span class="co">## 6    12.263661                 0                  0                0 0.20242122</span></span>
-<span><span class="co">##   DeepDrainage CapillarityRise SoilEvaporation Transpiration</span></span>
-<span><span class="co">## 1  0.009905778    4.319910e-05      0.38671300     0.2793608</span></span>
-<span><span class="co">## 2  0.010154827    3.327743e-05      0.09426019     0.4956109</span></span>
-<span><span class="co">## 3  0.010398460    4.883949e-05      0.10591556     0.4165335</span></span>
-<span><span class="co">## 4  0.011207857    1.856305e-04      0.13805610     0.1874882</span></span>
-<span><span class="co">## 5  0.012638952    6.774297e-05      0.05407587     0.5091084</span></span>
-<span><span class="co">## 6  0.013394639    2.271385e-03      0.06819418     0.3742985</span></span>
-<span><span class="co">##   HerbTranspiration.1    Interflow     Baseflow AquiferExfiltration</span></span>
-<span><span class="co">## 1                   0 0.0000000000 0.000000e+00                   0</span></span>
-<span><span class="co">## 2                   0 0.0000754126 5.697898e-12                   0</span></span>
-<span><span class="co">## 3                   0 0.0003257252 4.855424e-11                   0</span></span>
-<span><span class="co">## 4                   0 0.0005492617 1.736477e-10                   0</span></span>
-<span><span class="co">## 5                   0 0.0022818313 4.492223e-10                   0</span></span>
-<span><span class="co">## 6                   0 0.0037616083 9.904643e-10                   0</span></span>
-<span><span class="co">##   WatershedExport</span></span>
-<span><span class="co">## 1      0.07377438</span></span>
-<span><span class="co">## 2      0.03785290</span></span>
-<span><span class="co">## 3      0.00000000</span></span>
-<span><span class="co">## 4      0.08783292</span></span>
-<span><span class="co">## 5      0.02855154</span></span>
-<span><span class="co">## 6      0.20242122</span></span></code></pre>
+<span><span class="co">##   Infiltration InfiltrationExcess SaturationExcess     Runoff DeepDrainage</span></span>
+<span><span class="co">## 1     4.005324                  0                0 0.07377438  0.003545635</span></span>
+<span><span class="co">## 2     1.768510                  0                0 0.03785290  0.003504170</span></span>
+<span><span class="co">## 3     0.000000                  0                0 0.00000000  0.003465461</span></span>
+<span><span class="co">## 4     4.923594                  0                0 0.08783292  0.003787363</span></span>
+<span><span class="co">## 5     1.298705                  0                0 0.02855154  0.003944415</span></span>
+<span><span class="co">## 6    12.263661                  0                0 0.20242122  0.004965145</span></span>
+<span><span class="co">##   CapillarityRise SoilEvaporation Transpiration HerbTranspiration    Interflow</span></span>
+<span><span class="co">## 1    2.247422e-05       0.3867130     0.2793608                 0 0.000000e+00</span></span>
+<span><span class="co">## 2    1.757712e-04       0.1356762     0.4955779                 0 2.384716e-06</span></span>
+<span><span class="co">## 3    5.613658e-04       0.1844224     0.4164836                 0 8.291273e-06</span></span>
+<span><span class="co">## 4    2.330954e-05       0.1257523     0.1874572                 0 1.167223e-05</span></span>
+<span><span class="co">## 5    7.269397e-04       0.1448613     0.5090040                 0 5.533305e-05</span></span>
+<span><span class="co">## 6    4.064161e-04       0.1293526     0.3742005                 0 8.577055e-05</span></span>
+<span><span class="co">##       Baseflow AquiferExfiltration WatershedExport</span></span>
+<span><span class="co">## 1 0.000000e+00                   0      0.07377438</span></span>
+<span><span class="co">## 2 2.632237e-14                   0      0.03785290</span></span>
+<span><span class="co">## 3 1.924444e-13                   0      0.00000000</span></span>
+<span><span class="co">## 4 5.396695e-13                   0      0.08783292</span></span>
+<span><span class="co">## 5 1.488670e-12                   0      0.02855154</span></span>
+<span><span class="co">## 6 2.730446e-12                   0      0.20242122</span></span></code></pre>
 <p>Values of this output data frame are averages across cells in the
 landscape. Data frame <code>watershed_soil_balance</code> is similar to
 <code>watershed_balance</code> but focusing on cells that have a soil
 (i.e. excluding artificial, rock or water land cover). Finally,
 <code>outlet_export_m3</code> contains the volume reaching each outlet
 cell per day:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">outlet_export_m3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                      6</span></span>
-<span><span class="co">## 2001-01-01 0.004869109</span></span>
-<span><span class="co">## 2001-01-02 0.002498292</span></span>
-<span><span class="co">## 2001-01-03 0.000000000</span></span>
-<span><span class="co">## 2001-01-04 0.005796973</span></span>
-<span><span class="co">## 2001-01-05 0.001884401</span></span>
-<span><span class="co">## 2001-01-06 0.013359801</span></span></code></pre>
+<pre><code><span><span class="co">##                       6</span></span>
+<span><span class="co">## 2001-01-01 0.0005638724</span></span>
+<span><span class="co">## 2001-01-02 0.0002893174</span></span>
+<span><span class="co">## 2001-01-03 0.0000000000</span></span>
+<span><span class="co">## 2001-01-04 0.0006713247</span></span>
+<span><span class="co">## 2001-01-05 0.0002182251</span></span>
+<span><span class="co">## 2001-01-06 0.0015471461</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="accessing-and-plotting-cell-summaries">Accessing and plotting cell summaries<a class="anchor" aria-label="anchor" href="#accessing-and-plotting-cell-summaries"></a>
@@ -312,27 +310,28 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET     Rain     Snow Snowmelt</span></span>
 <span><span class="co">## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 13.09301</span></span>
 <span><span class="co">##            Interception  NetRain Infiltration InfiltrationExcess</span></span>
 <span><span class="co">## 2001-01-01      17.1751 40.92374     54.01675                  0</span></span>
 <span><span class="co">##            SaturationExcess Runoff DeepDrainage CapillarityRise SoilEvaporation</span></span>
-<span><span class="co">## 2001-01-01                0      0    0.2508684     0.008243419        1.137778</span></span>
+<span><span class="co">## 2001-01-01                0      0     0.066837      0.02646211        1.693804</span></span>
 <span><span class="co">##            Transpiration HerbTranspiration InterflowInput InterflowOutput</span></span>
-<span><span class="co">## 2001-01-01      6.771123                 0        2.03954         1.19409</span></span>
+<span><span class="co">## 2001-01-01      6.765493                 0     0.06753704      0.03424541</span></span>
 <span><span class="co">##            BaseflowInput BaseflowOutput AquiferExfiltration      SWE  SoilVol</span></span>
-<span><span class="co">## 2001-01-01   1.54605e-07   1.646549e-07                   0 1.649861 563.7301</span></span>
-<span><span class="co">##                   Psi1      WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01 -0.02682041 3502.909 15.49785</span></span></code></pre>
+<span><span class="co">## 2001-01-01  2.804731e-10    1.50188e-10                   0 1.649861 569.2058</span></span>
+<span><span class="co">##                   Psi1      WTD     DTA</span></span>
+<span><span class="co">## 2001-01-01 -0.02941237 3625.407 15.4995</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
-<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of soil
-water volume for the simulated month:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"SoilVol"</span>, <span class="st">"2001-01-01"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></p>
+<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of the
+average water potential of the first soil layer during the simulated
+month:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span>, variable <span class="op">=</span> <span class="st">"Psi1"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="full-simulation-results-for-specific-cells">Full simulation results for specific cells<a class="anchor" aria-label="anchor" href="#full-simulation-results-for-specific-cells"></a>
@@ -343,19 +342,19 @@ interest at the landscape level. Nevertheless, it is possible to specify
 those cells for which full daily results are desired. This is done by
 adding a column <code>result_cell</code> in the input <code>sf</code>
 object:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set request for daily model results in cells number 3 and 9</span></span>
 <span><span class="va">example_watershed</span><span class="op">$</span><span class="va">result_cell</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">example_watershed</span><span class="op">$</span><span class="va">result_cell</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">9</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></code></pre></div>
 <p>If we launch the simulations again (omitting progress
 information):</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
 <span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>We can now retrieve the results of the desired cell, e.g. the third
 one, in column <code>result</code> of <code>sf</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "spwb" "list"</span></span></code></pre>
@@ -363,9 +362,9 @@ one, in column <code>result</code> of <code>sf</code>:</p>
 returned by function <code>spwb()</code> of <strong>medfate</strong>.
 Hence, we can inspect daily results using functions
 <code>shinyplot()</code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span>, <span class="st">"SoilPsi"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="continuing-a-previous-simulation">Continuing a previous simulation<a class="anchor" aria-label="anchor" href="#continuing-a-previous-simulation"></a>
@@ -377,7 +376,7 @@ from the point where the first one ended. In order to do so, we need to
 update the state variables in spatial object with their values at the
 end of the simulation, using function
 <code><a href="../reference/update_landscape.html">update_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_watershed_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="va">res_ws1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">example_watershed_mod</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "geometry"             "id"                   "elevation"           </span></span>
@@ -389,12 +388,12 @@ end of the simulation, using function
 <p>Note that a new column <code>state</code> appears in now in the
 <strong>sf</strong> object. We can check the effect by drawing the water
 potential in the first soil layer:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed_mod</span>, <span class="st">"psi1"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed_mod</span>, variable <span class="op">=</span> <span class="st">"psi1"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Now we can continue our simulation, in this case adding an extra
 month:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-02-28"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_mod</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
@@ -413,19 +412,10 @@ burn-in period, but this will depend on the size of the watershed. In
 <strong>medfate</strong> we provide users with a copy of the example
 watershed, where burn-in period has already been simulated. This can be
 seen by inspecting the aquifer level:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span>
-<span><span class="va">example_watershed_burnin</span><span class="op">$</span><span class="va">aquifer</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 371.90451 139.14274 168.00176 229.14983 395.57500 929.90831 615.98184</span></span>
-<span><span class="co">##  [8] 128.83384 163.65809 215.23874 266.20807 249.93006 196.01741 202.16956</span></span>
-<span><span class="co">## [15] 161.52897 157.06666 118.77085 121.24251 208.61339 240.44508 174.19229</span></span>
-<span><span class="co">## [22] 167.10431 185.99815 100.59572 106.14201  91.89915 123.26567 178.62720</span></span>
-<span><span class="co">## [29] 165.60839 148.47213  58.12400 121.64067 142.88102 183.68055  68.71534</span></span>
-<span><span class="co">## [36]  68.19026  54.49035  46.86200  49.50964 165.73649 158.20118 126.32755</span></span>
-<span><span class="co">## [43] 129.28032 121.16210 174.32298 276.59423 242.01365  25.24120  81.60995</span></span>
-<span><span class="co">## [50] 111.99750 122.64505 133.60685 136.03573 149.58583 124.60951 356.53681</span></span>
-<span><span class="co">## [57] 252.45447 123.28070 238.02948 135.98491  47.78073  60.45890 143.58225</span></span>
-<span><span class="co">## [64] 144.78661 109.02913 126.36740</span></span></code></pre>
+<span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed_burnin</span>, variable <span class="op">=</span> <span class="st">"aquifer"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>If we run a one-month simulation on this data set we can then compare
 the output before and after the burn-in period to illustrate its
 importance:</p>
@@ -437,37 +427,37 @@ importance:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##         before     after</span></span>
-<span><span class="co">## 1  0.073774376 0.3248709</span></span>
-<span><span class="co">## 2  0.037852903 0.2988217</span></span>
-<span><span class="co">## 3  0.000000000 0.2296075</span></span>
-<span><span class="co">## 4  0.087832923 0.3403791</span></span>
-<span><span class="co">## 5  0.028551537 0.2914851</span></span>
-<span><span class="co">## 6  0.202421222 0.5607392</span></span>
-<span><span class="co">## 7  0.000000000 0.2782622</span></span>
-<span><span class="co">## 8  0.000000000 0.2173584</span></span>
-<span><span class="co">## 9  0.000000000 0.2150519</span></span>
-<span><span class="co">## 10 0.141107695 0.4752397</span></span>
-<span><span class="co">## 11 0.090092361 0.3651906</span></span>
-<span><span class="co">## 12 0.102705122 0.4245134</span></span>
-<span><span class="co">## 13 0.001455222 0.2612480</span></span>
-<span><span class="co">## 14 0.000000000 0.2280291</span></span>
-<span><span class="co">## 15 0.000000000 0.2282311</span></span>
-<span><span class="co">## 16 0.000000000 0.2263214</span></span>
-<span><span class="co">## 17 0.000000000 0.2212211</span></span>
-<span><span class="co">## 18 0.000000000 0.2185791</span></span>
-<span><span class="co">## 19 0.000000000 0.2181180</span></span>
-<span><span class="co">## 20 0.000000000 0.2191647</span></span>
-<span><span class="co">## 21 0.122633540 0.4340359</span></span>
-<span><span class="co">## 22 0.136742721 0.4492470</span></span>
-<span><span class="co">## 23 0.007795713 0.2692146</span></span>
-<span><span class="co">## 24 0.017187861 0.2427417</span></span>
-<span><span class="co">## 25 0.018558367 0.2507006</span></span>
-<span><span class="co">## 26 0.000000000 0.2351239</span></span>
-<span><span class="co">## 27 0.009952749 0.2326815</span></span>
-<span><span class="co">## 28 0.000000000 0.2283724</span></span>
-<span><span class="co">## 29 0.000000000 0.2276275</span></span>
-<span><span class="co">## 30 0.000000000 0.2231074</span></span>
-<span><span class="co">## 31 0.000000000 0.2124386</span></span></code></pre>
+<span><span class="co">## 1  0.073774376 0.3731846</span></span>
+<span><span class="co">## 2  0.037852903 0.3327946</span></span>
+<span><span class="co">## 3  0.000000000 0.2715065</span></span>
+<span><span class="co">## 4  0.087832923 0.3926512</span></span>
+<span><span class="co">## 5  0.028551537 0.3233051</span></span>
+<span><span class="co">## 6  0.202421222 0.5931811</span></span>
+<span><span class="co">## 7  0.000000000 0.3305984</span></span>
+<span><span class="co">## 8  0.000000000 0.2612705</span></span>
+<span><span class="co">## 9  0.000000000 0.2580586</span></span>
+<span><span class="co">## 10 0.141107695 0.4860296</span></span>
+<span><span class="co">## 11 0.090092361 0.4547424</span></span>
+<span><span class="co">## 12 0.102705122 0.4643604</span></span>
+<span><span class="co">## 13 0.001455222 0.3007647</span></span>
+<span><span class="co">## 14 0.000000000 0.2752761</span></span>
+<span><span class="co">## 15 0.000000000 0.2753467</span></span>
+<span><span class="co">## 16 0.000000000 0.2716527</span></span>
+<span><span class="co">## 17 0.000000000 0.2674355</span></span>
+<span><span class="co">## 18 0.000000000 0.2645210</span></span>
+<span><span class="co">## 19 0.000000000 0.2637802</span></span>
+<span><span class="co">## 20 0.000000000 0.2644819</span></span>
+<span><span class="co">## 21 0.122633540 0.4753295</span></span>
+<span><span class="co">## 22 0.136742721 0.5118090</span></span>
+<span><span class="co">## 23 0.007795713 0.3039228</span></span>
+<span><span class="co">## 24 0.017187861 0.2902332</span></span>
+<span><span class="co">## 25 0.018558367 0.2997559</span></span>
+<span><span class="co">## 26 0.000000000 0.2814159</span></span>
+<span><span class="co">## 27 0.009952749 0.2797189</span></span>
+<span><span class="co">## 28 0.000000000 0.2753959</span></span>
+<span><span class="co">## 29 0.000000000 0.2738947</span></span>
+<span><span class="co">## 30 0.000000000 0.2687231</span></span>
+<span><span class="co">## 31 0.000000000 0.2587818</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>
@@ -487,12 +477,13 @@ to <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> for a si
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 input objects for model 'growth'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'growth'. <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  89% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA:  2s</span></span></code></pre>
+<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  98% | ETA:  0s</span></span></code></pre>
 <p>In this case, the <code>sf</code> part of the output contains
 additional columns, analogous to those of
 <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws2</span><span class="op">$</span><span class="va">sf</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "geometry"         "state"            "aquifer"          "snowpack"        </span></span>
 <span><span class="co">##  [5] "summary"          "forest"           "tree_table"       "shrub_table"     </span></span>
