@@ -1,5 +1,5 @@
 .shinyplot_spatial<-function(x, SpParams, r = NULL) {
-  plot_main_choices = c("Topography","Soil", "Forest stand")
+  plot_main_choices = c("Topography","Soil", "Forest stand", "Watershed")
   ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(

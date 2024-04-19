@@ -74,6 +74,12 @@ r
 
 The `r` object must have the same coordinate reference system as the `sf` object. Moreover, each grid cell can contain up to one point of the `sf` (typically at the cell center). Some grid cells may be empty, though, so that the actual simulations may be done on an incomplete grid. Note that the raster does not contain data, only the topology is needed (to define neighbors and cell sizes, for example). All relevant attribute data is already included in the `sf` object.
 
+Combining the `r` and `sf` objects allows drawing rasterized maps:
+
+```{r}
+plot_variable(example_watershed, variable = "elevation", r = r)
+```
+
 ### Watershed control options
 
 Analogously to local-scale simulations with **medfate**, watershed simulations have overall control parameters. Notably, the user needs to decide which sub-model will be used for lateral water transfer processes (a decision similar to choosing the plant transpiration sub-model in **medfate**), by default "tetis":
@@ -132,10 +138,10 @@ Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a poster
 res_ws1$sf$summary[[1]]
 ```
 
-Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of soil water volume for the simulated month:
+Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of the average water potential of the first soil layer during the simulated month:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot_summary(res_ws1$sf, "SoilVol", "2001-01-01")
+plot_summary(res_ws1$sf, variable = "Psi1", date = "2001-01-01", r = r)
 ```
 
 ### Full simulation results for specific cells
@@ -166,7 +172,7 @@ class(S)
 This object has class `spwb` and the same structure returned by function `spwb()` of **medfate**. Hence, we can inspect daily results using functions `shinyplot()` or `plot()`, for example:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot(S)
+plot(S, "SoilPsi")
 ```
 
 ### Continuing a previous simulation
@@ -181,7 +187,7 @@ names(example_watershed_mod)
 Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the water potential in the first soil layer:
 
 ```{r, fig.align='center', fig.width=7}
-plot_variable(example_watershed_mod, "psi1")
+plot_variable(example_watershed_mod, variable = "psi1", r = r)
 ```
 
 Now we can continue our simulation, in this case adding an extra month:

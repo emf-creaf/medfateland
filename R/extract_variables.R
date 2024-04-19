@@ -58,7 +58,7 @@
            "Bedrock conductivity" = "bedrock_conductivity",
            "Aquifer elevation (m)" = "aquifer_elevation", 
            "Depth to aquifer (m)" = "depth_to_aquifer",
-           "Aquifer volume (mm)" = "aquifer_volume", 
+           "Aquifer volume (mm)" = "aquifer", 
            "Snowpack water equivalent (mm)" = "snowpack"))
 }
 .getLandscapeWatershedVar<-function(obj, variable) {
@@ -78,7 +78,7 @@
     varplot = obj$bedrock_porosity
   } else if(variable =="bedrock_conductivity") {
     varplot = obj$bedrock_conductivity
-  } else if(variable =="aquifer_volume") {
+  } else if(variable =="aquifer") {
     varplot = obj$aquifer
   } else if(variable =="aquifer_elevation") {
     DTB = obj$depth_to_bedrock
