@@ -14,12 +14,12 @@ articles:
     - starts_with("Watershed")
 - title: Model analysis and parametrization
   contents:
-    - starts_with("SpatiallyUncoupled")
+    - starts_with("TetisWatershedParameters")
 reference:
 - title: Example data
   desc:  Example data sets for distributed stands and watershed
   contents:
-  - starts_with("TetisWatershedParameters")
+  - starts_with("example")
 
 - title: Summary/extract functions for spatial classes
   desc:  Forest and soil summary functions for spatial classes
