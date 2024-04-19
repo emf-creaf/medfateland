@@ -622,9 +622,9 @@
 
   #Output matrices
   if(watershed_model =="tetis") {
-    OutletExport_m3 <- matrix(0,nrow = nDays, ncol = length(outlets))
-    colnames(OutletExport_m3) <- outlets
-    rownames(OutletExport_m3) <- as.character(dates)
+    OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlets))
+    colnames(OutletExport_m3s) <- outlets
+    rownames(OutletExport_m3s) <- as.character(dates)
     
     vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow",
               "Snowmelt", "Interception", "NetRain",  
@@ -935,9 +935,9 @@
       }
     }
     
-    ## Store watershed runoff reaching each outlet
+    ## Store watershed runoff reaching each outlet (m3s)
     if(watershed_model=="tetis") {
-      OutletExport_m3[day,] <- res_day$WatershedExport[outlets]/1e3 
+      OutletExport_m3s[day,] <- (res_day$WatershedExport[outlets]/1e3)*patchsize/(3600*24)
     }
 
     #Landscape balance
@@ -1105,7 +1105,7 @@
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
-              outlet_export_m3 = OutletExport_m3)
+              outlet_export_m3s = OutletExport_m3s)
   } else {
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance)
@@ -1225,7 +1225,8 @@
 #'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 #'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-#'   \item{\code{outlet_export_m3}: A matrix with daily runoff (in m3/day) at each of the outlet cells of the landscape.}
+#'   \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the 
+#                                    overall watershed export corresponds to the sum of row values.}
 #' }
 #' 
 #' @details
@@ -1451,7 +1452,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   
   LandscapeBalance <- NULL 
   SoilLandscapeBalance <- NULL
-  OutletExport_m3 <- NULL
+  OutletExport_m3s <- NULL
   cell_summary <- NULL
   
   #initial tree/shrub tables
@@ -1500,12 +1501,12 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     
     #Store landscape and cell summaries
     if(iYear==1) {
-      OutletExport_m3 <- GL$outlet_export_m3
+      OutletExport_m3s <- GL$outlet_export_m3s
       LandscapeBalance <- GL$watershed_balance
       SoilLandscapeBalance <- GL$watershed_soil_balance
       cell_summary <- GL$sf$summary
     } else {
-      OutletExport_m3 <- rbind(OutletExport_m3, GL$outlet_export_m3)
+      OutletExport_m3s <- rbind(OutletExport_m3s, GL$outlet_export_m3s)
       LandscapeBalance <- rbind(LandscapeBalance, GL$watershed_balance)
       SoilLandscapeBalance <- rbind(SoilLandscapeBalance, GL$watershed_soil_balance)
       for(i in 1:nCells) { 
@@ -1650,7 +1651,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   l <- list(sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
-            outlet_export_m3 = OutletExport_m3)
+            outlet_export_m3s = OutletExport_m3s)
   class(l)<-c("fordyn_land", "list")
   return(l)
 }
