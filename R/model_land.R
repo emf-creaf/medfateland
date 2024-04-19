@@ -1299,6 +1299,14 @@
 #' res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
 #'                  dates = dates, summary_frequency = "month",
 #'                  watershed_control = ws_control)
+#'                  
+#' # Compare results with an analogous simulation using a data set where 
+#' # a burnin period has been done
+#' data("example_watershed_burnin")
+#' res_burnin <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+#'                         dates = dates, summary_frequency = "month",
+#'                         watershed_control = ws_control)
+#' 
 #' }
 #' 
 #' @name spwb_land

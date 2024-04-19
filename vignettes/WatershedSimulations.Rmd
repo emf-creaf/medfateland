@@ -207,7 +207,7 @@ Like other distributed hydrological models, watershed simulations with **medfate
 
 ```{r, warning=FALSE}
 data("example_watershed_burnin")
-example_watershed_burnin$aquifer
+plot_variable(example_watershed_burnin, variable = "aquifer", r = r)
 ```
 
 If we run a one-month simulation on this data set we can then compare the output before and after the burn-in period to illustrate its importance:

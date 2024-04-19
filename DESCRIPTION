@@ -31,6 +31,7 @@ Imports:
     shiny,
     stars,
     terra,
+    tidyterra,
     tidyr,
     tibble,
     stats

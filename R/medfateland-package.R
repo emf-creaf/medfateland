@@ -54,6 +54,8 @@
 #' @importFrom terra cellFromRowCol
 #' @importFrom terra cellFromXY
 #' @importFrom terra rast
+#' @importFrom terra rasterize
+#' @importFrom tidyterra geom_spatraster
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr unnest
 #' @useDynLib medfateland, .registration = TRUE

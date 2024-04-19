@@ -72,7 +72,7 @@ plot_summary<-function(x, variable, date, r = NULL, ...) {
     raster_var<-terra::rasterize(terra::vect(df),r, "y", fun = mean, na.rm = TRUE)
     names(raster_var) <- "m1"
     g<-ggplot()+
-      geom_spatraster(aes(fill=m1), data = raster_var)+
+      tidyterra::geom_spatraster(aes(fill=m1), data = raster_var)+
       scale_fill_continuous("", ..., na.value = NA)+
       labs(title = paste0(variable, " [", date,"]"))+
       theme_bw()
