@@ -1,4 +1,4 @@
-.shinyplot_spatial<-function(x, SpParams) {
+.shinyplot_spatial<-function(x, SpParams, r = NULL) {
   plot_main_choices = c("Topography","Soil", "Forest stand")
   ui <- fluidPage(
     sidebarLayout(
@@ -32,13 +32,13 @@
                         choices = sub_choices)
     })
     output$spatial_plot <- renderPlot({
-      plot_variable(x, variable = input$plot_var, SpParams = SpParams)
+      plot_variable(x, variable = input$plot_var, SpParams = SpParams, r = r)
     })
   }
   
   shinyApp(ui = ui, server = server)
 }
-.shinyplot_results<-function(x) {
+.shinyplot_results<-function(x, r = NULL) {
   not_null <- which(!unlist(lapply(x$summary, is.null)))
   vars = colnames(x$summary[[not_null[1]]])
   dates = rownames(x$summary[[not_null[1]]])
@@ -69,7 +69,7 @@
   server <- function(input, output, session) {
     
     output$summary_plot <- renderPlot({
-      plot_summary(x, variable = input$plot_var, date = input$plot_date)
+      plot_summary(x, variable = input$plot_var, date = input$plot_date, r = r)
     })
   }
   shinyApp(ui = ui, server = server)
@@ -97,13 +97,13 @@
 #' @seealso \code{\link{plot_summary}}, \code{\link{extract_variables}}
 #' 
 #' @export
-shinyplot_land<-function(x, SpParams = NULL) {
+shinyplot_land<-function(x, SpParams = NULL, r = NULL) {
   if(inherits(x, "sf") && ("elevation" %in% names(x))) {
-    return(.shinyplot_spatial(x, SpParams))
+    return(.shinyplot_spatial(x, SpParams, r))
   }
   else if(inherits(x, "sf") && ("summary" %in% names(x))) {
     not_null <- which(!unlist(lapply(x$summary, is.null)))
-    if(length(not_null)>0) return(.shinyplot_results(x))
+    if(length(not_null)>0) return(.shinyplot_results(x, r))
     else stop("Column 'summary' is NULL for all elements")
   }
   else {

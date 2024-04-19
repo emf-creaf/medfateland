@@ -7,7 +7,7 @@
 \usage{
 extract_variables(x, vars = "land_cover_type", SpParams = NULL, ...)
 
-plot_variable(x, variable = "land_cover_type", SpParams = NULL, ...)
+plot_variable(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with the appropriate columns.}

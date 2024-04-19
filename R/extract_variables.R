@@ -222,9 +222,19 @@ extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
 
 #' @rdname extract_variables
 #' @export
-plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, ...){
+plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...){
   df = extract_variables(x, vars= variable, SpParams = SpParams)
-  g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+
-     theme_bw()
+  if(is.null(r)) {
+    g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+
+      scale_color_continuous("", ..., na.value=NA)+
+      theme_bw()
+  } else {
+    raster_var<-terra::rasterize(terra::vect(df),r, variable, fun = mean, na.rm = TRUE)
+    names(raster_var) <- "m1"
+    g<-ggplot()+
+      geom_spatraster(aes(fill=m1), data = raster_var)+
+      scale_fill_continuous("", ..., na.value=NA)+
+      theme_bw()
+  }
   g
 }

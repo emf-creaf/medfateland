@@ -4,7 +4,7 @@
 \alias{plot_summary}
 \title{Displays spatial simulation summaries}
 \usage{
-plot_summary(x, variable, date, ...)
+plot_summary(x, variable, date, r = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{sf}, with simulation summaries.}
@@ -12,6 +12,8 @@ plot_summary(x, variable, date, ...)
 \item{variable}{The variable to be drawn.}
 
 \item{date}{The date of the summary to be plotted.}
+
+\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
 
 \item{...}{Additional parameters (passed to scale definition, such as \code{limits}).}
 }

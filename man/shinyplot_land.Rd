@@ -4,7 +4,7 @@
 \alias{shinyplot_land}
 \title{Shiny app with interactive plots and maps}
 \usage{
-shinyplot_land(x, SpParams = NULL)
+shinyplot_land(x, SpParams = NULL, r = NULL)
 }
 \arguments{
 \item{x}{The object of class 'sf' containing information to be drawn (see details).}

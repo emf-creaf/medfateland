@@ -42,6 +42,7 @@
 #' @param x An object of class \code{sf}, with simulation summaries.
 #' @param variable The variable to be drawn.
 #' @param date The date of the summary to be plotted.
+#' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' @param ... Additional parameters (passed to scale definition, such as \code{limits}).
 #' 
 #' @details Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
@@ -54,7 +55,7 @@
 #' 
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{simulation_summary}}
 #' @export
-plot_summary<-function(x, variable, date, ...) {
+plot_summary<-function(x, variable, date, r = NULL, ...) {
   if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
   if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")
   match.arg(variable, .getSummaryMatrixVarNames(x))
@@ -62,9 +63,19 @@ plot_summary<-function(x, variable, date, ...) {
   vec <- .getSummaryMatrixVariable(x, variable, date)
   
   df = sf::st_sf(sf::st_geometry(x), y = vec)
-  g<-ggplot()+geom_sf(data=df, aes(col=.data$y))+
-    scale_color_continuous("", ...)+
-    labs(title = paste0(variable, " [", date,"]"))+
-    theme_bw()
+  if(is.null(r)) {
+    g<-ggplot()+geom_sf(data=df, aes(col=.data$y))+
+      scale_color_continuous("", ...)+
+      labs(title = paste0(variable, " [", date,"]"))+
+      theme_bw()
+  } else {
+    raster_var<-terra::rasterize(terra::vect(df),r, "y", fun = mean, na.rm = TRUE)
+    names(raster_var) <- "m1"
+    g<-ggplot()+
+      geom_spatraster(aes(fill=m1), data = raster_var)+
+      scale_fill_continuous("", ..., na.value = NA)+
+      labs(title = paste0(variable, " [", date,"]"))+
+      theme_bw()
+  }
   return(g)
 }
