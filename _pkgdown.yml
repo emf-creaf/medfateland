@@ -7,17 +7,19 @@ articles:
 - title: Overview
   contents:
     - starts_with("Package")
-- title: Simulation models
+- title: Running simulation models
   contents:
     - starts_with("SpatiallyUncoupled")
     - starts_with("ManagementScenario")
     - starts_with("Watershed")
-
+- title: Model analysis and parametrization
+  contents:
+    - starts_with("SpatiallyUncoupled")
 reference:
 - title: Example data
   desc:  Example data sets for distributed stands and watershed
   contents:
-  - starts_with("example")
+  - starts_with("TetisWatershedParameters")
 
 - title: Summary/extract functions for spatial classes
   desc:  Forest and soil summary functions for spatial classes

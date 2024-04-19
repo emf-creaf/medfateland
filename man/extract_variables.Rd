@@ -19,6 +19,8 @@ plot_variable(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...)
 \item{...}{Additional arguments (not used).}
 
 \item{variable}{A string with the name of the variables to draw (see details).}
+
+\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
 }
 \value{
 An object of class \code{\link{sf}} with the desired variables.

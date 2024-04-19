@@ -11,7 +11,7 @@ vars <- c("elevation", "slope", "aspect", "land_cover_type",
           "basal_area", "leaf_area_index", "foliar_biomass", "fuel")
 vars_ws <- c(vars,
              "depth_to_bedrock","bedrock_porosity", "bedrock_conductivity",
-             "aquifer_elevation", "depth_to_aquifer","aquifer_volume", "snowpack")
+             "aquifer_elevation", "depth_to_aquifer","aquifer", "snowpack")
 test_that("Can extract variables from 'sf' object",{
   expect_s3_class(extract_variables(ypts, vars = vars, SpParams = SpParamsMED), "sf")
 })

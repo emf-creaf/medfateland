@@ -10,6 +10,8 @@ shinyplot_land(x, SpParams = NULL, r = NULL)
 \item{x}{The object of class 'sf' containing information to be drawn (see details).}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
+
+\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
 }
 \value{
 An object that represents the shiny app

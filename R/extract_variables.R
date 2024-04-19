@@ -150,6 +150,7 @@
 #' @param vars A string vector with the name of the variables to extract (see details).
 #' @param variable A string with the name of the variables to draw (see details).
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
+#' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' @param ... Additional arguments (not used).
 #' 
 #' @details The following string values are available for \code{vars}. 

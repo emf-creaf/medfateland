@@ -1,0 +1,218 @@
+---
+title: "Sensitivity to watershed parameters"
+author: "Miquel De Cáceres / María González"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Sensitivity to watershed parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignettePackage{medfateland}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(medfate)
+library(medfateland)
+library(meteoland)
+library(ggplot2)
+```
+
+## Introduction
+
+The aim of this vignette is to illustrate the sensitivity of watershed ecohydrological simulations (e.g. via `spwb_land()`) to variations in three watershed parameters for sub-model TETIS. These parameters are scaling factors of hydraulic conductivities for soil vertical fluxes, subsurface lateral fluxes and groundwater lateral fluxes, respectively. They are referred to as `R_localflow`, `R_interflow` and `R_baseflow`, respectively in the package.
+
+## Preparation
+
+Here we load a small example watershed included with the package, that can be used to understand the inputs required:
+
+```{r, warning=FALSE}
+data("example_watershed_burnin")
+example_watershed_burnin
+```
+
+The watershed state is the result of a four-year burn-in period, in order to have aquifer and soil moisture at a (dynamic) equilibrium. Another spatial input is needed to describe the grid topology, which in our case is an object of class `SpatRaster` from package **terra**:
+
+```{r}
+r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+                nrow = 8, ncol = 15, crs = "epsg:32631")
+r
+```
+
+Finally, we load an example weather data set to be used as climate forcing, as well as the usual species parameter table:
+```{r}
+# Load example weather dataset
+data("examplemeteo")
+# Set simulation period
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+# Load default medfate parameters
+data("SpParamsMED")
+```
+
+## Initial values for scaling factors
+
+Watershed simulations have overall control parameters. Notably, the user needs to decide which sub-model will be used for lateral water transfer processes, in this case:
+
+```{r}
+ws_control <- default_watershed_control("tetis")
+```
+
+The default parameterization for the three scaling factors is:
+```{r}
+ws_control$tetis_parameters
+```
+
+## Simulations
+Since watershed simulations are time consuming, here we will only perform four simulations, i.e. a baseline plus a modification of each of the three scaling factors, one at a time.
+
+### Baseline configuration
+For the baseline configuration, we set the three scaling factors to one:
+```{r}
+ws_control$tetis_parameters$R_localflow <- 1
+ws_control$tetis_parameters$R_interflow <- 1
+ws_control$tetis_parameters$R_baseflow <- 1
+```
+
+Now we launch the simulation. Focus on the values (in mm) predicted for aquifer exfiltration, saturation excess and, finally, the sum of the two sources as export runoff. 
+```{r}
+res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+                   dates = dates, summary_frequency = "month",
+                   watershed_control = ws_control)
+```
+
+In the following we compare these values to those issued from simulations with altered scaling factors.
+
+### Increasing local vertical conductivity
+
+We begin our sensitivity analysis by increasing the vertical conductivity five times:
+
+```{r}
+ws_control$tetis_parameters$R_localflow <- 5
+ws_control$tetis_parameters$R_interflow <- 1
+ws_control$tetis_parameters$R_baseflow <- 1
+res_L10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+                     dates = dates, summary_frequency = "month",
+                     watershed_control = ws_control)
+```
+
+Increasing `R_localflow` has the effect of increasing the drainage from soils to the aquifer (hence, decreasing soil moisture). Capillary rise and aquifer exfiltration increase downslope as a consequence of the larger recharge in upslope cells. 
+
+### Increasing subsurface lateral conductivity
+
+We now focus on the lateral conductivity of subsurface fluxes (interflow):
+
+```{r}
+ws_control$tetis_parameters$R_localflow <- 1
+ws_control$tetis_parameters$R_interflow <- 5
+ws_control$tetis_parameters$R_baseflow <- 1
+res_I10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+                     dates = dates, summary_frequency = "month",
+                     watershed_control = ws_control)
+```
+
+Increasing lateral conductivity for subsurface fluxes increases the rate of lateral exchange (i.e. the speed of the kinematic wave), resulting in a much larger saturation excess. It also impacts the amount of aquifer exfiltration. 
+
+
+### Increasing groundwater lateral conductivity
+Finally, we perform a simulation with an increased groundwater conductivity:
+
+```{r}
+ws_control$tetis_parameters$R_localflow <- 1
+ws_control$tetis_parameters$R_interflow <- 1
+ws_control$tetis_parameters$R_baseflow <- 5
+res_B10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+                     dates = dates, summary_frequency = "month",
+                     watershed_control = ws_control)
+```
+
+Increasing the speed of groundwater fluxes leads to a much shallower water table downslope, significantly increasing the amont of exfiltration.
+
+## Comparing predicted fluxes
+
+```{r}
+df1<- res_0$watershed_balance
+df1$Scenario <- "All = 1"
+df2<- res_L10$watershed_balance
+df2$Scenario <- "R_local x 10"
+df3<- res_I10$watershed_balance
+df3$Scenario <- "R_inter x 10"
+df4<- res_B10$watershed_balance
+df4$Scenario <- "R_base x 10"
+df<- rbind(df1,df2,df3, df4)
+df$Scenario <- factor(df$Scenario, levels = c("All = 1", "R_local x 10", "R_inter x 10", "R_base x 10"))
+```
+
+**Drainage**
+
+```{r, fig.align='center', fig.width=7, height = 4}
+ggplot(df)+
+  geom_line(aes(x=dates, y =DeepDrainage, col = Scenario, linetype = Scenario))+
+  ylab("Deep drainage (mm)")+
+  theme_bw()
+```
+
+**Capillarity rise**
+
+```{r, fig.align='center', fig.width=7, height = 4}
+ggplot(df)+
+  geom_line(aes(x=dates, y =CapillarityRise, col = Scenario, linetype = Scenario))+
+  ylab("Capillarity rise (mm)")+
+  theme_bw()
+```
+
+**Saturation excess**
+
+```{r, fig.align='center', fig.width=7, height = 4}
+ggplot(df)+
+  geom_line(aes(x=dates, y =SaturationExcess, col = Scenario, linetype = Scenario))+
+  ylab("Saturation excess (mm)")+
+  theme_bw()
+```
+**Aquifer exfiltration**
+
+```{r, fig.align='center', fig.width=7, height = 4}
+ggplot(df)+
+  geom_line(aes(x=dates, y =AquiferExfiltration, col = Scenario, linetype = Scenario))+
+  ylab("Aquifer exfiltration (mm)")+
+  theme_bw()
+```
+
+**Watershed export**
+
+```{r, fig.align='center', fig.width=7, height = 4}
+ggplot(df)+
+  geom_line(aes(x=dates, y =WatershedExport, col = Scenario, linetype = Scenario))+
+  ylab("Watershed export (mm)")+
+  theme_bw()
+```
+
+## Flux rate maps
+
+**Drainage to aquifer**
+```{r, fig.align='center', fig.width=7, fig.height=12}
+g1 <- plot_summary(res_0$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "Baseline")
+g2 <- plot_summary(res_L10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_local x 10")
+g3 <- plot_summary(res_I10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 10")
+g4 <- plot_summary(res_B10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_base x 10")
+cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
+```
+
+**Sub-surface fluxes**
+```{r, fig.align='center', fig.width=7, fig.height=12}
+g1 <- plot_summary(res_0$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "Baseline")
+g2 <- plot_summary(res_L10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_local x 10")
+g3 <- plot_summary(res_I10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_inter x 10")
+g4 <- plot_summary(res_B10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_base x 10")
+cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
+```
+
+**Groundwater fluxes**
+```{r, fig.align='center', fig.width=7, fig.height=12}
+g1 <- plot_summary(res_0$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "Baseline")
+g2 <- plot_summary(res_L10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_local x 10")
+g3 <- plot_summary(res_I10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_inter x 10")
+g4 <- plot_summary(res_B10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_base x 10")
+cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
+```

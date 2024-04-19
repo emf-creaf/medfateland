@@ -81,6 +81,7 @@
 #' 
 #' @param x The object of class 'sf' containing information to be drawn (see details).
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
+#' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' 
 #' @details Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
 #' 

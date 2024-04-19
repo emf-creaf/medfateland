@@ -76,7 +76,7 @@ The `r` object must have the same coordinate reference system as the `sf` object
 
 Combining the `r` and `sf` objects allows drawing rasterized maps:
 
-```{r}
+```{r, fig.align='center', fig.width=7}
 plot_variable(example_watershed, variable = "elevation", r = r)
 ```
 
@@ -205,7 +205,7 @@ The fact that no cell required initialization is an indication that we used an a
 
 Like other distributed hydrological models, watershed simulations with **medfateland** will normally require a burn-in period to allow soil moisture and aquifer levels to reach a dynamic equilibrium. We recommend users to use at least one or two years of burn-in period, but this will depend on the size of the watershed. In **medfate** we provide users with a copy of the example watershed, where burn-in period has already been simulated. This can be seen by inspecting the aquifer level:
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, fig.align='center', fig.width=7}
 data("example_watershed_burnin")
 plot_variable(example_watershed_burnin, variable = "aquifer", r = r)
 ```
