@@ -202,7 +202,10 @@ DataFrame tetisWatershedFlows(List y,
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       interflowInput[i] = 0.0;
       interflowOutput[i] = 0.0;
-      interflowBalance[i] = 0.0;
+    }
+  }
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       if(!NumericVector::is_na(WTD[i])) {
         x = Rcpp::as<Rcpp::List>(xList[i]);
         soil = Rcpp::as<Rcpp::List>(x["soil"]);
@@ -215,21 +218,17 @@ DataFrame tetisWatershedFlows(List y,
           double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2/day
           IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
           //water table slope between target and neighbours
-          NumericVector qni(ni.size(), 0.0);
           for(int j=0;j<ni.size();j++) {
             if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
               double tanBeta = (SoilSaturatedLayerElevation[i]-SoilSaturatedLayerElevation[ni[j]-1])/cellWidth;
               if(!NumericVector::is_na(tanBeta)) {
-                if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
-              } else {
-                qni[j] = 0.0;
-              }
-            }
-          }
-          for(int j=0;j<ni.size();j++) {
-            if(qni[j]>0.0) {
-              interflowInput[ni[j]-1] += 1000.0*qni[j]/patchsize; //in mm/day
-              interflowOutput[i] += 1000.0*qni[j]/patchsize;
+                if(tanBeta>0.0) {
+                  double q_m3 = tanBeta*T*cellWidth; //flow in m3/day 
+                  double q_mm = (1000.0*q_m3)/patchsize; //in mm/day
+                  interflowInput[ni[j]-1] += q_mm;
+                  interflowOutput[i] += q_mm;
+                }
+              } 
             }
           }
         }
