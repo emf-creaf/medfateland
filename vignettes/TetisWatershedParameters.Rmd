@@ -67,7 +67,7 @@ ws_control$tetis_parameters
 ## Simulations
 Since watershed simulations are time consuming, here we will only perform four simulations, i.e. a baseline plus a modification of each of the three scaling factors, one at a time.
 
-### Baseline configuration
+**Baseline configuration**
 For the baseline configuration, we set the three scaling factors to one:
 ```{r}
 ws_control$tetis_parameters$R_localflow <- 1
@@ -84,7 +84,7 @@ res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
 
 In the following we compare these values to those issued from simulations with altered scaling factors.
 
-### Increasing local vertical conductivity
+**Increasing local vertical conductivity**
 
 We begin our sensitivity analysis by increasing the vertical conductivity five times:
 
@@ -92,14 +92,14 @@ We begin our sensitivity analysis by increasing the vertical conductivity five t
 ws_control$tetis_parameters$R_localflow <- 5
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
-res_L10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+res_L5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
                      watershed_control = ws_control)
 ```
 
-Increasing `R_localflow` has the effect of increasing the drainage from soils to the aquifer (hence, decreasing soil moisture). Capillary rise and aquifer exfiltration increase downslope as a consequence of the larger recharge in upslope cells. 
+Increasing `R_localflow` has the effect of increasing the drainage from soils to the aquifer (hence, decreasing soil moisture). It also increases capillarity rise due to the higher conductivity. Aquifer exfiltration increases downslope as a consequence of the larger recharge in upslope cells. 
 
-### Increasing subsurface lateral conductivity
+**Increasing subsurface lateral conductivity**
 
 We now focus on the lateral conductivity of subsurface fluxes (interflow):
 
@@ -107,38 +107,40 @@ We now focus on the lateral conductivity of subsurface fluxes (interflow):
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 5
 ws_control$tetis_parameters$R_baseflow <- 1
-res_I10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+res_I5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
                      watershed_control = ws_control)
 ```
 
 Increasing lateral conductivity for subsurface fluxes increases the rate of lateral exchange (i.e. the speed of the kinematic wave), resulting in a much larger saturation excess. It also impacts the amount of aquifer exfiltration. 
 
-
-### Increasing groundwater lateral conductivity
-Finally, we perform a simulation with an increased groundwater conductivity:
+**Increasing groundwater lateral conductivity**
+Let's now perform a simulation with an increased groundwater conductivity:
 
 ```{r}
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 5
-res_B10 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+res_B5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
                      watershed_control = ws_control)
 ```
 
 Increasing the speed of groundwater fluxes leads to a much shallower water table downslope, significantly increasing the amont of exfiltration.
 
+
+
 ## Comparing predicted fluxes
 
+### Flux rate series
 ```{r}
 df1<- res_0$watershed_balance
 df1$Scenario <- "Baseline"
-df2<- res_L10$watershed_balance
+df2<- res_L5$watershed_balance
 df2$Scenario <- "R_local x 5"
-df3<- res_I10$watershed_balance
+df3<- res_I5$watershed_balance
 df3$Scenario <- "R_inter x 5"
-df4<- res_B10$watershed_balance
+df4<- res_B5$watershed_balance
 df4$Scenario <- "R_base x 5"
 df<- rbind(df1,df2,df3, df4)
 df$Scenario <- factor(df$Scenario, levels = c("Baseline", "R_local x 5", "R_inter x 5", "R_base x 5"))
@@ -188,31 +190,56 @@ ggplot(df)+
   theme_bw()
 ```
 
-## Flux rate maps
+### Flux rate maps
 
 **Drainage to aquifer**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
 g1 <- plot_summary(res_0$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_base x 5")
+g2 <- plot_summary(res_L5$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I5$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B5$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 
-**Sub-surface fluxes**
+**Capillarity rise**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
-g1 <- plot_summary(res_0$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_base x 5")
+g1 <- plot_summary(res_0$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "Baseline")
+g2 <- plot_summary(res_L5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 
-**Groundwater fluxes**
-```{r, fig.align='center', fig.width=7, fig.height=12}
-g1 <- plot_summary(res_0$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_base x 5")
+**Sub-surface balance**
+```{r, fig.align='center', fig.width=7, fig.height=12, message = FALSE}
+g1 <- plot_summary(res_0$sf, "InterflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
+  labs(title = "Baseline")
+g2 <- plot_summary(res_L5$sf, "InterflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
+  labs(title = "R_local x 5")
+g3 <- plot_summary(res_I5$sf, "InterflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
+  labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B5$sf, "InterflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
+  labs(title = "R_base x 5")
+cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
+```
+
+**Groundwater balance**
+```{r, fig.align='center', fig.width=7, fig.height=12, message = FALSE}
+g1 <- plot_summary(res_0$sf, "BaseflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
+  labs(title = "Baseline")
+g2 <- plot_summary(res_L5$sf, "BaseflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
+  labs(title = "R_local x 5")
+g3 <- plot_summary(res_I5$sf, "BaseflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
+  labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B5$sf, "BaseflowBalance", date = "2001-03-01", r = r)+
+  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
+  labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
