@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-04-19</h4>
+            <h4 data-toc-skip class="date">2024-04-20</h4>
       
       
       <div class="hidden name"><code>WatershedSimulations.Rmd</code></div>
@@ -272,20 +272,20 @@ in mm in the last column.</p>
 <span><span class="co">## 4     4.923594                  0                0 0.08783292  0.003787363</span></span>
 <span><span class="co">## 5     1.298705                  0                0 0.02855154  0.003944415</span></span>
 <span><span class="co">## 6    12.263661                  0                0 0.20242122  0.004965145</span></span>
-<span><span class="co">##   CapillarityRise SoilEvaporation Transpiration HerbTranspiration    Interflow</span></span>
-<span><span class="co">## 1    2.247422e-05       0.3867130     0.2793608                 0 0.000000e+00</span></span>
-<span><span class="co">## 2    1.757712e-04       0.1356762     0.4955779                 0 2.384716e-06</span></span>
-<span><span class="co">## 3    5.613658e-04       0.1844224     0.4164836                 0 8.291273e-06</span></span>
-<span><span class="co">## 4    2.330954e-05       0.1257523     0.1874572                 0 1.167223e-05</span></span>
-<span><span class="co">## 5    7.269397e-04       0.1448613     0.5090040                 0 5.533305e-05</span></span>
-<span><span class="co">## 6    4.064161e-04       0.1293526     0.3742005                 0 8.577055e-05</span></span>
-<span><span class="co">##       Baseflow AquiferExfiltration WatershedExport</span></span>
-<span><span class="co">## 1 0.000000e+00                   0      0.07377438</span></span>
-<span><span class="co">## 2 2.632237e-14                   0      0.03785290</span></span>
-<span><span class="co">## 3 1.924444e-13                   0      0.00000000</span></span>
-<span><span class="co">## 4 5.396695e-13                   0      0.08783292</span></span>
-<span><span class="co">## 5 1.488670e-12                   0      0.02855154</span></span>
-<span><span class="co">## 6 2.730446e-12                   0      0.20242122</span></span></code></pre>
+<span><span class="co">##   CapillarityRise SoilEvaporation Transpiration HerbTranspiration</span></span>
+<span><span class="co">## 1    2.247422e-05       0.3867130     0.2793608                 0</span></span>
+<span><span class="co">## 2    1.757712e-04       0.1356762     0.4955779                 0</span></span>
+<span><span class="co">## 3    5.613658e-04       0.1844224     0.4164836                 0</span></span>
+<span><span class="co">## 4    2.330954e-05       0.1257523     0.1874572                 0</span></span>
+<span><span class="co">## 5    7.269397e-04       0.1448613     0.5090040                 0</span></span>
+<span><span class="co">## 6    4.064161e-04       0.1293526     0.3742005                 0</span></span>
+<span><span class="co">##   InterflowBalance BaseflowBalance AquiferExfiltration WatershedExport</span></span>
+<span><span class="co">## 1     0.000000e+00    0.000000e+00                   0      0.07377438</span></span>
+<span><span class="co">## 2    -1.443806e-23   -1.673341e-31                   0      0.03785290</span></span>
+<span><span class="co">## 3    -1.604229e-23   -2.581727e-30                   0      0.00000000</span></span>
+<span><span class="co">## 4    -1.411722e-22    9.561950e-30                   0      0.08783292</span></span>
+<span><span class="co">## 5    -5.903563e-22    5.507683e-29                   0      0.02855154</span></span>
+<span><span class="co">## 6    -6.416916e-22   -1.223930e-29                   0      0.20242122</span></span></code></pre>
 <p>Values of this output data frame are averages across cells in the
 landscape. Data frame <code>watershed_soil_balance</code> is similar to
 <code>watershed_balance</code> but focusing on cells that have a soil
@@ -320,10 +320,10 @@ summaries for a given landscape cell using:</p>
 <span><span class="co">## 2001-01-01                0      0     0.066837      0.02646211        1.693804</span></span>
 <span><span class="co">##            Transpiration HerbTranspiration InterflowInput InterflowOutput</span></span>
 <span><span class="co">## 2001-01-01      6.765493                 0     0.06753704      0.03424541</span></span>
-<span><span class="co">##            BaseflowInput BaseflowOutput AquiferExfiltration      SWE  SoilVol</span></span>
-<span><span class="co">## 2001-01-01  2.804731e-10    1.50188e-10                   0 1.649861 569.2058</span></span>
-<span><span class="co">##                   Psi1      WTD     DTA</span></span>
-<span><span class="co">## 2001-01-01 -0.02941237 3625.407 15.4995</span></span></code></pre>
+<span><span class="co">##            InterflowBalance BaseflowInput BaseflowOutput BaseflowBalance</span></span>
+<span><span class="co">## 2001-01-01       0.03329163  2.804731e-10    1.50188e-10    1.302852e-10</span></span>
+<span><span class="co">##            AquiferExfiltration      SWE  SoilVol        Psi1      WTD     DTA</span></span>
+<span><span class="co">## 2001-01-01                   0 1.649861 569.2058 -0.02941237 3625.407 15.4995</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of the
@@ -477,13 +477,12 @@ to <code><a href="../reference/spwb_land.html">fordyn_land()</a></code> for a si
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 input objects for model 'growth'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'growth'. <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA:  2s</span></span></code></pre>
-<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  74% | ETA:  1s</span></span></code></pre>
 <pre><code><span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  98% | ETA:  0s</span></span></code></pre>
 <p>In this case, the <code>sf</code> part of the output contains
 additional columns, analogous to those of
 <code><a href="../reference/fordyn_scenario.html">fordyn_scenario()</a></code>.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws2</span><span class="op">$</span><span class="va">sf</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "geometry"         "state"            "aquifer"          "snowpack"        </span></span>
 <span><span class="co">##  [5] "summary"          "forest"           "tree_table"       "shrub_table"     </span></span>
