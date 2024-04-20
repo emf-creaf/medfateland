@@ -572,6 +572,29 @@
   }
   if(header_footer) cli::cli_progress_done()
   
+  
+  # Weather interpolation preparation
+  if(!is.null(meteo)) {
+    if(inherits(meteo, "stars") || inherits(meteo, "list")) {
+      r$elevation <- NA
+      r$slope <- NA
+      r$aspect <- NA
+      r$elevation[sf2cell] <- y$elevation
+      r$slope[sf2cell] <- y$slope
+      r$aspect[sf2cell] <- y$aspect
+      agg_fact <- as.integer(watershed_control[["weather_aggregation_factor"]])
+      r_meteo <- r
+      if(agg_fact > 1) {
+        r_meteo <- terra::aggregate(r_meteo, fact = agg_fact, fun = "median", na.rm = TRUE)
+      }
+      pts_sf_meteo <- sf::st_as_sf(terra::as.points(r_meteo))
+      pts_sf2cell_meteo <- terra::cellFromXY(r_meteo, sf::st_coordinates(pts_sf_meteo))
+      sf2cell_meteo <- terra::cellFromXY(r_meteo, sf_coords)
+      pts_sf_meteo_2_sf <- rep(NA, nCells)
+      for(i in 1:length(pts_sf_meteo_2_sf)) pts_sf_meteo_2_sf[i] <- which(pts_sf2cell_meteo==sf2cell_meteo[i])
+    }
+  }
+  
   #Print information area
   if(header_footer) {
     cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
@@ -585,6 +608,7 @@
     cli::cli_li(paste0("Number of temporal cell summaries: ", nSummary))
     cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(result_cell)))
     if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
+    if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", agg_fact))
   }
 
  
@@ -796,37 +820,27 @@
     gridCO2 = rep(Catm, nCells)
     
     if(!is.null(meteo)) {
-      if(inherits(meteo,"stars")) {
-        pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
-                          elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-        met <- meteoland::interpolate_data(pt_sf, meteo, dates = dates[day], 
-                                           verbose = FALSE, ignore_convex_hull_check = TRUE)
-        ml <- tidyr::unnest(met, cols = "interpolated_data")
-        gridMinTemperature <- ml$MinTemperature
-        gridMaxTemperature <- ml$MaxTemperature
-        gridMinRelativeHumidity <- ml$MinRelativeHumidity
-        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity
-        gridPrecipitation <- ml$Precipitation
-        gridRadiation <- ml$Radiation
-        gridWindSpeed <- ml$WindSpeed      
-      } else if(inherits(meteo,"list")) {
-        i_stars <- NA
-        for(i in 1:length(datesStarsList)) {
-          if(dates[day] %in% datesStarsList[[i]]) i_stars <- i
+      if(inherits(meteo,"stars") || inherits(meteo,"list")) {
+        if(inherits(meteo,"stars")) {
+          i_meteo <- meteo
+        } else {
+          i_stars <- NA
+          for(i in 1:length(datesStarsList)) {
+            if(dates[day] %in% datesStarsList[[i]]) i_stars <- i
+          }
+          if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
+          i_meteo <- meteo[[i_stars]]
         }
-        if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
-        pt_sf <- sf::st_sf(geometry = sf::st_geometry(y), 
-                           elevation = y$elevation, slope = y$slope, aspect = y$aspect)
-        met <- meteoland::interpolate_data(pt_sf, meteo[[i_stars]], dates = dates[day], 
+        met <- meteoland::interpolate_data(pts_sf_meteo, i_meteo, dates = dates[day], 
                                            verbose = FALSE, ignore_convex_hull_check = TRUE)
         ml <- tidyr::unnest(met, cols = "interpolated_data")
-        gridMinTemperature <- ml$MinTemperature
-        gridMaxTemperature <- ml$MaxTemperature
-        gridMinRelativeHumidity <- ml$MinRelativeHumidity
-        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity
-        gridPrecipitation <- ml$Precipitation
-        gridRadiation <- ml$Radiation
-        gridWindSpeed <- ml$WindSpeed   
+        gridMinTemperature <- ml$MinTemperature[pts_sf_meteo_2_sf]
+        gridMaxTemperature <- ml$MaxTemperature[pts_sf_meteo_2_sf]
+        gridMinRelativeHumidity <- ml$MinRelativeHumidity[pts_sf_meteo_2_sf]
+        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity[pts_sf_meteo_2_sf]
+        gridPrecipitation <- ml$Precipitation[pts_sf_meteo_2_sf]
+        gridRadiation <- ml$Radiation[pts_sf_meteo_2_sf]
+        gridWindSpeed <- ml$WindSpeed[pts_sf_meteo_2_sf]    
       } else { # data frame
         imeteo <- which(datesMeteo == dates[day]) #date index in meteo data
         # repeat values for all cells

@@ -6,6 +6,7 @@
 #' @return A list with the following items:
 #'  \itemize{
 #'    \item{\code{watershed_model}: A string with the watershed model.}
+#'    \item{\code{weather_aggregation_factor}: An integer specifying the spatial aggregation for interpolated weather.}
 #'    \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements: 
 #'      \itemize{
 #'        \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
@@ -39,6 +40,7 @@
 #' @export
 default_watershed_control<-function(watershed_model = "tetis") {
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
+  weather_aggregation_factor <- 1
   tetis_parameters<-list(
     R_localflow = 1.0,
     R_interflow = 1.0,
@@ -56,6 +58,7 @@ default_watershed_control<-function(watershed_model = "tetis") {
     stochastic_resampling = FALSE
   )
   l <- list(watershed_model = watershed_model,
+            weather_aggregation_factor = weather_aggregation_factor,
             tetis_parameters = tetis_parameters, 
             serghei_parameters = serghei_parameters,
             dispersal_parameters = dispersal_parameters)

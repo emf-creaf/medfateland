@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.2.1
+- weather aggregation for interpolation
+
 # Version 2.2.0
 - Compliance with medfate ver. 4.1.0
 - spwb_land revisited (tetis)
