@@ -272,6 +272,7 @@
                              "MaxTemperature" = MaxTemperature, 
                              "PET" = PET, "Rain" = Rain, "Snow" = Snow,
                              "Snowmelt" = Snowmelt, "NetRain" = NetRain, 
+                             "Interception" = Rain - NetRain,
                              "Infiltration" = Infiltration,
                              "Runoff" = Runoff,  "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
                              "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
@@ -655,13 +656,13 @@
               "DeepDrainage", "CapillarityRise", 
               "SoilEvaporation", "Transpiration", "HerbTranspiration",
               "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration", 
-              "SWE", "SoilVol","Psi1", "WTD", "DTA")
-    varsSum <- c("PET","Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
+              "SWE", "SoilVol","RWC", "WTD", "DTA")
+    varsSum <- c("PET","Runoff", "Rain", "NetRain", "Interception", "Snow", "Snowmelt",
                  "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepDrainage", "SaturationExcess",
                  "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
                  "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance")
     varsMean <- c( "MinTemperature", "MaxTemperature")
-    varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
+    varsState <- c("SWE", "RWC", "SoilVol", "WTD")
     LandscapeBalance <- data.frame(dates = dates,
                                    Precipitation = rep(0, nDays),
                                    Rain = rep(0, nDays),
@@ -705,11 +706,11 @@
     vars <- c("MinTemperature","MaxTemperature","PET", 
               "Rain", "NetRain", "Snow",
               "Snowmelt","Interception",
-              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","Psi1")
+              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","RWC")
     varsSum <- c("PET","Rain", "NetRain", "Snow", "Snowmelt",
                  "SoilEvaporation", "Transpiration")
     varsMean <- c( "MinTemperature", "MaxTemperature")
-    varsState <- c("SWE", "Psi1", "SoilVol")
+    varsState <- c("SWE", "RWC", "SoilVol")
     LandscapeBalance <- data.frame(dates = levels(date.factor)[1:nSummary],
                                    Precipitation = rep(0, nSummary),
                                    Snow = rep(0, nSummary),
@@ -724,7 +725,7 @@
   summarylist <- vector("list", nCells)
   for(i in 1:nCells) {
     # summaries
-    m <- matrix(0, nrow = nSummary, ncol = length(vars))
+    m <- matrix(NA, nrow = nSummary, ncol = length(vars))
     colnames(m) <- vars
     rownames(m) <- levels(date.factor)[1:nSummary]
     summarylist[[i]] <- m
@@ -751,16 +752,18 @@
   }
   
   state_soil_summary_function <- function(object) {
-    l = list(SWE=NA, Psi1=NA, SoilVol=NA, WTD=NA)
+    l = list(SWE=NA, RWC=NA, SoilVol=NA, WTD=NA)
     if(!is.null(object)) {
       if(inherits(object, "list")) {
         if(("soil" %in% names(object)) && ("control" %in% names(object))) {
           s <- object$soil
           control <- object$control
           model <- control$soilFunctions
+          water_mm <- sum(soil_water(s, model))
+          water_fc_mm <- sum(soil_waterFC(s, model))
           l <- list(SWE = s$SWE,
-                    Psi1 = soil_psi(s)[1],
-                    SoilVol = sum(soil_water(s, model)),
+                    RWC = 100*water_mm/water_fc_mm,
+                    SoilVol = water_mm,
                     WTD = soil_saturatedWaterDepth(s, model))
         }
       }
@@ -930,20 +933,23 @@
     if(watershed_model=="tetis") DTAday <- (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
-        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]
+        if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]
+        else summarylist[[i]][ifactor,v] <- res_day[[v]][i]
       }
       for(v in varsMean) {
-        summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
+        if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_day[[v]][i]/t.df[ifactor]
+        else summarylist[[i]][ifactor,v] <- res_day[[v]][i]/t.df[ifactor]
       }
       if(!is.null(y$state[[i]])) {
         summary_i <- state_soil_summary_function(y$state[[i]])
         for(v in varsState) {
-          summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_i[[v]]/t.df[ifactor]
+          if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + summary_i[[v]]/t.df[ifactor]
+          else  summarylist[[i]][ifactor,v] <- summary_i[[v]]/t.df[ifactor]
         }  
       }
-      summarylist[[i]][ifactor,"Interception"] <- summarylist[[i]][ifactor,"Interception"] + (res_day[["Rain"]][i] - res_day[["NetRain"]][i])
       if(watershed_model=="tetis") {
-        summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+        if(!is.na(summarylist[[i]][ifactor, "DTA"])) summarylist[[i]][ifactor,"DTA"] <- summarylist[[i]][ifactor,"DTA"] + DTAday[i]/t.df[ifactor]
+        else summarylist[[i]][ifactor,"DTA"] <- DTAday[i]/t.df[ifactor]
       }
     }
     
@@ -1161,7 +1167,7 @@
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param meteo Input meteorological data (see \code{\link{spwb_spatial}}).
+#' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
@@ -1171,8 +1177,8 @@
 #'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
 #' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
 #' of such lists, one per spatial unit.
-#' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
-#' @param num_cores Integer with the number of cores to be used for parallel computation.
+#' @param parallelize Boolean flag to try parallelization (see details).
+#' @param num_cores Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #'  
@@ -1204,13 +1210,15 @@
 #'           \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
 #'           \item{\code{Transpiration}: Woody plant transpiration (in mm).}
 #'           \item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
-#'           \item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
-#'           \item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
-#'           \item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
-#'           \item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
-#'           \item{\code{AquiferExfiltration}: The amount of water that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
+#'           \item{\code{InterflowInput}: The amount of water that reaches the soil of the cell from adjacent cells via subsurface flow (in mm).}
+#'           \item{\code{InterflowOutput}: The amount of water that leaves the soil of the cell towards adjacent cells via subsurface flow (in mm).}
+#'           \item{\code{InterflowBalance}: The balance of water circulating via subsurface flow (in mm).}
+#'           \item{\code{BaseflowInput}: The amount of water that reaches the aquifer of the cell from adjacent cells via groundwater flow (in mm).}
+#'           \item{\code{BaseflowOutput}: The amount of water that leaves the aquifer of the cell towards adjacent cells via groundwater flow (in mm).}
+#'           \item{\code{BaseflowBalance}: The balance of water circulating via groundwater flow (in mm).}
+#'           \item{\code{AquiferExfiltration}: The amount of water of the cell that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
 #'           \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
-#'           \item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
+#'           \item{\code{RWC}: Soil relative water content with respect to field capacity (in percent).}
 #'           \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
 #'           \item{\code{WTD}: Saturated soil water table depth (in mm from surface).}
 #'           \item{\code{DTA}: Depth to aquifer (in m from surface).}
@@ -1247,8 +1255,13 @@
 #' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 #' for appropriate behavior of dispersal sub-model.
 #'
-#' Parallel computation is only recommended for watersheds with large number of grid cells.
-#' In watershed with a small number of cells, can result in larger processing times than sequential computation.
+#' Parallel computation is only recommended for watersheds with large number of grid cells (e.g. > 10,000 when using \code{transpirationMode = "granier"}).
+#' In watershed with a small number of cells, parallel computation can result in larger processing times than sequential computation, due
+#' to the communication overload.
+#' 
+#' When dealing with large data sets, weather data included in the 'sf' object will likely be very data hungry. In those cases, it is 
+#' recommended to resort on weather interpolation (see \code{\link{spwb_spatial}}). Weather interpolation can be done using a coarser resolution
+#' than that of raster 'r', by changing the watershed control parameter called 'weather_aggregation_factor' (see \code{\link{default_watershed_control}}).
 #' 
 #' @author 
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

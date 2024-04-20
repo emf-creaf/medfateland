@@ -84,7 +84,7 @@ When using TETIS watershed model, the following columns are also required:
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
 
-\item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}}).}
+\item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}} and details).}
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
 
@@ -98,9 +98,9 @@ In \code{fordyn_land} summaries are always produced at monthly resolution.}
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
 
-\item{parallelize}{Boolean flag to try parallelization (will use all clusters minus one).}
+\item{parallelize}{Boolean flag to try parallelization (see details).}
 
-\item{num_cores}{Integer with the number of cores to be used for parallel computation.}
+\item{num_cores}{Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).}
 
 \item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
@@ -138,13 +138,15 @@ with the following columns:
 \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
 \item{\code{Transpiration}: Woody plant transpiration (in mm).}
 \item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
-\item{\code{SubsurfaceInput}: The amount of water that reaches the soil from adjacent cells via subsurface flow (in mm).}
-\item{\code{SubsurfaceOutput}: The amount of water that leaves the soil towards adjacent cells via subsurface flow (in mm).}
-\item{\code{GroundwaterInput}: The amount of water that reaches the aquifer from adjacent cells via groundwater flow (in mm).}
-\item{\code{GroundwaterOutput}: The amount of water that leaves the aquifer towards adjacent cells via groundwater flow (in mm).}
-\item{\code{AquiferExfiltration}: The amount of water that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
+\item{\code{InterflowInput}: The amount of water that reaches the soil of the cell from adjacent cells via subsurface flow (in mm).}
+\item{\code{InterflowOutput}: The amount of water that leaves the soil of the cell towards adjacent cells via subsurface flow (in mm).}
+\item{\code{InterflowBalance}: The balance of water circulating via subsurface flow (in mm).}
+\item{\code{BaseflowInput}: The amount of water that reaches the aquifer of the cell from adjacent cells via groundwater flow (in mm).}
+\item{\code{BaseflowOutput}: The amount of water that leaves the aquifer of the cell towards adjacent cells via groundwater flow (in mm).}
+\item{\code{BaseflowBalance}: The balance of water circulating via groundwater flow (in mm).}
+\item{\code{AquiferExfiltration}: The amount of water of the cell that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
 \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
-\item{\code{Psi1}: Soil water potential of the topmost layer (in MPa).}
+\item{\code{RWC}: Soil relative water content with respect to field capacity (in percent).}
 \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}
 \item{\code{WTD}: Saturated soil water table depth (in mm from surface).}
 \item{\code{DTA}: Depth to aquifer (in m from surface).}
@@ -192,8 +194,13 @@ distributed hydrological model.
 When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate behavior of dispersal sub-model.
 
-Parallel computation is only recommended for watersheds with large number of grid cells.
-In watershed with a small number of cells, can result in larger processing times than sequential computation.
+Parallel computation is only recommended for watersheds with large number of grid cells (e.g. > 10,000 when using \code{transpirationMode = "granier"}).
+In watershed with a small number of cells, parallel computation can result in larger processing times than sequential computation, due
+to the communication overload.
+
+When dealing with large data sets, weather data included in the 'sf' object will likely be very data hungry. In those cases, it is
+recommended to resort on weather interpolation (see \code{\link{spwb_spatial}}). Weather interpolation can be done using a coarser resolution
+than that of raster 'r', by changing the watershed control parameter called 'weather_aggregation_factor' (see \code{\link{default_watershed_control}}).
 }
 \examples{
 \dontrun{

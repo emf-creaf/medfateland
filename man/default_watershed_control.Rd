@@ -13,7 +13,7 @@ default_watershed_control(watershed_model = "tetis")
 A list with the following items:
 \itemize{
 \item{\code{watershed_model}: A string with the watershed model.}
-\item{\code{weather_aggregation_factor}: An integer specifying the spatial aggregation for interpolated weather.}
+\item{\code{weather_aggregation_factor [= 1]}: An integer specifying the spatial aggregation for interpolated weather.}
 \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements:
 \itemize{
 \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
