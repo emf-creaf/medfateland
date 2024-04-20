@@ -71,28 +71,31 @@
   res <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      res<-medfate::spwb_day(xi$x, date, xi$meteovec,
+      s <- medfate::spwb_day(xi$x, date, xi$meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                              modifyInput = TRUE)
+      res <- list("simulation_result" = s, "final_state" = xi$x)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      s <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                         modifyInput = TRUE)
+      res <- list("simulation_result" = s, "final_state" = xi$x)
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      res<-medfate::growth_day(xi$x, date, xi$meteovec,
+      s<-medfate::growth_day(xi$x, date, xi$meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
+      res <- list("simulation_result" = s, "final_state" = xi$x)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      s <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                                 latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                 runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                 modifyInput = TRUE)
-      
+      res <- list("simulation_result" = s, "final_state" = xi$x)
     }
   } 
   return(res)
@@ -135,10 +138,11 @@
                                           patchsize)
   InterflowInput <- watershed_flows[["InterflowInput"]]
   InterflowOutput <- watershed_flows[["InterflowOutput"]]
+  InterflowBalance <- watershed_flows[["InterflowBalance"]]
   BaseflowInput <- watershed_flows[["BaseflowInput"]]
   BaseflowOutput <- watershed_flows[["BaseflowOutput"]]
-  # print(watershed_flows)
-  
+  BaseflowBalance <- watershed_flows[["BaseflowBalance"]]
+
   # A3a. Estimate lateral interflow per layer
   lateralFlows <- vector("list", nX)
   for(i in 1:nX){
@@ -148,21 +152,14 @@
       dVec <- soil_i$dVec
       lambda <- 1 - soil_i$rfc/100
       w <- (dVec*lambda)/sum(dVec*lambda)
-      deltaS <- (InterflowInput[i]-InterflowOutput[i]) #change in moisture in mm
-      # if(i==61) {
-      #   cat(paste("i ", i, " deltaS ", deltaS, "\n"))
-      #   print(soil_i$W)
-      #   print(soil_saturatedWaterDepth(soil_i, "VG"))
-      # }
-      lf_i <- deltaS*w # layer flow
-      lateralFlows[[i]] <- lf_i
+      lateralFlows[[i]] <- InterflowBalance[i]*w # layer flow
     }
   }
   
   # A3b. Apply changes in aquifer to each cell
   AquiferExfiltration <- .tetisApplyBaseflowChangesToAquifer(y,
-                                                          BaseflowInput, BaseflowOutput,
-                                                          patchsize)
+                                                             BaseflowBalance,
+                                                             patchsize)
   
   
   # B. Weather and local flows
@@ -210,6 +207,7 @@
                                           date = date, model = local_model,
                                           chunk.size = chunk_size)
     parallel::stopCluster(cl)
+    .copyStateFromResults(y, localResults)
   } else {
     localResults <- vector("list", nX)
     for(i in 1:nX) {
@@ -226,8 +224,9 @@
   for(i in 1:nX) {
     if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
       res <- localResults[[i]]
-      DB <- res[["WaterBalance"]]
-      SB <- res[["Soil"]]
+      s <- res[["simulation_result"]]
+      DB <- s[["WaterBalance"]]
+      SB <- s[["Soil"]]
       MinTemperature[i] <- tminVec[i]
       MaxTemperature[i] <- tmaxVec[i]
       Snow[i] <- DB["Snow"]
@@ -243,7 +242,7 @@
       DeepDrainage[i] <- DB["DeepDrainage"]
       CapillarityRise[i] <- DB["CapillarityRise"]
       if(y$land_cover_type[i]=="wildland") {
-        PL <- res[["Plants"]]
+        PL <- s[["Plants"]]
         Transpiration[i] <- sum(PL["Transpiration"])
         HerbTranspiration[i] <- DB["HerbTranspiration"]
       } else {
@@ -277,8 +276,8 @@
                              "Runoff" = Runoff,  "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
                              "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
                              "AquiferExfiltration" = AquiferExfiltration,
-                             "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput,
-                             "BaseflowInput" = BaseflowInput, "BaseflowOutput" = BaseflowOutput,
+                             "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput, "InterflowBalance" = InterflowBalance,
+                             "BaseflowInput" = BaseflowInput, "BaseflowOutput" = BaseflowOutput, "BaseflowBalance" = BaseflowBalance,
                              "SoilEvaporation" = SoilEvaporation, "Transpiration" = Transpiration,
                              "HerbTranspiration" = HerbTranspiration,
                              "WatershedExport" = WatershedExport)
@@ -631,12 +630,12 @@
               "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runoff", 
               "DeepDrainage", "CapillarityRise", 
               "SoilEvaporation", "Transpiration", "HerbTranspiration",
-              "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput", "AquiferExfiltration", 
+              "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration", 
               "SWE", "SoilVol","Psi1", "WTD", "DTA")
     varsSum <- c("PET","Runoff", "Rain", "NetRain", "Snow", "Snowmelt",
                  "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepDrainage", "SaturationExcess",
                  "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
-                 "InterflowInput", "InterflowOutput", "BaseflowInput", "BaseflowOutput")
+                 "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance")
     varsMean <- c( "MinTemperature", "MaxTemperature")
     varsState <- c("SWE", "Psi1", "SoilVol", "WTD")
     LandscapeBalance <- data.frame(dates = dates,
@@ -655,8 +654,8 @@
                                    SoilEvaporation = rep(0,nDays),
                                    Transpiration = rep(0, nDays),
                                    HerbTranspiration = rep(0, nDays),
-                                   Interflow = rep(0, nDays),
-                                   Baseflow = rep(0, nDays),
+                                   InterflowBalance = rep(0, nDays),
+                                   BaseflowBalance = rep(0, nDays),
                                    AquiferExfiltration = rep(0, nDays),
                                    WatershedExport = rep(0, nDays))
     SoilLandscapeBalance <- data.frame(dates = dates,
@@ -675,8 +674,7 @@
                                        SoilEvaporation = rep(0,nDays),
                                        Transpiration = rep(0, nDays),
                                        HerbTranspiration = rep(0, nDays),
-                                       InterflowInput = rep(0, nDays),
-                                       InterflowOutput = rep(0, nDays),
+                                       InterflowBalance = rep(0, nDays),
                                        AquiferExfiltration = rep(0, nDays))
   }
   if(watershed_model =="serghei") {
@@ -899,15 +897,15 @@
         x <- y$state[[i]]
         if(local_model=="spwb") {
           if(isWildlandCell[i]) {
-            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
           }
         } else if(local_model =="growth") {
           if(isWildlandCell[i]) {
-            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
           }
         }
       }
@@ -960,8 +958,8 @@
       LandscapeBalance$Runoff[day] <- sum(res_day$Runoff, na.rm=T)/nCells
       LandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration, na.rm=T)/nCells
       LandscapeBalance$WatershedExport[day] <- (sum(res_day$WatershedExport[outlets], na.rm=T)/nCells)
-      LandscapeBalance$Interflow[day] <- sum(res_day$InterflowInput, na.rm=T)/nCells
-      LandscapeBalance$Baseflow[day] <- sum(res_day$BaseflowInput, na.rm=T)/nCells
+      LandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance, na.rm=T)/nCells
+      LandscapeBalance$BaseflowBalance[day] <- sum(res_day$BaseflowBalance, na.rm=T)/nCells
       
       SoilLandscapeBalance$Rain[day] <- sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Snow[day] <- sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
@@ -970,8 +968,7 @@
       SoilLandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InterflowInput[day] <- sum(res_day$InterflowInput[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InterflowOutput[day] <- sum(res_day$InterflowOutput[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Runoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Snowmelt[day] <- sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$NetRain[day] <- sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
@@ -1025,8 +1022,8 @@
     HerbTranspirationsum <- sum(LandscapeBalance$HerbTranspiration , na.rm=T)
     AquiferExfiltrationsum <- sum(LandscapeBalance$AquiferExfiltration , na.rm=T)
     WatershedExportsum <- sum(LandscapeBalance$WatershedExport, na.rm=T)
-    Interflowsum <- sum(LandscapeBalance$Interflow , na.rm=T)
-    Baseflowsum <- sum(LandscapeBalance$Baseflow , na.rm=T)
+    InterflowBalancesum <- sum(LandscapeBalance$InterflowBalance , na.rm=T)
+    BaseflowBalancesum <- sum(LandscapeBalance$BaseflowBalance , na.rm=T)
     
     SoilPrecipitationsum <- sum(SoilLandscapeBalance$Precipitation, na.rm=T)
     SoilRainfallsum <- sum(SoilLandscapeBalance$Rain, na.rm=T)
@@ -1043,8 +1040,7 @@
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
     SoilAquiferExfiltrationsum <- sum(SoilLandscapeBalance$AquiferExfiltration , na.rm=T)
-    SoilInterflowInputsum <- sum(SoilLandscapeBalance$InterflowInput , na.rm=T)
-    SoilInterflowOutputsum <- sum(SoilLandscapeBalance$InterflowOutput , na.rm=T)
+    SoilInterflowBalancesum <- sum(SoilLandscapeBalance$InterflowBalance , na.rm=T)
     snowpack_wb <- Snowsum - Snowmeltsum
     if(header_footer) {
       cli::cli_li("Water balance check")
@@ -1053,8 +1049,8 @@
       cat(paste0("  Snowpack water balance components:\n"))
       cat(paste0("    Snow fall (mm) ", round(Snowsum,2), "  Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
     }
-    soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowInputsum)
-    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum+SoilInterflowOutputsum)
+    soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowBalancesum)
+    soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
     soil_wb <-  soil_input - soil_output
     if(header_footer) {
       cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
@@ -1063,7 +1059,7 @@
       cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"  Saturation excess (mm) ",round(SoilSaturationExcesssum,2),"\n"))
       cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"  Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
       cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2),  "  Plant transpiration (mm) ", round(SoilTranspirationsum + SoilHerbTranspirationsum,2),"\n"))
-      cat(paste0("    Interflow input (mm) ", round(SoilInterflowInputsum,2),"  Interflow output (mm) ",round(SoilInterflowOutputsum,2),"\n"))
+      cat(paste0("    Interflow balance (mm) ", round(SoilInterflowBalancesum,2),"\n"))
     }
     
     aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum
@@ -1074,18 +1070,16 @@
       cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"  Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"\n"))
     }
     
-    landscape_wb <- Precipitationsum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum
+    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum
     if(header_footer) {
-      cat(paste0("\n  Watershed lateral flows:\n"))
-      cat(paste0("    Subsurface flow (mm) ",round(Interflowsum,2),"\n"))
-      cat(paste0("    Groundwater flow (mm) ", round(Baseflowsum,2),"\n"))
-      
       cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
       cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
       cat(paste0("  Watershed water balance components:\n"))
       cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
       cat(paste0("    Interception (mm) ", round(Interceptionsum,2), "  Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))
       cat(paste0("    Plant transpiration (mm) ",round(Transpirationsum + HerbTranspirationsum ,2),"\n"))
+      cat(paste0("    Subsurface flow balance (mm) ",round(InterflowBalancesum,2),"\n"))
+      cat(paste0("    Groundwater flow balance (mm) ", round(BaseflowBalancesum,2),"\n"))
       cat(paste0("    Export runoff (mm) ", round(WatershedExportsum,2),"\n"))
     }
   }
@@ -1239,8 +1233,7 @@
 #' When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 #' for appropriate behavior of dispersal sub-model.
 #'
-#' Parallel computation is only functional when using SERGHEI, because TETIS requires following a specific
-#' cell processing order. Moreover, parallel computations are only recommended for watersheds with large number of grid cells.
+#' Parallel computation is only recommended for watersheds with large number of grid cells.
 #' In watershed with a small number of cells, can result in larger processing times than sequential computation.
 #' 
 #' @author 

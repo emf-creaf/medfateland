@@ -192,8 +192,7 @@ distributed hydrological model.
 When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate behavior of dispersal sub-model.
 
-Parallel computation is only functional when using SERGHEI, because TETIS requires following a specific
-cell processing order. Moreover, parallel computations are only recommended for watersheds with large number of grid cells.
+Parallel computation is only recommended for watersheds with large number of grid cells.
 In watershed with a small number of cells, can result in larger processing times than sequential computation.
 }
 \examples{

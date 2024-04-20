@@ -11,7 +11,7 @@ DataFrame tetisWatershedFlows(List y,
                               List watershed_control,
                               double patchsize);
 NumericVector tetisApplyBaseflowChangesToAquifer(List y,
-                                                 NumericVector BaseflowInput, NumericVector BaseflowOutput,
+                                                 NumericVector baseflowBalance,
                                                  double patchsize);
 void tetisApplyLocalFlowsToAquifer(List y,
                                    NumericVector CapillarityRise,

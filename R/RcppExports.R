@@ -65,12 +65,16 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copySnowpackFromSoil`, y))
 }
 
+.copyStateFromResults <- function(y, localResults) {
+    invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
+}
+
 .tetisWatershedFlows <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
     .Call(`_medfateland_tetisWatershedFlows`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
 }
 
-.tetisApplyBaseflowChangesToAquifer <- function(y, BaseflowInput, BaseflowOutput, patchsize) {
-    .Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, y, BaseflowInput, BaseflowOutput, patchsize)
+.tetisApplyBaseflowChangesToAquifer <- function(y, baseflowBalance, patchsize) {
+    .Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, y, baseflowBalance, patchsize)
 }
 
 .tetisApplyLocalFlowsToAquifer <- function(y, CapillarityRise, DeepDrainage) {

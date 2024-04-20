@@ -216,6 +216,17 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// copyStateFromResults
+void copyStateFromResults(List y, List localResults);
+RcppExport SEXP _medfateland_copyStateFromResults(SEXP ySEXP, SEXP localResultsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< List >::type localResults(localResultsSEXP);
+    copyStateFromResults(y, localResults);
+    return R_NilValue;
+END_RCPP
+}
 // tetisWatershedFlows
 DataFrame tetisWatershedFlows(List y, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control, double patchsize);
 RcppExport SEXP _medfateland_tetisWatershedFlows(SEXP ySEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
@@ -233,16 +244,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisApplyBaseflowChangesToAquifer
-NumericVector tetisApplyBaseflowChangesToAquifer(List y, NumericVector BaseflowInput, NumericVector BaseflowOutput, double patchsize);
-RcppExport SEXP _medfateland_tetisApplyBaseflowChangesToAquifer(SEXP ySEXP, SEXP BaseflowInputSEXP, SEXP BaseflowOutputSEXP, SEXP patchsizeSEXP) {
+NumericVector tetisApplyBaseflowChangesToAquifer(List y, NumericVector baseflowBalance, double patchsize);
+RcppExport SEXP _medfateland_tetisApplyBaseflowChangesToAquifer(SEXP ySEXP, SEXP baseflowBalanceSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type BaseflowInput(BaseflowInputSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type BaseflowOutput(BaseflowOutputSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type baseflowBalance(baseflowBalanceSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisApplyBaseflowChangesToAquifer(y, BaseflowInput, BaseflowOutput, patchsize));
+    rcpp_result_gen = Rcpp::wrap(tetisApplyBaseflowChangesToAquifer(y, baseflowBalance, patchsize));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -338,8 +348,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
+    {"_medfateland_copyStateFromResults", (DL_FUNC) &_medfateland_copyStateFromResults, 2},
     {"_medfateland_tetisWatershedFlows", (DL_FUNC) &_medfateland_tetisWatershedFlows, 6},
-    {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 4},
+    {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
     {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
     {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
     {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 5},

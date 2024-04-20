@@ -133,15 +133,15 @@ Increasing the speed of groundwater fluxes leads to a much shallower water table
 
 ```{r}
 df1<- res_0$watershed_balance
-df1$Scenario <- "All = 1"
+df1$Scenario <- "Baseline"
 df2<- res_L10$watershed_balance
-df2$Scenario <- "R_local x 10"
+df2$Scenario <- "R_local x 5"
 df3<- res_I10$watershed_balance
-df3$Scenario <- "R_inter x 10"
+df3$Scenario <- "R_inter x 5"
 df4<- res_B10$watershed_balance
-df4$Scenario <- "R_base x 10"
+df4$Scenario <- "R_base x 5"
 df<- rbind(df1,df2,df3, df4)
-df$Scenario <- factor(df$Scenario, levels = c("All = 1", "R_local x 10", "R_inter x 10", "R_base x 10"))
+df$Scenario <- factor(df$Scenario, levels = c("Baseline", "R_local x 5", "R_inter x 5", "R_base x 5"))
 ```
 
 **Drainage**
@@ -193,26 +193,26 @@ ggplot(df)+
 **Drainage to aquifer**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
 g1 <- plot_summary(res_0$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_local x 10")
-g3 <- plot_summary(res_I10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 10")
-g4 <- plot_summary(res_B10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_base x 10")
+g2 <- plot_summary(res_L10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B10$sf, "DeepDrainage", date = "2001-01-01", r = r, limits = c(0, 100))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 
 **Sub-surface fluxes**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
 g1 <- plot_summary(res_0$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_local x 10")
-g3 <- plot_summary(res_I10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_inter x 10")
-g4 <- plot_summary(res_B10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_base x 10")
+g2 <- plot_summary(res_L10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B10$sf, "InterflowOutput", date = "2001-03-01", r = r, limits = c(0, 160))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 
 **Groundwater fluxes**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
 g1 <- plot_summary(res_0$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "Baseline")
-g2 <- plot_summary(res_L10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_local x 10")
-g3 <- plot_summary(res_I10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_inter x 10")
-g4 <- plot_summary(res_B10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_base x 10")
+g2 <- plot_summary(res_L10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B10$sf, "BaseflowOutput", date = "2001-03-01", r = r, limits = c(0, 180))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
