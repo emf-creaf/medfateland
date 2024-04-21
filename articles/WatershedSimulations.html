@@ -85,9 +85,12 @@ lateral water transfer processes. This is done using functions
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
 <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>; which are counterparts of functions
 <code>spwb()</code>, <code>growth()</code> and <code>fordyn()</code> in
-package <strong>medfate</strong>. As an example, we will use function
+package <strong>medfate</strong>. We will focus here on function
 <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, but the other two functions would be used
-similarly.</p>
+similarly. The same can be said for functions
+<code><a href="../reference/spwb_land_day.html">spwb_land_day()</a></code> and <code><a href="../reference/spwb_land_day.html">growth_land_day()</a></code>, which
+are counterparts of <code>spwb_day()</code> and
+<code>growth_day()</code>, respectively.</p>
 </div>
 <div class="section level2">
 <h2 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
@@ -477,7 +480,7 @@ from a watershed after burnin:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'fordyn' over a watershed</span> <span style="color: #00BBBB;">───────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
@@ -489,92 +492,90 @@ from a watershed after burnin:</p>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data── Initialisation </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data<span style="color: #00BBBB;">ℹ</span> Creating 65 input objects for model 'growth'.</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'growth'. <span style="color: #B2B2B2;">[6ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'growth'. <span style="color: #B2B2B2;">[5ms]</span></span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' dataStands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% | ETA:  1s</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' dataStands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  74% | ETA:  1s</span></span>
 <span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  98% | ETA:  0s</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data<span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[3.7s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data<span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[3.4s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Initializing 'fordyn' output tables</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Initializing 'fordyn' output tables <span style="color: #B2B2B2;">[113ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Initializing 'fordyn' output tables <span style="color: #B2B2B2;">[103ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ── Simulating year 2001 [1/1] </span></span>
 <span><span class="co">## • Growth/mortality</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■                               </span>   1% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   2% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   3% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   5% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   6% | ETA:  4m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   7% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>   8% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  10% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■                               </span>   1% | ETA:  4m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   2% | ETA:  4m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   3% | ETA:  4m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   5% | ETA:  4m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   6% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   8% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>   9% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  11% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  12% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  13% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  14% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  15% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  17% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  15% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  16% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  18% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  19% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  21% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  22% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  23% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  25% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  29% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  32% | ETA:  3m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA:  3m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  35% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA:  2m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  35% | ETA:  3m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% | ETA:  2m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  45% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% | ETA:  2m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  47% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  52% | ETA:  2m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  56% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  58% | ETA:  2m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% | ETA:  2m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  60% | ETA:  2m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  63% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  65% | ETA:  1m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% | ETA:  1m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  74% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  75% | ETA:  1m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% | ETA:  1m</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  76% | ETA:  1m</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% | ETA:  1m</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% | ETA: 50s</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% | ETA: 47s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% | ETA: 44s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA: 44s</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  82% | ETA: 41s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% | ETA: 38s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA: 36s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  85% | ETA: 33s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% | ETA: 30s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA: 28s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  89% | ETA: 26s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA: 23s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% | ETA: 21s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% | ETA: 18s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA: 15s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  95% | ETA: 13s</span></span>
-<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% | ETA: 10s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% | ETA: 37s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA: 35s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% | ETA: 32s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% | ETA: 29s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA: 27s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  89% | ETA: 25s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA: 22s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  92% | ETA: 19s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA: 16s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% | ETA: 14s</span></span>
+<span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  95% | ETA: 10s</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% | ETA:  7s</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  98% | ETA:  4s</span></span>
 <span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% | ETA:  1s</span></span>

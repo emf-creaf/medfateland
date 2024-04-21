@@ -287,13 +287,17 @@ scenarios</a>.</p>
 <h3 id="watershed-simulations-including-spatial-processes">Watershed simulations including spatial processes<a class="anchor" aria-label="anchor" href="#watershed-simulations-including-spatial-processes"></a>
 </h3>
 <p>When input data is in form of continuous spatial variation of forests
-over a landscape, the <strong>medfateland</strong> package allows
-performing local process simulations while accounting for landscape
-processes. This is done using functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code>,
-<code><a href="../reference/spwb_land.html">growth_land()</a></code> and <code><a href="../reference/spwb_land.html">fordyn_land()</a></code>, which are
-analogous to <code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code>
-and <code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, respectively.</p>
-<p>Importantly, the three functions allow simulating <em>lateral water
+over a landscape, typically a watershed, the
+<strong>medfateland</strong> package allows performing local process
+simulations while accounting for landscape processes. This is done using
+functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../reference/spwb_land.html">growth_land()</a></code> and
+<code><a href="../reference/spwb_land.html">fordyn_land()</a></code>, which are analogous to
+<code><a href="../reference/spwb_spatial.html">spwb_spatial()</a></code>, <code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code> and
+<code><a href="../reference/spwb_spatial.html">fordyn_spatial()</a></code>, respectively. Similarly, functions
+<code><a href="../reference/spwb_land_day.html">spwb_land_day()</a></code> and <code><a href="../reference/spwb_land_day.html">growth_land_day()</a></code> are
+landscape counterparts of <code><a href="../reference/spwb_spatial_day.html">spwb_spatial_day()</a></code> and
+<code><a href="../reference/spwb_spatial.html">growth_spatial()</a></code>, respectively.</p>
+<p>Importantly, all these functions allow simulating <em>lateral water
 transfer processes</em>, for which two alternative sub-models are
 possible. A first sub-model, similar to TETIS (Francés et al. 2007) is
 offered by default, which includes three lateral water flows that are
@@ -310,8 +314,9 @@ physically-based distributed hydrologic model with much greater physical
 detail. In that case, SERGHEI outputs are generated as files and are not
 provided with the output to the function call. Hence, the user is
 responsible for accessing and post-processing those outputs.</p>
-<p>Functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../reference/spwb_land.html">growth_land()</a></code> may
-be used to:</p>
+<p>Functions <code><a href="../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../reference/spwb_land.html">growth_land()</a></code>
+(and their single-day counterparts <code><a href="../reference/spwb_land_day.html">spwb_land_day()</a></code> and
+<code><a href="../reference/spwb_land_day.html">growth_land_day()</a></code>) may be used to:</p>
 <ol style="list-style-type: decimal">
 <li><p>Determine areas where particular plant species have high
 vulnerability to suffer from drought stress or fire risk, while
