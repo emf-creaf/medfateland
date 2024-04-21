@@ -233,7 +233,7 @@
     }
   } 
   else {
-    imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+    imeteo = which(datesMeteo == date) #date index in meteo data
     for(iml in 1:nCells) {
       meti <- y$meteo[[iml]]
       gridMinTemperature[iml] <- meti$MinTemperature[imeteo]
@@ -711,7 +711,7 @@
     cli::cli_li(paste0("Number of temporal cell summaries: ", nSummary))
     cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(result_cell)))
     if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
-    if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", agg_fact))
+    if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
   }
 
  
