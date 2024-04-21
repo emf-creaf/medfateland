@@ -1476,7 +1476,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
       }
     }
   }
-  sf <- initialize_landscape(sf, SpParams, local_control = local_control, model = "growth")
+  sf <- initialize_landscape(sf, SpParams, local_control = local_control, model = "growth", progress = progress)
   
   LandscapeBalance <- NULL 
   SoilLandscapeBalance <- NULL

@@ -138,10 +138,10 @@ Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a poster
 res_ws1$sf$summary[[1]]
 ```
 
-Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of the average water potential of the first soil layer during the simulated month:
+Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of the average soil relative water content during the simulated month:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot_summary(res_ws1$sf, variable = "Psi1", date = "2001-01-01", r = r)
+plot_summary(res_ws1$sf, variable = "RWC", date = "2001-01-01", r = r)
 ```
 
 ### Full simulation results for specific cells
@@ -172,7 +172,7 @@ class(S)
 This object has class `spwb` and the same structure returned by function `spwb()` of **medfate**. Hence, we can inspect daily results using functions `shinyplot()` or `plot()`, for example:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot(S, "SoilPsi")
+plot(S, "SoilRWC")
 ```
 
 ### Continuing a previous simulation
@@ -184,10 +184,10 @@ example_watershed_mod <- update_landscape(example_watershed, res_ws1)
 names(example_watershed_mod)
 ```
 
-Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the water potential in the first soil layer:
+Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the relative water content:
 
 ```{r, fig.align='center', fig.width=7}
-plot_variable(example_watershed_mod, variable = "psi1", r = r)
+plot_variable(example_watershed_mod, variable = "soilrwc", r = r)
 ```
 
 Now we can continue our simulation, in this case adding an extra month:
@@ -223,18 +223,18 @@ data.frame("before" = res_ws1$watershed_balance$WatershedExport,
 
 ### Simulations of watershed forest dynamics
 
-Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here:
+Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here starting from a watershed after burnin:
 
 ```{r}
-res_ws2 <- fordyn_land(r, example_watershed,
+res_ws4 <- fordyn_land(r, example_watershed_burnin,
                        SpParamsMED, examplemeteo,
-                       watershed_control = ws_control, progress = FALSE)
+                       watershed_control = ws_control, progress = TRUE)
 ```
 
 In this case, the `sf` part of the output contains additional columns, analogous to those of `fordyn_scenario()`.
 
 ```{r}
-names(res_ws2$sf)
+names(res_ws4$sf)
 ```
 
 

@@ -79,7 +79,7 @@
 #' 
 #' Creates a shiny app with interactive plots for spatial inputs and simulation results 
 #' 
-#' @param x The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land' or 'growth_land'.
+#' @param x The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land', 'growth_land' or 'fordyn_land'.
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
 #' @param r An object of class \code{\link{rast}}, defining the raster topology.
 #' 
@@ -107,7 +107,7 @@ shinyplot_land<-function(x, SpParams = NULL, r = NULL) {
     if(length(not_null)>0) return(.shinyplot_results(x, r))
     else stop("Column 'summary' is NULL for all elements")
   }
-  else if(inherits(x, "spwb_land") || inherits(x, "growth_land")) {
+  else if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land")) {
     x <- x$sf
     if("summary" %in% names(x)) {
       not_null <- which(!unlist(lapply(x$summary, is.null)))

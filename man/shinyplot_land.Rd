@@ -7,7 +7,7 @@
 shinyplot_land(x, SpParams = NULL, r = NULL)
 }
 \arguments{
-\item{x}{The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land' or 'growth_land'.}
+\item{x}{The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land', 'growth_land' or 'fordyn_land'.}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
 

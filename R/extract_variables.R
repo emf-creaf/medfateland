@@ -19,6 +19,7 @@
            "Total water volume at field capacity (mm)" = "soilvolfc",
            "Total water volume at wilting point (mm)" = "soilvolwp",
            "Current total water volume (mm)" = "soilvolcurr",
+           "Soil relative water content" = "soilrwc",
            "Soil moisture (first layer)" = "theta1",
            "Soil moisture (second layer)" = "theta2",
            "Soil moisture (third layer)" = "theta3",
@@ -36,6 +37,7 @@
       if(variable=="texture1") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
       else if(variable=="texture2") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
       else if(variable=="texture3") varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
+      else if(variable=="soilrwc") varplot[i] = 100*sum(soil_water(s), na.rm=TRUE)/sum(soil_waterFC(s), na.rm=TRUE)
       else if(variable=="soilvolextract") varplot[i] = sum(soil_waterExtractable(s), na.rm=TRUE)
       else if(variable=="soilvolsat") varplot[i] = sum(soil_waterSAT(s), na.rm=TRUE)
       else if(variable=="soilvolfc") varplot[i] = sum(soil_waterFC(s), na.rm=TRUE)
@@ -233,7 +235,7 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
     raster_var<-terra::rasterize(terra::vect(df),r, variable, fun = mean, na.rm = TRUE)
     names(raster_var) <- "m1"
     g<-ggplot()+
-      geom_spatraster(aes(fill=m1), data = raster_var)+
+      geom_spatraster(aes(fill=.data$m1), data = raster_var)+
       scale_fill_continuous("", ..., na.value=NA)+
       theme_bw()
   }
