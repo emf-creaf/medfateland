@@ -39,7 +39,7 @@ example_ifn
 Despite the geometries themselves (which have a coordinate reference system), the following columns are required:
 
   + `id` identifiers of stands (e.g. forest inventory plot codes)
-  + `elevation`, `slope`, `aspect` describe the topography of the stands
+  + `elevation` (in m), `slope` (in degrees), `aspect` (in degrees) describe the topography of the stands
   + `land_cover_type` describes the land cover in each unit (values should be *wildland* or *agriculture* for spatially-uncoupled simulations).
   + `forest` objects of class **forest** (see package **medfate**) describing the structure and composition of forest stands
   + `soil` describes the soil of each forest stand, using either data frame of physical attributes or initialized objects of class **soil** (see package **medfate**).
@@ -67,7 +67,13 @@ The set of maps available can be known by inspecting the help of function `extra
 
 ### Climate forcing
 
-In **medfateland** there are several alternatives to specify climate forcing. One simple option is to assume the same weather for all stands. In this case we will supply a single data frame with daily weather for all plots:
+In **medfateland** there are several alternatives to specify climate forcing. 
+
+(1) Provide a single data frame with daily weather for all stands.
+(2) Provide a different daily weather for each stand (in an additional column of `sf` called `meteo`)
+(3) Provide an object to perform daily weather interpolation during simulations (see later in this document).
+
+For most of this document, we will follow the simpler option, which is to assume the same weather for all stands. We will supply a single data frame with daily weather for all plots:
 
 ```{r}
 data("examplemeteo")
@@ -229,3 +235,21 @@ And display a map with the resulting month transpiration:
 ```{r, fig.align='center', fig.width=7}
 plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
 ```
+
+### Simulations using weather interpolation
+
+Specifying a single weather data frame for all the forest stands may be not suitable if they are very far from each other. Specifying a different weather data frame for each stand can also be a problem if there are thousands of stands to simulate, due to the huge data requirements. A solution for this can be using interpolation on the fly, inside simulations. This can be done by supplying an **interpolator** object (or a list of them), as defined in package **meteoland**. Here we use the example data provided in the package:
+
+```{r}
+interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
+    meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
+```
+
+Once we have this object, using it is straightforward, via parameter `meteo`:
+```{r, warning=FALSE}
+res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator, 
+                      local_control = local_control, 
+                      summary_function = summary.spwb, summary_arguments = list(freq = "months"),
+                      parallelize = TRUE)
+```
+
