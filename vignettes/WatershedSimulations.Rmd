@@ -238,4 +238,39 @@ names(res_ws4$sf)
 ```
 
 
+### Simulations using weather interpolation
 
+Large watersheds will have spatial differences in climatic conditions like temperature, precipitation. Specifying a single weather data frame for all the watershed may be not suitable in this case. Specifying a different weather data frame for each watershed cell can also be a problem, if spatial resolution is high, due to the huge data requirements. A solution for this can be using interpolation on the fly, inside watershed simulations. This can be done by supplying an **interpolator** object (or a list of them), as defined in package **meteoland**. Here we use the example data provided in the package:
+
+```{r}
+interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
+    meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
+```
+
+Once we have this object, using it is straightforward:
+```{r, warning=FALSE}
+res_ws5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, 
+                     meteo = interpolator, summary_frequency = "month",
+                     watershed_control = ws_control, progress = FALSE)
+```
+
+Note that we did not define dates, which are taken from the interpolator data. If we plot the minimum temperature, we will appreciate the spatial variation in climate:
+
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+plot_summary(res_ws5$sf, variable = "MinTemperature", date = "2022-04-01", r = r)
+```
+
+
+For large watersheds and fine spatial resolution interpolation can become slow. One can then specify that interpolation is performed on a coarser grid, by using a watershed control parameter, for example:
+
+```{r}
+ws_control$weather_aggregation_factor <- 3
+```
+
+To illustrate its effect, we repeat the previous simulation and plot the minimum temperature:
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+res_ws6 <- spwb_land(r, example_watershed_burnin, SpParamsMED, 
+                     meteo = interpolator, summary_frequency = "month",
+                     watershed_control = ws_control, progress = FALSE)
+plot_summary(res_ws6$sf, variable = "MinTemperature", date = "2022-04-01", r = r)
+```
