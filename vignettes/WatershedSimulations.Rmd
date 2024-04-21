@@ -21,7 +21,7 @@ library(meteoland)
 
 ## Aim
 
-The aim of this vignette is to illustrate how to use **medfateland**  (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. As an example, we will use function `spwb_land()`, but the other two functions would be used similarly.
+The aim of this vignette is to illustrate how to use **medfateland**  (v. `r packageVersion("medfateland")`) to carry out simulations of forest function and dynamics on a set of forest stands while including lateral water transfer processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`; which are counterparts of functions `spwb()`, `growth()` and `fordyn()` in package **medfate**. We will focus here on function `spwb_land()`, but the other two functions would be used similarly. The same can be said for functions `spwb_land_day()` and `growth_land_day()`, which are counterparts of `spwb_day()` and `growth_day()`, respectively. 
 
 ## Preparation
 
