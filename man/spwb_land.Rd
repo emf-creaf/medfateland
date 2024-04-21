@@ -258,7 +258,7 @@ res_burnin <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
 \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 }
 \seealso{
-\code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{default_watershed_control}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
 \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 }
 \author{

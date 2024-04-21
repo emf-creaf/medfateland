@@ -4,6 +4,7 @@
 
 # Version 2.2.1
 - weather aggregation for interpolation
+- new functions spwb_land_day and spwb_growth_day
 
 # Version 2.2.0
 - Compliance with medfate ver. 4.1.0

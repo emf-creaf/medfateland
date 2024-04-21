@@ -1,5 +1,5 @@
 library(medfateland)
-
+library(meteoland)
 
 data("example_watershed")
 
@@ -15,9 +15,13 @@ examplemeteo2 <- examplemeteo
 row.names(examplemeteo2) <- as.character(examplemeteo2$dates)
 examplemeteo2$dates <- NULL
 
+interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
+  meteoland::create_meteo_interpolator(params = defaultInterpolationParams(), verbose = FALSE)
+
 
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-03"), by="day")
+
 
 test_that("Can simulate three days over landscape",{
   expect_s3_class(spwb_land(r, yws, meteo = examplemeteo, dates = dates, summary_frequency = "month", 
@@ -33,9 +37,8 @@ test_that("Can simulate three days over landscape with dates in column",{
                               SpParams = SpParamsMED, progress = FALSE), "growth_land")
 })
 
+
 test_that("Can simulate three days over landscape using new interpolator",{
-  interpolator = meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
-    meteoland::create_meteo_interpolator(params = defaultInterpolationParams(), verbose = FALSE)
   expect_s3_class(spwb_land(r, yws, meteo = interpolator, summary_frequency = "month",
                             SpParams = SpParamsMED, progress = FALSE), "spwb_land")
   expect_s3_class(growth_land(r, yws, meteo = interpolator, summary_frequency = "month",

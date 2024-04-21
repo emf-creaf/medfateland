@@ -71,35 +71,195 @@
   res <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      s <- medfate::spwb_day(xi$x, date, xi$meteovec,
+      res <- medfate::spwb_day(xi$x, date, xi$meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                              modifyInput = TRUE)
-      res <- list("simulation_result" = s, "final_state" = xi$x)
     } else if(inherits(xi$x, "aspwbInput")) {
-      s <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                         modifyInput = TRUE)
-      res <- list("simulation_result" = s, "final_state" = xi$x)
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      s<-medfate::growth_day(xi$x, date, xi$meteovec,
+      res<-medfate::growth_day(xi$x, date, xi$meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
-      res <- list("simulation_result" = s, "final_state" = xi$x)
     } else if(inherits(xi$x, "aspwbInput")) {
-      s <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                                 latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                 runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                 modifyInput = TRUE)
-      res <- list("simulation_result" = s, "final_state" = xi$x)
     }
   } 
   return(res)
 }
+
+.get_dates_stars_list <- function(meteo) {
+  datesStarsList <- NULL
+  if(!is.null(meteo)) {
+    if(inherits(meteo, "list")) {
+      datesStarsList <- vector("list", length(meteo))
+      for(i in 1:length(meteo)) {
+        datesStarsList[[i]] <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+      }
+    }
+  }
+  return(datesStarsList)
+}
+.get_dates_meteo <- function(y, meteo) {
+  datesMeteo <- NULL
+  if(!is.null(meteo)) {
+    if(inherits(meteo,"data.frame")) {
+      if(!("dates" %in% names(meteo))) {
+        datesMeteo <- as.Date(row.names(meteo))
+      } else {
+        datesMeteo <- as.Date(meteo$dates)
+      }
+    } else if(inherits(meteo, "stars")) {
+      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
+    } else if(inherits(meteo, "list")) {
+      for(i in 1:length(meteo)) {
+        datesMeteo_i <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
+        if(is.null(datesMeteo)) datesMeteo <- datesMeteo_i
+        else datesMeteo <- c(datesMeteo, datesMeteo_i)
+      }
+    }
+  } else {
+    if(!("meteo" %in% names(y))) cli::cli_abort("Column 'meteo' must be defined in 'y' if not supplied separately")
+    if(!("dates" %in% names(y$meteo[[1]]))) {
+      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
+    } else {
+      datesMeteo <- as.Date(y$meteo[[1]]$dates)
+    }
+    # check that all items have same dates
+    for(i in 1:nrow(y)) {
+      if(!("dates" %in% names(y$meteo[[i]]))) {
+        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
+      } else {
+        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
+      }
+      if(!all(datesMeteo_i==datesMeteo)) cli::cli_abort("All spatial elements need to have the same weather dates.")
+    }
+  }
+  return(datesMeteo)
+}
+
+.get_meteo_mapping <- function(r, y, meteo, sf_coords, sf2cell, 
+                               agg_fact){
+  pts_sf_meteo <- NULL
+  pts_sf_meteo_2_sf <- NULL
+  if(!is.null(meteo)) {
+    if(inherits(meteo, "stars") || inherits(meteo, "list")) {
+      nCells <- nrow(y)
+      r$elevation <- NA
+      r$slope <- NA
+      r$aspect <- NA
+      r$elevation[sf2cell] <- y$elevation
+      r$slope[sf2cell] <- y$slope
+      r$aspect[sf2cell] <- y$aspect
+      agg_fact <- as.integer(agg_fact)
+      r_meteo <- r
+      if(agg_fact > 1) {
+        r_meteo <- terra::aggregate(r_meteo, fact = agg_fact, fun = "median", na.rm = TRUE)
+      }
+      pts_sf_meteo <- sf::st_as_sf(terra::as.points(r_meteo))
+      pts_sf2cell_meteo <- terra::cellFromXY(r_meteo, sf::st_coordinates(pts_sf_meteo))
+      sf2cell_meteo <- terra::cellFromXY(r_meteo, sf_coords)
+      pts_sf_meteo_2_sf <- rep(NA, nCells)
+      for(i in 1:length(pts_sf_meteo_2_sf)) pts_sf_meteo_2_sf[i] <- which(pts_sf2cell_meteo==sf2cell_meteo[i])
+    }
+  }
+  return(list("pts_sf_meteo" = pts_sf_meteo, 
+              "pts_sf_meteo_2_sf" = pts_sf_meteo_2_sf))
+}
+
+.build_grid_meteo_day <- function(y, meteo, datesMeteo, date, 
+                                  meteo_mapping,
+                                  datesStarsList = NULL, 
+                                  CO2ByYear = numeric(0)) {
+  pts_sf_meteo <- meteo_mapping[["pts_sf_meteo"]] 
+  pts_sf_meteo_2_sf <- meteo_mapping[["pts_sf_meteo_2_sf"]]
+  nCells <- nrow(y)
+  doy <- as.numeric(format(date,"%j"))
+  datechar <- as.character(date)
+  yearString <- substr(datechar, 1, 4)
+  gridMinTemperature <- rep(NA, nCells)
+  gridMaxTemperature <- rep(NA, nCells)
+  gridMinRelativeHumidity <- rep(NA, nCells)
+  gridMaxRelativeHumidity <- rep(NA, nCells)
+  gridPrecipitation <- rep(NA, nCells)
+  gridRadiation <- rep(NA, nCells)
+  gridWindSpeed <- rep(NA, nCells)
+  Catm <- NA
+  if(yearString %in% names(CO2ByYear)) Catm <- CO2ByYear[yearString]
+  gridCO2 = rep(Catm, nCells)
+  
+  if(!is.null(meteo)) {
+    if(inherits(meteo,"stars") || inherits(meteo,"list")) {
+      if(inherits(meteo,"stars")) {
+        i_meteo <- meteo
+      } else {
+        i_stars <- NA
+        for(i in 1:length(datesStarsList)) {
+          if(date %in% datesStarsList[[i]]) i_stars <- i
+        }
+        if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
+        i_meteo <- meteo[[i_stars]]
+      }
+      met <- meteoland::interpolate_data(pts_sf_meteo, i_meteo, dates = date, 
+                                         verbose = FALSE, ignore_convex_hull_check = TRUE)
+      ml <- tidyr::unnest(met, cols = "interpolated_data")
+      gridMinTemperature <- ml$MinTemperature[pts_sf_meteo_2_sf]
+      gridMaxTemperature <- ml$MaxTemperature[pts_sf_meteo_2_sf]
+      gridMinRelativeHumidity <- ml$MinRelativeHumidity[pts_sf_meteo_2_sf]
+      gridMaxRelativeHumidity <- ml$MaxRelativeHumidity[pts_sf_meteo_2_sf]
+      gridPrecipitation <- ml$Precipitation[pts_sf_meteo_2_sf]
+      gridRadiation <- ml$Radiation[pts_sf_meteo_2_sf]
+      gridWindSpeed <- ml$WindSpeed[pts_sf_meteo_2_sf]    
+    } else { # data frame
+      imeteo <- which(datesMeteo == date) #date index in meteo data
+      # repeat values for all cells
+      gridMinTemperature <- rep(meteo[imeteo,"MinTemperature"], nCells)
+      gridMaxTemperature <- rep(meteo[imeteo,"MaxTemperature"], nCells)
+      gridMinRelativeHumidity <- rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
+      gridMaxRelativeHumidity <- rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
+      gridPrecipitation <- rep(meteo[imeteo,"Precipitation"], nCells)
+      gridRadiation <- rep(meteo[imeteo, "Radiation"], nCells)
+      gridWindSpeed <- rep(meteo[imeteo, "WindSpeed"], nCells)
+      if("CO2" %in% names(meteo)) gridCO2 <- rep(meteo[imeteo, "CO2"], nCells)
+    }
+  } 
+  else {
+    imeteo = which(datesMeteo == dates[day]) #date index in meteo data
+    for(iml in 1:nCells) {
+      meti <- y$meteo[[iml]]
+      gridMinTemperature[iml] <- meti$MinTemperature[imeteo]
+      gridMaxTemperature[iml] <- meti$MaxTemperature[imeteo]
+      gridMinRelativeHumidity[iml] <- meti$MinRelativeHumidity[imeteo]
+      gridMaxRelativeHumidity[iml] <- meti$MaxRelativeHumidity[imeteo]
+      gridPrecipitation[iml] <- meti$Precipitation[imeteo]
+      gridRadiation[iml] <- meti$Radiation[imeteo]
+      gridWindSpeed[iml] <- meti$WindSpeed[imeteo]
+      if("CO2" %in% names(meti)) gridCO2[iml] <- meti$CO2[imeteo]
+    }
+  }
+  
+  gridRadiation[is.na(gridRadiation)] <- mean(gridRadiation, na.rm=T)
+  gridMeteo <- data.frame(MinTemperature = gridMinTemperature, 
+                          MaxTemperature = gridMaxTemperature,
+                          MinRelativeHumidity = gridMinRelativeHumidity,
+                          MaxRelativeHumidity = gridMaxRelativeHumidity,
+                          Precipitation = gridPrecipitation,
+                          Radiation = gridRadiation,
+                          WindSpeed = gridWindSpeed,
+                          CO2 = gridCO2)
+  
+  return(gridMeteo)
+}
+
 .watershedDayTetis<- function(local_model,
                               y,
                               waterOrder, queenNeigh, waterQ,
@@ -223,8 +383,7 @@
   
   for(i in 1:nX) {
     if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
-      res <- localResults[[i]]
-      s <- res[["simulation_result"]]
+      s <- localResults[[i]]
       DB <- s[["WaterBalance"]]
       SB <- s[["Soil"]]
       MinTemperature[i] <- tminVec[i]
@@ -284,8 +443,7 @@
                              "WatershedExport" = WatershedExport)
   
   return(list("WatershedWaterBalance" = waterBalance,
-              "LocalResults" = localResults,
-              "nonsoilResults" = nonsoilResults))
+              "LocalResults" = localResults))
 }
 
 
@@ -483,41 +641,8 @@
     result_cell <- rep(FALSE, nrow(y))
   }
   
-  if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) {
-      if(!("dates" %in% names(meteo))) {
-        datesMeteo <- as.Date(row.names(meteo))
-      } else {
-        datesMeteo <- as.Date(meteo$dates)
-      }
-    } else if(inherits(meteo, "stars")) {
-      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
-    } else if(inherits(meteo, "list")) {
-      datesStarsList <- vector("list", length(meteo))
-      datesMeteo <- NULL
-      for(i in 1:length(meteo)) {
-        datesStarsList[[i]] <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
-        if(is.null(datesMeteo)) datesMeteo <- datesStarsList[[i]]
-        else datesMeteo <- c(datesMeteo, datesStarsList[[i]])
-      }
-    }
-  } else {
-    if(!("meteo" %in% names(y))) cli::cli_abort("Column 'meteo' must be defined in 'y' if not supplied separately")
-    if(!("dates" %in% names(y$meteo[[1]]))) {
-      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
-    } else {
-      datesMeteo <- as.Date(y$meteo[[1]]$dates)
-    }
-    # check that all items have same dates
-    for(i in 1:nrow(y)) {
-      if(!("dates" %in% names(y$meteo[[i]]))) {
-        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
-      } else {
-        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
-      }
-      if(!all(datesMeteo_i==datesMeteo)) cli::cli_abort("All spatial elements need to have the same weather dates.")
-    }
-  }
+  datesMeteo <- .get_dates_meteo(y, meteo)
+  datesStarsList <- .get_dates_stars_list(meteo)
   if(is.null(dates)) {
     dates <- datesMeteo
   } else {
@@ -572,29 +697,6 @@
     }
   }
   if(header_footer) cli::cli_progress_done()
-  
-  
-  # Weather interpolation preparation
-  if(!is.null(meteo)) {
-    if(inherits(meteo, "stars") || inherits(meteo, "list")) {
-      r$elevation <- NA
-      r$slope <- NA
-      r$aspect <- NA
-      r$elevation[sf2cell] <- y$elevation
-      r$slope[sf2cell] <- y$slope
-      r$aspect[sf2cell] <- y$aspect
-      agg_fact <- as.integer(watershed_control[["weather_aggregation_factor"]])
-      r_meteo <- r
-      if(agg_fact > 1) {
-        r_meteo <- terra::aggregate(r_meteo, fact = agg_fact, fun = "median", na.rm = TRUE)
-      }
-      pts_sf_meteo <- sf::st_as_sf(terra::as.points(r_meteo))
-      pts_sf2cell_meteo <- terra::cellFromXY(r_meteo, sf::st_coordinates(pts_sf_meteo))
-      sf2cell_meteo <- terra::cellFromXY(r_meteo, sf_coords)
-      pts_sf_meteo_2_sf <- rep(NA, nCells)
-      for(i in 1:length(pts_sf_meteo_2_sf)) pts_sf_meteo_2_sf[i] <- which(pts_sf2cell_meteo==sf2cell_meteo[i])
-    }
-  }
   
   #Print information area
   if(header_footer) {
@@ -796,6 +898,9 @@
                                       output_dir = serghei_parameters[["output_dir"]])
   }
   
+  meteo_mapping <- .get_meteo_mapping(r, y, meteo, sf_coords, sf2cell, 
+                                      watershed_control[["weather_aggregation_factor"]])
+  
   if(progress) {
     # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
     # cli::cli_li(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2)))
@@ -807,80 +912,12 @@
   
   for(day in 1:nDays) {
     # cat(paste("Day #", day))
-    if(progress) cli::cli_progress_update()
-    doy <- as.numeric(format(dates[day],"%j"))
     datechar <- as.character(dates[day])
-    yearString <- substr(datechar, 1, 4)
-    gridMinTemperature <- rep(NA, nCells)
-    gridMaxTemperature <- rep(NA, nCells)
-    gridMinRelativeHumidity <- rep(NA, nCells)
-    gridMaxRelativeHumidity <- rep(NA, nCells)
-    gridPrecipitation <- rep(NA, nCells)
-    gridRadiation <- rep(NA, nCells)
-    gridWindSpeed <- rep(NA, nCells)
-    Catm <- NA
-    if(yearString %in% names(CO2ByYear)) Catm <- CO2ByYear[yearString]
-    gridCO2 = rep(Catm, nCells)
+    gridMeteo <- .build_grid_meteo_day(y, meteo, datesMeteo, dates[day], 
+                                       meteo_mapping,
+                                       datesStarsList,
+                                       CO2ByYear)
     
-    if(!is.null(meteo)) {
-      if(inherits(meteo,"stars") || inherits(meteo,"list")) {
-        if(inherits(meteo,"stars")) {
-          i_meteo <- meteo
-        } else {
-          i_stars <- NA
-          for(i in 1:length(datesStarsList)) {
-            if(dates[day] %in% datesStarsList[[i]]) i_stars <- i
-          }
-          if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
-          i_meteo <- meteo[[i_stars]]
-        }
-        met <- meteoland::interpolate_data(pts_sf_meteo, i_meteo, dates = dates[day], 
-                                           verbose = FALSE, ignore_convex_hull_check = TRUE)
-        ml <- tidyr::unnest(met, cols = "interpolated_data")
-        gridMinTemperature <- ml$MinTemperature[pts_sf_meteo_2_sf]
-        gridMaxTemperature <- ml$MaxTemperature[pts_sf_meteo_2_sf]
-        gridMinRelativeHumidity <- ml$MinRelativeHumidity[pts_sf_meteo_2_sf]
-        gridMaxRelativeHumidity <- ml$MaxRelativeHumidity[pts_sf_meteo_2_sf]
-        gridPrecipitation <- ml$Precipitation[pts_sf_meteo_2_sf]
-        gridRadiation <- ml$Radiation[pts_sf_meteo_2_sf]
-        gridWindSpeed <- ml$WindSpeed[pts_sf_meteo_2_sf]    
-      } else { # data frame
-        imeteo <- which(datesMeteo == dates[day]) #date index in meteo data
-        # repeat values for all cells
-        gridMinTemperature <- rep(meteo[imeteo,"MinTemperature"], nCells)
-        gridMaxTemperature <- rep(meteo[imeteo,"MaxTemperature"], nCells)
-        gridMinRelativeHumidity <- rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
-        gridMaxRelativeHumidity <- rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
-        gridPrecipitation <- rep(meteo[imeteo,"Precipitation"], nCells)
-        gridRadiation <- rep(meteo[imeteo, "Radiation"], nCells)
-        gridWindSpeed <- rep(meteo[imeteo, "WindSpeed"], nCells)
-        if("CO2" %in% names(meteo)) gridCO2 <- rep(meteo[imeteo, "CO2"], nCells)
-      }
-    } 
-    else {
-      imeteo = which(datesMeteo == dates[day]) #date index in meteo data
-      for(iml in 1:nCells) {
-        meti <- y$meteo[[iml]]
-        gridMinTemperature[iml] <- meti$MinTemperature[imeteo]
-        gridMaxTemperature[iml] <- meti$MaxTemperature[imeteo]
-        gridMinRelativeHumidity[iml] <- meti$MinRelativeHumidity[imeteo]
-        gridMaxRelativeHumidity[iml] <- meti$MaxRelativeHumidity[imeteo]
-        gridPrecipitation[iml] <- meti$Precipitation[imeteo]
-        gridRadiation[iml] <- meti$Radiation[imeteo]
-        gridWindSpeed[iml] <- meti$WindSpeed[imeteo]
-        if("CO2" %in% names(meti)) gridCO2[iml] <- meti$CO2[imeteo]
-      }
-    }
-    
-    gridRadiation[is.na(gridRadiation)] <- mean(gridRadiation, na.rm=T)
-    gridMeteo <- data.frame(MinTemperature = gridMinTemperature, 
-                           MaxTemperature = gridMaxTemperature,
-                           MinRelativeHumidity = gridMinRelativeHumidity,
-                           MaxRelativeHumidity = gridMaxRelativeHumidity,
-                           Precipitation = gridPrecipitation,
-                           Radiation = gridRadiation,
-                           WindSpeed = gridWindSpeed,
-                           CO2 = gridCO2)
     if(watershed_model=="tetis") {
       ws_day <- .watershedDayTetis(local_model = local_model,
                                    y,
@@ -914,15 +951,15 @@
         x <- y$state[[i]]
         if(local_model=="spwb") {
           if(isWildlandCell[i]) {
-            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
+            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
           }
         } else if(local_model =="growth") {
           if(isWildlandCell[i]) {
-            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
+            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_result, iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
           }
         }
       }
@@ -998,6 +1035,7 @@
       SoilLandscapeBalance$Transpiration[day] <- sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$HerbTranspiration[day] <- sum(res_day$HerbTranspiration[isSoilCell], na.rm=T)/nSoil
     }
+    if(progress) cli::cli_progress_update()
   }
   if(progress) cli::cli_progress_done()
   if(header_footer)  cli::cli_li("Done")
@@ -1272,7 +1310,7 @@
 #' 
 #' Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
 #' 
-#' @seealso \code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
+#' @seealso \code{\link{default_watershed_control}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
 #' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 #' 
 #' @references 
@@ -1682,4 +1720,359 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
             outlet_export_m3s = OutletExport_m3s)
   class(l)<-c("fordyn_land", "list")
   return(l)
+}
+
+
+.simulate_land_day<-function(land_model = "spwb_land_day", 
+                             r, y, SpParams, meteo, date,
+                             local_control = medfate::defaultControl(),
+                             watershed_control = default_watershed_control(),
+                             parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                             progress = TRUE, header_footer = progress) {
+  
+  #land (local) model
+  land_model <- match.arg(land_model, c("spwb_land_day", "growth_land_day"))
+  if(land_model == "spwb_land_day") local_model <- "spwb"
+  else if(land_model=="growth_land_day") local_model <- "growth"
+
+  date <- as.Date(date)
+  datechar <- as.character(date)
+  
+  if(progress) cli::cli_h1(paste0("Simulation of model '", local_model, "' over a watershed for day '", date, "'"))
+  
+  #watershed model
+  watershed_model <- watershed_control$watershed_model
+  watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
+  
+  #check input
+  
+  if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
+  if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
+  if(sf::st_crs(y)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(y)
+  sf2cell <- terra::cellFromXY(r, sf_coords)
+  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  nrastercells <- prod(dim(r)[1:2])
+  cell2sf <- rep(NA, nrastercells)
+  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
+  
+  if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data"))
+  .check_sf_input(y)
+  if(!("snowpack" %in% names(y))) cli::cli_abort("'snowpack' has to be defined in 'y'.")
+  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
+  patchsize <- mean(represented_area_m2, na.rm=TRUE)
+  
+  ## TETIS: Check additional elements
+  if(watershed_model == "tetis") {
+    if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'y'.")
+    if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'y'.")
+    if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'y'.")
+    if(!("aquifer" %in% names(y))) cli::cli_abort("'aquifer' has to be defined in 'y'.")
+  }
+  ## SERGHEI: Enforce same soil layer definition
+  if(watershed_model=="serghei") {
+    serghei_parameters <- watershed_control[["serghei_parameters"]]
+    y$soil <- .check_equal_soil_discretization(y$soil, serghei_parameters[["force_equal_layer_widths"]])
+  }
+  
+  #duplicate input (to avoid modifying input objects)
+  y <- rlang::duplicate(y)
+  
+  #get latitude (for medfate)  
+  latitude <- sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
+  
+  if("result_cell" %in% names(y)) {
+    result_cell <- y$result_cell
+  } else {
+    result_cell <- rep(FALSE, nrow(y))
+  }
+  
+  datesMeteo <- .get_dates_meteo(y, meteo)
+  datesStarsList <- .get_dates_stars_list(meteo)
+  
+  nCells <- nrow(y)
+  isSoilCell <- y$land_cover_type %in% c("wildland", "agriculture")
+  isAgricultureCell <- y$land_cover_type %in% c("agriculture")
+  isWildlandCell <- y$land_cover_type %in% c("wildland")
+  nSoil <- sum(isSoilCell)
+  nWild <- sum(y$land_cover_type %in% c("wildland"))
+  nAgri <- sum(y$land_cover_type %in% c("agriculture"))
+  nRock <- sum(y$land_cover_type %in% c("rock"))
+  nArti <- sum(y$land_cover_type %in% c("artificial"))
+  nWater <- sum(y$land_cover_type %in% c("water"))
+  # Do not allow results on cells that are wildland/agriculture
+  result_cell[!isSoilCell] <- FALSE
+  
+  # TETIS: Build/check neighbours
+  if(watershed_model=="tetis") {
+    if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
+    
+    waterOrder <- order(y$elevation, decreasing=TRUE)
+    queenNeigh <- .neighFun(r, sf2cell, cell2sf)
+    waterQ <- .waterQFun(queenNeigh, sf_coords, y$elevation)
+    #Determine outlet cells (those without downhill neighbors)
+    isOutlet <- (unlist(lapply(waterQ, sum))==0)
+    outlets <- which(isOutlet)
+    # Check
+    for(i in 1:nCells) { 
+      ni <- queenNeigh[[i]]
+      qi <- waterQ[[i]]
+      if(max(ni)>nCells || min(ni) < 1) {
+        cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
+      }
+      if(length(qi) != length(ni)) {
+        cli::cli_abort(paste0("Cell ", i, " has different number of neighbors in 'waterQ' than 'queenNeigh'"))
+      }
+      if(!isOutlet[i]) {
+        if(abs(sum(qi) - 1) > 0.0001) {
+          cli::cli_abort(paste0("'waterQ' values for cell ", i, " do not add up to 1"))
+        }
+      }
+    }
+  }
+  if(header_footer) cli::cli_progress_done()
+  
+
+  #Print information area
+  if(header_footer) {
+    cli::cli_li(paste0("Hydrological model: ", toupper(watershed_model)))
+    cli::cli_li(paste0("Number of grid cells: ", nrastercells, " Number of target cells: ", nCells))
+    cli::cli_li(paste0("Average cell area: ", round(patchsize),
+                       " m2, Total area: ", round(sum(represented_area_m2, na.rm=TRUE)/10000),
+                       " ha, Target area: ", round(sum(represented_area_m2[!is.na(cell2sf)], na.rm=TRUE)/10000)," ha"))
+    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
+    cli::cli_li(paste0("Cells with soil: ", nSoil))
+    cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(result_cell)))
+    if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
+    if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
+  }
+  
+  if(header_footer) cli::cli_progress_step(paste0("Building ", local_model, " input"))
+  initialized_cells <- 0
+  for(i in 1:nCells) { #Initialize if not previously initialized
+    local_control_i <- NULL
+    if("local_control" %in% names(y)) {
+      if(!is.null(y$local_control[[i]])) {
+        if(inherits(y$local_control[[i]], "list")) local_control_i <- y$local_control[[i]]
+      }
+    }
+    if(is.null(local_control_i)) local_control_i <- local_control
+    
+    if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
+      f <- y$forest[[i]]
+      s <- y$soil[[i]]
+      if(inherits(s, "data.frame")) s <- medfate::soil(s)
+      if(local_model=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control_i)
+      else if(local_model=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control_i)
+      initialized_cells <- initialized_cells + 1
+    } 
+    else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
+      s <- y$soil[[i]]
+      cf <- y$crop_factor[i]
+      if(inherits(s, "data.frame")) s <- medfate::soil(s)
+      y$state[[i]] <- medfate::aspwbInput(cf, local_control_i, s)
+      initialized_cells <- initialized_cells + 1
+    } 
+  }
+  if(header_footer) {
+    cli::cli_progress_step(paste0( initialized_cells, " cells needed initialization"))
+  }
+
+  serghei_interface <-NULL
+  if(watershed_model=="serghei") {
+    serghei_parameters <- watershed_control[["serghei_parameters"]]
+    serghei_interface <- .initSerghei(limits = as.vector(terra::ext(r)),
+                                      nrow = terra::nrow(r),
+                                      ncol = terra::ncol(r),
+                                      sf2cell = sf2cell,
+                                      y$state,
+                                      input_dir = serghei_parameters[["input_dir"]],
+                                      output_dir = serghei_parameters[["output_dir"]])
+  }
+
+  meteo_mapping <- .get_meteo_mapping(r, y, meteo, sf_coords, sf2cell, 
+                                      watershed_control[["weather_aggregation_factor"]])
+
+  gridMeteo <- .build_grid_meteo_day(y, meteo, datesMeteo, date, 
+                                     meteo_mapping,
+                                     datesStarsList)
+
+  if(watershed_model=="tetis") {
+    ws_day <- .watershedDayTetis(local_model = local_model,
+                                 y,
+                                 waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
+                                 watershed_control = watershed_control,
+                                 date = datechar,
+                                 gridMeteo = gridMeteo,
+                                 latitude = latitude,
+                                 parallelize = parallelize, num_cores = detectCores()-1, chunk_size = NULL,
+                                 patchsize = patchsize, progress = FALSE)
+  } else if(watershed_model=="serghei") {
+    ws_day <- .watershedDaySerghei(local_model = local_model,
+                                   lct = y$land_cover_type, xList = y$state,
+                                   snowpack = y$snowpack,
+                                   sf2cell = sf2cell,
+                                   serghei_interface = serghei_interface,
+                                   watershed_control = watershed_control,
+                                   date = datechar,
+                                   gridMeteo = gridMeteo,
+                                   latitude = latitude, elevation = y$elevation, slope = y$slope, aspect = y$aspect,
+                                   parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                                   progress = FALSE)
+  }
+  res <- sf::st_sf(geometry=sf::st_geometry(y))
+  res$state = y$state
+  if(watershed_model=="tetis") res$aquifer <- y$aquifer
+  res$snowpack <- y$snowpack
+  res$result <- list(NULL)
+  res$result[result_cell] <- ws_day$LocalResults[result_cell]
+  res$outlet <- isOutlet
+  wb <- ws_day$WatershedWaterBalance
+  for(n in names(wb)) res[[n]] <- wb[[n]]
+  return(sf::st_sf(tibble::as_tibble(res)))
+}
+
+
+
+#' One-day watershed simulations
+#' 
+#' Functions to perform one-day simulations on a watershed described by a set of connected grid cells. 
+#' \itemize{
+#'   \item{Function \code{spwb_land_day} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}}, 
+#'         on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
+#'   \item{Function \code{growth_land_day} is similar to \code{spwb_land_day}, but includes daily local carbon balance, growth and mortality processes in grid cells, 
+#'         provided by \code{\link{growth_day}}.} 
+#' }
+#' 
+#' @param r An object of class \code{\link{rast}}, defining the raster topology.
+#' @param sf An object of class \code{\link{sf}} as described in \code{\link{spwb_land}}.
+#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
+#' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
+#' @param date A string with the date to be simulated.
+#' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
+#' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
+#'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
+#' @param parallelize Boolean flag to try parallelization (see details).
+#' @param num_cores Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).
+#' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
+#' @param progress Boolean flag to display progress information for simulations.
+#'  
+#' @return Functions \code{spwb_land_day} and \code{spwb_land_day} return a sf object:
+#' \itemize{
+#'    \item{\code{geometry}: Spatial geometry.}
+#'    \item{\code{state}: A list of model input objects for each simulated stand.}
+#'    \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
+#'    \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
+#'    \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
+#'    \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'    \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
+#'    \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
+#'    \item{\code{PET}: Potential evapotranspiration (in mm).}
+#'    \item{\code{Rain}: Rainfall (in mm).}
+#'    \item{\code{Snow}: Snowfall (in mm).}
+#'    \item{\code{Snowmelt}: Snow melt (in mm).}
+#'    \item{\code{Interception}: Rainfall interception (in mm).}
+#'    \item{\code{NetRain}: Net rainfall, i.e. throughfall, (in mm).}
+#'    \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
+#'    \item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
+#'    \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
+#'    \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+#'    \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
+#'    \item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
+#'    \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
+#'    \item{\code{Transpiration}: Woody plant transpiration (in mm).}
+#'    \item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
+#'    \item{\code{InterflowInput}: The amount of water that reaches the soil of the cell from adjacent cells via subsurface flow (in mm).}
+#'    \item{\code{InterflowOutput}: The amount of water that leaves the soil of the cell towards adjacent cells via subsurface flow (in mm).}
+#'    \item{\code{InterflowBalance}: The balance of water circulating via subsurface flow (in mm).}
+#'    \item{\code{BaseflowInput}: The amount of water that reaches the aquifer of the cell from adjacent cells via groundwater flow (in mm).}
+#'    \item{\code{BaseflowOutput}: The amount of water that leaves the aquifer of the cell towards adjacent cells via groundwater flow (in mm).}
+#'    \item{\code{BaseflowBalance}: The balance of water circulating via groundwater flow (in mm).}
+#'    \item{\code{AquiferExfiltration}: The amount of water of the cell that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
+#'  }
+#' 
+#' @details
+#' See details in \code{\link{spwb_land}}.
+#' 
+#' @author 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#' 
+#' Maria \enc{González-Sanchís}{Gonzalez-Sanchis}, Universitat Politecnica de Valencia. 
+#' 
+#' Daniel \enc{Caviedes-Voullième}{Caviedes-Voullieme}, Forschungszentrum Julich.
+#' 
+#' Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
+#' 
+#' @seealso \code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
+#' \code{\link{spwb_land}}, 
+#' 
+#' @references 
+#' \enc{Francés}{Frances}, F., \enc{Vélez}{Velez}, J.I. & \enc{Vélez}{Velez}, J.J. (2007). Split-parameter structure for the automatic calibration of distributed hydrological models. Journal of Hydrology, 332, 226–240. 
+#' 
+#' \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
+#' 
+#' @examples 
+#' \dontrun{
+#' # Load example watershed data after burnin period
+#' data("example_watershed_burnin")
+#' 
+#' # Set request for daily model results in cells number 3, 6 (outlet) and 9
+#' example_watershed_burnin$result_cell <- FALSE
+#' example_watershed_burnin$result_cell[c(3,6,9)] <- TRUE
+#' 
+#' # Get bounding box to determine limits
+#' b <- sf::st_bbox(example_watershed_burnin)
+#' b
+#' 
+#' # Define a raster topology, using terra package, 
+#' # with the same CRS as the watershed. In this example cells have 100 m side.
+#' # Coordinates in the 'sf' object are assumed to be cell centers
+#' r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+#'                 nrow = 8, ncol = 15, crs = "epsg:32631")
+#' 
+#' # Load example meteo data frame from package meteoland
+#' data("examplemeteo")
+#'   
+#' # Load default medfate parameters
+#' data("SpParamsMED")
+#'   
+#' # Watershed control parameters (TETIS model; Frances et al. 2007)
+#' ws_control <- default_watershed_control("tetis")
+#' 
+#' # Launch simulation 
+#' date <- "2001-03-01"
+#' sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+#'                         date = date, 
+#'                         watershed_control = ws_control)
+#' }
+#' 
+#' @name spwb_land_day
+#' @export
+spwb_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
+                        local_control = medfate::defaultControl(),
+                        watershed_control = default_watershed_control(),
+                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                        progress = TRUE) {
+  return(.simulate_land_day("spwb_land_day",
+                            r = r, y = sf, SpParams = SpParams, meteo = meteo, date = date,
+                            local_control = local_control,
+                            watershed_control = watershed_control, 
+                            parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                            progress = progress, header_footer = progress))
+}
+#' @rdname spwb_land_day
+#' @export
+growth_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
+                          local_control = medfate::defaultControl(),
+                          watershed_control = default_watershed_control(),
+                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                          progress = TRUE) {
+  return(.simulate_land_day("growth_land_day",
+                            r = r, y = sf, SpParams = SpParams, meteo = meteo, date = date,
+                            local_control = local_control,
+                            watershed_control = watershed_control, 
+                            parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
+                            progress = progress, header_footer = progress))
 }
