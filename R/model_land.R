@@ -68,18 +68,20 @@
 }
 
 .f_landunit_day<-function(xi, model, date){
-  res <- NA
+  out <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
       res <- medfate::spwb_day(xi$x, date, xi$meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                              modifyInput = TRUE)
+      out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                         modifyInput = TRUE)
+      out <- list("final_state" = xi$x, "simulation_results" = res)
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
@@ -87,14 +89,16 @@
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
+      out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
                                 latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                 runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                 modifyInput = TRUE)
+      out <- list("final_state" = xi$x, "simulation_results" = res)
     }
   } 
-  return(res)
+  return(out)
 }
 
 .get_dates_stars_list <- function(meteo) {
@@ -383,7 +387,7 @@
   
   for(i in 1:nX) {
     if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
-      s <- localResults[[i]]
+      s <- localResults[[i]]$simulation_results
       DB <- s[["WaterBalance"]]
       SB <- s[["Soil"]]
       MinTemperature[i] <- tminVec[i]
@@ -951,15 +955,15 @@
         x <- y$state[[i]]
         if(local_model=="spwb") {
           if(isWildlandCell[i]) {
-            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           }
         } else if(local_model =="growth") {
           if(isWildlandCell[i]) {
-            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]], iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           }
         }
       }
@@ -1927,7 +1931,9 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   if(watershed_model=="tetis") res$aquifer <- y$aquifer
   res$snowpack <- y$snowpack
   res$result <- list(NULL)
-  res$result[result_cell] <- ws_day$LocalResults[result_cell]
+  for(i in 1:nCells) {
+    if(result_cell[i]) res$result[[i]] <- ws_day$LocalResults[[i]]$simulation_results
+  }
   res$outlet <- isOutlet
   wb <- ws_day$WatershedWaterBalance
   for(n in names(wb)) res[[n]] <- wb[[n]]
