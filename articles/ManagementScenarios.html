@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-04-21</h4>
+            <h4 data-toc-skip class="date">2024-05-03</h4>
       
       
       <div class="hidden name"><code>ManagementScenarios.Rmd</code></div>
@@ -79,7 +79,7 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> (v. 2.2.1) to carry out simulations of
+<strong>medfateland</strong> (v. 2.2.2) to carry out simulations of
 forest dynamics on a set of forest stands while evaluating a
 demand-based management scenario. In particular, we will illustrate the
 use of functions <code><a href="../reference/create_management_scenario.html">create_management_scenario()</a></code> and
@@ -346,10 +346,10 @@ simulations.</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of a management/fire scenario with fordyn</span> <span style="color: #00BBBB;">────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Scenario parameters</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -388,36 +388,36 @@ simulations.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[527ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[524ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[187ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[292ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[51.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[47.4s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 66665 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 66498 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (all species):</span></span></code></pre>
-<pre><code><span><span class="co">##       Initial (m3): 66449      Growth (m3): 3575      Mortality (m3): 110      Extraction (m3): 3249      Final (m3): 66665</span></span>
-<span><span class="co">##       Extraction rate: 91%      Average extraction rate: 91%</span></span></code></pre>
+<pre><code><span><span class="co">##       Initial (m3): 66449      Growth (m3): 3408      Mortality (m3): 110      Extraction (m3): 3249      Final (m3): 66498</span></span>
+<span><span class="co">##       Extraction rate: 95%      Average extraction rate: 95%</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (target species with demand):</span></span></code></pre>
 <pre><code><span><span class="co">##       Nominal demand (m3): 1800      Offset (m3): 0      Actual demand (m3): 1800</span></span>
-<span><span class="co">##       Initial (m3): 62682      Growth (m3): 3520      Mortality (m3): 101      Extraction (m3): 865      Final (m3): 65236</span></span>
-<span><span class="co">##       Extraction rate: 92%      Average extraction rate: 25%</span></span>
+<span><span class="co">##       Initial (m3): 62682      Growth (m3): 3352      Mortality (m3): 101      Extraction (m3): 865      Final (m3): 65068</span></span>
+<span><span class="co">##       Extraction rate: 97%      Average extraction rate: 26%</span></span>
 <span><span class="co">##       Demand satisfaction: 48%      Nominal satisfaction: 48%      Average nominal satisfaction: 48%</span></span>
 <span><span class="co">##       Next year offset (m3): 935</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -478,7 +478,7 @@ wood:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
 <span><span class="co">##    Year initial growth mortality extracted  final cumulative_growth</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001  <span style="text-decoration: underline;">66</span>449.  <span style="text-decoration: underline;">3</span>575.      110.     <span style="text-decoration: underline;">3</span>249. <span style="text-decoration: underline;">66</span>665.             <span style="text-decoration: underline;">3</span>575.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001  <span style="text-decoration: underline;">66</span>449.  <span style="text-decoration: underline;">3</span>408.      110.     <span style="text-decoration: underline;">3</span>249. <span style="text-decoration: underline;">66</span>498.             <span style="text-decoration: underline;">3</span>408.</span></span></code></pre>
 <p>The same figures can be inspected, but corresponding to those species
 for which demand has been defined:</p>
 <div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
@@ -486,7 +486,7 @@ for which demand has been defined:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
 <span><span class="co">##    Year cumulative_extraction initial_target growth_target mortality_target</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001                 <span style="text-decoration: underline;">3</span>249.         <span style="text-decoration: underline;">62</span>682.         <span style="text-decoration: underline;">3</span>520.             101.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001                 <span style="text-decoration: underline;">3</span>249.         <span style="text-decoration: underline;">62</span>682.         <span style="text-decoration: underline;">3</span>352.             101.</span></span></code></pre>
 <p>Finally, we can display for each step what was the nominal demand
 (according to the input), the actual demand (once the offset of previous
 years was included), as well as the cumulative nominal demand and
@@ -499,7 +499,7 @@ the required demand in the long term.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
 <span><span class="co">##    Year extracted_target final_target nominal_demand demand_offset actual_demand</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001             865.       <span style="text-decoration: underline;">66</span>665.           <span style="text-decoration: underline;">1</span>800             0          <span style="text-decoration: underline;">1</span>800</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001             865.       <span style="text-decoration: underline;">66</span>498.           <span style="text-decoration: underline;">1</span>800             0          <span style="text-decoration: underline;">1</span>800</span></span></code></pre>
 <div class="section level3">
 <h3 id="continuing-a-previous-simulation">Continuing a previous simulation<a class="anchor" aria-label="anchor" href="#continuing-a-previous-simulation"></a>
 </h3>
@@ -537,10 +537,10 @@ offsets that need to be carried on to the next simulations:</p>
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">next_demand</span></span></code></pre></div>
 <pre><code><span><span class="co">## $offset</span></span>
 <span><span class="co">## Pinus nigra/Pinus sylvestris             Pinus halepensis </span></span>
-<span><span class="co">##                     434.9119                     500.0000 </span></span>
+<span><span class="co">##                     435.1807                     500.0000 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $last_growth</span></span>
-<span><span class="co">## [1] 3520.235</span></span></code></pre>
+<span><span class="co">## [1] 3351.923</span></span></code></pre>
 <p>In addition to the demand offset for each species or species group,
 note that <code>next_demand</code> also contains information about the
 last growth. This is necessary for scenarios where demand is modulated
@@ -559,7 +559,7 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Recovering previous run <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
@@ -578,7 +578,7 @@ with the result of the previous simulation instead of the original
 <span><span class="co">##      7 stand(s) in unit [Pinus nigra]</span></span>
 <span><span class="co">##      1 stand(s) without prescriptions</span></span></code></pre>
 <pre><code><span><span class="co">## • Default volume function</span></span></code></pre>
-<pre><code><span><span class="co">## • Initial volume: 66665 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Initial volume: 66498 m3</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Simulation</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -590,48 +590,48 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## • 1 stand(s) where management will be simulated (0 because of final cuts):</span></span></code></pre>
 <pre><code><span><span class="co">##       1 stand(s) in unit [Pinus nigra]</span></span></code></pre>
 <pre><code><span><span class="co">## • Volume by target species/group:</span></span></code></pre>
-<pre><code><span><span class="co">##       Pinus nigra/Pinus sylvestris - demand 1735 m3, expected 1870 m3 from 1 stand(s).</span></span>
-<span><span class="co">##       Pinus halepensis - demand 1000 m3, expected 819 m3 from 1 stand(s).</span></span></code></pre>
+<pre><code><span><span class="co">##       Pinus nigra/Pinus sylvestris - demand 1735 m3, expected 1868 m3 from 1 stand(s).</span></span>
+<span><span class="co">##       Pinus halepensis - demand 1000 m3, expected 818 m3 from 1 stand(s).</span></span></code></pre>
 <pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed production</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[560ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[585ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[167ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[232ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[26.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[23.9s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 65596 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 65296 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (all species):</span></span></code></pre>
-<pre><code><span><span class="co">##       Initial (m3): 66665      Growth (m3): 1756      Mortality (m3): 53      Extraction (m3): 2771      Final (m3): 65596</span></span>
-<span><span class="co">##       Extraction rate: 158%      Average extraction rate: 158%</span></span></code></pre>
+<pre><code><span><span class="co">##       Initial (m3): 66498      Growth (m3): 1615      Mortality (m3): 53      Extraction (m3): 2764      Final (m3): 65296</span></span>
+<span><span class="co">##       Extraction rate: 171%      Average extraction rate: 171%</span></span></code></pre>
 <pre><code><span><span class="co">## • Management statistics (target species with demand):</span></span></code></pre>
 <pre><code><span><span class="co">##       Nominal demand (m3): 1800      Offset (m3): 935      Actual demand (m3): 2735</span></span>
-<span><span class="co">##       Initial (m3): 65236      Growth (m3): 1742      Mortality (m3): 52      Extraction (m3): 2771      Final (m3): 64154</span></span>
-<span><span class="co">##       Extraction rate: 159%      Average extraction rate: 159%</span></span>
+<span><span class="co">##       Initial (m3): 65068      Growth (m3): 1600      Mortality (m3): 52      Extraction (m3): 2764      Final (m3): 63853</span></span>
+<span><span class="co">##       Extraction rate: 173%      Average extraction rate: 173%</span></span>
 <span><span class="co">##       Demand satisfaction: 101%      Nominal satisfaction: 154%      Average nominal satisfaction: 154%</span></span>
-<span><span class="co">##       Next year offset (m3): -37</span></span></code></pre>
+<span><span class="co">##       Next year offset (m3): -29</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Arranging output</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
