@@ -346,7 +346,11 @@ NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferExf
 // [[Rcpp::export(".tetisSimulationNonSoilCells")]]
 DataFrame tetisSimulationNonSoilCells(List y,
                                       NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec,
-                                      NumericVector waterO, List queenNeigh, List waterQ) {
+                                      NumericVector waterO, List queenNeigh, List waterQ,
+                                      List watershed_control) {
+  
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double rock_max_infiltration = tetis_parameters["rock_max_infiltration"];
   
   CharacterVector lct = y["land_cover_type"];
   List xList = y["state"];
@@ -354,7 +358,7 @@ DataFrame tetisSimulationNonSoilCells(List y,
   NumericVector elevation = y["elevation"];
   NumericVector snowpack = y["snowpack"];
   NumericVector Rain(nX, NA_REAL);
-  NumericVector Runoff(nX, NA_REAL), DeepDrainage(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
+  NumericVector Runoff(nX, NA_REAL), Infiltration(nX, NA_REAL), InfiltrationExcess(nX, NA_REAL), DeepDrainage(nX, NA_REAL), Snow(nX, NA_REAL),  Snowmelt(nX, NA_REAL);
   
   for(int i=0;i<nX;i++){
     if(lct[i]=="rock" || lct[i]=="artificial" || lct[i]=="water") {
@@ -362,6 +366,9 @@ DataFrame tetisSimulationNonSoilCells(List y,
       Snow[i] = 0.0;
       Snowmelt[i] = 0.0;
       Runoff[i]  = 0.0;
+      Infiltration[i] = 0.0;
+      InfiltrationExcess[i] = 0.0;
+      DeepDrainage[i] = 0.0;
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
       if(tday<0.0) {
         Snow[i] = precVec[i];
@@ -374,16 +381,21 @@ DataFrame tetisSimulationNonSoilCells(List y,
         Snowmelt[i] = std::min(melt, snowpack[i]);
         snowpack[i] -= Snowmelt[i];
       }
-      if(lct[i]=="rock" || lct[i]=="artificial") {
+      if(lct[i]=="rock") {
+        Infiltration[i] = std::min(rock_max_infiltration, Snowmelt[i]+Rain[i]);
+        DeepDrainage[i] = Infiltration[i];
+        InfiltrationExcess[i] = Snowmelt[i]+Rain[i] - DeepDrainage[i];
+        Runoff[i] = InfiltrationExcess[i];
+      } else if(lct[i]=="artificial") {
         //all Precipitation becomes surface runoff if cell is rock outcrop/artificial
-        Runoff[i] =  Snowmelt[i]+Rain[i];
-        DeepDrainage[i] = 0.0;
+        InfiltrationExcess[i] =  Snowmelt[i]+Rain[i];
+        Runoff[i] = InfiltrationExcess[i];
       } else if(lct[i]=="water") {
         // water cells receive water from Precipitation
         // but do not export to the atmosphere contribute nor to other cells.
         // any received water drains directly to the aquifer so that it can feed base flow
         DeepDrainage[i] = Snowmelt[i]+ Rain[i];
-        Runoff[i] = 0.0;
+        Infiltration[i] = DeepDrainage[i];
       }
       
        // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
@@ -421,6 +433,8 @@ DataFrame tetisSimulationNonSoilCells(List y,
   }
   DataFrame out = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,
                                     _["Snowmelt"] = Snowmelt, 
+                                    _["Infiltration"] = Infiltration,
+                                    _["InfiltrationExcess"] = InfiltrationExcess,
                                     _["Runoff"] = Runoff,
                                     _["Runon"] = Runon,
                                     _["DeepDrainage"] = DeepDrainage,

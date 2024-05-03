@@ -342,7 +342,8 @@
   # B2. Simulation of non-soil cells
   nonsoilResults <- .tetisSimulationNonSoilCells(y,
                                                  tminVec, tmaxVec, precVec, radVec,
-                                                 waterOrder, queenNeigh, waterQ)
+                                                 waterOrder, queenNeigh, waterQ,
+                                                 watershed_control)
   
   # B3. Simulation of soil cells
   XI <- vector("list", nX)
@@ -431,6 +432,8 @@
       NetRain[i] <- Rain[i]
       Snow[i] <- nonsoilResults$Snow[i]
       Snowmelt[i] <- nonsoilResults$Snowmelt[i]
+      Infiltration[i] <- nonsoilResults$Infiltration[i]
+      InfiltrationExcess[i] <- nonsoilResults$InfiltrationExcess[i]
       Runoff[i] <- nonsoilResults$Runoff[i]
       DeepDrainage[i] <- nonsoilResults$DeepDrainage[i]
       WatershedExport[i] <- nonsoilResults$WatershedExport[i]

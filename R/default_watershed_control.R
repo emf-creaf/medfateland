@@ -9,6 +9,7 @@
 #'    \item{\code{weather_aggregation_factor [= 1]}: An integer specifying the spatial aggregation for interpolated weather.}
 #'    \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements: 
 #'      \itemize{
+#'        \item{\code{rock_max_infiltration [= 10]}: Maximum infiltration rate (mm·day-1) for rock cells.}
 #'        \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
 #'        \item{\code{R_interflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
 #'        \item{\code{R_baseflow [= 10.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
@@ -42,6 +43,7 @@ default_watershed_control<-function(watershed_model = "tetis") {
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
   weather_aggregation_factor <- 1
   tetis_parameters<-list(
+    rock_max_infiltration = 10,
     R_localflow = 1.0,
     R_interflow = 1.0,
     R_baseflow = 10.0
