@@ -284,8 +284,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisSimulationNonSoilCells
-DataFrame tetisSimulationNonSoilCells(List y, NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec);
-RcppExport SEXP _medfateland_tetisSimulationNonSoilCells(SEXP ySEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP) {
+DataFrame tetisSimulationNonSoilCells(List y, NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec, NumericVector waterO, List queenNeigh, List waterQ);
+RcppExport SEXP _medfateland_tetisSimulationNonSoilCells(SEXP ySEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -294,7 +294,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type tmaxVec(tmaxVecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type precVec(precVecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type radVec(radVecSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisSimulationNonSoilCells(y, tminVec, tmaxVec, precVec, radVec));
+    Rcpp::traits::input_parameter< NumericVector >::type waterO(waterOSEXP);
+    Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
+    Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    rcpp_result_gen = Rcpp::wrap(tetisSimulationNonSoilCells(y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -353,7 +356,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
     {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
     {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
-    {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 5},
+    {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 8},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
     {NULL, NULL, 0}

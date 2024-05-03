@@ -132,7 +132,8 @@ with the following columns:
 \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
 \item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
 \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-\item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+\item{\code{Runon}: The amount of water reaching the cell via surface runon (in mm).}
+\item{\code{Runoff}: The amount of water exported from the cell via surface runoff (in mm).}
 \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
 \item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
 \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}

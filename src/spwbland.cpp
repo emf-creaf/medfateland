@@ -345,7 +345,8 @@ NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferExf
   
 // [[Rcpp::export(".tetisSimulationNonSoilCells")]]
 DataFrame tetisSimulationNonSoilCells(List y,
-                                      NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec) {
+                                      NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec,
+                                      NumericVector waterO, List queenNeigh, List waterQ) {
   
   CharacterVector lct = y["land_cover_type"];
   List xList = y["state"];
@@ -388,9 +389,42 @@ DataFrame tetisSimulationNonSoilCells(List y,
        // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
     }
   }
+  //Estimate Runon to wildland/agriculture cells
+  NumericVector Runon(nX,0.0);
+  NumericVector WatershedExport(nX,0.0);
+  for(int i=0;i<nX;i++) {
+    //get next cell in order
+    int iCell = waterO[i]-1; //Decrease index!!!!
+    //Only distribute runoff if the cell is rock or artificial
+    if(lct[iCell]=="rock" || lct[iCell]=="artificial") {
+      //Assign runoff to runon of downhill neighbours
+      double ri_tot =  Runon[iCell] + Runoff[iCell];
+      if(ri_tot>0.0) {
+        double ri = ri_tot;
+        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
+        NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
+        if(ni.size()>0) {
+          for(int j=0;j<ni.size();j++)  {
+            Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
+            ri -= (qi[j]*ri_tot);
+          }
+        }
+        if((sum(qi)>0.0) && (ri > 0.00001)) {
+          Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+          stop("Non-outlet cell with runoff export");
+        }
+        if(sum(qi)==0.0) { // outlet rock cell
+          WatershedExport[iCell] = ri;
+        }
+      }      
+    }
+  }
   DataFrame out = DataFrame::create(_["Rain"] = Rain, _["Snow"] = Snow,
                                     _["Snowmelt"] = Snowmelt, 
-                                    _["Runoff"] = Runoff, _["DeepDrainage"] = DeepDrainage);
+                                    _["Runoff"] = Runoff,
+                                    _["Runon"] = Runon,
+                                    _["DeepDrainage"] = DeepDrainage,
+                                    _["WatershedExport"] = WatershedExport);
   return(out);
 }
 

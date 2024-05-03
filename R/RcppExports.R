@@ -85,8 +85,8 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_tetisOverlandFlows`, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ)
 }
 
-.tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec) {
-    .Call(`_medfateland_tetisSimulationNonSoilCells`, y, tminVec, tmaxVec, precVec, radVec)
+.tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ) {
+    .Call(`_medfateland_tetisSimulationNonSoilCells`, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ)
 }
 
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {

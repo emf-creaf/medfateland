@@ -286,6 +286,7 @@
   NetRain <- rep(0, nX)
   Infiltration <- rep(0, nX)
   Runoff <- rep(0, nX)
+  Runon <- rep(0, nX)
   InfiltrationExcess <- rep(0, nX)
   SaturationExcess <- rep(0, nX)
   DeepDrainage <- rep(0, nX)
@@ -326,7 +327,7 @@
                                                              patchsize)
   
   
-  # B. Weather and local flows
+  # B1. Weather and local flows
   .copySnowpackToSoil(y)
   .tetisModifyKsat(y, watershed_control, FALSE)
   tminVec <- gridMeteo[["MinTemperature"]]
@@ -338,6 +339,12 @@
   wsVec <- gridMeteo[["WindSpeed"]]
   C02Vec <- gridMeteo[["CO2"]]
   
+  # B2. Simulation of non-soil cells
+  nonsoilResults <- .tetisSimulationNonSoilCells(y,
+                                                 tminVec, tmaxVec, precVec, radVec,
+                                                 waterOrder, queenNeigh, waterQ)
+  
+  # B3. Simulation of soil cells
   XI <- vector("list", nX)
   for(i in 1:nX) {
     if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
@@ -351,6 +358,7 @@
         "WindSpeed" = wsVec[i],
         "CO2" = C02Vec[i]
       )
+      Runon[i] <- nonsoilResults$Runon[i]
       XI[[i]] <- list(i = i, 
                       x = y$state[[i]],
                       meteovec = meteovec,
@@ -358,12 +366,11 @@
                       elevation = y$elevation[i], 
                       slope= y$slope[i], 
                       aspect = y$aspect[i],
-                      runon = 0,
+                      runon = Runon[i], # Take runon from non-soil cells to input
                       lateralFlows = lateralFlows[[i]],
                       waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
     }
   }
-  
   if(parallelize) {
     if(is.null(chunk_size)) chunk_size <- floor(nX/num_cores)
     cl<-parallel::makeCluster(num_cores)
@@ -382,9 +389,8 @@
   }
   .copySnowpackFromSoil(y)
   .tetisModifyKsat(y, watershed_control, TRUE)
-  nonsoilResults <- .tetisSimulationNonSoilCells(y,
-                                                 tminVec, tmaxVec, precVec, radVec)
   
+  #C1. Process results from soil cells
   for(i in 1:nX) {
     if((y$land_cover_type[i]=="wildland") || (y$land_cover_type[i]=="agriculture")) {
       s <- localResults[[i]]$simulation_results
@@ -411,19 +417,25 @@
       } else {
         Transpiration[i] <- DB["Transpiration"]
       }
-    } else { # Fill output vectors for non-soil cells
+    } 
+  }
+
+  #C2. Overland surface runoff from soil cells diverted to outlets
+  WatershedExport = .tetisOverlandFlows(Runoff, AquiferExfiltration,
+                                        waterOrder, queenNeigh, waterQ)
+  
+  #C3. Process results from non-soil cells
+  for(i in 1:nX) {
+    if((y$land_cover_type[i]!="wildland") && (y$land_cover_type[i]!="agriculture")) {
       Rain[i] <- nonsoilResults$Rain[i]
       NetRain[i] <- Rain[i]
       Snow[i] <- nonsoilResults$Snow[i]
       Snowmelt[i] <- nonsoilResults$Snowmelt[i]
       Runoff[i] <- nonsoilResults$Runoff[i]
       DeepDrainage[i] <- nonsoilResults$DeepDrainage[i]
+      WatershedExport[i] <- nonsoilResults$WatershedExport[i]
     }
   }
-
-  #C. Overland surface runoff diverted to outlets
-  WatershedExport = .tetisOverlandFlows(Runoff, AquiferExfiltration,
-                                     waterOrder, queenNeigh, waterQ)
   
   #D. Applies capillarity rise and deep drainage to aquifer for next step
   .tetisApplyLocalFlowsToAquifer(y,
@@ -437,7 +449,8 @@
                              "Snowmelt" = Snowmelt, "NetRain" = NetRain, 
                              "Interception" = Rain - NetRain,
                              "Infiltration" = Infiltration,
-                             "Runoff" = Runoff,  "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
+                             "Runon" = Runon,  "Runoff" = Runoff,  
+                             "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
                              "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
                              "AquiferExfiltration" = AquiferExfiltration,
                              "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput, "InterflowBalance" = InterflowBalance,
@@ -758,12 +771,12 @@
     
     vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow",
               "Snowmelt", "Interception", "NetRain",  
-              "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runoff", 
+              "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
               "DeepDrainage", "CapillarityRise", 
               "SoilEvaporation", "Transpiration", "HerbTranspiration",
               "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration", 
               "SWE", "SoilVol","RWC", "WTD", "DTA")
-    varsSum <- c("PET","Runoff", "Rain", "NetRain", "Interception", "Snow", "Snowmelt",
+    varsSum <- c("PET","Runon","Runoff", "Rain", "NetRain", "Interception", "Snow", "Snowmelt",
                  "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepDrainage", "SaturationExcess",
                  "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
                  "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance")
@@ -779,7 +792,8 @@
                                    Infiltration = rep(0, nDays),
                                    InfiltrationExcess = rep(0, nDays),
                                    SaturationExcess = rep(0, nDays),
-                                   Runoff = rep(0, nDays),
+                                   CellRunon = rep(0, nDays),
+                                   CellRunoff = rep(0, nDays),
                                    DeepDrainage = rep(0, nDays),
                                    CapillarityRise = rep(0, nDays),
                                    SoilEvaporation = rep(0,nDays),
@@ -799,7 +813,8 @@
                                        Infiltration = rep(0, nDays),
                                        InfiltrationExcess = rep(0, nDays),
                                        SaturationExcess = rep(0, nDays),
-                                       Runoff = rep(0, nDays),
+                                       CellRunon = rep(0, nDays),
+                                       CellRunoff = rep(0, nDays),
                                        DeepDrainage = rep(0, nDays),
                                        CapillarityRise = rep(0, nDays),
                                        SoilEvaporation = rep(0,nDays),
@@ -1016,7 +1031,8 @@
       LandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess, na.rm=T)/nCells
       LandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise, na.rm=T)/nCells
       LandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration, na.rm=T)/nCells
-      LandscapeBalance$Runoff[day] <- sum(res_day$Runoff, na.rm=T)/nCells
+      LandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff, na.rm=T)/nCells
+      LandscapeBalance$CellRunon[day] <- sum(res_day$Runon, na.rm=T)/nCells
       LandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration, na.rm=T)/nCells
       LandscapeBalance$WatershedExport[day] <- (sum(res_day$WatershedExport[outlets], na.rm=T)/nCells)
       LandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance, na.rm=T)/nCells
@@ -1030,7 +1046,8 @@
       SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$Runoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$CellRunon[day] <- sum(res_day$Runon[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Snowmelt[day] <- sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$NetRain[day] <- sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$Interception[day] <- (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
@@ -1075,7 +1092,8 @@
     Infiltrationsum <- sum(LandscapeBalance$Infiltration, na.rm=T)
     Snowsum <- sum(LandscapeBalance$Snow, na.rm=T)
     Snowmeltsum <- sum(LandscapeBalance$Snowmelt, na.rm=T)
-    Runoffsum <- sum(LandscapeBalance$Runoff, na.rm=T)
+    CellRunoffsum <- sum(LandscapeBalance$CellRunoff, na.rm=T)
+    CellRunonsum <- sum(LandscapeBalance$CellRunon, na.rm=T)
     DeepDrainagesum <- sum(LandscapeBalance$DeepDrainage, na.rm=T)
     CapillarityRisesum <- sum(LandscapeBalance$CapillarityRise, na.rm=T)
     SaturationExcesssum <- sum(LandscapeBalance$SaturationExcess, na.rm=T)
@@ -1094,7 +1112,8 @@
     SoilInfiltrationsum <- sum(SoilLandscapeBalance$Infiltration, na.rm=T)
     SoilSnowsum <- sum(SoilLandscapeBalance$Snow, na.rm=T)
     SoilSnowmeltsum <- sum(SoilLandscapeBalance$Snowmelt, na.rm=T)
-    SoilRunoffsum <- sum(SoilLandscapeBalance$Runoff, na.rm=T)
+    SoilCellRunoffsum <- sum(SoilLandscapeBalance$CellRunoff, na.rm=T)
+    SoilCellRunonsum <- sum(SoilLandscapeBalance$CellRunon, na.rm=T)
     SoilSaturationExcesssum <- sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
     SoilDeepDrainagesum <- sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
     SoilCapillarityRisesum <- sum(SoilLandscapeBalance$CapillarityRise, na.rm=T)
@@ -1246,7 +1265,8 @@
 #'           \item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
 #'           \item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
 #'           \item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-#'           \item{\code{Runoff}: The amount of water exported via surface runoff (in mm).}
+#'           \item{\code{Runon}: The amount of water reaching the cell via surface runon (in mm).}
+#'           \item{\code{Runoff}: The amount of water exported from the cell via surface runoff (in mm).}
 #'           \item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
 #'           \item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
 #'           \item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
