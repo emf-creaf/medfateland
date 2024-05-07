@@ -2,10 +2,11 @@ pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
+  LandscapeInputs: LandscapeInputs.html
   ManagementScenarios: ManagementScenarios.html
   PackageOverview: PackageOverview.html
   SpatiallyUncoupledSimulations: SpatiallyUncoupledSimulations.html
   TetisWatershedParameters: TetisWatershedParameters.html
   WatershedSimulations: WatershedSimulations.html
-last_built: 2024-05-03T10:49Z
+last_built: 2024-05-07T17:24Z
 

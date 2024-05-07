@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/LandscapeInputs.html</loc>
+  </url>
+  <url>
     <loc>/articles/ManagementScenarios.html</loc>
   </url>
   <url>
@@ -31,7 +34,13 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/add_soilgrids.html</loc>
+  </url>
+  <url>
     <loc>/reference/create_fire_regime.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_landscape.html</loc>
   </url>
   <url>
     <loc>/reference/create_management_scenario.html</loc>
@@ -62,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/fordyn_scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/impute_forests.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
