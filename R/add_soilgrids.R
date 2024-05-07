@@ -39,14 +39,14 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
   coords <- sf::st_coordinates(x_lonlat)
   
-  npoints = nrow(coords)
+  npoints <- nrow(coords)
   nsoil <- sum(x$land_cover_type %in% c("wildland", "agriculture"))
   
-  url.base = "https://rest.isric.org/soilgrids/v2.0/properties/query?"
+  url.base <- "https://rest.isric.org/soilgrids/v2.0/properties/query?"
   
   
-  props_str = "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
-  depths_str = "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
+  props_str <- "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
+  depths_str <- "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
   
   if(!("soil" %in% names(x))) {
     if(verbose) cli::cli_progress_step("Defining column 'soil'")
@@ -61,12 +61,12 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
       if(verbose) cli::cli_progress_update()
       if(x$land_cover_type[i] %in% c("wildland", "agriculture")) {
         tryCatch( {
-          resSG = data.frame(matrix(nrow = 6, ncol = 6))
-          names(resSG) = c("widths", "clay", "sand", "om", "bd", "rfc")
-          resSG$widths = c(50,100,150,300,400,1000)
-          coord_str = paste0("lon=",coords[i,1],"&lat=", coords[i,2])
-          dest = paste(coord_str, props_str, depths_str,"value=mean",sep="&")
-          url1 = paste0(url.base, dest)
+          resSG <- data.frame(matrix(nrow = 6, ncol = 6))
+          names(resSG) <- c("widths", "clay", "sand", "om", "bd", "rfc")
+          resSG$widths <- c(50,100,150,300,400,1000)
+          coord_str <- paste0("lon=",coords[i,1],"&lat=", coords[i,2])
+          dest <- paste(coord_str, props_str, depths_str,"value=mean",sep="&")
+          url1 <- paste0(url.base, dest)
           path1 <- httr::GET(url1, httr::add_headers("accept"= "application/json"))
           ans.text <- httr::content(path1, as = "text", encoding = "utf-8")
           ans <- jsonlite::fromJSON(ans.text)
@@ -89,7 +89,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
           }
           if(is.null(x$soil[[i]]) || replace_existing) {
             if(!is.null(widths)) {
-              x$soil[[i]] = medfate::soil_mergeLayers(resSG, widths)
+              x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
             } else {
               x$soil[[i]] = resSG
             }
@@ -142,7 +142,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
         }
         if(is.null(x$soil[[i]]) || replace_existing) {
           if(!is.null(widths)) {
-            x$soil[[i]] = medfate::soil_mergeLayers(resSG, widths)
+            x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
           } else {
             x$soil[[i]] = resSG
           }
