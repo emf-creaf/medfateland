@@ -16,6 +16,10 @@ articles:
   contents:
     - starts_with("TetisWatershedParameters")
 reference:
+- title: Input preparation
+  contents:
+  - create_landscape
+  
 - title: Example data
   desc:  Example data sets for distributed stands and watershed
   contents:
@@ -27,7 +31,7 @@ reference:
   - landscape_summary
   - extract_variables
 
-- title: Model inputs defaults
+- title: Default parameters
   desc:  Defaults for model inputs
   contents:
   - default_watershed_control

@@ -2,12 +2,13 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
-# Version 2.2.2
-- infiltration and runoff in non-soil cells
+# Version 2.3.0
+- Infiltration and runoff in non-soil cells
+- Helper functions to create landscape sf objects
 
 # Version 2.2.1
-- weather aggregation for interpolation
-- new functions spwb_land_day and spwb_growth_day
+- Weather aggregation for interpolation
+- New functions spwb_land_day and spwb_growth_day
 
 # Version 2.2.0
 - Compliance with medfate ver. 4.1.0
