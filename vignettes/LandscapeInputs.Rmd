@@ -1,0 +1,104 @@
+---
+title: "Landscape inputs"
+author: "Miquel De Cáceres / Núria Aquilué"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Landscape inputs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(medfate)
+library(medfateland)
+```
+
+## Introduction
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Preparation
+
+Here we load a small example watershed included with the package, that can be used to understand the inputs required:
+
+```{r, warning=FALSE}
+data("example_watershed")
+x <- example_watershed[,-c(1:ncol(example_watershed)), drop = FALSE]
+x
+```
+
+## Landscape creation
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r}
+dataset_path <- "~/OneDrive/EMF_datasets/"
+dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"))
+```
+
+
+```{r}
+lcm <- terra::rast(paste0(dataset_path,"LandCover/Sources/Catalunya/cobertes-sol-v1r0-2018.tif"))
+```
+
+
+```{r}
+agriculture <- 1:6
+wildland <- c(7:17,20)
+rock <- 18:19
+artificial <- 21:35
+water <- 36:41
+```
+
+```{r}
+y <- create_landscape(x, dem = dem, land_cover_map = lcm, 
+                      wildland = wildland, 
+                      agriculture = agriculture, 
+                      rock = rock, 
+                      artificial = artificial, 
+                      water = water)
+```
+
+```{r}
+y
+```
+```{r}
+rm(lcm)
+gc()
+```
+
+
+## Forest imputation
+```{r}
+forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"))
+```
+
+```{r}
+nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"
+sf_nfi <- readRDS(paste0(nfi_path, "Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds"))
+```
+
+```{r}
+y <- impute_forests(y, sf_nfi = sf_nfi, dem, forest_map, varClass = "Class")
+```
+
+
+## Soil parameterization
+
+```{r}
+soilgrids_path = "~/OneDrive/EMF_datasets/Soils/Sources/Global/SoilGrids/Spain/"
+y <- add_soilgrids(y, soilgrids_path = soilgrids_path, verbose = TRUE)
+```
+
+## Initialization test
+
+```{r}
+z <- initialize_landscape(y, SpParamsMED, defaultControl())
+```

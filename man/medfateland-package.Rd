@@ -23,6 +23,8 @@ Author: Aitor Améztegui
 Author: María González
 \href{https://orcid.org/0000-0002-2227-8404}{ORCID}
 
+Author: Núria Aquilué
+
 Contributor: Mario Beltrán
 
 Contributor: Roberto Molowny

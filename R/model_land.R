@@ -1205,7 +1205,7 @@
 #'         and resprouting.}
 #' }
 #' 
-#' @param r An object of class \code{\link{rast}}, defining the raster topology.
+#' @param r An object of class \code{\link{SpatRaster}}, defining the raster topology.
 #' @param sf An object of class \code{\link{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}

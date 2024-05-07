@@ -55,7 +55,7 @@ fordyn_land(
 )
 }
 \arguments{
-\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
+\item{r}{An object of class \code{\link{SpatRaster}}, defining the raster topology.}
 
 \item{sf}{An object of class \code{\link{sf}} with the following columns:
 \itemize{

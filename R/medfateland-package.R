@@ -16,6 +16,8 @@
 #' Author: María González
 #' [ORCID](https://orcid.org/0000-0002-2227-8404)
 #' 
+#' Author: Núria Aquilué
+#' 
 #' Contributor: Mario Beltrán
 #' 
 #' Contributor: Roberto Molowny

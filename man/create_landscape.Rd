@@ -13,20 +13,22 @@ create_landscape(
   rock = NULL,
   artificial = NULL,
   water = NULL,
-  progress = TRUE
+  verbose = TRUE
 )
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}}}
 
-\item{dem}{A digital elevation model (class \code{\link{rast}}) with meters as units}
+\item{dem}{A digital elevation model (class \code{\link{SpatRaster}}) with meters as units}
 
-\item{land_cover_map}{An object of class \code{\link{rast}} of land cover type}
+\item{land_cover_map}{An object of class \code{\link{SpatRaster}} of land cover type}
 
 \item{wildland, agriculture, rock, artificial, water}{Strings indicating the mapping from the legend of land_cover_map.}
+
+\item{verbose}{A logical flag to print console output}
 }
 \value{
-A modified object of class 'sf' with columns:
+A modified object of class \code{\link{sf}} with columns:
 \itemize{
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{slope}: Slope (in degrees).}

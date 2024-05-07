@@ -19,6 +19,8 @@ reference:
 - title: Input preparation
   contents:
   - create_landscape
+  - impute_forests
+  - add_soilgrids
   
 - title: Example data
   desc:  Example data sets for distributed stands and watershed
