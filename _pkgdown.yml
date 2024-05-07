@@ -4,9 +4,10 @@ home:
     href: https://emf-creaf.github.io/medfatebook/index.html
 
 articles:
-- title: Overview
+- title: Introduction
   contents:
     - starts_with("Package")
+    - starts_with("LandscapeInputs")
 - title: Running simulation models
   contents:
     - starts_with("SpatiallyUncoupled")

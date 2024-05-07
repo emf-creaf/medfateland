@@ -18,36 +18,58 @@ library(medfate)
 library(medfateland)
 ```
 
-## Introduction
+## Aim
 
-## Vignette Info
+This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting from a set of coordinates. 
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html). 
 
-## Preparation
+## Target coordinates
 
-Here we load a small example watershed included with the package, that can be used to understand the inputs required:
+Any spatial dataset should begin with the definition of spatial elements. Here we will use a set of coordinates taken from the package, as example. In particular we have 66 target points defined by coordinates in EPSG:32631 (UTM for fuse 31) projection.
 
-```{r, warning=FALSE}
+```{r, include=FALSE}
 data("example_watershed")
-x <- example_watershed[,-c(1:ncol(example_watershed)), drop = FALSE]
-x
+cc <- sf::st_coordinates(example_watershed)
 ```
 
-## Landscape creation
+The coordinates are in form of a matrix with dimensions:
+```{r}
+dim(cc)
+```
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+and here is the beginning of the data:
+```{r}
+head(cc)
+```
+
+The first step is to use package `sf` to define a spatial object of whose simple features are our target points:
+
+```{r}
+x <- sf::st_as_sf(data.frame(cc), 
+                  coords = c("X", "Y"), 
+                  crs = "EPSG:32631")
+```
+
+
+## Topography and land cover type
+
+Once an object `sf` has been defined with target locations, we need to determine topographic features (elevation, slope, aspect) and land cover corresponding to those locations. You should have access to a Digital Elevation Model (DEM) at a desired resolution. Here we will use a DEM raster for Catalonia at 30 m resolution, which we load using package `terra`:
 
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"))
+dem
 ```
 
+Similarly, you should have downloaded a land cover map, in this case we will use a land cover raster for Catalonia, issued in 2018:
 
 ```{r}
 lcm <- terra::rast(paste0(dataset_path,"LandCover/Sources/Catalunya/cobertes-sol-v1r0-2018.tif"))
+lcm
 ```
 
+You should examine the legend of their land cover map and decide how to map legend elements to the five land cover types used in **medfateland**. After inspecting our land cover map legend, we define the following vectors to perform the legend mapping:
 
 ```{r}
 agriculture <- 1:6
@@ -57,6 +79,7 @@ artificial <- 21:35
 water <- 36:41
 ```
 
+Having these inputs, we can use function `create_landscape()` to add topographic and land cover features to our starting `sf`:
 ```{r}
 y <- create_landscape(x, dem = dem, land_cover_map = lcm, 
                       wildland = wildland, 
@@ -66,39 +89,82 @@ y <- create_landscape(x, dem = dem, land_cover_map = lcm,
                       water = water)
 ```
 
+We can examine the result using:
 ```{r}
 y
 ```
-```{r}
+```{r, echo = FALSE, include = FALSE}
 rm(lcm)
 gc()
 ```
 
 
 ## Forest imputation
+
+The next step is to define `forest` objects for our simulations. Forests should be defined for all target locations whose land cover is defined as `wildland`. Arguably, there are multiple ways to address the goal of defining forest objects. Here we will assume what we believe will be the most common situation. While you may not have access to forest inventory plots on the target locations, it is quite usual to have access to (national) forest inventory data and some kind of forest map where polygons or raster cells describe the distribution of forest (or shrubland) types. Our task here will be to perform imputations of forest inventory plots to our target locations according to some criteria.
+
+We start by loading the Spanish Forest Map (1:25000) for the region of Catalonia, which is in vector format, using package `terra`:
 ```{r}
 forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"))
+forest_map
 ```
 
+We also load an `sf` object that contains coordinates and forest objects corresponding to the Third Spanish Forest Inventory for Catalonia:
 ```{r}
 nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"
 sf_nfi <- readRDS(paste0(nfi_path, "Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds"))
+sf_nfi
 ```
+Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
+
+Having these inputs, we can use function `impute_forests()` to perform the imputation for us (this normally take some time):
 
 ```{r}
 y <- impute_forests(y, sf_nfi = sf_nfi, dem, forest_map, varClass = "Class")
 ```
 
+Details are given in the help manual of the function, but shortly, the function performs the imputation of forest inventory plots on target locations provided that they correspond to the same forest class, defined in the forest map. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope).
+
+We can see the result with an extra column `forest` here:
+
+```{r}
+y
+```
+
+Only `wildland` locations will have a `forest` object, for example:
+
+```{r}
+y$forest[[1]]
+```
+
 
 ## Soil parameterization
+
+Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution. Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target cells is rather fast using this approach: 
 
 ```{r}
 soilgrids_path = "~/OneDrive/EMF_datasets/Soils/Sources/Global/SoilGrids/Spain/"
 y <- add_soilgrids(y, soilgrids_path = soilgrids_path, verbose = TRUE)
 ```
 
+And the result has an extra column `soil`:
+```{r}
+y
+```
+
+The elements of the list are the usual data frames of soil properties in **medfate**:
+```{r}
+y$soil[[1]]
+```
+
+SoilGrids does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. We will come to this issue in future updates of this vignette.
+
 ## Initialization test
+
+We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
 z <- initialize_landscape(y, SpParamsMED, defaultControl())
 ```
+
+Other variables may be needed, depending on the simulation function we want to use, but here we illustrated the basic ones.

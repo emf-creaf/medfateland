@@ -44,6 +44,15 @@ A modified object of class \code{\link{sf}} with column 'forest'.
 \description{
 Performs imputation of forest objects from a forest inventory using a forest class map to match composition and topography as covariates.
 }
+\details{
+The function performs a simplistic imputation of forest inventory plots on target locations provided that
+they correspond to the same forest class, defined in the forest map. Among the multiple stands that
+can have the target forest class, the function chooses the one that has the most similar elevation
+and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). Both topographic
+features are standardized to zero mean and unit standard deviation, to make their influence on the imputation
+equal. This imputation method will be more or less successful depending on the resolution of forest classes and
+the number of forest inventory plots available for each of them.
+}
 \examples{
 \dontrun{
   # See vignette 'Landscape inputs'

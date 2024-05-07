@@ -28,8 +28,8 @@ remotes::install_github("emf-creaf/medfateland")
 
 ## Documentation
 
-A number of *vignettes* illustrate how to run simulation models in
-**medfateland**. These can be found at the package
+A number of *vignettes* illustrate how to initialize inputs and run
+simulation models in **medfateland**. These can be found at the package
 [website](https://emf-creaf.github.io/medfateland/).
 
 The user is also advised to read articles included in the
