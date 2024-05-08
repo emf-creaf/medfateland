@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
       </span>
     </div>
 
@@ -93,6 +93,12 @@
 to retrieve the soil physical and chemical characteristics for a site (Hengl <em>et al</em>. 2007), selected
 by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
 averages the values of soil grid layers depending on the overlap between soil layer definitions.</p>
+<p>If <code>soilgrids_path != NULL</code> the function will read SoilGrid rasters from the file disk. Folders need to be defined
+for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from <code>soilgrids_path</code> should be named:</p>
+<p><em>var</em>/<em>var</em>_<em>layer</em>_mean.tif</p>
+<p>where <em>var</em> is one of the above and <em>layer</em> is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"</p>
+<p>If <code>x</code> contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
+cover types.</p>
     </div>
     <div id="references">
     <h2>References</h2>
