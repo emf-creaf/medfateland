@@ -37,11 +37,11 @@ by its coordinates. Also, in case the depths are not the default ones in the Soi
 averages the values of soil grid layers depending on the overlap between soil layer definitions.
 
 If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
-for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"), with format:
+for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
 
-{var}/{var}_{layer}_mean.tif
+\emph{var}/\emph{var}_\emph{layer}_mean.tif
 
-where {var} is one of the above and {layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" and "100-200cm"
+where \emph{var} is one of the above and \emph{layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"
 
 If \code{x} contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
 cover types.
