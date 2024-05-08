@@ -168,28 +168,28 @@ mapping:</p>
 <code><a href="../reference/create_landscape.html">create_landscape()</a></code> to add topographic and land cover
 features to our starting <code>sf</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_landscape.html">create_landscape</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span>, land_cover_map <span class="op">=</span> <span class="va">lcm</span>, </span>
-<span>                      wildland <span class="op">=</span> <span class="va">wildland</span>, </span>
-<span>                      agriculture <span class="op">=</span> <span class="va">agriculture</span>, </span>
-<span>                      rock <span class="op">=</span> <span class="va">rock</span>, </span>
-<span>                      artificial <span class="op">=</span> <span class="va">artificial</span>, </span>
-<span>                      water <span class="op">=</span> <span class="va">water</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_landscape.html">create_landscape</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span>, land_cover_map <span class="op">=</span> <span class="va">lcm</span>, </span>
+<span>                        wildland <span class="op">=</span> <span class="va">wildland</span>, </span>
+<span>                        agriculture <span class="op">=</span> <span class="va">agriculture</span>, </span>
+<span>                        rock <span class="op">=</span> <span class="va">rock</span>, </span>
+<span>                        artificial <span class="op">=</span> <span class="va">artificial</span>, </span>
+<span>                        water <span class="op">=</span> <span class="va">water</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'id'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography</span></span></code></pre>
 <pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[12.6s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[13s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting land cover</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting land cover <span style="color: #B2B2B2;">[31ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting land cover <span style="color: #B2B2B2;">[45ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <p>We can examine the result using:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y_1</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 5 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
@@ -211,22 +211,32 @@ features to our starting <code>sf</code>:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="forest-imputation">Forest imputation<a class="anchor" aria-label="anchor" href="#forest-imputation"></a>
+<h2 id="forest-parameterization">Forest parameterization<a class="anchor" aria-label="anchor" href="#forest-parameterization"></a>
 </h2>
 <p>The next step is to define <code>forest</code> objects for our
 simulations. Forests should be defined for all target locations whose
-land cover is defined as <code>wildland</code>. Arguably, there are
-multiple ways to address the goal of defining forest objects. Here we
-will assume what we believe will be the most common situation. While you
-may not have access to forest inventory plots on the target locations,
-it is quite usual to have access to (national) forest inventory data and
-some kind of forest map where polygons or raster cells describe the
-distribution of forest (or shrubland) types. Our task here will be to
-perform imputations of forest inventory plots to our target locations
-according to some criteria.</p>
-<p>We start by loading the Spanish Forest Map (1:25000) for the region
-of Catalonia, which is in vector format, using package
-<code>terra</code>:</p>
+land cover is defined as <code>wildland</code>. When forest inventory
+plots are not be available for the target locations, one must resort on
+imputations.</p>
+<ol style="list-style-type: decimal">
+<li>Forest inventory data from nearby locations. National forest
+inventories are ideal in this respect.</li>
+<li>A forest map where polygons or raster cells describe the
+distribution of forest (or shrubland) types.</li>
+<li>Raster source of vegetation structure (i.e. mean tree height or
+basal area), derived from aerial or satellite LiDAR missions.</li>
+</ol>
+<p>Our task here will be to perform imputations of forest inventory
+plots to our target locations according to some criteria and, if
+possible, to correct the forest structure on those locations according
+to available data.</p>
+<div class="section level3">
+<h3 id="forest-imputation">Forest imputation<a class="anchor" aria-label="anchor" href="#forest-imputation"></a>
+</h3>
+<p>A map of forest types in the target area is important to determine
+dominant tree or shrub species. We start by loading the Spanish Forest
+Map (1:25000) for the region of Catalonia, which is in vector format,
+using package <code>terra</code>:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">forest_map</span></span></code></pre></div>
@@ -241,9 +251,12 @@ of Catalonia, which is in vector format, using package
 <span><span class="co">##  values      : Pinus halepensis_3</span></span>
 <span><span class="co">##                Pinus halepensis_3</span></span>
 <span><span class="co">##                Pinus halepensis_3</span></span></code></pre>
-<p>We also load an <code>sf</code> object that contains coordinates and
-forest objects corresponding to the Third Spanish Forest Inventory for
-Catalonia:</p>
+<p>Second, we need forest inventory data for imputations. Arguably, this
+is the hardest part. Let’s assume one has access to a such data already
+in format for package <em>medfateland</em> (how to build such data set
+will be illustrated in a different vignette). We also load an
+<code>sf_nfi</code> object that contains coordinates and forest objects
+corresponding to the Third Spanish Forest Inventory for Catalonia:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nfi_path</span> <span class="op">&lt;-</span> <span class="st">"/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"</span></span>
 <span><span class="va">sf_nfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">nfi_path</span>, <span class="st">"Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds"</span><span class="op">)</span><span class="op">)</span></span>
@@ -272,50 +285,55 @@ Catalonia:</p>
 <p>Note that this is already an <code>sf</code> object suitable for
 simulations, but refers to the locations of the forest inventory plots,
 not to our target area.</p>
-<p>Having these inputs, we can use function
-<code><a href="../reference/impute_forests.html">impute_forests()</a></code> to perform the imputation for us (this
-normally take some time):</p>
+<p>Having these two inputs (forest map and forest inventory data), we
+can use function <code><a href="../reference/impute_forests.html">impute_forests()</a></code> to perform the imputation
+for us (this normally take some time):</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_forests.html">impute_forests</a></span><span class="op">(</span><span class="va">y</span>, sf_nfi <span class="op">=</span> <span class="va">sf_nfi</span>, <span class="va">dem</span>, <span class="va">forest_map</span>, varClass <span class="op">=</span> <span class="st">"Class"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_forests.html">impute_forests</a></span><span class="op">(</span><span class="va">y_1</span>, sf_nfi <span class="op">=</span> <span class="va">sf_nfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
+<span>                      forest_map <span class="op">=</span> <span class="va">forest_map</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating northing-slope</span></span></code></pre>
 <pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating northing-slope <span style="color: #B2B2B2;">[27.8s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating northing-slope <span style="color: #B2B2B2;">[34.4s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating mean/sd topography</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating mean/sd topography <span style="color: #B2B2B2;">[10.8s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating topography mean and sd values</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating topography mean and sd values <span style="color: #B2B2B2;">[12s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'x'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'x' <span style="color: #B2B2B2;">[26ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'x' <span style="color: #B2B2B2;">[39ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'sf_nfi'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'sf_nfi' <span style="color: #B2B2B2;">[547ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'sf_nfi' <span style="color: #B2B2B2;">[745ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'x'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'x' <span style="color: #B2B2B2;">[5.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'x' <span style="color: #B2B2B2;">[5.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'sf_nfi'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'sf_nfi' <span style="color: #B2B2B2;">[4.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'sf_nfi' <span style="color: #B2B2B2;">[5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Equidistant conic coordinates</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Equidistant conic coordinates <span style="color: #B2B2B2;">[89ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'forest'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'forest' <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'forest' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Imputation</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Imputation <span style="color: #B2B2B2;">[234ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Imputation <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<p>Details are given in the help manual of the function, but shortly,
-the function performs the imputation of forest inventory plots on target
-locations provided that they correspond to the same forest class,
-defined in the forest map. Among the multiple plots that can fulfill
-this criterion, the function chooses the plot that has the most similar
-elevation and position in the N-to-S slopes (i.e. the product of the
-cosine of aspect and slope).</p>
-<p>We can see the result with an extra column <code>forest</code>
-here:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span></span></code></pre></div>
+<p>For each target location, the function selects forest inventory plots
+that correspond to the same forest class, defined in the forest map, and
+are geographically closer than a pre-specified maximum distance. Among
+the multiple plots that can fulfill this criterion, the function chooses
+the plot that has the most similar elevation and position in the N-to-S
+slopes (i.e. the product of the cosine of aspect and slope). More
+details can be found in the documentation of
+<code><a href="../reference/impute_forests.html">impute_forests()</a></code>.</p>
+<p>The resulting <code>sf</code> has an extra column named
+<code>forest</code>:</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 6 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
@@ -338,28 +356,273 @@ here:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: forest &lt;list&gt;</span></span></span></code></pre>
 <p>Only <code>wildland</code> locations will have a <code>forest</code>
 object, for example:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## $treeData</span></span>
-<span><span class="co">##              Species  DBH Height          N      Z50  Z95</span></span>
-<span><span class="co">## 1   Pinus sylvestris 14.1    550   31.83099 346.9401 2006</span></span>
-<span><span class="co">## 2 Juniperus communis  5.0    200  127.32395 199.9600  980</span></span>
-<span><span class="co">## 3 Buxus sempervirens  1.5    100 1273.23955 218.5410 1100</span></span>
-<span><span class="co">## 4 Juniperus communis  1.5    100 1273.23955 199.9600  980</span></span>
+<span><span class="co">##               Species      DBH    Height          N      Z50  Z95</span></span>
+<span><span class="co">## 1    Pinus sylvestris 38.20000 1250.0000   14.14711 346.9401 2006</span></span>
+<span><span class="co">## 2    Pinus sylvestris 35.10000 1000.0000   14.14711 346.9401 2006</span></span>
+<span><span class="co">## 3    Pinus sylvestris 28.88046  996.8506   56.58842 346.9401 2006</span></span>
+<span><span class="co">## 4    Pinus sylvestris 25.68895  945.0069   99.02974 346.9401 2006</span></span>
+<span><span class="co">## 5    Pinus sylvestris 20.98394  955.9217  190.98593 346.9401 2006</span></span>
+<span><span class="co">## 6    Pinus sylvestris 15.35000  900.0000   31.83099 346.9401 2006</span></span>
+<span><span class="co">## 7    Pinus sylvestris 10.05560  528.7931  381.97186 346.9401 2006</span></span>
+<span><span class="co">## 8  Juniperus communis  5.00000  250.0000  127.32395 199.9600  980</span></span>
+<span><span class="co">## 9    Pinus sylvestris  5.00000  350.0000  636.61977 346.9401 2006</span></span>
+<span><span class="co">## 10 Amelanchier ovalis  1.50000  100.0000 1273.23955 392.2431 2353</span></span>
+<span><span class="co">## 11 Buxus sempervirens  1.50000  100.0000 2546.47909 218.5410 1100</span></span>
+<span><span class="co">## 12 Juniperus communis  1.50000  100.0000  318.30989 199.9600  980</span></span>
+<span><span class="co">## 13   Pinus sylvestris  1.50000  100.0000 2546.47909 346.9401 2006</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $shrubData</span></span>
-<span><span class="co">##       Species Cover Height      Z50  Z95</span></span>
-<span><span class="co">## 1 Retama spp.     5     80 291.5464 1600</span></span>
-<span><span class="co">## 2 Thymus spp.    10     20 110.8215  455</span></span>
+<span><span class="co">##     Species Cover Height      Z50 Z95</span></span>
+<span><span class="co">## 1 Ulex spp.     2     30 201.8408 992</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $herbCover</span></span>
-<span><span class="co">## [1] 40</span></span>
+<span><span class="co">## [1] 5</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $herbHeight</span></span>
-<span><span class="co">## [1] 20</span></span>
+<span><span class="co">## [1] 30</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"class")</span></span>
 <span><span class="co">## [1] "forest" "list"</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="forest-imputation-with-structure-correction">Forest imputation with structure correction<a class="anchor" aria-label="anchor" href="#forest-imputation-with-structure-correction"></a>
+</h3>
+<p>The former imputation result would be already useful for simulations,
+but the forest structure in the target locations can be very different
+than that of the forest inventory used as reference, even if the forest
+types are the same. Therefore, it is advisable to correct the forest
+structure with available information.</p>
+<p>There are several global products made recently available, that
+combine satellite LiDAR observations with other information, such as <a href="https://doi.org/10.1029/2011JG001708" class="external-link">Simard et al. (2011)</a>, <a href="https://doi.org/10.1016/j.rse.2020.112165" class="external-link">Potapov et
+al. (2021)</a> or <a href="https://doi.org/10.1038/s41559-023-02206-6" class="external-link">Lang et
+al. (2023)</a>. Alternatively, airborne LiDAR products are available for
+some countries and regions. Here we will use structural information
+derived from LiDAR flights in Catalonia. First we will load a mean tree
+height raster at 20-m resolution:</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">height_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">height_map</span></span></code></pre></div>
+<pre><code><span><span class="co">## class       : SpatRaster </span></span>
+<span><span class="co">## dimensions  : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## resolution  : 20, 20  (x, y)</span></span>
+<span><span class="co">## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
+<span><span class="co">## source      : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif </span></span>
+<span><span class="co">## name        : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017</span></span></code></pre>
+<p>This resolution is finer than the size of forest inventory plots, and
+the errors in the plot coordinates may lead to missing height data (the
+map only deals with areas with forest cover). Hence, we aggregate the
+raster to 100-m resolution:</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">height_map_100</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">height_map</span>, fact <span class="op">=</span> <span class="fl">5</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<p>We call again <code><a href="../reference/impute_forests.html">impute_forests()</a></code> to perform the imputation
+while correcting tree height:</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_forests.html">impute_forests</a></span><span class="op">(</span><span class="va">y_1</span>, sf_nfi <span class="op">=</span> <span class="va">sf_nfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
+<span>                      forest_map <span class="op">=</span> <span class="va">forest_map</span>, height_map <span class="op">=</span> <span class="va">height_map_100</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating northing-slope</span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating northing-slope <span style="color: #B2B2B2;">[26.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating topography mean and sd values</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating topography mean and sd values <span style="color: #B2B2B2;">[10s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'x' <span style="color: #B2B2B2;">[29ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'sf_nfi' <span style="color: #B2B2B2;">[553ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'x' <span style="color: #B2B2B2;">[5.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'sf_nfi' <span style="color: #B2B2B2;">[4.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting height for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting height for 'x' <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting height for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting height for 'sf_nfi' <span style="color: #B2B2B2;">[147ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Equidistant conic coordinates</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Equidistant conic coordinates <span style="color: #B2B2B2;">[85ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'forest'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'forest' <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Imputation</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Imputation <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<p>The function does not force average tree height of the stand in the
+target location to match the height map. Rather, it uses the ratio of
+heights between the target location and the forest inventory plot used
+as imputation source, to correct the tree heights of the target
+location. Tree diameters are corrected with the same factor, assuming
+that the diameter-height relationship does not depend on tree height.
+This leads consequently in a change in basal area (see below). We can
+inspect the same forest as above to see the effect of the
+correction:</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_3</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## $treeData</span></span>
+<span><span class="co">##               Species       DBH    Height          N      Z50  Z95</span></span>
+<span><span class="co">## 1    Pinus sylvestris 28.109134 919.80150   14.14711 346.9401 2006</span></span>
+<span><span class="co">## 2    Pinus sylvestris 25.828026 735.84120   14.14711 346.9401 2006</span></span>
+<span><span class="co">## 3    Pinus sylvestris 20.077842 714.74258  141.47106 346.9401 2006</span></span>
+<span><span class="co">## 4    Pinus sylvestris 15.525785 700.15062  205.13304 346.9401 2006</span></span>
+<span><span class="co">## 5    Pinus sylvestris  8.329292 459.79399  286.47890 346.9401 2006</span></span>
+<span><span class="co">## 6  Juniperus communis  3.679206 183.96030  127.32395 199.9600  980</span></span>
+<span><span class="co">## 7    Pinus sylvestris  4.237321 284.89807  763.94373 346.9401 2006</span></span>
+<span><span class="co">## 8  Amelanchier ovalis  1.103762  73.58412 1273.23955 392.2431 2353</span></span>
+<span><span class="co">## 9  Buxus sempervirens  1.103762  73.58412 2546.47909 218.5410 1100</span></span>
+<span><span class="co">## 10 Juniperus communis  1.103762  73.58412  318.30989 199.9600  980</span></span>
+<span><span class="co">## 11   Pinus sylvestris  1.103762  73.58412 2546.47909 346.9401 2006</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $shrubData</span></span>
+<span><span class="co">##     Species Cover Height      Z50 Z95</span></span>
+<span><span class="co">## 1 Ulex spp.     2     30 201.8408 992</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $herbCover</span></span>
+<span><span class="co">## [1] 5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $herbHeight</span></span>
+<span><span class="co">## [1] 30</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "forest" "list"</span></span></code></pre>
+<p>Additionally, one may have access to other maps of structural
+variables. In our case, we will use a raster of basal area, also derived
+from LiDAR flights:</p>
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">basal_area_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">basal_area_map</span></span></code></pre></div>
+<pre><code><span><span class="co">## class       : SpatRaster </span></span>
+<span><span class="co">## dimensions  : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## resolution  : 20, 20  (x, y)</span></span>
+<span><span class="co">## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
+<span><span class="co">## source      : variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif </span></span>
+<span><span class="co">## name        : variables-biofisiques-arbrat-v1r0-ab-2016-2017</span></span></code></pre>
+<p>We perform the same aggregation done for heights:</p>
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">basal_area_map_100</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">basal_area_map</span>, fact <span class="op">=</span> <span class="fl">5</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<p>Finally, we call again function <code><a href="../reference/impute_forests.html">impute_forests()</a></code> with
+both height and basal area maps:</p>
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_forests.html">impute_forests</a></span><span class="op">(</span><span class="va">y_1</span>, sf_nfi <span class="op">=</span> <span class="va">sf_nfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
+<span>                      forest_map <span class="op">=</span> <span class="va">forest_map</span>, height_map <span class="op">=</span> <span class="va">height_map_100</span>, basal_area_map <span class="op">=</span> <span class="va">basal_area_map_100</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating northing-slope</span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating northing-slope <span style="color: #B2B2B2;">[28.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Calculating topography mean and sd values</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Calculating topography mean and sd values <span style="color: #B2B2B2;">[9.7s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'x' <span style="color: #B2B2B2;">[26ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography for 'sf_nfi' <span style="color: #B2B2B2;">[545ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'x' <span style="color: #B2B2B2;">[5.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting forest class for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting forest class for 'sf_nfi' <span style="color: #B2B2B2;">[5.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting height for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting height for 'x' <span style="color: #B2B2B2;">[20ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting height for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting height for 'sf_nfi' <span style="color: #B2B2B2;">[135ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting basal area for 'x'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting basal area for 'x' <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting basal area for 'sf_nfi'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting basal area for 'sf_nfi' <span style="color: #B2B2B2;">[153ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Equidistant conic coordinates</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Equidistant conic coordinates <span style="color: #B2B2B2;">[60ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'forest'</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'forest' <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Imputation</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Imputation <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<p>Correction for basal area operates on tree density. Analogously to
+the correction of heights, it does not take the basal area value of the
+map for the target location, but the ratio of values between the target
+location and the forest inventory plot used as reference for imputation.
+This ratio is used to correct tree density. We can inspect the same
+forest again to see the changes in <code>N</code> (density per hectare)
+column:</p>
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_4</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## $treeData</span></span>
+<span><span class="co">##               Species       DBH    Height          N      Z50  Z95</span></span>
+<span><span class="co">## 1    Pinus sylvestris 28.109134 919.80150   18.72282 346.9401 2006</span></span>
+<span><span class="co">## 2    Pinus sylvestris 25.828026 735.84120   18.72282 346.9401 2006</span></span>
+<span><span class="co">## 3    Pinus sylvestris 20.077842 714.74258  187.22824 346.9401 2006</span></span>
+<span><span class="co">## 4    Pinus sylvestris 15.525785 700.15062  271.48095 346.9401 2006</span></span>
+<span><span class="co">## 5    Pinus sylvestris  8.329292 459.79399  379.13719 346.9401 2006</span></span>
+<span><span class="co">## 6  Juniperus communis  3.679206 183.96030  168.50542 199.9600  980</span></span>
+<span><span class="co">## 7    Pinus sylvestris  4.237321 284.89807 1011.03251 346.9401 2006</span></span>
+<span><span class="co">## 8  Amelanchier ovalis  1.103762  73.58412 1685.05419 392.2431 2353</span></span>
+<span><span class="co">## 9  Buxus sempervirens  1.103762  73.58412 3370.10838 218.5410 1100</span></span>
+<span><span class="co">## 10 Juniperus communis  1.103762  73.58412  421.26355 199.9600  980</span></span>
+<span><span class="co">## 11   Pinus sylvestris  1.103762  73.58412 3370.10838 346.9401 2006</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $shrubData</span></span>
+<span><span class="co">##     Species Cover Height      Z50 Z95</span></span>
+<span><span class="co">## 1 Ulex spp.     2     30 201.8408 992</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $herbCover</span></span>
+<span><span class="co">## [1] 5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $herbHeight</span></span>
+<span><span class="co">## [1] 30</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "forest" "list"</span></span></code></pre>
+<p>We can compare the effect of the two corrections (height only or
+height + basal area) on forest metrics, such as the dominant tree
+height:</p>
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_dominantTreeHeight</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 981.6587</span></span></code></pre>
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_dominantTreeHeight</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 733.589</span></span></code></pre>
+<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_dominantTreeHeight</a></span><span class="op">(</span><span class="va">y_4</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 733.589</span></span></code></pre>
+<p>or stand basal area:</p>
+<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_basalArea</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 22.05743</span></span></code></pre>
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_basalArea</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 11.5428</span></span></code></pre>
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_basalArea</a></span><span class="op">(</span><span class="va">y_4</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">22</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 15.27619</span></span></code></pre>
+<p>where it is apparent that both the height correction and the basal
+area correction have an effect in basal area.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="soil-parameterization">Soil parameterization<a class="anchor" aria-label="anchor" href="#soil-parameterization"></a>
@@ -375,18 +638,18 @@ and storing them in a particular format, so that function
 <code><a href="../reference/add_soilgrids.html">add_soilgrids()</a></code> can read them (check the details of the
 function documentation). The extraction of SoilGrids data for our target
 cells is rather fast using this approach:</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soilgrids_path</span> <span class="op">=</span> <span class="st">"~/OneDrive/EMF_datasets/Soils/Sources/Global/SoilGrids/Spain/"</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_soilgrids.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">y_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_soilgrids.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y_4</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'soil'</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'soil' <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting 65 points from SoilGrids raster layers:</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting 65 points from SoilGrids raster layers: <span style="color: #B2B2B2;">[388ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting 65 points from SoilGrids raster layers: <span style="color: #B2B2B2;">[365ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <p>And the result has an extra column <code>soil</code>:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span></span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_5</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 7 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
@@ -409,8 +672,8 @@ cells is rather fast using this approach:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: forest &lt;list&gt;, soil &lt;list&gt;</span></span></span></code></pre>
 <p>The elements of the list are the usual data frames of soil properties
 in <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_5</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   widths clay sand   om   bd  rfc nitrogen</span></span>
 <span><span class="co">## 1     50 25.3 35.3 6.54 1.28 19.3     4.42</span></span>
 <span><span class="co">## 2    100 25.2 35.3 3.86 1.34 21.3     2.88</span></span>
@@ -428,10 +691,10 @@ future updates of this vignette.</p>
 </h2>
 <p>We can check whether the input data set is well formed by calling
 function <code><a href="../reference/initialize_landscape.html">initialize_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">SpParamsMED</span>, <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y_5</span>, <span class="va">SpParamsMED</span>, <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 input objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'spwb'. <span style="color: #B2B2B2;">[4ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 input objects for model 'spwb'. <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <p>Other variables may be needed, depending on the simulation function
 we want to use, but here we illustrated the basic ones.</p>

@@ -74,7 +74,7 @@
 
 
 <dt>land_cover_map</dt>
-<dd><p>An object of class <code>SpatRaster</code> of land cover type</p></dd>
+<dd><p>An object of class <code>SpatRaster</code> of land cover type. If missing, all locations are considered 'wildland'.</p></dd>
 
 
 <dt>wildland, agriculture, rock, artificial, water</dt>
@@ -96,7 +96,12 @@
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Additional details...</p>
+    <p>The user should manually define the mapping of land cover classes in <code>land_cover_map</code> to the land cover types
+used in medfateland.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="impute_forests.html">impute_forests()</a></code>, <code><a href="add_soilgrids.html">add_soilgrids()</a></code></p></div>
     </div>
 
     <div id="ref-examples">

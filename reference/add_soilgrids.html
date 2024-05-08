@@ -62,7 +62,8 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>An object of class <code>sf</code> with a valid CRS definition.</p></dd>
+<dd><p>An object of class <code>sf</code> with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
+cover types. Otherwise, soils are retrieved for all locations.</p></dd>
 
 
 <dt>soilgrids_path</dt>
@@ -97,8 +98,6 @@ averages the values of soil grid layers depending on the overlap between soil la
 for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from <code>soilgrids_path</code> should be named:</p>
 <p><em>var</em>/<em>var</em>_<em>layer</em>_mean.tif</p>
 <p>where <em>var</em> is one of the above and <em>layer</em> is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"</p>
-<p>If <code>x</code> contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
-cover types.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -106,7 +105,7 @@ cover types.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/defaultSoilParams.html" class="external-link">defaultSoilParams</a></code></p></div>
+    <div class="dont-index"><p><code><a href="create_landscape.html">create_landscape()</a></code>, <code><a href="impute_forests.html">impute_forests()</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/defaultSoilParams.html" class="external-link">defaultSoilParams</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
