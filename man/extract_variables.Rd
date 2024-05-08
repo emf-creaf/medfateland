@@ -32,42 +32,42 @@ Extract or estimate variables from landscape objects (class 'sf').
 The following string values are available for \code{vars}.
 \emph{Topography}:
 \itemize{
-\item{\code{"elevation"}:}{Elevation in m.}
-\item{\code{"slope"}:}{Slope in degrees.}
-\item{\code{"aspect"}:}{Slope in degrees.}
-\item{\code{"land_cover_type"}:}{Land cover type.}
+\item{\code{"elevation"}: Elevation in m.}
+\item{\code{"slope"}: Slope in degrees.}
+\item{\code{"aspect"}: Slope in degrees.}
+\item{\code{"land_cover_type"}: Land cover type.}
 }
 
 \emph{Soil}:
 \itemize{
-\item{\code{"texture1"}:}{Texture class of the first soil layer.}
-\item{\code{"texture2"}:}{Texture class of the second soil layer.}
-\item{\code{"texture3"}:}{Texture class of the third soil layer.}
-\item{\code{"soilvolextract"}:}{Total water extractable volume (mm).}
-\item{\code{"soilvolsat"}:}{Total water volume at saturation (mm).}
-\item{\code{"soilvolfc"}:}{Total water volume at field capacity (mm).}
-\item{\code{"soilvolwp"}:}{Total water volume at wilting point (mm).}
-\item{\code{"soilvolcurr"}:}{Current total water volume (mm).}
+\item{\code{"texture1"}: Texture class of the first soil layer.}
+\item{\code{"texture2"}: Texture class of the second soil layer.}
+\item{\code{"texture3"}: Texture class of the third soil layer.}
+\item{\code{"soilvolextract"}: Total water extractable volume (mm).}
+\item{\code{"soilvolsat"}: Total water volume at saturation (mm).}
+\item{\code{"soilvolfc"}: Total water volume at field capacity (mm).}
+\item{\code{"soilvolwp"}: Total water volume at wilting point (mm).}
+\item{\code{"soilvolcurr"}: Current total water volume (mm).}
 }
 
 \emph{Watershed}:
 \itemize{
-\item{\code{"depth_to_bedrock"}:}{Depth to bedrock (m).}
-\item{\code{"bedrock_porosity"}:}{Bedrock porosity.}
-\item{\code{"bedrock_conductivity"}:}{Bedrock conductivity.}
-\item{\code{"aquifer_elevation"}:}{Aquifer elevation over bedrock (m).}
-\item{\code{"depth_to_aquifer"}:}{Depth to aquifer (m).}
-\item{\code{"aquifer_volume"}:}{Aquifer volume (mm).}
-\item{\code{"snowpack"}:}{Snowpack water equivalent (mm).}
+\item{\code{"depth_to_bedrock"}: Depth to bedrock (m).}
+\item{\code{"bedrock_porosity"}: Bedrock porosity.}
+\item{\code{"bedrock_conductivity"}: Bedrock conductivity.}
+\item{\code{"aquifer_elevation"}: Aquifer elevation over bedrock (m).}
+\item{\code{"depth_to_aquifer"}: Depth to aquifer (m).}
+\item{\code{"aquifer_volume"}: Aquifer volume (mm).}
+\item{\code{"snowpack"}: Snowpack water equivalent (mm).}
 }
 
 \emph{Forest stand}:
 \itemize{
-\item{\code{"basal_area"}:}{Basal area (m2/ha).}
-\item{\code{"leaf_area_index"}:}{Leaf area index (m2/m2).}
-\item{\code{"foliar_biomass"}:}{Foliar biomass (kg/m2).}
-\item{\code{"fuel_loading"}:}{Fine live fuel loading (kg/m2).}
-\item{\code{"shrub_volume"}:}{Shrub shrub_volume (m3/m2).}
+\item{\code{"basal_area"}: Basal area (m2/ha).}
+\item{\code{"leaf_area_index"}: Leaf area index (m2/m2).}
+\item{\code{"foliar_biomass"}: Foliar biomass (kg/m2).}
+\item{\code{"fuel_loading"}: Fine live fuel loading (kg/m2).}
+\item{\code{"shrub_volume"}: Shrub shrub_volume (m3/m2).}
 }
 }
 \examples{

@@ -14,7 +14,17 @@
 #' to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007), selected
 #' by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
 #' averages the values of soil grid layers depending on the overlap between soil layer definitions. 
-#'
+#' 
+#' If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
+#' for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"), with format:
+#' 
+#' {var}/{var}_{layer}_mean.tif
+#' 
+#' where {var} is one of the above and {layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" and "100-200cm"
+#' 
+#' If \code{x} contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
+#' cover types.
+#' 
 #' @return A modified object of class \code{\link{sf}} with column 'soil'.
 #'
 #' @author \enc{Víctor}{Victor} Granda, EMF-CREAF
@@ -35,18 +45,12 @@
 #'
 add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_existing = TRUE, verbose = TRUE) {
   if(!inherits(x, "sf"))  stop("Object 'x' has to be of class 'sf'")
-  if(!("land_cover_type" %in% names(x))) stop("'x' should have a colummn called 'land_cover_type'")
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
   coords <- sf::st_coordinates(x_lonlat)
-  
   npoints <- nrow(coords)
-  nsoil <- sum(x$land_cover_type %in% c("wildland", "agriculture"))
-  
-  url.base <- "https://rest.isric.org/soilgrids/v2.0/properties/query?"
-  
-  
-  props_str <- "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
-  depths_str <- "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
+  land_cover_type <- rep("wildland", npoints)
+  if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
+  nsoil <- sum(land_cover_type %in% c("wildland", "agriculture"))
   
   if(!("soil" %in% names(x))) {
     if(verbose) cli::cli_progress_step("Defining column 'soil'")
@@ -54,12 +58,16 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
   }
   if(is.null(soilgrids_path)) {
     if(verbose) {
-      cli::cli_progress_step(paste0("Querying ", nsoil," wildland/agriculture points to rest.isric.org:\n"))
+      cli::cli_progress_step(paste0("Querying ", nsoil," points to rest.isric.org:\n"))
       cli::cli_progress_bar(name = "Points", total = npoints)
     }
+    url.base <- "https://rest.isric.org/soilgrids/v2.0/properties/query?"
+    
+    props_str <- "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
+    depths_str <- "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
     for(i in 1:npoints) {
       if(verbose) cli::cli_progress_update()
-      if(x$land_cover_type[i] %in% c("wildland", "agriculture")) {
+      if(land_cover_type[i] %in% c("wildland", "agriculture")) {
         tryCatch( {
           resSG <- data.frame(matrix(nrow = 6, ncol = 6))
           names(resSG) <- c("widths", "clay", "sand", "om", "bd", "rfc")
@@ -102,7 +110,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
     if(verbose) cli::cli_progress_done()
   } else {
     if(verbose) {
-      cli::cli_progress_step(paste0("Extracting ", nsoil," wildland/agriculture points from SoilGrids raster layers:\n"))
+      cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers:\n"))
     }
     vars <- c("sand", "clay", "soc", "nitrogen", "bdod", "cfvo")
     layers <- c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm")
@@ -121,7 +129,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL, widths = NULL, replace_exist
       m_var_list[[v]] <- m_var
     }
     for(i in 1:npoints) {
-      if(x$land_cover_type[i] %in% c("wildland", "agriculture")) {
+      if(land_cover_type[i] %in% c("wildland", "agriculture")) {
         resSG = data.frame(matrix(nrow = 6, ncol = 6))
         names(resSG) = c("widths", "clay", "sand", "om", "bd", "rfc")
         resSG$widths = c(50,100,150,300,400,1000)

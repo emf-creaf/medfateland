@@ -35,6 +35,16 @@ If \code{soilgrids_path = NULL} the function connects with the SoilGrids REST AP
 to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007), selected
 by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
 averages the values of soil grid layers depending on the overlap between soil layer definitions.
+
+If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
+for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"), with format:
+
+{var}/{var}_{layer}_mean.tif
+
+where {var} is one of the above and {layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" and "100-200cm"
+
+If \code{x} contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
+cover types.
 }
 \examples{
  \dontrun{
