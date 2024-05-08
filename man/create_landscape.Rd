@@ -21,7 +21,7 @@ create_landscape(
 
 \item{dem}{A digital elevation model (class \code{\link{SpatRaster}}) with meters as units}
 
-\item{land_cover_map}{An object of class \code{\link{SpatRaster}} of land cover type}
+\item{land_cover_map}{An object of class \code{\link{SpatRaster}} of land cover type. If missing, all locations are considered 'wildland'.}
 
 \item{wildland, agriculture, rock, artificial, water}{Strings indicating the mapping from the legend of land_cover_map.}
 
@@ -40,10 +40,14 @@ A modified object of class \code{\link{sf}} with columns:
 Initializes topography and land cover type for a set of target locations
 }
 \details{
-Additional details...
+The user should manually define the mapping of land cover classes in \code{land_cover_map} to the land cover types
+used in medfateland.
 }
 \examples{
 \dontrun{
   # See vignette 'Landscape inputs'
 }
+}
+\seealso{
+\code{\link[=impute_forests]{impute_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}
 }

@@ -14,7 +14,8 @@ add_soilgrids(
 )
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}} with a valid CRS definition.}
+\item{x}{An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
+cover types. Otherwise, soils are retrieved for all locations.}
 
 \item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.}
 
@@ -42,9 +43,6 @@ for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File p
 \emph{var}/\emph{var}_\emph{layer}_mean.tif
 
 where \emph{var} is one of the above and \emph{layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"
-
-If \code{x} contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
-cover types.
 }
 \examples{
  \dontrun{
@@ -56,7 +54,7 @@ cover types.
 Hengl T, Mendes de Jesus J, Heuvelink GBM, Ruiperez Gonzalez M, Kilibarda M, \enc{Blagotić}{Blagotic} A, et al. (2017) SoilGrids250m: Global gridded soil information based on machine learning. PLoS ONE 12(2): e0169748. doi:10.1371/journal.pone.0169748.
 }
 \seealso{
-\code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
+\code{\link[=create_landscape]{create_landscape()}}, \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
 }
 \author{
 \enc{Víctor}{Victor} Granda, EMF-CREAF

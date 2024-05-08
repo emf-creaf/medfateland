@@ -4,12 +4,13 @@
 #'
 #' @param x An object of class \code{\link{sf}}
 #' @param dem A digital elevation model (class \code{\link{SpatRaster}}) with meters as units
-#' @param land_cover_map An object of class \code{\link{SpatRaster}} of land cover type
+#' @param land_cover_map An object of class \code{\link{SpatRaster}} of land cover type. If missing, all locations are considered 'wildland'.
 #' @param wildland,agriculture,rock,artificial,water Strings indicating the mapping from the legend of land_cover_map. 
 #' @param verbose A logical flag to print console output
 #'
 #' @details
-#' Additional details...
+#' The user should manually define the mapping of land cover classes in \code{land_cover_map} to the land cover types 
+#' used in medfateland.
 #' 
 #' @return A modified object of class \code{\link{sf}} with columns:
 #'        \itemize{
@@ -19,6 +20,7 @@
 #'           \item{\code{land_cover_type}: Land cover type.}
 #'        }
 #'        
+#' @seealso [impute_forests()], [add_soilgrids()]
 #' @export
 #'
 #' @examples
@@ -54,6 +56,8 @@ create_landscape<-function(x, dem, land_cover_map = NULL,
     if(!is.null(rock)) x$land_cover_type[lct %in% rock] <- "rock"
     if(!is.null(artificial)) x$land_cover_type[lct %in% artificial] <- "artificial"
     if(!is.null(water))  x$land_cover_type[lct %in% water] <- "water"
+  } else {
+    x$land_cover_type <- "wildland"
   }
   if(verbose) cli::cli_progress_done()
   return(sf::st_as_sf(tibble::as_tibble(x)))

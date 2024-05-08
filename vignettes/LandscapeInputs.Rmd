@@ -81,17 +81,17 @@ water <- 36:41
 
 Having these inputs, we can use function `create_landscape()` to add topographic and land cover features to our starting `sf`:
 ```{r}
-y <- create_landscape(x, dem = dem, land_cover_map = lcm, 
-                      wildland = wildland, 
-                      agriculture = agriculture, 
-                      rock = rock, 
-                      artificial = artificial, 
-                      water = water)
+y_1 <- create_landscape(x, dem = dem, land_cover_map = lcm, 
+                        wildland = wildland, 
+                        agriculture = agriculture, 
+                        rock = rock, 
+                        artificial = artificial, 
+                        water = water)
 ```
 
 We can examine the result using:
 ```{r}
-y
+y_1
 ```
 ```{r, echo = FALSE, include = FALSE}
 rm(lcm)
@@ -99,17 +99,25 @@ gc()
 ```
 
 
-## Forest imputation
+## Forest parameterization
 
-The next step is to define `forest` objects for our simulations. Forests should be defined for all target locations whose land cover is defined as `wildland`. Arguably, there are multiple ways to address the goal of defining forest objects. Here we will assume what we believe will be the most common situation. While you may not have access to forest inventory plots on the target locations, it is quite usual to have access to (national) forest inventory data and some kind of forest map where polygons or raster cells describe the distribution of forest (or shrubland) types. Our task here will be to perform imputations of forest inventory plots to our target locations according to some criteria.
+The next step is to define `forest` objects for our simulations. Forests should be defined for all target locations whose land cover is defined as `wildland`. When forest inventory plots are not be available for the target locations, one must resort on imputations. 
 
-We start by loading the Spanish Forest Map (1:25000) for the region of Catalonia, which is in vector format, using package `terra`:
+  1. Forest inventory data from nearby locations. National forest inventories are ideal in this respect.
+  2. A forest map where polygons or raster cells describe the distribution of forest (or shrubland) types. 
+  3. Raster source of vegetation structure (i.e. mean tree height or basal area), derived from aerial or satellite LiDAR missions.
+
+Our task here will be to perform imputations of forest inventory plots to our target locations according to some criteria and, if possible, to correct the forest structure on those locations according to available data.
+
+### Forest imputation
+
+A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the Spanish Forest Map (1:25000) for the region of Catalonia, which is in vector format, using package `terra`:
 ```{r}
 forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"))
 forest_map
 ```
 
-We also load an `sf` object that contains coordinates and forest objects corresponding to the Third Spanish Forest Inventory for Catalonia:
+Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the Third Spanish Forest Inventory for Catalonia:
 ```{r}
 nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"
 sf_nfi <- readRDS(paste0(nfi_path, "Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds"))
@@ -117,26 +125,100 @@ sf_nfi
 ```
 Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
 
-Having these inputs, we can use function `impute_forests()` to perform the imputation for us (this normally take some time):
+Having these two inputs (forest map and forest inventory data), we can use function `impute_forests()` to perform the imputation for us (this normally take some time):
 
 ```{r}
-y <- impute_forests(y, sf_nfi = sf_nfi, dem, forest_map, varClass = "Class")
+y_2 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
+                      forest_map = forest_map)
 ```
 
-Details are given in the help manual of the function, but shortly, the function performs the imputation of forest inventory plots on target locations provided that they correspond to the same forest class, defined in the forest map. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope).
+For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). More details can be found in the documentation of `impute_forests()`.
 
-We can see the result with an extra column `forest` here:
+The resulting `sf` has an extra column named `forest`:
 
 ```{r}
-y
+y_2
 ```
 
 Only `wildland` locations will have a `forest` object, for example:
 
 ```{r}
-y$forest[[1]]
+y_2$forest[[22]]
 ```
 
+### Forest imputation with structure correction
+
+The former imputation result would be already useful for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest types are the same. Therefore, it is advisable to correct the forest structure with available information.
+
+There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use structural information derived from LiDAR flights in Catalonia. First we will load a mean tree height raster at 20-m resolution:
+
+```{r}
+height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
+height_map
+```
+
+This resolution is finer than the size of forest inventory plots, and the errors in the plot coordinates may lead to missing height data (the map only deals with areas with forest cover). Hence, we aggregate the raster to 100-m resolution:
+
+```{r}
+height_map_100 <- terra::aggregate(height_map, fact = 5, fun = "mean", na.rm = TRUE)
+```
+
+We call again `impute_forests()` to perform the imputation while correcting tree height:
+
+```{r}
+y_3 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
+                      forest_map = forest_map, height_map = height_map_100)
+```
+
+The function does not force average tree height of the stand in the target location to match the height map. Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship does not depend on tree height. This leads consequently in a change in basal area (see below). We can inspect the same forest as above to see the effect of the correction:
+
+```{r}
+y_3$forest[[22]]
+```
+
+Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
+
+```{r}
+basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
+basal_area_map
+```
+
+We perform the same aggregation done for heights:
+
+```{r}
+basal_area_map_100 <- terra::aggregate(basal_area_map, fact = 5, fun = "mean", na.rm = TRUE)
+```
+
+Finally, we call again function `impute_forests()` with both height and basal area maps:
+
+```{r}
+y_4 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
+                      forest_map = forest_map, height_map = height_map_100, basal_area_map = basal_area_map_100)
+```
+
+Correction for basal area operates on tree density. Analogously to the correction of heights, it does not take the basal area value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. This ratio is used to correct tree density. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
+
+
+```{r}
+y_4$forest[[22]]
+```
+We can compare the effect of the two corrections (height only or height + basal area) on forest metrics, such as the dominant tree height:
+
+```{r}
+medfate::stand_dominantTreeHeight(y_2$forest[[22]])
+medfate::stand_dominantTreeHeight(y_3$forest[[22]])
+medfate::stand_dominantTreeHeight(y_4$forest[[22]])
+```
+
+or stand basal area:
+
+```{r}
+medfate::stand_basalArea(y_2$forest[[22]])
+medfate::stand_basalArea(y_3$forest[[22]])
+medfate::stand_basalArea(y_4$forest[[22]])
+```
+
+where it is apparent that both the height correction and the basal area correction have an effect in basal area.
 
 ## Soil parameterization
 
@@ -144,17 +226,17 @@ Soil information is most usually lacking for the target locations. Regional maps
 
 ```{r}
 soilgrids_path = "~/OneDrive/EMF_datasets/Soils/Sources/Global/SoilGrids/Spain/"
-y <- add_soilgrids(y, soilgrids_path = soilgrids_path, verbose = TRUE)
+y_5 <- add_soilgrids(y_4, soilgrids_path = soilgrids_path, verbose = TRUE)
 ```
 
 And the result has an extra column `soil`:
 ```{r}
-y
+y_5
 ```
 
 The elements of the list are the usual data frames of soil properties in **medfate**:
 ```{r}
-y$soil[[1]]
+y_5$soil[[1]]
 ```
 
 SoilGrids does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. We will come to this issue in future updates of this vignette.
@@ -164,7 +246,7 @@ SoilGrids does not provide information on soil depth, and rock fragment content 
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y, SpParamsMED, defaultControl())
+z <- initialize_landscape(y_5, SpParamsMED, defaultControl())
 ```
 
 Other variables may be needed, depending on the simulation function we want to use, but here we illustrated the basic ones.

@@ -2,7 +2,8 @@
 #'
 #' Fills column 'soil' with information drawn from SoilGrids 2.0
 #'
-#' @param x An object of class \code{\link{sf}} with a valid CRS definition.
+#' @param x An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
+#'          cover types. Otherwise, soils are retrieved for all locations.
 #' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
 #' @param replace_existing A logical flag to force the replacement of existing soil data, when already present
@@ -22,8 +23,6 @@
 #' 
 #' where \emph{var} is one of the above and \emph{layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"
 #' 
-#' If \code{x} contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
-#' cover types.
 #' 
 #' @return A modified object of class \code{\link{sf}} with column 'soil'.
 #'
@@ -36,7 +35,7 @@
 #' @references
 #' Hengl T, Mendes de Jesus J, Heuvelink GBM, Ruiperez Gonzalez M, Kilibarda M, \enc{Blagotić}{Blagotic} A, et al. (2017) SoilGrids250m: Global gridded soil information based on machine learning. PLoS ONE 12(2): e0169748. doi:10.1371/journal.pone.0169748.
 #'
-#' @seealso  \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
+#' @seealso [create_landscape()], [impute_forests()], \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
 #'
 #' @examples
 #'  \dontrun{
