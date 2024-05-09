@@ -110,7 +110,7 @@ No spatial processes are simulated.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>sf</dt>
-<dd><p>An object of class <code>sf</code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand identifiers.</p></li>
 <li><p><code>elevation</code>: Elevation above sea level (in m).</p></li>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
@@ -209,7 +209,7 @@ of such lists, one per spatial unit.</p></dd>
     <h2>Details</h2>
     <p>Simulation functions  accept different formats for meteorological input (parameter <code>meteo</code>).
 The user may supply two kinds of daily weather sources:</p><ol><li><p>A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).</p></li>
-<li><p>An object or (a list of objects) of class <code><a href="https://rdrr.io/r/graphics/stars.html" class="external-link">stars</a></code> with reference interpolation data created by package <code>meteoland</code>.
+<li><p>An object or (a list of objects) of class <code><a href="https://r-spatial.github.io/sf/reference/stars.html" class="external-link">stars</a></code> with reference interpolation data created by package <code>meteoland</code>.
 If a list of such <em>interpolator</em> objects is supplied, the simulation functions will interpolate on the target locations for the periods covered by each interpolator,
 but the user will be responsible for supplying interpolators in the correct temporal order.</p></li>
 </ol><p>Alternatively, the user may leave parameter <code>meteo = NULL</code> and specify a weather data frame for each element of <code>y</code>

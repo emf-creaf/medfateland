@@ -75,12 +75,12 @@ rasters can be supplied to correct forest structure in the target locations.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>An object of class <code>sf</code>. If it contains a column named 'land_cover_type', imputation
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>. If it contains a column named 'land_cover_type', imputation
 will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.</p></dd>
 
 
 <dt>sf_nfi</dt>
-<dd><p>An object of class <code>sf</code> with forest inventory data column 'forest'.</p></dd>
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with forest inventory data column 'forest'.</p></dd>
 
 
 <dt>dem</dt>
@@ -143,7 +143,7 @@ will be performed for locations whose land cover is "wildland". Otherwise, fores
     <h2>Value</h2>
     
 
-<p>A modified object of class <code>sf</code> with column 'forest'.</p>
+<p>A modified object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with column 'forest'.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -171,7 +171,7 @@ This ratio is used to correct tree density.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="co"># See vignette 'Landscape inputs'</span></span></span>
+<span class="r-in"><span>  <span class="co"># See vignette 'Preparing inputs'</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

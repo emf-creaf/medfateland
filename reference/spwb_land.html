@@ -119,7 +119,7 @@ and resprouting.</p></li>
 
 
 <dt>sf</dt>
-<dd><p>An object of class <code>sf</code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial point geometry corresponding to cell centers.</p></li>
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial point geometry corresponding to cell centers.</p></li>
 <li><p><code>elevation</code>: Elevation above sea level (in m).</p></li>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
 <li><p><code>aspect</code>: Aspect (in degrees).</p></li>
@@ -195,7 +195,7 @@ of such lists, one per spatial unit.</p></dd>
     <h2>Value</h2>
     
 
-<p>Functions <code>spwb_land</code>, <code>growth_land</code> and <code>fordyn_land</code> return a list of class of the same name as the function with the following elements:</p><ul><li><p><code>sf</code>: An object of class <code>sf</code>, similar to the output of <code><a href="spwb_spatial.html">spwb_spatial</a></code>,
+<p>Functions <code>spwb_land</code>, <code>growth_land</code> and <code>fordyn_land</code> return a list of class of the same name as the function with the following elements:</p><ul><li><p><code>sf</code>: An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>, similar to the output of <code><a href="spwb_spatial.html">spwb_spatial</a></code>,
 with the following columns:
 </p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>state</code>: A list of model input objects for each simulated stand.</p></li>
@@ -236,7 +236,7 @@ with the following columns:
 <li><p><code>result</code>: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.</p></li>
 <li><p><code>outlet</code>: A logical vector indicating outlet cells.</p></li>
 </ul>
-In function <code>fordyn_land</code> the <code>sf</code> object contains additional columns:
+In function <code>fordyn_land</code> the <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> object contains additional columns:
 <ul><li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>management_arguments</code>: A list of management arguments for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>tree_table</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>

@@ -4,13 +4,13 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/LandscapeInputs.html</loc>
-  </url>
-  <url>
     <loc>/articles/ManagementScenarios.html</loc>
   </url>
   <url>
     <loc>/articles/PackageOverview.html</loc>
+  </url>
+  <url>
+    <loc>/articles/PreparingInputs.html</loc>
   </url>
   <url>
     <loc>/articles/SpatiallyUncoupledSimulations.html</loc>
