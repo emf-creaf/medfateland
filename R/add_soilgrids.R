@@ -1,4 +1,4 @@
-#' Adds SoilGrids soil description
+#' Soil parameter estimation
 #'
 #' Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). Optionally, it modifies the resulting
 #' soil definition with additional information on soil depth and depth to bedrock. Function \code{modify_soils} modifies soil definition according to 

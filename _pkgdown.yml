@@ -7,7 +7,7 @@ articles:
 - title: Introduction
   contents:
     - starts_with("Package")
-    - starts_with("LandscapeInputs")
+    - starts_with("PreparingInputs")
 - title: Running simulation models
   contents:
     - starts_with("SpatiallyUncoupled")

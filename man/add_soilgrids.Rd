@@ -4,7 +4,7 @@
 \name{add_soilgrids}
 \alias{add_soilgrids}
 \alias{modify_soils}
-\title{Adds SoilGrids soil description}
+\title{Soil parameter estimation}
 \usage{
 add_soilgrids(
   x,
