@@ -25,7 +25,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'   # See vignette 'Landscape inputs'
+#'   # See vignette 'Preparing inputs'
 #' }
 create_landscape<-function(x, dem, land_cover_map = NULL, 
                            wildland = NULL, agriculture = NULL, rock = NULL, artificial = NULL, water = NULL,

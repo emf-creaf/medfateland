@@ -18,10 +18,12 @@ articles:
     - starts_with("TetisWatershedParameters")
 reference:
 - title: Input preparation
+  desc: Functions to help preparing spatial inputs
   contents:
   - create_landscape
   - impute_forests
   - add_soilgrids
+  - modify_soils
   
 - title: Example data
   desc:  Example data sets for distributed stands and watershed

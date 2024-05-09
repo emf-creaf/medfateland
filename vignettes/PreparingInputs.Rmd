@@ -1,12 +1,12 @@
 ---
-title: "Landscape inputs"
+title: "Preparing inputs"
 author: "Miquel De Cáceres / Núria Aquilué"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Landscape inputs}
+  %\VignetteIndexEntry{Preparing inputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   \usepackage[utf8]{inputenc}
@@ -20,7 +20,7 @@ library(medfateland)
 
 ## Aim
 
-This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting from a set of coordinates. 
+This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting from a set of coordinates. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, but users are free to use them in the most convenient way.
 
 Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html). 
 
@@ -222,10 +222,14 @@ where it is apparent that both the height correction and the basal area correcti
 
 ## Soil parameterization
 
-Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution. Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target cells is rather fast using this approach: 
+Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution. 
+
+### SoilGrids 2.0 data
+
+Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target cells is rather fast using this approach: 
 
 ```{r}
-soilgrids_path = "~/OneDrive/EMF_datasets/Soils/Sources/Global/SoilGrids/Spain/"
+soilgrids_path = paste0(dataset_path,"Soils/Sources/Global/SoilGrids/Spain/")
 y_5 <- add_soilgrids(y_4, soilgrids_path = soilgrids_path, verbose = TRUE)
 ```
 
@@ -239,14 +243,71 @@ The elements of the list are the usual data frames of soil properties in **medfa
 y_5$soil[[1]]
 ```
 
-SoilGrids does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. We will come to this issue in future updates of this vignette.
+
+### Correction for soil depth
+
+SoilGrids 2.0 does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. Function `modify_soils()` allows modifying soil definitions, if information is available for soil depth, depth to the (unaltered) bedrock, or both. Soil depth maps are not common in many regions, so here we will resort on a global product at 250m-resolution by  [Shangguan et al. (2017)](https://doi.org/10.1002/2016MS000686), which consists on three rasters:
+
+```{r}
+# Censored soil depth (cm)
+bdricm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
+# Probability of bedrock within first 2m [0-100]
+bdrlog <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"))
+# Absolute depth to bedrock (cm)
+bdticm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"))
+```
+
+In order to accelerate raster manipulations, we crop the global rasters to the extent of the target area:
+
+```{r}
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(bdricm)))
+x_ext <- terra::ext(x_vect)
+bdricm <- terra::crop(bdricm, x_ext, snap = "out")
+bdrlog <- terra::crop(bdrlog, x_ext, snap = "out")
+bdticm <- terra::crop(bdticm, x_ext, snap = "out")
+```
+
+
+Censored soil depth is a poor product of actual soil depth, but we have observed a fairly good correlation between soil depth values in Catalonia and the probability of finding the bedrock within the first two meters. Hence, we multiply the two layers and use it as a (crude) estimate of soil depth, expressing it in mm:
+
+```{r}
+soil_depth_mm <- (bdricm$BDRICM_M_250m_ll*10)*(1 - (bdrlog$BDRLOG_M_250m_ll/100))
+```
+
+and we take the depth to bedrock as appropriate, but change its units to mm as well:
+
+```{r}
+depth_to_bedrock_mm <- bdticm*10
+```
+
+We can now call function `modify_soils()` with the two rasters to perform the correction of soil characteristics:
+
+```{r}
+y_6 <- modify_soils(y_5, 
+                    soil_depth_map = soil_depth_mm, 
+                    depth_to_bedrock_map = depth_to_bedrock_mm)
+```
+
+In this case, the depth to bedrock values were deeper than 2m, so that only the soil depth map had an effect on the correction procedure. After the correction, the rock fragment content of the soil has changed substantially:
+
+```{r}
+y_6$soil[[1]]
+```
+
+We can compare the effect of the correction on the soil water capacity (in mm) by layers:
+
+```{r}
+medfate::soil_waterExtractable(soil(y_5$soil[[1]]))
+medfate::soil_waterExtractable(soil(y_6$soil[[1]]))
+```
+
 
 ## Initialization test
 
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y_5, SpParamsMED, defaultControl())
+z <- initialize_landscape(y_6, SpParamsMED, defaultControl())
 ```
 
 Other variables may be needed, depending on the simulation function we want to use, but here we illustrated the basic ones.

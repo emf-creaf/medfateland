@@ -46,7 +46,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'   # See vignette 'Landscape inputs'
+#'   # See vignette 'Preparing inputs'
 #' }
 impute_forests <-function(x, sf_nfi, dem, 
                           forest_map, height_map = NULL, basal_area_map = NULL, 

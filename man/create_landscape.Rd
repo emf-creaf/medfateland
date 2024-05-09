@@ -45,7 +45,7 @@ used in medfateland.
 }
 \examples{
 \dontrun{
-  # See vignette 'Landscape inputs'
+  # See vignette 'Preparing inputs'
 }
 }
 \seealso{

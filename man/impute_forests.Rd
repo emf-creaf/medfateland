@@ -85,7 +85,7 @@ This ratio is used to correct tree density.
 }
 \examples{
 \dontrun{
-  # See vignette 'Landscape inputs'
+  # See vignette 'Preparing inputs'
 }
 }
 \seealso{

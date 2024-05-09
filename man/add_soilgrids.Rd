@@ -3,6 +3,7 @@
 \encoding{UTF-8}
 \name{add_soilgrids}
 \alias{add_soilgrids}
+\alias{modify_soils}
 \title{Adds SoilGrids soil description}
 \usage{
 add_soilgrids(
@@ -12,10 +13,19 @@ add_soilgrids(
   replace_existing = TRUE,
   verbose = TRUE
 )
+
+modify_soils(
+  x,
+  soil_depth_map = NULL,
+  depth_to_bedrock_map = NULL,
+  regolith_rfc = 97.5,
+  full_rock_filling = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
-cover types. Otherwise, soils are retrieved for all locations.}
+cover types. Otherwise, soils are retrieved for all locations. For function \code{modify_soils}, \code{x} should already contain a column named "soil".}
 
 \item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.}
 
@@ -24,18 +34,29 @@ cover types. Otherwise, soils are retrieved for all locations.}
 \item{replace_existing}{A logical flag to force the replacement of existing soil data, when already present}
 
 \item{verbose}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
+
+\item{soil_depth_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the soil depth (in \emph{mm}) values.}
+
+\item{depth_to_bedrock_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with depth to bedrock (in \emph{mm}) values.}
+
+\item{regolith_rfc}{Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).}
+
+\item{full_rock_filling}{Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.}
 }
 \value{
 A modified object of class \code{\link{sf}} with column 'soil'.
 }
 \description{
-Fills column 'soil' with information drawn from SoilGrids 2.0
+Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). Optionally, it modifies the resulting
+soil definition with additional information on soil depth and depth to bedrock. Function \code{modify_soils} modifies soil definition according to
+soil depth and depth to bedrock information.
 }
 \details{
 If \code{soilgrids_path = NULL} the function connects with the SoilGrids REST API (https://rest.isric.org)
-to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007), selected
+to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007; Poggio et al. 2021), selected
 by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
-averages the values of soil grid layers depending on the overlap between soil layer definitions.
+averages the values of soil grid layers depending on the overlap between soil layer definitions. Unfortunately,
+SoilGrids REST API queries are limited to a few points.
 
 If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
 for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
@@ -43,15 +64,28 @@ for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File p
 \emph{var}/\emph{var}_\emph{layer}_mean.tif
 
 where \emph{var} is one of the above and \emph{layer} is "0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm" or "100-200cm"
+
+SoilGrids does not provide soil depth estimates. Function \code{modify_soils} is designed to adjust soil depths according to available information.
+When \code{soil_depth_map} is provided, the function adjusts rock fragment content of layers below soil depth with the value of \code{regolith_rfc}.
+When \code{depth_to_bedrock_map} is provided, the function truncates the total depth of the soil definition to the depth to bedrock.
+If regional maps of soil depth are not available, users are recommended to resort on Shangguan et al (2017).
 }
 \examples{
  \dontrun{
-  # See vignette 'Landscape inputs'
+   library(sf)
+   x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
+   x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
+   x_soil
+   # See more complete examples in vignette 'Preparing inputs'
  }
 
 }
 \references{
 Hengl T, Mendes de Jesus J, Heuvelink GBM, Ruiperez Gonzalez M, Kilibarda M, \enc{Blagotić}{Blagotic} A, et al. (2017) SoilGrids250m: Global gridded soil information based on machine learning. PLoS ONE 12(2): e0169748. doi:10.1371/journal.pone.0169748.
+
+Poggio L, de Sousa LM, Batjes NH, Heuvelink GBM, Kempen B, Ribeiro E, Rossiter D (2021). SoilGrids 2.0: producing soil information for the globe with quantiﬁed spatial uncertainty. SOIL 7, 217-240. doi: 10.5194/soil-7-217-2021
+
+Shangguan W, Hengl T, Mendes de Jesus J, Yuan H, Dai J (2017). Mapping the global depth to bedrock for land surface modeling. Journal of Advances in Modeling Earth Systems 9: 65-88. doi: 10.1002/2016MS000686
 }
 \seealso{
 \code{\link[=create_landscape]{create_landscape()}}, \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
