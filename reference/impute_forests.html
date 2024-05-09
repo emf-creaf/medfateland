@@ -58,13 +58,14 @@ rasters can be supplied to correct forest structure in the target locations.</p>
 <span>  <span class="va">dem</span>,</span>
 <span>  <span class="va">forest_map</span>,</span>
 <span>  height_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  basal_area_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  density_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var_class <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  var_height <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  var_basal_area <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  max_distance_km <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  var_density <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  max_distance_km <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  height_ratio_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
+<span>  density_ratio_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
 <span>  replace_existing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  empty_forests <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  correct_height_shrubs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  merge_trees <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  merge_shrubs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -95,8 +96,8 @@ will be performed for locations whose land cover is "wildland". Otherwise, fores
 <dd><p>An object of class <code>rast</code> or <code>vect</code> with the forest height map</p></dd>
 
 
-<dt>basal_area_map</dt>
-<dd><p>An object of class <code>rast</code> or <code>vect</code> with the forest basal area map</p></dd>
+<dt>density_map</dt>
+<dd><p>An object of class <code>rast</code> or <code>vect</code> with the tree density map</p></dd>
 
 
 <dt>var_class</dt>
@@ -107,20 +108,20 @@ will be performed for locations whose land cover is "wildland". Otherwise, fores
 <dd><p>Variable name or index containing forest height in 'height_map'. If missing the first column is taken.</p></dd>
 
 
-<dt>var_basal_area</dt>
-<dd><p>Variable name or index containing forest height in 'basal_area_map'. If missing the first column is taken.</p></dd>
+<dt>var_density</dt>
+<dd><p>Variable name or index containing forest height in 'density_map'. If missing the first column is taken.</p></dd>
 
 
 <dt>max_distance_km</dt>
 <dd><p>Maximum distance, in km, for forest inventory plot imputation.</p></dd>
 
 
+<dt>height_ratio_limits, density_ratio_limits</dt>
+<dd><p>Limits for height and density ratio, to avoid errors.</p></dd>
+
+
 <dt>replace_existing</dt>
 <dd><p>A logical flag to force the replacement of existing 'forest' objects, when present.</p></dd>
-
-
-<dt>empty_forests</dt>
-<dd><p>A logical flag to place empty 'forest' objects for wildland cells not having a defined forest class.</p></dd>
 
 
 <dt>correct_height_shrubs</dt>
@@ -154,12 +155,12 @@ and position in the N-to-S slopes (i.e. the product of the cosine of aspect and 
 features are standardized to zero mean and unit standard deviation, to make their influence on the imputation
 equal. This imputation method will be more or less successful depending on the resolution of forest classes and
 the number of forest inventory plots available for each of them.</p>
-<p>When <code>height_map</code> or <code>basal_area_map</code> are provided, the function performs structural corrections in additional to imputation.
+<p>When <code>height_map</code> or <code>density_map</code> are provided, the function performs structural corrections in additional to imputation.
 When correcting for height, the function does not force average tree height of the stand in the target location to match the height map.
 Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the
 tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship
 does not depend on tree height. This leads consequently in a change in basal area, in addition to changes in dominant tree height.</p>
-<p>Correction for basal area operates on tree density. Analogously to the correction of heights, it does not take the basal area value of the map
+<p>Analogously to the correction of heights, correction of tree density does not take the density value of the map
 for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation.
 This ratio is used to correct tree density.</p>
     </div>
