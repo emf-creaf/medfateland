@@ -11,6 +11,7 @@ add_soilgrids(
   soilgrids_path = NULL,
   widths = NULL,
   replace_existing = TRUE,
+  default_values = c(clay = 25, sand = 25, bd = 1.5, rfc = 25),
   verbose = TRUE
 )
 
@@ -32,6 +33,8 @@ cover types. Otherwise, soils are retrieved for all locations. For function \cod
 \item{widths}{A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.}
 
 \item{replace_existing}{A logical flag to force the replacement of existing soil data, when already present}
+
+\item{default_values}{Vector of default values for locations with missing SoilGrids data.}
 
 \item{verbose}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
 

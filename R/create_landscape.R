@@ -31,9 +31,9 @@ create_landscape<-function(x, dem, land_cover_map = NULL,
                            wildland = NULL, agriculture = NULL, rock = NULL, artificial = NULL, water = NULL,
                            verbose = TRUE) {
   if(verbose) cli::cli_progress_step("Checking inputs")
-  if(!inherits(x, "sf")) stop("'x' should be of class 'sf' ")
-  if(!inherits(dem, "SpatRaster")) stop("'dem' should be of class 'SpatRaster'")
-  if(!is.null(land_cover_map)) if(!inherits(dem, "SpatRaster")) stop("'dem' should be of class 'SpatRaster'")
+  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
+  if(!inherits(dem, "SpatRaster")) cli::cli_abort("'dem' should be of class 'SpatRaster'")
+  if(!is.null(land_cover_map)) if(!inherits(dem, "SpatRaster")) cli::cli_abort("'dem' should be of class 'SpatRaster'")
   
   if(!("id" %in% names(x))) {
     if(verbose) cli::cli_progress_step("Defining column 'id'")

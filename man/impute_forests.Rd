@@ -10,13 +10,14 @@ impute_forests(
   dem,
   forest_map,
   height_map = NULL,
-  basal_area_map = NULL,
+  density_map = NULL,
   var_class = NA,
   var_height = NA,
-  var_basal_area = NA,
-  max_distance_km = 50,
+  var_density = NA,
+  max_distance_km = 100,
+  height_ratio_limits = c(0.5, 1.5),
+  density_ratio_limits = c(0.5, 1.5),
   replace_existing = FALSE,
-  empty_forests = TRUE,
   correct_height_shrubs = FALSE,
   merge_trees = TRUE,
   merge_shrubs = TRUE,
@@ -35,19 +36,19 @@ will be performed for locations whose land cover is "wildland". Otherwise, fores
 
 \item{height_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest height map}
 
-\item{basal_area_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest basal area map}
+\item{density_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the tree density map}
 
 \item{var_class}{Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.}
 
 \item{var_height}{Variable name or index containing forest height in 'height_map'. If missing the first column is taken.}
 
-\item{var_basal_area}{Variable name or index containing forest height in 'basal_area_map'. If missing the first column is taken.}
+\item{var_density}{Variable name or index containing forest height in 'density_map'. If missing the first column is taken.}
 
 \item{max_distance_km}{Maximum distance, in km, for forest inventory plot imputation.}
 
-\item{replace_existing}{A logical flag to force the replacement of existing 'forest' objects, when present.}
+\item{height_ratio_limits, density_ratio_limits}{Limits for height and density ratio, to avoid errors.}
 
-\item{empty_forests}{A logical flag to place empty 'forest' objects for wildland cells not having a defined forest class.}
+\item{replace_existing}{A logical flag to force the replacement of existing 'forest' objects, when present.}
 
 \item{correct_height_shrubs}{A logical flag to correct the height of shrubs when providing a vegetation height map (by default, only tree heights are corrected).}
 
@@ -73,13 +74,13 @@ features are standardized to zero mean and unit standard deviation, to make thei
 equal. This imputation method will be more or less successful depending on the resolution of forest classes and
 the number of forest inventory plots available for each of them.
 
-When \code{height_map} or \code{basal_area_map} are provided, the function performs structural corrections in additional to imputation.
+When \code{height_map} or \code{density_map} are provided, the function performs structural corrections in additional to imputation.
 When correcting for height, the function does not force average tree height of the stand in the target location to match the height map.
 Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the
 tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship
 does not depend on tree height. This leads consequently in a change in basal area, in addition to changes in dominant tree height.
 
-Correction for basal area operates on tree density. Analogously to the correction of heights, it does not take the basal area value of the map
+Analogously to the correction of heights, correction of tree density does not take the density value of the map
 for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation.
 This ratio is used to correct tree density.
 }

@@ -33,6 +33,7 @@
   varplot = rep(NA, n)
   for(i in 1:n) {
     s = obj$soil[[i]]
+    if(inherits(s, "data.frame")) s <- medfate::soil(s)
     if(inherits(s,"soil")) {
       if(variable=="texture1") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
       else if(variable=="texture2") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])

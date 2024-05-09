@@ -14,8 +14,6 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(medfate)
-library(medfateland)
 ```
 
 ## Aim
@@ -24,40 +22,54 @@ This vignette has been created to illustrate the creation of spatial inputs to b
 
 Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html). 
 
+Let's first load necessary libraries.
+
+```{r}
+library(medfate)
+library(medfateland)
+library(ggplot2)
+```
+
 ## Target coordinates
 
-Any spatial dataset should begin with the definition of spatial elements. Here we will use a set of coordinates taken from the package, as example. In particular we have 66 target points defined by coordinates in EPSG:32631 (UTM for fuse 31) projection.
+Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 200 m in EPSG:32631 (UTM for fuse 31) projection.
 
-```{r, include=FALSE}
-data("example_watershed")
-cc <- sf::st_coordinates(example_watershed)
-```
-
-The coordinates are in form of a matrix with dimensions:
+First we load a polygon data set describing watersheds in Spain and select our target watershed:
 ```{r}
-dim(cc)
+dataset_path <- "~/OneDrive/EMF_datasets/"
+scchh <- terra::vect(paste0(dataset_path, "Hydrography/Sources/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
+# Ribera Salada = 2004294
+# Riera de bianya = 2005528
+watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
+watershed
 ```
 
-and here is the beginning of the data:
+```{r, include = FALSE}
+rm(scchh)
+gc()
+```
+
+Now we define a raster at 200 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
+
+```{r, warning = FALSE}
+r <-terra::rast(terra::ext(watershed), resolution = c(200,200), crs = "epsg:25831")
+v <- terra::intersect(terra::as.points(r), watershed)
+```
+
+And finally we transform the result into a `sf` object:
 ```{r}
-head(cc)
+x <- sf::st_as_sf(v)[,"geometry"]
+x
 ```
 
-The first step is to use package `sf` to define a spatial object of whose simple features are our target points:
-
-```{r}
-x <- sf::st_as_sf(data.frame(cc), 
-                  coords = c("X", "Y"), 
-                  crs = "EPSG:32631")
-```
-
+We will use the raster definition for plots.
 
 ## Topography and land cover type
 
 Once an object `sf` has been defined with target locations, we need to determine topographic features (elevation, slope, aspect) and land cover corresponding to those locations. You should have access to a Digital Elevation Model (DEM) at a desired resolution. Here we will use a DEM raster for Catalonia at 30 m resolution, which we load using package `terra`:
 
 ```{r}
-dataset_path <- "~/OneDrive/EMF_datasets/"
+
 dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"))
 dem
 ```
@@ -98,6 +110,20 @@ rm(lcm)
 gc()
 ```
 
+We can now examine the elevation of the area, using the raster `r` to draw cells instead of points:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_1, "elevation", r = r)+
+  scale_fill_distiller("m", palette="Spectral", na.value = NA)+
+  theme_bw()
+```
+
+
+The number of cells for each land cover type is the following:
+
+```{r}
+table(y_1$land_cover_type)
+```
 
 ## Forest parameterization
 
@@ -117,10 +143,10 @@ forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Products/Catalunya/mfe
 forest_map
 ```
 
-Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the Third Spanish Forest Inventory for Catalonia:
+Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the [Fourth Spanish Forest Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html) for Catalonia (5509 forest plots):
 ```{r}
 nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"
-sf_nfi <- readRDS(paste0(nfi_path, "Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds"))
+sf_nfi <- readRDS(paste0(nfi_path, "Products/IFN4/Catalunya/IFN4_cat_final_ETRS89H31.rds"))
 sf_nfi
 ```
 Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
@@ -132,7 +158,7 @@ y_2 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem,
                       forest_map = forest_map)
 ```
 
-For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). More details can be found in the documentation of `impute_forests()`.
+For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). Warnings and errors can arise in the process. More details can be found in the documentation of `impute_forests()`.
 
 The resulting `sf` has an extra column named `forest`:
 
@@ -143,8 +169,9 @@ y_2
 Only `wildland` locations will have a `forest` object, for example:
 
 ```{r}
-y_2$forest[[22]]
+y_2$forest[[11]]
 ```
+
 
 ### Forest imputation with structure correction
 
@@ -157,68 +184,83 @@ height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/
 height_map
 ```
 
-This resolution is finer than the size of forest inventory plots, and the errors in the plot coordinates may lead to missing height data (the map only deals with areas with forest cover). Hence, we aggregate the raster to 100-m resolution:
+This resolution is finer than the size of forest inventory plots, and the errors in the plot coordinates may lead to missing height data (the map only deals with areas with forest cover). Hence, we aggregate the raster to the 40m resolution:
 
 ```{r}
-height_map_100 <- terra::aggregate(height_map, fact = 5, fun = "mean", na.rm = TRUE)
+height_map_40 <- terra::aggregate(height_map, fact = 2, fun = "mean", na.rm = TRUE)
+height_map_40
 ```
 
 We call again `impute_forests()` to perform the imputation while correcting tree height:
 
 ```{r}
 y_3 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
-                      forest_map = forest_map, height_map = height_map_100)
+                      forest_map = forest_map, height_map = height_map_40)
 ```
 
 The function does not force average tree height of the stand in the target location to match the height map. Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship does not depend on tree height. This leads consequently in a change in basal area (see below). We can inspect the same forest as above to see the effect of the correction:
 
 ```{r}
-y_3$forest[[22]]
+y_3$forest[[11]]
 ```
 
-Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
+Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of tree density, also derived from LiDAR flights:
 
 ```{r}
-basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
-basal_area_map
+density_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-den-2016-2017.tif"))
+density_map
 ```
 
 We perform the same aggregation done for heights:
 
 ```{r}
-basal_area_map_100 <- terra::aggregate(basal_area_map, fact = 5, fun = "mean", na.rm = TRUE)
+density_map_40 <- terra::aggregate(density_map, fact = 2, fun = "mean", na.rm = TRUE)
 ```
 
 Finally, we call again function `impute_forests()` with both height and basal area maps:
 
 ```{r}
 y_4 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
-                      forest_map = forest_map, height_map = height_map_100, basal_area_map = basal_area_map_100)
+                      forest_map = forest_map, height_map = height_map_40, density_map = density_map_40)
 ```
 
-Correction for basal area operates on tree density. Analogously to the correction of heights, it does not take the basal area value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. This ratio is used to correct tree density. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
+Analogously to the correction of heights, the correction for tree density does not take the tree density value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
 
 
 ```{r}
-y_4$forest[[22]]
+y_4$forest[[11]]
 ```
 We can compare the effect of the two corrections (height only or height + basal area) on forest metrics, such as the dominant tree height:
 
 ```{r}
-medfate::stand_dominantTreeHeight(y_2$forest[[22]])
-medfate::stand_dominantTreeHeight(y_3$forest[[22]])
-medfate::stand_dominantTreeHeight(y_4$forest[[22]])
+medfate::stand_dominantTreeHeight(y_2$forest[[11]])
+medfate::stand_dominantTreeHeight(y_3$forest[[11]])
+medfate::stand_dominantTreeHeight(y_4$forest[[11]])
 ```
 
 or stand basal area:
 
 ```{r}
-medfate::stand_basalArea(y_2$forest[[22]])
-medfate::stand_basalArea(y_3$forest[[22]])
-medfate::stand_basalArea(y_4$forest[[22]])
+medfate::stand_basalArea(y_2$forest[[11]])
+medfate::stand_basalArea(y_3$forest[[11]])
+medfate::stand_basalArea(y_4$forest[[11]])
 ```
 
 where it is apparent that both the height correction and the basal area correction have an effect in basal area.
+
+```{r, echo = FALSE, fig.width=6, fig.height=10, warning = FALSE}
+p1 <- plot_variable(y_2, "basal_area", r = r)+
+  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation alone")
+p2 <- plot_variable(y_3, "basal_area", r = r)+
+  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation and height correction")
+p3 <- plot_variable(y_4, "basal_area", r = r)+
+  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation and height + density correction")
+cowplot::plot_grid(p1, p2, p3, nrow = 3, ncol = 1)
+```
+
 
 ## Soil parameterization
 
@@ -294,13 +336,18 @@ In this case, the depth to bedrock values were deeper than 2m, so that only the 
 y_6$soil[[1]]
 ```
 
-We can compare the effect of the correction on the soil water capacity (in mm) by layers:
+We can compare the effect of the correction on the soil water capacity (in mm) by inspecting the following plots (note the change in magnitude and spatial pattern):
 
-```{r}
-medfate::soil_waterExtractable(soil(y_5$soil[[1]]))
-medfate::soil_waterExtractable(soil(y_6$soil[[1]]))
+
+```{r, echo = FALSE, fig.width=8, fig.height=4.5}
+p1 <- plot_variable(y_5, "soilvolextract", r = r)+ 
+  labs(title="SoilGrids alone")+
+  theme_bw()
+p2 <- plot_variable(y_6, "soilvolextract", r = r)+ 
+  labs(title="SoilGrids + depth correction")+
+  theme_bw()
+cowplot::plot_grid(p1, p2, ncol =2, nrow=1)
 ```
-
 
 ## Initialization test
 
@@ -309,5 +356,7 @@ We can check whether the input data set is well formed by calling function  `ini
 ```{r}
 z <- initialize_landscape(y_6, SpParamsMED, defaultControl())
 ```
+
+
 
 Other variables may be needed, depending on the simulation function we want to use, but here we illustrated the basic ones.

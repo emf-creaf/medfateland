@@ -8,6 +8,7 @@
 #'          cover types. Otherwise, soils are retrieved for all locations. For function \code{modify_soils}, \code{x} should already contain a column named "soil".
 #' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
+#' @param default_values Vector of default values for locations with missing SoilGrids data.
 #' @param replace_existing A logical flag to force the replacement of existing soil data, when already present
 #' @param verbose A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.
 #'
@@ -59,8 +60,9 @@
 #'
 add_soilgrids <- function(x, soilgrids_path = NULL, 
                           widths = NULL, replace_existing = TRUE, 
+                          default_values = c("clay" = 25, "sand" = 25, "bd" = 1.5, "rfc" = 25),
                           verbose = TRUE) {
-  if(!inherits(x, "sf"))  stop("Object 'x' has to be of class 'sf'")
+  if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
   coords <- sf::st_coordinates(x_lonlat)
   npoints <- nrow(coords)
@@ -68,6 +70,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
   nsoil <- sum(land_cover_type %in% c("wildland", "agriculture"))
   
+  retrieved <- rep(FALSE, npoints)
   if(!("soil" %in% names(x))) {
     if(verbose) cli::cli_progress_step("Defining column 'soil'")
     x$soil <- vector("list", npoints)
@@ -112,6 +115,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
             }
           }
           if(is.null(x$soil[[i]]) || replace_existing) {
+            retrieved[i] <- TRUE
             if(!is.null(widths)) {
               x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
             } else {
@@ -119,7 +123,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
             }
           }
         }, error  = function(cond) {
-          message(paste("Problems retrieving point",i,": ", cond,"\n"))
+          cli::cli_alert_warning(paste("Problems retrieving point",i,": ", cond,"\n"))
         })
       }
     }
@@ -165,6 +169,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
           } 
         }
         if(is.null(x$soil[[i]]) || replace_existing) {
+          retrieved[i] <- TRUE
           if(!is.null(widths)) {
             x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
           } else {
@@ -174,6 +179,39 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
       }
     }
   }
+  if(verbose) {
+    cli::cli_progress_step("Checking for missing values in key parameters")
+  }
+  mis_clay <- 0
+  mis_sand <- 0
+  mis_bd <- 0
+  mis_rfc <- 0
+  for(i in 1:npoints) {
+    if(retrieved[i]) {
+      s <- x$soil[[i]]
+      if(any(is.na(s$clay))) {
+        mis_clay <- mis_clay + 1
+        s$clay[is.na(s$clay)] <- default_values["clay"]
+      }
+      if(any(is.na(s$sand))) {
+        mis_sand <- mis_sand + 1
+        s$sand[is.na(s$sand)] <- default_values["sand"]
+      }
+      if(any(is.na(s$bd))) {
+        mis_bd <- mis_bd + 1
+        s$bd[is.na(s$bd)] <- default_values["bd"]
+      }
+      if(any(is.na(s$rfc))) {
+        mis_rfc <- mis_rfc + 1
+        s$rfc[is.na(s$rfc)] <- default_values["rfc"]
+      }
+      x$soil[[i]] <- s
+    }
+  }
+  if(mis_clay>0) cli::cli_alert_warning(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
+  if(mis_sand>0) cli::cli_alert_warning(paste0("Default 'sand' values assigned for ", mis_sand, " locations"))
+  if(mis_bd>0) cli::cli_alert_warning(paste0("Default 'bd' values assigned for ", mis_bd, " locations"))
+  if(mis_rfc>0) cli::cli_alert_warning(paste0("Default 'rfc' values assigned for ", mis_rfc, " locations"))
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
@@ -202,7 +240,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     if(full_rock_filling) {
       for(l in 1:nl) {
         mid_point <- oridepths[l] + soildf$widths[l]/2
-        rel_dist_to_soil_depth <- mid_point/soil_depth
+        rel_dist_to_soil_depth <- min(1, mid_point/soil_depth)
         soildf$rfc[l]<- max(soildf$rfc[l], regolith_rfc*rel_dist_to_soil_depth)
       }
     } else {
@@ -229,14 +267,14 @@ modify_soils <- function(x, soil_depth_map = NULL,
                          regolith_rfc = 97.5, full_rock_filling = TRUE,
                          verbose = TRUE) {
   if(verbose) cli::cli_progress_step("Checking inputs")
-  if(!inherits(x, "sf"))  stop("Object 'x' has to be of class 'sf'")
-  if(!("soil" %in% names(x))) stop("Object 'x' should have a column called 'soil'")
-  if(is.null(soil_depth_map) && !is.null(depth_to_bedrock_map)) stop("Either 'soil_depth_map' or 'depth_to_bedrock_map' should be provided")
+  if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
+  if(!("soil" %in% names(x))) cli_abort("Object 'x' should have a column called 'soil'")
+  if(is.null(soil_depth_map) && !is.null(depth_to_bedrock_map)) cli_abort("Either 'soil_depth_map' or 'depth_to_bedrock_map' should be provided")
   if(!is.null(soil_depth_map)) {
-    if(!inherits(soil_depth_map, "SpatRaster") && !inherits(soil_depth_map, "SpatVector")) stop("'soil_depth_map' should be of class 'SpatRaster' or 'SpatVector'")
+    if(!inherits(soil_depth_map, "SpatRaster") && !inherits(soil_depth_map, "SpatVector")) cli_abort("'soil_depth_map' should be of class 'SpatRaster' or 'SpatVector'")
   }
   if(!is.null(depth_to_bedrock_map)) {
-    if(!inherits(depth_to_bedrock_map, "SpatRaster") && !inherits(depth_to_bedrock_map, "SpatVector")) stop("'depth_to_bedrock_map' should be of class 'SpatRaster' or 'SpatVector'")
+    if(!inherits(depth_to_bedrock_map, "SpatRaster") && !inherits(depth_to_bedrock_map, "SpatVector")) cli_abort("'depth_to_bedrock_map' should be of class 'SpatRaster' or 'SpatVector'")
   }
   npoints <- nrow(x)
   is_soil <- !unlist(lapply(x$soil, is.null))
@@ -257,7 +295,7 @@ modify_soils <- function(x, soil_depth_map = NULL,
     if(verbose) cli::cli_progress_step("Modifying soil depths")
     for(i in 1:npoints) {
       if(is_soil[i]){
-        if(!is.data.frame(x$soil[[i]])) stop("Elements in 'soil' should be data frames of soil physical characteristics")
+        if(!is.data.frame(x$soil[[i]])) cli_abort("Elements in 'soil' should be data frames of soil physical characteristics")
         x$soil[[i]] <- .modify_soil_definition(x$soil[[i]], 
                                                x_soil_depth[i], 
                                                x_depth_to_bedrock[i], 
