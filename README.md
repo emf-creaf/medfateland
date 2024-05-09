@@ -6,12 +6,13 @@ medfateland - Mediterranean Landscape Simulation
 ## Introduction
 
 The R package **medfateland** has been designed to extend the
-capabilities of package **medfate** to the landscape level. It allows
-running the stand-level models available in medfate on points and cells
-within landscape, including the possibility of parallelization.
-Additionally, medfateland allows considering spatial hydrological
-processes in forested watersheds. Hence, medfateland can be used as a
-tool for eco-hydrological applications.
+capabilities of package **medfate** in a spatially-explicit context. It
+allows running the stand-level models available in medfate on points and
+cells within landscape or region, including the possibility of
+parallelization. Additionally, medfateland allows considering seed
+dispersal and lateral water transfer processes in forested watersheds.
+Hence, medfateland can be used as a tool for eco-hydrological
+applications.
 
 ## Package installation
 
@@ -37,6 +38,19 @@ The user is also advised to read articles included in the
 
 A complete documentation of both packages, including a *reference book*,
 can be found at <https://emf-creaf.github.io/medfatebook/index.html>.
+
+## Companion R packages
+
+The modelling tools included in **medfate** and **medfateland** are
+complemented with two companion packages:
+
+- Package [**meteoland**](https://emf-creaf.github.io/meteoland) allows
+  generating daily weather input for simulation models in **medfate**
+  and **medfateland**.
+- Package [**medfateutils**](https://emf-creaf.github.io/medfateutils)
+  provides functions to help initializing vegetation, soil and species
+  parameter inputs for **medfate** and **medfateland** simulation
+  functions.
 
 ## Authorship
 
