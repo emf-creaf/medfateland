@@ -33,24 +33,22 @@ library(tidyterra)
 
 ## Target coordinates
 
-Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 200 m in EPSG:32631 (UTM for fuse 31) projection.
+Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 100 m in EPSG:32631 (UTM for fuse 31) projection.
 
-First we load a polygon data set describing watersheds in Spain and select our target watershed:
+First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya):
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 scchh <- terra::vect(paste0(dataset_path, "Hydrography/Sources/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
-# Ribera Salada = 2004294
 # Riera de bianya = 2005528
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
 ```
 
+We can draw a map with the location of the watershed within Catalonia using:
+
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Sources/Catalunya/Comarques/comarques.shp"))
-```
-
-```{r}
 ggplot()+
   geom_spatvector(data = counties)+
   geom_spatvector(fill = "black", data = watershed)+
@@ -60,13 +58,14 @@ ggplot()+
 
 ```{r, include = FALSE}
 rm(scchh)
+rm(counties)
 gc()
 ```
 
-Now we define a raster at 200 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
+Now we define a raster at 100 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
 
 ```{r, warning = FALSE}
-res <- 200
+res <- 100
 r <-terra::rast(terra::ext(watershed), resolution = c(res,res), crs = "epsg:25831")
 v <- terra::intersect(terra::as.points(r), watershed)
 ```
@@ -139,12 +138,6 @@ and the land cover types:
 plot_variable(y_1, "land_cover_type", r = r, name = "")
 ```
 
-The number of cells for each land cover type is the following:
-
-```{r}
-table(y_1$land_cover_type)
-```
-
 ## Forest parameterization
 
 The next step is to define `forest` objects for our simulations. Forests should be defined for all target locations whose land cover is defined as `wildland`. When forest inventory plots are not be available for the target locations, one must resort on imputations. 
@@ -171,7 +164,7 @@ sf_nfi
 ```
 Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
 
-Having these two inputs (forest map and forest inventory data), we can use function `impute_forests()` to perform the imputation for us (this normally take some time):
+Having these two inputs (forest map and forest inventory data), we can use function `impute_forests()` to perform the imputation for us (this normally takes some time):
 
 ```{r}
 y_2 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
@@ -193,20 +186,18 @@ y_2$forest[[1]]
 ```
 
 
-### Forest structure correction
+### Structure correction
 
 The former imputation result would be already useful for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest types are the same. Therefore, it is advisable to correct the forest structure with available information.
 
-There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use structural information derived from LiDAR flights in Catalonia. First we will load a mean tree height raster at 20-m resolution:
+There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use structural information derived from LiDAR flights in Catalonia (years 2016-2017). First we will load a mean tree height raster at 20-m resolution:
 
 ```{r}
 height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
 height_map
 ```
 
-
-This resolution is finer than the size of forest inventory plots, and the errors in the plot coordinates may lead to missing height data (the map only deals with areas with forest cover). Hence, we aggregate the raster to the 40m resolution:
-
+This resolution is a bit finer than the size of forest inventory plots. Hence, we aggregate the raster to the 40m resolution, while we crop to the target area:
 
 ```{r}
 height_map_40 <- terra::aggregate(terra::crop(height_map, r), 
@@ -214,28 +205,29 @@ height_map_40 <- terra::aggregate(terra::crop(height_map, r),
 height_map_40
 ```
 
-
-```{r}
+Mean tree height data has the following distribution:
+```{r, fig.width=6, fig.height=4}
 names(height_map_40)<- "height"
 ggplot()+
   geom_spatraster(aes(fill=height), data=height_map_40)+
-  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m", type = "viridis", na.value = NA)+
   theme_bw()
 ```
+
+We now call function `modify_forest_structure()` to correct mean tree height according to the LiDAR data (where vegetation height should be in meters):
 
 ```{r}
 y_3 <- modify_forest_structure(y_2, height_map_40, var = "mean_tree_height")
 ```
 
-
+Correction of tree heights also affects tree diameters, because the function assumes that the diameter-height relationship needs to be preserved. If we inspect the same `forest` object again, we will be able to note changes in height and diameter values:
 
 ```{r}
 y_3$forest[[1]]
 ```
 
 Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
-
 
 ```{r}
 basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
@@ -250,27 +242,33 @@ basal_area_map_40 <- terra::aggregate(terra::crop(basal_area_map, r),
 basal_area_map_40
 ```
 
+Basal area geographic distribution looks as follows:
 
-```{r}
+```{r, fig.width=6, fig.height=4}
 names(basal_area_map_40)<- "basal_area"
 ggplot()+
   geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
-  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m", type = "viridis", na.value = NA)+
   theme_bw()
 ```
+
+We now use the same function to correct basal area values. 
 
 ```{r}
 y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area")
 ```
 
+Note that basal area (or tree density) corrections should be done after the height correction, because of the effect that height correction has on tree diameters. The correction of basal area operates on tree density values. As before, we can inspect changes in tree density:
+
 ```{r}
 y_4$forest[[1]]
 ```
 
-### Evaluating the correction effect
 
-```{r, echo = TRUE, fig.width=8, fig.height=6, warning = FALSE, message = TRUE}
+To finish this section, we will show the effect of imputation and correction on structural variables, compared with the LiDAR data. 
+
+```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
@@ -291,50 +289,18 @@ p4 <- ggplot()+
   theme_bw()
 cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
 ```
-
-
-
-
-Finally, we call again function `impute_forests()` with both height and basal area maps:
-
-Analogously to the correction of heights, the correction for tree density does not take the tree density value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
-
-
-
-We can compare the effect of the two corrections (height only or height + basal area) on forest metrics, such as the dominant tree height:
+where it is apparent that both the height correction and the basal area correction have an effect in basal area. We can quantitatively assess the relationship between predicted basal area and the observed one using:
 
 ```{r}
-medfate::stand_dominantTreeHeight(y_2$forest[[1]])
-medfate::stand_dominantTreeHeight(y_3$forest[[1]])
-medfate::stand_dominantTreeHeight(y_4$forest[[1]])
-```
-
-or stand basal area:
-
-```{r}
-medfate::stand_basalArea(y_2$forest[[1]])
-medfate::stand_basalArea(y_3$forest[[1]])
-medfate::stand_basalArea(y_4$forest[[1]])
-```
-
-where it is apparent that both the height correction and the basal area correction have an effect in basal area.
-
-
-
-```{r}
-ba_2 <- extract_variables(y_2, "basal_area")$basal_area
-ba_3 <- extract_variables(y_3, "basal_area")$basal_area
-ba_4 <- extract_variables(y_4, "basal_area")$basal_area
-
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
 x_ba<-terra::extract(basal_area_map_40, x_vect)[,-1, drop = TRUE]
 
-cor.test(ba_2, x_ba)
-cor.test(ba_3, x_ba)
+ba_4 <- extract_variables(y_4, "basal_area")$basal_area
 cor.test(ba_4, x_ba)
 ```
 
 
+We can also see the effect of the imputation and correction on mean tree height:
 
 ```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "mean_tree_height", r = r)+
@@ -360,17 +326,13 @@ p4 <- ggplot()+
   theme_bw()
 cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
 ```
+Here the basal area correction did not have any effect on mean tree height. The relationship between estimated and predicted mean tree height is:
 
 ```{r}
-mth_2 <- extract_variables(y_2, "mean_tree_height")$mean_tree_height
-mth_3 <- extract_variables(y_3, "mean_tree_height")$mean_tree_height
 mth_4 <- extract_variables(y_4, "mean_tree_height")$mean_tree_height
-
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40)))
 x_mth<-terra::extract(height_map_40, x_vect)[,-1, drop = TRUE]
 
-cor.test(mth_2, x_mth)
-cor.test(mth_3, x_mth)
 cor.test(mth_4, x_mth)
 ```
 
@@ -453,9 +415,13 @@ We can compare the effect of the correction on the soil water capacity (in mm) b
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
 p1 <- plot_variable(y_5, "soilvolextract", r = r)+ 
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids alone")+
   theme_bw()
 p2 <- plot_variable(y_6, "soilvolextract", r = r)+ 
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids + depth correction")+
   theme_bw()
 cowplot::plot_grid(p1, p2, ncol =1, nrow=2)
