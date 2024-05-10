@@ -440,11 +440,13 @@
     }
   }
   
-  #D. Applies capillarity rise and deep drainage to aquifer for next step
+  #D. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
                                  CapillarityRise,
                                  DeepDrainage)
 
+  #E. Applies drainage from aquifer to a deeper aquifer
+  DeepAquiferLoss <- .tetisApplyDeepAquiferLossToAquifer(y, watershed_control)
   
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
                              "MaxTemperature" = MaxTemperature, 
@@ -456,6 +458,7 @@
                              "InfiltrationExcess" = InfiltrationExcess, "SaturationExcess" = SaturationExcess,
                              "DeepDrainage" = DeepDrainage, "CapillarityRise" = CapillarityRise,
                              "AquiferExfiltration" = AquiferExfiltration,
+                             "DeepAquiferLoss" = DeepAquiferLoss,
                              "InterflowInput" = InterflowInput, "InterflowOutput" = InterflowOutput, "InterflowBalance" = InterflowBalance,
                              "BaseflowInput" = BaseflowInput, "BaseflowOutput" = BaseflowOutput, "BaseflowBalance" = BaseflowBalance,
                              "SoilEvaporation" = SoilEvaporation, "Transpiration" = Transpiration,
@@ -636,6 +639,7 @@
   represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
   patchsize <- mean(represented_area_m2, na.rm=TRUE)
   
+  
   ## TETIS: Check additional elements
   if(watershed_model == "tetis") {
     if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'y'.")
@@ -775,12 +779,12 @@
     vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow",
               "Snowmelt", "Interception", "NetRain",  
               "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
-              "DeepDrainage", "CapillarityRise", 
+              "DeepDrainage", "CapillarityRise", "DeepAquiferLoss",
               "SoilEvaporation", "Transpiration", "HerbTranspiration",
               "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration", 
               "SWE", "SoilVol","RWC", "WTD", "DTA")
     varsSum <- c("PET","Runon","Runoff", "Rain", "NetRain", "Interception", "Snow", "Snowmelt",
-                 "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepDrainage", "SaturationExcess",
+                 "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepAquiferLoss", "DeepDrainage", "SaturationExcess",
                  "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
                  "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance")
     varsMean <- c( "MinTemperature", "MaxTemperature")
@@ -799,6 +803,7 @@
                                    CellRunoff = rep(0, nDays),
                                    DeepDrainage = rep(0, nDays),
                                    CapillarityRise = rep(0, nDays),
+                                   DeepAquiferLoss = rep(0, nDays),
                                    SoilEvaporation = rep(0,nDays),
                                    Transpiration = rep(0, nDays),
                                    HerbTranspiration = rep(0, nDays),
@@ -819,6 +824,7 @@
                                        CellRunon = rep(0, nDays),
                                        CellRunoff = rep(0, nDays),
                                        DeepDrainage = rep(0, nDays),
+                                       DeepAquiferLoss = rep(0, nDays),
                                        CapillarityRise = rep(0, nDays),
                                        SoilEvaporation = rep(0,nDays),
                                        Transpiration = rep(0, nDays),
@@ -1033,6 +1039,7 @@
       LandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess, na.rm=T)/nCells
       LandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess, na.rm=T)/nCells
       LandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise, na.rm=T)/nCells
+      LandscapeBalance$DeepAquiferLoss[day] <- sum(res_day$DeepAquiferLoss, na.rm=T)/nCells
       LandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration, na.rm=T)/nCells
       LandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff, na.rm=T)/nCells
       LandscapeBalance$CellRunon[day] <- sum(res_day$Runon, na.rm=T)/nCells
@@ -1047,6 +1054,7 @@
       SoilLandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
+      SoilLandscapeBalance$DeepAquiferLoss[day] <- sum(res_day$DeepAquiferLoss, na.rm=T)/nSoil
       SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance[isSoilCell], na.rm=T)/nSoil
       SoilLandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
@@ -1099,6 +1107,7 @@
     CellRunonsum <- sum(LandscapeBalance$CellRunon, na.rm=T)
     DeepDrainagesum <- sum(LandscapeBalance$DeepDrainage, na.rm=T)
     CapillarityRisesum <- sum(LandscapeBalance$CapillarityRise, na.rm=T)
+    DeepAquiferLosssum <- sum(LandscapeBalance$DeepAquiferLoss, na.rm=T)
     SaturationExcesssum <- sum(LandscapeBalance$SaturationExcess, na.rm=T)
     SoilEvaporationsum <- sum(LandscapeBalance$SoilEvaporation , na.rm=T)
     Transpirationsum <- sum(LandscapeBalance$Transpiration , na.rm=T)
@@ -1120,6 +1129,7 @@
     SoilSaturationExcesssum <- sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
     SoilDeepDrainagesum <- sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
     SoilCapillarityRisesum <- sum(SoilLandscapeBalance$CapillarityRise, na.rm=T)
+    SoilDeepAquiferLosssum <- sum(SoilLandscapeBalance$DeepAquiferLoss, na.rm=T)
     SoilSoilEvaporationsum <- sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
@@ -1146,15 +1156,16 @@
       cat(paste0("    Interflow balance (mm) ", round(SoilInterflowBalancesum,2),"\n"))
     }
     
-    aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum
+    aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum - DeepAquiferLosssum
     if(header_footer){
       cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
       cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
       cat(paste0("  Aquifer water balance components:\n"))
-      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"  Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"\n"))
+      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"\n"))
+      cat(paste0("    Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"  Deep aquifer loss (mm) ", round(DeepAquiferLosssum,2), "\n"))
     }
     
-    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum
+    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum - DeepAquiferLosssum
     if(header_footer) {
       cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
       cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
@@ -1223,12 +1234,16 @@
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 #'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }
 #'   }
-#'   When using TETIS watershed model, the following columns are also required:
+#'   When using TETIS watershed model, the following columns are also REQUIRED:
 #'   \itemize{
 #'     \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 #'     \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
 #'     \item{\code{bedrock_porosity}: Bedrock porosity.}
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
+#'   }
+#'   When using TETIS watershed model, the following columns are OPTIONAL:
+#'   \itemize{
+#'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).

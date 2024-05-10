@@ -5,6 +5,7 @@
 # Version 2.3.0
 - Infiltration and runoff in non-soil cells
 - Helper functions to create landscape sf objects
+- Loss to a deeper aquifer implemented
 
 # Version 2.2.1
 - Weather aggregation for interpolation

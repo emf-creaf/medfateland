@@ -2,6 +2,7 @@
 % Please edit documentation in R/impute_forests.R
 \name{impute_forests}
 \alias{impute_forests}
+\alias{modify_forest_structure}
 \title{Forest imputation}
 \usage{
 impute_forests(
@@ -21,6 +22,15 @@ impute_forests(
   correct_height_shrubs = FALSE,
   merge_trees = TRUE,
   merge_shrubs = TRUE,
+  verbose = TRUE
+)
+
+modify_forest_structure(
+  x,
+  structure_map,
+  variable = "mean tree height",
+  map_var = NA,
+  ratio_limits = c(0.5, 1.5),
   verbose = TRUE
 )
 }

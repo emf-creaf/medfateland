@@ -28,6 +28,7 @@ Let's first load necessary libraries.
 library(medfate)
 library(medfateland)
 library(ggplot2)
+library(tidyterra)
 ```
 
 ## Target coordinates
@@ -44,15 +45,29 @@ watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
 ```
 
+```{r}
+dataset_path <- "~/OneDrive/EMF_datasets/"
+counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Sources/Catalunya/Comarques/comarques.shp"))
+```
+
+```{r}
+ggplot()+
+  geom_spatvector(data = counties)+
+  geom_spatvector(fill = "black", data = watershed)+
+  theme_bw()
+```
+
+
 ```{r, include = FALSE}
 rm(scchh)
 gc()
 ```
 
-Now we define a raster at 200 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
+Now we define a raster at 100 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
 
 ```{r, warning = FALSE}
-r <-terra::rast(terra::ext(watershed), resolution = c(200,200), crs = "epsg:25831")
+res <- 300
+r <-terra::rast(terra::ext(watershed), resolution = c(300,300), crs = "epsg:25831")
 v <- terra::intersect(terra::as.points(r), watershed)
 ```
 
@@ -118,6 +133,11 @@ plot_variable(y_1, "elevation", r = r)+
   theme_bw()
 ```
 
+and the land cover types:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_1, "land_cover_type", r = r, name = "")
+```
 
 The number of cells for each land cover type is the following:
 
@@ -184,12 +204,34 @@ height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/
 height_map
 ```
 
+
 This resolution is finer than the size of forest inventory plots, and the errors in the plot coordinates may lead to missing height data (the map only deals with areas with forest cover). Hence, we aggregate the raster to the 40m resolution:
+
 
 ```{r}
 height_map_40 <- terra::aggregate(height_map, fact = 2, fun = "mean", na.rm = TRUE)
 height_map_40
 ```
+
+
+```{r}
+height_r <- terra::crop(height_map_40, r)
+names(height_r)<- "height"
+```
+
+
+```{r}
+ggplot()+
+  geom_spatraster(aes(fill=height), data=height_r)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  scale_fill_continuous("m", type = "viridis", na.value = NA)+
+  theme_bw()
+```
+
+```{r}
+y_3 <- modify_forest_structure(y_2, height_map_40, var = "mean tree height")
+```
+
 
 We call again `impute_forests()` to perform the imputation while correcting tree height:
 
@@ -217,6 +259,24 @@ We perform the same aggregation done for heights:
 density_map_40 <- terra::aggregate(density_map, fact = 2, fun = "mean", na.rm = TRUE)
 ```
 
+
+```{r}
+density_r <- terra::crop(density_map_40, r)
+names(density_r)<- "N"
+```
+
+
+```{r}
+ggplot()+
+  geom_spatraster(aes(fill=N), data=density_r)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  scale_fill_continuous("ind/ha", type="viridis", na.value = NA)+
+  theme_bw()
+```
+
+```{r}
+y_4 <- modify_forest_structure(y_3, density_map_40, var = "tree density")
+```
 Finally, we call again function `impute_forests()` with both height and basal area maps:
 
 ```{r}
@@ -248,7 +308,28 @@ medfate::stand_basalArea(y_4$forest[[11]])
 
 where it is apparent that both the height correction and the basal area correction have an effect in basal area.
 
-```{r, echo = FALSE, fig.width=6, fig.height=10, warning = FALSE}
+
+
+
+```{r}
+basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
+basal_area_map
+```
+
+We perform the same aggregation done for heights:
+
+```{r}
+basal_area_map_40 <- terra::aggregate(basal_area_map, fact = 2, fun = "mean", na.rm = TRUE)
+```
+
+
+```{r}
+basal_area_r <- terra::crop(basal_area_map_40, r)
+names(basal_area_r)<- "basal_area"
+```
+
+
+```{r, echo = TRUE, fig.width=8, fig.height=6, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "basal_area", r = r)+
   scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
   labs(title = "Imputation alone")
@@ -258,7 +339,23 @@ p2 <- plot_variable(y_3, "basal_area", r = r)+
 p3 <- plot_variable(y_4, "basal_area", r = r)+
   scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
   labs(title = "Imputation and height + density correction")
-cowplot::plot_grid(p1, p2, p3, nrow = 3, ncol = 1)
+
+p4 <- ggplot()+
+  geom_spatraster(aes(fill=basal_area), data=basal_area_r)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
+  theme_bw()
+cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
+```
+```{r}
+ba_2 <- extract_variables(y_2, "basal_area")$basal_area
+ba_3 <- extract_variables(y_3, "basal_area")$basal_area
+ba_4 <- extract_variables(y_4, "basal_area")$basal_area
+
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
+x_ba<-terra::extract(basal_area_map_40, x_vect)[,-1, drop = TRUE]
+
+cor.test(ba_4, x_ba)
 ```
 
 
@@ -339,14 +436,14 @@ y_6$soil[[1]]
 We can compare the effect of the correction on the soil water capacity (in mm) by inspecting the following plots (note the change in magnitude and spatial pattern):
 
 
-```{r, echo = FALSE, fig.width=8, fig.height=4.5}
+```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
 p1 <- plot_variable(y_5, "soilvolextract", r = r)+ 
   labs(title="SoilGrids alone")+
   theme_bw()
 p2 <- plot_variable(y_6, "soilvolextract", r = r)+ 
   labs(title="SoilGrids + depth correction")+
   theme_bw()
-cowplot::plot_grid(p1, p2, ncol =2, nrow=1)
+cowplot::plot_grid(p1, p2, ncol =1, nrow=2)
 ```
 
 ## Initialization test

@@ -268,6 +268,18 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// tetisApplyDeepAquiferLossToAquifer
+NumericVector tetisApplyDeepAquiferLossToAquifer(List y, List watershed_control);
+RcppExport SEXP _medfateland_tetisApplyDeepAquiferLossToAquifer(SEXP ySEXP, SEXP watershed_controlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
+    rcpp_result_gen = Rcpp::wrap(tetisApplyDeepAquiferLossToAquifer(y, watershed_control));
+    return rcpp_result_gen;
+END_RCPP
+}
 // tetisOverlandFlows
 NumericVector tetisOverlandFlows(NumericVector Runoff, NumericVector AquiferExfiltration, NumericVector waterO, List queenNeigh, List waterQ);
 RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffSEXP, SEXP AquiferExfiltrationSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
@@ -356,6 +368,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisWatershedFlows", (DL_FUNC) &_medfateland_tetisWatershedFlows, 6},
     {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
     {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
+    {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 2},
     {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
     {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 9},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},

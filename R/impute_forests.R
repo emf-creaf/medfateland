@@ -178,12 +178,12 @@ impute_forests <-function(x, sf_nfi, dem,
       f <- sf_nfi$forest[[nfi_i]]
       height_ratio <- 1
       if(!is.null(height_map)) {
-        height_ratio <- nfi_height[nfi_i]/x_height[i]
+        height_ratio <- x_height[i]/nfi_height[nfi_i]
         height_ratio <- max(min(height_ratio, height_ratio_limits[2]), height_ratio_limits[1])
       }
       density_ratio <- 1
       if(!is.null(density_map)) {
-        density_ratio <- nfi_density[nfi_i]/x_density[i]
+        density_ratio <- x_density[i]/nfi_density[nfi_i]
         density_ratio <- max(min(density_ratio, density_ratio_limits[2]), density_ratio_limits[1])
       }
       if(is.null(x$forest[[i]]) || replace_existing) {
@@ -216,5 +216,68 @@ impute_forests <-function(x, sf_nfi, dem,
   if(num_missing> 0)  cli::cli_alert_warning(paste0("Missing forest class for ", num_missing, " locations. Only geographic and topographic criteria used for those locations."))
   if(num_closest> 0)  cli::cli_alert_warning(paste0("Not enough plots of the same class within geographic distance limits for ", num_closest, " locations. The closest plot of the same class was chosen in those cases."))
   if(verbose) cli::cli_progress_done()
-  return(x)
+  return(sf::st_as_sf(tibble::as_tibble(x)))
+}
+
+
+
+#' @rdname impute_forests
+#' @export
+modify_forest_structure<-function(x, structure_map, 
+                                  variable = "mean tree height",
+                                  map_var = NA, 
+                                  ratio_limits = c(0.5,1.5),
+                                  verbose = TRUE) {
+  if(verbose) cli::cli_progress_step("Checking inputs")
+  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
+  if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
+  if(!inherits(structure_map, "SpatRaster") && !inherits(structure_map, "SpatVector")) cli::cli_abort("'structure_map' should be of class 'SpatRaster' or 'SpatVector'")
+  if(is.na(map_var)) map_var = 1
+  
+  if(verbose) cli::cli_progress_step(paste0("Extracting ", variable))
+  x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(structure_map)))
+  x_var<-terra::extract(structure_map, x_vect)[,-1, drop = FALSE]
+  x_var<- x_var[[map_var]]
+  
+  
+  if(verbose) {
+    cli::cli_progress_step("Correction")
+    cli::cli_progress_bar("Locations", total = nrow(x))
+  }
+  for(i in 1:nrow(x)) {
+    if(verbose) cli::cli_progress_update()
+    f <- x$forest[[i]]
+    if(!is.null(f)) {
+      if(variable=="mean tree height") {
+        if(nrow(f$treeData)>0) {
+          tree_ba <- f$treeData$N*pi*(f$treeData$DBH/200)^2
+          mean_height <- sum(f$treeData$Height*tree_ba)/sum(tree_ba)
+          height_ratio <- x_var[i]/mean_height
+          if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+          f$treeData$Height <- f$treeData$Height*height_ratio 
+          f$treeData$DBH <- f$treeData$DBH*height_ratio
+        }
+      } else if(variable=="dominant tree height") {
+        if(nrow(f$treeData)>0) {
+          dominant_height <- stand_dominantTreeHeight(f)
+          height_ratio <- x_var[i]/dominant_height
+          if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+          f$treeData$Height <- f$treeData$Height*height_ratio 
+          f$treeData$DBH <- f$treeData$DBH*height_ratio
+        }
+      } else if(variable=="tree density") {
+        if(nrow(f$treeData)>0) {
+          tree_density <-sum(f$treeData$N)
+          density_ratio <- x_var[i]/tree_density
+          if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
+          f$treeData$N <- f$treeData$N*density_ratio
+        }
+      }
+      x$forest[[i]] <- f
+    }
+  }
+  if(verbose) {
+    cli::cli_progress_done()
+  }
+  return(sf::st_as_sf(tibble::as_tibble(x)))
 }

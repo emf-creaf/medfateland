@@ -310,6 +310,26 @@ void tetisApplyLocalFlowsToAquifer(List y,
     aquifer[i] += DeepDrainage[i] - CapillarityRise[i];
   }
 }
+// [[Rcpp::export(".tetisApplyDeepAquiferLossToAquifer")]]
+NumericVector tetisApplyDeepAquiferLossToAquifer(List y,
+                                                 List watershed_control) {
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double deep_aquifer_loss = tetis_parameters["deep_aquifer_loss"];
+  
+  NumericVector aquifer = y["aquifer"];
+  int nX = aquifer.size();
+  NumericVector loss_rate(nX, deep_aquifer_loss); 
+  if(y.containsElementNamed("deep_aquifer_loss")) {
+    loss_rate = Rcpp::as<Rcpp::NumericVector>(y["deep_aquifer_loss"]);
+  }
+  NumericVector DeepAquiferLoss(nX, 0.0);
+  for(int i=0;i<nX;i++){
+    DeepAquiferLoss[i] = std::min(aquifer[i], loss_rate[i]);
+    aquifer[i] -= DeepAquiferLoss[i];
+  }
+  return(DeepAquiferLoss);
+}
+
 // [[Rcpp::export(".tetisOverlandFlows")]]
 NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferExfiltration,
                                   NumericVector waterO, List queenNeigh, List waterQ) {

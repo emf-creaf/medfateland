@@ -74,12 +74,16 @@ fordyn_land(
 \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }
 }
-When using TETIS watershed model, the following columns are also required:
+When using TETIS watershed model, the following columns are also REQUIRED:
 \itemize{
 \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
 \item{\code{bedrock_porosity}: Bedrock porosity.}
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
+}
+When using TETIS watershed model, the following columns are OPTIONAL:
+\itemize{
+\item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}

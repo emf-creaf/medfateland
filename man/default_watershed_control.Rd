@@ -16,10 +16,11 @@ A list with the following items:
 \item{\code{weather_aggregation_factor [= 1]}: An integer specifying the spatial aggregation for interpolated weather.}
 \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements:
 \itemize{
-\item{\code{rock_max_infiltration [= 10]}: Maximum infiltration rate (mm·day-1) for rock cells.}
 \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
 \item{\code{R_interflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
 \item{\code{R_baseflow [= 10.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+\item{\code{rock_max_infiltration [= 10]}: Maximum infiltration rate (mm·day-1) for rock cells.}
+\item{\code{deep_aquifer_loss [= 0]}: Daily loss rate from watershed aquifer towards a deeper aquifer not connected to outlets (mm·day-1).}
 }
 }
 \item{\code{serghei_parameters}: A list of SERGHEI parameters with the following elements:

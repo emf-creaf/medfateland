@@ -228,17 +228,39 @@ extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
 #' @export
 plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...){
   df = extract_variables(x, vars= variable, SpParams = SpParams)
+  character_var <- is.character(df[[variable]])
   if(is.null(r)) {
-    g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))+
-      scale_color_continuous("", ..., na.value=NA)+
-      theme_bw()
+    g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))
+    if(character_var) {
+      g <- g + scale_color_discrete(..., na.value = NA)
+    } else {
+      g <- g + scale_color_continuous(..., na.value = NA)
+    }
   } else {
-    raster_var<-terra::rasterize(terra::vect(df),r, variable, fun = mean, na.rm = TRUE)
+    if(character_var) {
+      df[[variable]] <- as.factor(df[[variable]])
+      levels <- levels(df[[variable]])
+      raster_var<-terra::rasterize(terra::vect(df),r, variable, 
+                                   fun = function(x) {
+                                     as.numeric(sort(names(table(as.numeric(x))), 
+                                                     decreasing = TRUE))
+                                   })
+      vals <- as.data.frame(raster_var[[variable]], na.rm = FALSE)[,1]
+      f <- rep(NA, length(vals))
+      f[!is.na(vals)] <- levels[vals[!is.na(vals)]+1]
+      raster_var$m1<- f
+      raster_var[[variable]]<-NULL
+    } else {
+      raster_var<-terra::rasterize(terra::vect(df),r, variable, fun = mean, na.rm = TRUE)
+    }
     names(raster_var) <- "m1"
     g<-ggplot()+
-      geom_spatraster(aes(fill=.data$m1), data = raster_var)+
-      scale_fill_continuous("", ..., na.value=NA)+
-      theme_bw()
+      geom_spatraster(aes(fill=.data$m1), data = raster_var)
+    if(character_var) {
+      g <- g + scale_fill_discrete(..., na.value = NA)
+    } else {
+      g <- g + scale_fill_continuous(..., na.value = NA)
+    }
   }
-  g
+  g+theme_bw()
 }
