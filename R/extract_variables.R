@@ -103,7 +103,13 @@
 }
 
 .getAllowedForestStandVars <-function(SpParams = NULL) {
-  vars <- c("Basal area (m2/ha)"="basal_area")
+  vars <- c("Basal area (m2/ha)"="basal_area",
+            "Tree density (ind/ha)"="tree_density",
+            "Mean tree height (cm)" = "mean_tree_height",
+            "Dominant tree height (cm)" = "dominant_tree_height",
+            "Dominant tree diameter (cm)" = "dominant_tree_diameter",
+            "Quadratic mean tree diameter (cm)" = "quadratic_mean_tree_diameter",
+            "Hart-Becking index" = "hart_becking_index")
   if(!is.null(SpParams)) {
     vars <- c(vars,
               "Leaf area index (m2/m2)" = "leaf_area_index", 
@@ -120,6 +126,12 @@
     f = obj$forest[[i]]
     if(inherits(f,"forest")) {
       if(variable=="basal_area") varplot[i] = stand_basalArea(f)
+      else if(variable=="tree_density") varplot[i] = stand_treeDensity(f)
+      else if(variable=="mean_tree_height") varplot[i] = stand_meanTreeHeight(f)
+      else if(variable=="dominant_tree_height") varplot[i] = stand_dominantTreeHeight(f)
+      else if(variable=="dominant_tree_diameter") varplot[i] = stand_dominantTreeDiameter(f)
+      else if(variable=="quadratic_mean_tree_diameter") varplot[i] = stand_quadraticMeanTreeDiameter(f)
+      else if(variable=="hart_becking_index") varplot[i] = stand_hartBeckingIndex(f)
       else if(variable=="leaf_area_index") varplot[i] = stand_LAI(f, SpParams)
       else if(variable=="foliar_biomass") varplot[i] = stand_foliarBiomass(f, SpParams)
       else if(variable=="fuel_loading") varplot[i] = stand_fuelLoading(f, SpParams)

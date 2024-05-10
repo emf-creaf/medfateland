@@ -10,16 +10,9 @@ impute_forests(
   sf_nfi,
   dem,
   forest_map,
-  height_map = NULL,
-  density_map = NULL,
   var_class = NA,
-  var_height = NA,
-  var_density = NA,
   max_distance_km = 100,
-  height_ratio_limits = c(0.5, 1.5),
-  density_ratio_limits = c(0.5, 1.5),
   replace_existing = FALSE,
-  correct_height_shrubs = FALSE,
   merge_trees = TRUE,
   merge_shrubs = TRUE,
   verbose = TRUE
@@ -28,9 +21,9 @@ impute_forests(
 modify_forest_structure(
   x,
   structure_map,
-  variable = "mean tree height",
+  variable,
   map_var = NA,
-  ratio_limits = c(0.5, 1.5),
+  ratio_limits = NULL,
   verbose = TRUE
 )
 }
@@ -44,29 +37,25 @@ will be performed for locations whose land cover is "wildland". Otherwise, fores
 
 \item{forest_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map}
 
-\item{height_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest height map}
-
-\item{density_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the tree density map}
-
 \item{var_class}{Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.}
-
-\item{var_height}{Variable name or index containing forest height in 'height_map'. If missing the first column is taken.}
-
-\item{var_density}{Variable name or index containing forest height in 'density_map'. If missing the first column is taken.}
 
 \item{max_distance_km}{Maximum distance, in km, for forest inventory plot imputation.}
 
-\item{height_ratio_limits, density_ratio_limits}{Limits for height and density ratio, to avoid errors.}
-
 \item{replace_existing}{A logical flag to force the replacement of existing 'forest' objects, when present.}
-
-\item{correct_height_shrubs}{A logical flag to correct the height of shrubs when providing a vegetation height map (by default, only tree heights are corrected).}
 
 \item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).}
 
 \item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).}
 
 \item{verbose}{A logical flag to print console output.}
+
+\item{structure_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map}
+
+\item{variable}{Structural variable to correct. See options in details.}
+
+\item{map_var}{Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.}
+
+\item{ratio_limits}{Limits for ratio of variable in corrections, used to avoid outliers.}
 }
 \value{
 A modified object of class \code{\link{sf}} with column 'forest'.

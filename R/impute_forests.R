@@ -8,15 +8,9 @@
 #' @param sf_nfi An object of class \code{\link{sf}} with forest inventory data column 'forest'. 
 #' @param dem A digital elevation model (class \code{\link{rast}}) with meters as units
 #' @param forest_map An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map
-#' @param height_map An object of class \code{\link{rast}} or \code{\link{vect}} with the forest height map
-#' @param density_map An object of class \code{\link{rast}} or \code{\link{vect}} with the tree density map
 #' @param max_distance_km Maximum distance, in km, for forest inventory plot imputation.
 #' @param var_class Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.
-#' @param var_height Variable name or index containing forest height in 'height_map'. If missing the first column is taken.
-#' @param var_density Variable name or index containing forest height in 'density_map'. If missing the first column is taken.
-#' @param height_ratio_limits,density_ratio_limits Limits for height and density ratio, to avoid errors. 
 #' @param replace_existing A logical flag to force the replacement of existing 'forest' objects, when present.
-#' @param correct_height_shrubs A logical flag to correct the height of shrubs when providing a vegetation height map (by default, only tree heights are corrected).
 #' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
 #' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
 #' @param verbose A logical flag to print console output.
@@ -49,13 +43,10 @@
 #'   # See vignette 'Preparing inputs'
 #' }
 impute_forests <-function(x, sf_nfi, dem, 
-                          forest_map, height_map = NULL, density_map = NULL, 
-                          var_class = NA, var_height = NA, var_density = NA,
+                          forest_map, 
+                          var_class = NA, 
                           max_distance_km = 100,
-                          height_ratio_limits = c(0.5,1.5),
-                          density_ratio_limits = c(0.5,1.5),
                           replace_existing = FALSE, 
-                          correct_height_shrubs = FALSE,
                           merge_trees = TRUE, merge_shrubs = TRUE, verbose = TRUE) {
   if(verbose) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
@@ -63,16 +54,8 @@ impute_forests <-function(x, sf_nfi, dem,
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
   if(!inherits(dem, "SpatRaster")) cli::cli_abort("'dem' should be of class 'SpatRaster'")
   if(!inherits(forest_map, "SpatRaster") && !inherits(forest_map, "SpatVector")) cli::cli_abort("'forest_map' should be of class 'SpatRaster' or 'SpatVector'")
-  if(!is.null(height_map)) {
-    if(!inherits(height_map, "SpatRaster") && !inherits(height_map, "SpatVector")) cli::cli_abort("'height_map' should be of class 'SpatRaster' or 'SpatVector'")
-  }
-  if(!is.null(density_map)) {
-    if(!inherits(density_map, "SpatRaster") && !inherits(density_map, "SpatVector")) cli::cli_abort("'density_map' should be of class 'SpatRaster' or 'SpatVector'")
-  }
   if(is.na(var_class)) var_class = 1
-  if(is.na(var_height)) var_height = 1
-  if(is.na(var_density)) var_density = 1
-  
+
   if(verbose) cli::cli_progress_step("Calculating northing-slope")
   r_slope <- terra::terrain(dem, v = "slope", unit = "degrees")
   r_aspect <- terra::terrain(dem, v = "aspect", unit = "degrees")
@@ -113,26 +96,6 @@ impute_forests <-function(x, sf_nfi, dem,
   if(length(non_included)>0) {
     cli::cli_alert_warning(paste0(length(non_included), " forest classes were not represented in nfi data and the class of ", sum(x_class %in% non_included)," locations was set to missing"))
     x_class[x_class %in% non_included] <- NA
-  }
-  if(!is.null(height_map)) {
-    if(verbose) cli::cli_progress_step("Extracting height for 'x'")
-    x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map)))
-    x_height<-terra::extract(height_map, x_vect)[,-1, drop = FALSE]
-    x_height<- x_height[[var_height]]
-    if(verbose) cli::cli_progress_step("Extracting height for 'sf_nfi'")
-    nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(height_map)))
-    nfi_height<-terra::extract(height_map, nfi_vect)[,-1, drop = FALSE]
-    nfi_height<-nfi_height[[var_height]]
-  }
-  if(!is.null(density_map)) {
-    if(verbose) cli::cli_progress_step("Extracting density for 'x'")
-    x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(density_map)))
-    x_density<-terra::extract(density_map, x_vect)[,-1, drop = FALSE]
-    x_density<- x_density[[var_density]]
-    if(verbose) cli::cli_progress_step("Extracting density for 'sf_nfi'")
-    nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(density_map)))
-    nfi_density<-terra::extract(density_map, nfi_vect)[,-1, drop = FALSE]
-    nfi_density<-nfi_density[[var_density]]
   }
   if(verbose) cli::cli_progress_step("Equidistant conic coordinates")
   x_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(x), crs = "ESRI:54027"))
@@ -176,37 +139,7 @@ impute_forests <-function(x, sf_nfi, dem,
       y_2 <- x_m[i,2] - nfi_m[nfi_w,2] 
       nfi_i <- nfi_w[which.min(y_1^2 + y_2^2)]
       f <- sf_nfi$forest[[nfi_i]]
-      height_ratio <- 1
-      if(!is.null(height_map)) {
-        height_ratio <- x_height[i]/nfi_height[nfi_i]
-        height_ratio <- max(min(height_ratio, height_ratio_limits[2]), height_ratio_limits[1])
-      }
-      density_ratio <- 1
-      if(!is.null(density_map)) {
-        density_ratio <- x_density[i]/nfi_density[nfi_i]
-        density_ratio <- max(min(density_ratio, density_ratio_limits[2]), density_ratio_limits[1])
-      }
       if(is.null(x$forest[[i]]) || replace_existing) {
-        if(!is.na(height_ratio)) {
-          if(height_ratio!=1) {
-            if(nrow(f$treeData)>0) {
-              f$treeData$Height <- f$treeData$Height*height_ratio 
-              f$treeData$DBH <- f$treeData$DBH*height_ratio
-            }
-            if(correct_height_shrubs) {
-              if(nrow(f$shrubData)>0) {
-                f$shrubData$Height <- f$shrubData$Height*height_ratio 
-              }
-            }
-          }
-        }
-        if(!is.na(density_ratio)) {
-          if(density_ratio!=1) {
-            if(nrow(f$treeData)>0) {
-              f$treeData$N <- f$treeData$N*density_ratio
-            }
-          }
-        }
         if(merge_trees)  f <- medfate::forest_mergeTrees(f)
         if(merge_shrubs)  f <- medfate::forest_mergeShrubs(f)
         x$forest[[i]] <- f
@@ -222,17 +155,21 @@ impute_forests <-function(x, sf_nfi, dem,
 
 
 #' @rdname impute_forests
+#' @param structure_map An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map
+#' @param variable Structural variable to correct. See options in details.
+#' @param map_var Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.
+#' @param ratio_limits Limits for ratio of variable in corrections, used to avoid outliers. 
 #' @export
-modify_forest_structure<-function(x, structure_map, 
-                                  variable = "mean tree height",
+modify_forest_structure<-function(x, structure_map, variable,
                                   map_var = NA, 
-                                  ratio_limits = c(0.5,1.5),
+                                  ratio_limits = NULL,
                                   verbose = TRUE) {
   if(verbose) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   if(!inherits(structure_map, "SpatRaster") && !inherits(structure_map, "SpatVector")) cli::cli_abort("'structure_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(map_var)) map_var = 1
+  variable <- match.arg(variable, c("mean_tree_height", "dominant_tree_height", "tree_density", "basal_area"))
   
   if(verbose) cli::cli_progress_step(paste0("Extracting ", variable))
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(structure_map)))
@@ -248,29 +185,35 @@ modify_forest_structure<-function(x, structure_map,
     if(verbose) cli::cli_progress_update()
     f <- x$forest[[i]]
     if(!is.null(f)) {
-      if(variable=="mean tree height") {
+      if(variable=="mean_tree_height") {
         if(nrow(f$treeData)>0) {
-          tree_ba <- f$treeData$N*pi*(f$treeData$DBH/200)^2
-          mean_height <- sum(f$treeData$Height*tree_ba)/sum(tree_ba)
-          height_ratio <- x_var[i]/mean_height
+          mean_height_m <- stand_meanTreeHeight(f)/100
+          height_ratio <- x_var[i]/mean_height_m
           if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
           f$treeData$Height <- f$treeData$Height*height_ratio 
           f$treeData$DBH <- f$treeData$DBH*height_ratio
         }
-      } else if(variable=="dominant tree height") {
+      } else if(variable=="dominant_tree_height") {
         if(nrow(f$treeData)>0) {
-          dominant_height <- stand_dominantTreeHeight(f)
-          height_ratio <- x_var[i]/dominant_height
+          dominant_height_m <- stand_dominantTreeHeight(f)/100
+          height_ratio <- x_var[i]/dominant_height_m
           if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
           f$treeData$Height <- f$treeData$Height*height_ratio 
           f$treeData$DBH <- f$treeData$DBH*height_ratio
         }
-      } else if(variable=="tree density") {
+      } else if(variable=="tree_density") {
         if(nrow(f$treeData)>0) {
-          tree_density <-sum(f$treeData$N)
+          tree_density <- stand_treeDensity(f)
           density_ratio <- x_var[i]/tree_density
           if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
           f$treeData$N <- f$treeData$N*density_ratio
+        }
+      } else if(variable=="basal_area") {
+        if(nrow(f$treeData)>0) {
+          basal_area <- stand_basalArea(f)
+          basal_area_ratio <- x_var[i]/basal_area
+          if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
+          f$treeData$N <- f$treeData$N*basal_area_ratio
         }
       }
       x$forest[[i]] <- f

@@ -63,11 +63,11 @@ rm(scchh)
 gc()
 ```
 
-Now we define a raster at 100 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
+Now we define a raster at 200 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
 
 ```{r, warning = FALSE}
-res <- 300
-r <-terra::rast(terra::ext(watershed), resolution = c(300,300), crs = "epsg:25831")
+res <- 200
+r <-terra::rast(terra::ext(watershed), resolution = c(res,res), crs = "epsg:25831")
 v <- terra::intersect(terra::as.points(r), watershed)
 ```
 
@@ -189,11 +189,11 @@ y_2
 Only `wildland` locations will have a `forest` object, for example:
 
 ```{r}
-y_2$forest[[11]]
+y_2$forest[[1]]
 ```
 
 
-### Forest imputation with structure correction
+### Forest structure correction
 
 The former imputation result would be already useful for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest types are the same. Therefore, it is advisable to correct the forest structure with available information.
 
@@ -209,106 +209,32 @@ This resolution is finer than the size of forest inventory plots, and the errors
 
 
 ```{r}
-height_map_40 <- terra::aggregate(height_map, fact = 2, fun = "mean", na.rm = TRUE)
+height_map_40 <- terra::aggregate(terra::crop(height_map, r), 
+                                  fact = 2, fun = "mean", na.rm = TRUE)
 height_map_40
 ```
 
 
 ```{r}
-height_r <- terra::crop(height_map_40, r)
-names(height_r)<- "height"
-```
-
-
-```{r}
+names(height_map_40)<- "height"
 ggplot()+
-  geom_spatraster(aes(fill=height), data=height_r)+
+  geom_spatraster(aes(fill=height), data=height_map_40)+
   geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
   scale_fill_continuous("m", type = "viridis", na.value = NA)+
   theme_bw()
 ```
 
 ```{r}
-y_3 <- modify_forest_structure(y_2, height_map_40, var = "mean tree height")
+y_3 <- modify_forest_structure(y_2, height_map_40, var = "mean_tree_height")
 ```
 
-
-We call again `impute_forests()` to perform the imputation while correcting tree height:
-
-```{r}
-y_3 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
-                      forest_map = forest_map, height_map = height_map_40)
-```
-
-The function does not force average tree height of the stand in the target location to match the height map. Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship does not depend on tree height. This leads consequently in a change in basal area (see below). We can inspect the same forest as above to see the effect of the correction:
-
-```{r}
-y_3$forest[[11]]
-```
-
-Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of tree density, also derived from LiDAR flights:
-
-```{r}
-density_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-den-2016-2017.tif"))
-density_map
-```
-
-We perform the same aggregation done for heights:
-
-```{r}
-density_map_40 <- terra::aggregate(density_map, fact = 2, fun = "mean", na.rm = TRUE)
-```
 
 
 ```{r}
-density_r <- terra::crop(density_map_40, r)
-names(density_r)<- "N"
+y_3$forest[[1]]
 ```
 
-
-```{r}
-ggplot()+
-  geom_spatraster(aes(fill=N), data=density_r)+
-  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
-  scale_fill_continuous("ind/ha", type="viridis", na.value = NA)+
-  theme_bw()
-```
-
-```{r}
-y_4 <- modify_forest_structure(y_3, density_map_40, var = "tree density")
-```
-Finally, we call again function `impute_forests()` with both height and basal area maps:
-
-```{r}
-y_4 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
-                      forest_map = forest_map, height_map = height_map_40, density_map = density_map_40)
-```
-
-Analogously to the correction of heights, the correction for tree density does not take the tree density value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
-
-
-```{r}
-y_4$forest[[11]]
-```
-We can compare the effect of the two corrections (height only or height + basal area) on forest metrics, such as the dominant tree height:
-
-```{r}
-medfate::stand_dominantTreeHeight(y_2$forest[[11]])
-medfate::stand_dominantTreeHeight(y_3$forest[[11]])
-medfate::stand_dominantTreeHeight(y_4$forest[[11]])
-```
-
-or stand basal area:
-
-```{r}
-medfate::stand_basalArea(y_2$forest[[11]])
-medfate::stand_basalArea(y_3$forest[[11]])
-medfate::stand_basalArea(y_4$forest[[11]])
-```
-
-where it is apparent that both the height correction and the basal area correction have an effect in basal area.
-
-
+Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
 
 
 ```{r}
@@ -319,34 +245,82 @@ basal_area_map
 We perform the same aggregation done for heights:
 
 ```{r}
-basal_area_map_40 <- terra::aggregate(basal_area_map, fact = 2, fun = "mean", na.rm = TRUE)
+basal_area_map_40 <- terra::aggregate(terra::crop(basal_area_map, r), 
+                                      fact = 2, fun = "mean", na.rm = TRUE)
+basal_area_map_40
 ```
 
 
 ```{r}
-basal_area_r <- terra::crop(basal_area_map_40, r)
-names(basal_area_r)<- "basal_area"
+names(basal_area_map_40)<- "basal_area"
+ggplot()+
+  geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
+  scale_fill_continuous("m", type = "viridis", na.value = NA)+
+  theme_bw()
 ```
 
+```{r}
+y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area")
+```
+
+```{r}
+y_4$forest[[1]]
+```
+
+### Evaluating the correction effect
 
 ```{r, echo = TRUE, fig.width=8, fig.height=6, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "basal_area", r = r)+
-  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
-  labs(title = "Imputation alone")
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation")+theme_bw()
 p2 <- plot_variable(y_3, "basal_area", r = r)+
-  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
-  labs(title = "Imputation and height correction")
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation + H correction")+theme_bw()
 p3 <- plot_variable(y_4, "basal_area", r = r)+
-  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
-  labs(title = "Imputation and height + density correction")
-
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  labs(title = "Imputation + H/BA correction")+theme_bw()
 p4 <- ggplot()+
-  geom_spatraster(aes(fill=basal_area), data=basal_area_r)+
-  geom_spatvector(fill = NA, col = "black", linewidth = 1, data = watershed)+
-  scale_fill_distiller(limits = c(0,120), palette = "Spectral", na.value = NA)+
+  geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  labs(title = "Basal area from Lidar")+
   theme_bw()
 cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
 ```
+
+
+
+
+Finally, we call again function `impute_forests()` with both height and basal area maps:
+
+Analogously to the correction of heights, the correction for tree density does not take the tree density value of the map for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. We can inspect the same forest again to see the changes in `N` (density per hectare) column:
+
+
+
+We can compare the effect of the two corrections (height only or height + basal area) on forest metrics, such as the dominant tree height:
+
+```{r}
+medfate::stand_dominantTreeHeight(y_2$forest[[1]])
+medfate::stand_dominantTreeHeight(y_3$forest[[1]])
+medfate::stand_dominantTreeHeight(y_4$forest[[1]])
+```
+
+or stand basal area:
+
+```{r}
+medfate::stand_basalArea(y_2$forest[[1]])
+medfate::stand_basalArea(y_3$forest[[1]])
+medfate::stand_basalArea(y_4$forest[[1]])
+```
+
+where it is apparent that both the height correction and the basal area correction have an effect in basal area.
+
+
+
 ```{r}
 ba_2 <- extract_variables(y_2, "basal_area")$basal_area
 ba_3 <- extract_variables(y_3, "basal_area")$basal_area
@@ -355,9 +329,50 @@ ba_4 <- extract_variables(y_4, "basal_area")$basal_area
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
 x_ba<-terra::extract(basal_area_map_40, x_vect)[,-1, drop = TRUE]
 
+cor.test(ba_2, x_ba)
+cor.test(ba_3, x_ba)
 cor.test(ba_4, x_ba)
 ```
 
+
+
+```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
+p1 <- plot_variable(y_2, "mean_tree_height", r = r)+
+  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  labs(title = "Imputation")+
+  theme_bw()
+p2 <- plot_variable(y_3, "mean_tree_height", r = r)+
+  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  labs(title = "Imputation + H mean_tree_height")+
+  theme_bw()
+p3 <- plot_variable(y_4, "mean_tree_height", r = r)+
+  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  labs(title = "Imputation + H/BA correction")+
+  theme_bw()
+p4 <- ggplot()+
+  geom_spatraster(aes(fill=height), data=height_map_40)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  scale_fill_distiller("m", limits = c(0,26), palette = "Spectral", na.value = NA)+
+  labs(title = "Mean tree height from Lidar")+
+  theme_bw()
+cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
+```
+
+```{r}
+mth_2 <- extract_variables(y_2, "mean_tree_height")$mean_tree_height
+mth_3 <- extract_variables(y_3, "mean_tree_height")$mean_tree_height
+mth_4 <- extract_variables(y_4, "mean_tree_height")$mean_tree_height
+
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40)))
+x_mth<-terra::extract(height_map_40, x_vect)[,-1, drop = TRUE]
+
+cor.test(mth_2, x_mth)
+cor.test(mth_3, x_mth)
+cor.test(mth_4, x_mth)
+```
 
 ## Soil parameterization
 
