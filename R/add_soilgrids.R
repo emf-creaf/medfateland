@@ -1,4 +1,4 @@
-#' Soil parameter estimation
+#' Landscape soil parametrization
 #'
 #' Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). Optionally, it modifies the resulting
 #' soil definition with additional information on soil depth and depth to bedrock. Function \code{modify_soils} modifies soil definition according to 
@@ -39,7 +39,7 @@
 #'
 #' @encoding UTF-8
 #' @export
-#'
+#' @name soil_parametrization
 #' @references
 #' Hengl T, Mendes de Jesus J, Heuvelink GBM, Ruiperez Gonzalez M, Kilibarda M, \enc{Blagotić}{Blagotic} A, et al. (2017) SoilGrids250m: Global gridded soil information based on machine learning. PLoS ONE 12(2): e0169748. doi:10.1371/journal.pone.0169748.
 #'
@@ -181,12 +181,14 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   }
   if(verbose) {
     cli::cli_progress_step("Checking for missing values in key parameters")
+    cli::cli_progress_bar("Locations", total = nrow(x))
   }
   mis_clay <- 0
   mis_sand <- 0
   mis_bd <- 0
   mis_rfc <- 0
   for(i in 1:npoints) {
+    if(verbose) cli::cli_progress_update()
     if(retrieved[i]) {
       s <- x$soil[[i]]
       if(any(is.na(s$clay))) {
@@ -207,6 +209,9 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
       }
       x$soil[[i]] <- s
     }
+  }
+  if(verbose) {
+    cli::cli_progress_done()
   }
   if(mis_clay>0) cli::cli_alert_warning(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
   if(mis_sand>0) cli::cli_alert_warning(paste0("Default 'sand' values assigned for ", mis_sand, " locations"))
@@ -260,7 +265,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
 #' @param regolith_rfc Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).
 #' @param full_rock_filling Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.
 #'
-#' @rdname add_soilgrids
+#' @rdname soil_parametrization
 #' @export
 modify_soils <- function(x, soil_depth_map = NULL,
                          depth_to_bedrock_map = NULL, 
@@ -292,8 +297,12 @@ modify_soils <- function(x, soil_depth_map = NULL,
     x_depth_to_bedrock<-terra::extract(depth_to_bedrock_map, x_vect)[,2, drop = TRUE]
   }
   if(!is.null(soil_depth_map) || !is.null(depth_to_bedrock_map)) {
-    if(verbose) cli::cli_progress_step("Modifying soil depths")
+    if(verbose) {
+      cli::cli_progress_step("Modifying soil depths")
+      cli::cli_progress_bar("Locations", total = nrow(x))
+    }
     for(i in 1:npoints) {
+      if(verbose) cli::cli_progress_update()
       if(is_soil[i]){
         if(!is.data.frame(x$soil[[i]])) cli_abort("Elements in 'soil' should be data frames of soil physical characteristics")
         x$soil[[i]] <- .modify_soil_definition(x$soil[[i]], 
@@ -302,6 +311,9 @@ modify_soils <- function(x, soil_depth_map = NULL,
                                                regolith_rfc,
                                                full_rock_filling)
       }
+    }
+    if(verbose) {
+      cli::cli_progress_done()
     }
   }
   return(sf::st_as_sf(tibble::as_tibble(x)))

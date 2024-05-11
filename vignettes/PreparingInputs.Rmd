@@ -35,11 +35,10 @@ library(tidyterra)
 
 Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 100 m in EPSG:32631 (UTM for fuse 31) projection.
 
-First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya):
+First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya [river code "2005528"]):
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 scchh <- terra::vect(paste0(dataset_path, "Hydrography/Sources/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
-# Riera de bianya = 2005528
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
 ```
@@ -62,10 +61,10 @@ rm(counties)
 gc()
 ```
 
-Now we define a raster at 100 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
+Now we define a raster at 200 m resolution, including the target area. We intersect it with the watershed boundaries to keep the target locations:
 
 ```{r, warning = FALSE}
-res <- 100
+res <- 200
 r <-terra::rast(terra::ext(watershed), resolution = c(res,res), crs = "epsg:25831")
 v <- terra::intersect(terra::as.points(r), watershed)
 ```
@@ -215,10 +214,11 @@ ggplot()+
   theme_bw()
 ```
 
-We now call function `modify_forest_structure()` to correct mean tree height according to the LiDAR data (where vegetation height should be in meters):
+We now call function `modify_forest_structure()` to correct mean tree height according to the LiDAR data (Note the correction of units: tree heights are in cm in **medfate**):
 
 ```{r}
-y_3 <- modify_forest_structure(y_2, height_map_40, var = "mean_tree_height")
+height_map_40_cm <- height_map_40*100
+y_3 <- modify_forest_structure(y_2, height_map_40_cm, var = "mean_tree_height")
 ```
 
 Correction of tree heights also affects tree diameters, because the function assumes that the diameter-height relationship needs to be preserved. If we inspect the same `forest` object again, we will be able to note changes in height and diameter values:
@@ -249,11 +249,11 @@ names(basal_area_map_40)<- "basal_area"
 ggplot()+
   geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_continuous("m", type = "viridis", na.value = NA)+
+  scale_fill_continuous("m2/ha", type = "viridis", na.value = NA, limits = c(0,70))+
   theme_bw()
 ```
 
-We now use the same function to correct basal area values. 
+We now use the same function to correct basal area values (no unit conversion is needed in this case): 
 
 ```{r}
 y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area")
@@ -271,57 +271,60 @@ To finish this section, we will show the effect of imputation and correction on 
 ```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
   labs(title = "Imputation")+theme_bw()
 p2 <- plot_variable(y_3, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
   labs(title = "Imputation + H correction")+theme_bw()
 p3 <- plot_variable(y_4, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
   labs(title = "Imputation + H/BA correction")+theme_bw()
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
+x_vect$basal_area <- terra::extract(basal_area_map_40, x_vect)$basal_area
+r_ba<-terra::rasterize(x_vect, r, field = "basal_area")
 p4 <- ggplot()+
-  geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
+  geom_spatraster(aes(fill=last), data=r_ba)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_distiller("m2/ha", limits = c(0,70), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
   labs(title = "Basal area from Lidar")+
   theme_bw()
 cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
 ```
-where it is apparent that both the height correction and the basal area correction have an effect in basal area. We can quantitatively assess the relationship between predicted basal area and the observed one using:
+where it is apparent that both the height correction and the basal area correction have an effect in basal area. Note that the map after the two corrections differs from the LiDAR basal area in locations that have not been corrected because of missing LiDAR values (or missing tree data). We can quantitatively assess the relationship between predicted basal area and the observed one using:
 
 ```{r}
-x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
-x_ba<-terra::extract(basal_area_map_40, x_vect)[,-1, drop = TRUE]
-
 ba_4 <- extract_variables(y_4, "basal_area")$basal_area
-cor.test(ba_4, x_ba)
+cor.test(ba_4, x_vect$basal_area)
 ```
-
 
 We can also see the effect of the imputation and correction on mean tree height:
 
 ```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
 p1 <- plot_variable(y_2, "mean_tree_height", r = r)+
-  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   labs(title = "Imputation")+
   theme_bw()
 p2 <- plot_variable(y_3, "mean_tree_height", r = r)+
-  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   labs(title = "Imputation + H mean_tree_height")+
   theme_bw()
 p3 <- plot_variable(y_4, "mean_tree_height", r = r)+
-  scale_fill_distiller("cm", limits = c(0,2600), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   labs(title = "Imputation + H/BA correction")+
   theme_bw()
+
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40_cm)))
+x_vect$height <- terra::extract(height_map_40_cm, x_vect)$height
+r_ba<-terra::rasterize(x_vect, r, field = "height")
 p4 <- ggplot()+
-  geom_spatraster(aes(fill=height), data=height_map_40)+
+  geom_spatraster(aes(fill=last), data=r_ba)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  scale_fill_distiller("m", limits = c(0,26), palette = "Spectral", na.value = NA)+
+  scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   labs(title = "Mean tree height from Lidar")+
   theme_bw()
 cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
@@ -330,10 +333,7 @@ Here the basal area correction did not have any effect on mean tree height. The 
 
 ```{r}
 mth_4 <- extract_variables(y_4, "mean_tree_height")$mean_tree_height
-x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40)))
-x_mth<-terra::extract(height_map_40, x_vect)[,-1, drop = TRUE]
-
-cor.test(mth_4, x_mth)
+cor.test(mth_4, x_vect$height)
 ```
 
 ## Soil parameterization
@@ -436,5 +436,4 @@ z <- initialize_landscape(y_6, SpParamsMED, defaultControl())
 ```
 
 
-
-Other variables may be needed, depending on the simulation function we want to use, but here we illustrated the basic ones.
+Other variables may be needed, depending on the simulation function we want to use (crop factors, bedrock conductivity and porosity, etc.), but here we illustrated the most important ones.

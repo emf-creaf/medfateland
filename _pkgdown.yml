@@ -24,6 +24,7 @@ reference:
   - impute_forests
   - add_soilgrids
   - modify_soils
+  - modify_forest_structure
   
 - title: Example data
   desc:  Example data sets for distributed stands and watershed

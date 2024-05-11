@@ -1,43 +1,50 @@
-#' Forest imputation
+#' Landscape forest parametrization
 #' 
-#' Performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates. Additional
-#' rasters can be supplied to correct forest structure in the target locations.
+#' Function \code{impute_forests()} performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates. 
+#' Function \code{modify_forest_structure()} uses forest structure rasters supplied by the user to correct forest structure metrics.
 #'
 #' @param x An object of class \code{\link{sf}}. If it contains a column named 'land_cover_type', imputation
 #'          will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.
+#'          For structural corrections, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.
 #' @param sf_nfi An object of class \code{\link{sf}} with forest inventory data column 'forest'. 
 #' @param dem A digital elevation model (class \code{\link{rast}}) with meters as units
 #' @param forest_map An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map
 #' @param max_distance_km Maximum distance, in km, for forest inventory plot imputation.
 #' @param var_class Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.
-#' @param replace_existing A logical flag to force the replacement of existing 'forest' objects, when present.
+#' @param replace_existing A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.
 #' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
 #' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
 #' @param verbose A logical flag to print console output.
 #'
 #' @details
-#' The function performs a simplistic imputation of forest inventory plots on target locations provided that 
-#' they correspond to the same forest class, defined in the forest map, and are within some distance of the target location. 
-#' Among the multiple stands that can have the target forest class, the function chooses the one that has the most similar elevation 
+#' Function \code{impute_forests()} performs imputation of forest inventory plots on target locations provided that 
+#' they correspond to the same forest class, defined in the input forest map, and are geographically closer than a distance threshold (\code{max_distance_km}). 
+#' Among the multiple stands that can have fulfill these two requirements, the function chooses the one that has the most similar elevation 
 #' and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). Both topographic 
-#' features are standardized to zero mean and unit standard deviation, to make their influence on the imputation
-#' equal. This imputation method will be more or less successful depending on the resolution of forest classes and
-#' the number of forest inventory plots available for each of them.
+#' features are standardized to zero mean and unit standard deviation (using the supplied digital elevation model to calculate those metrics), to make their 
+#' weight on the imputation equal. This imputation method will be more or less successful depending on the resolution of forest classes and
+#' the number of forest inventory plots available for each of them. Additionally, tree and shrub cohorts can be simplified after imputation (\code{merge_trees} and \code{merge_shrubs}), 
+#' to reduce the number of records (and hence, speed-up simulations).
 #' 
-#' When \code{height_map} or \code{density_map} are provided, the function performs structural corrections in additional to imputation.
-#' When correcting for height, the function does not force average tree height of the stand in the target location to match the height map. 
-#' Rather, it uses the ratio of heights between the target location and the forest inventory plot used as imputation source, to correct the 
-#' tree heights of the target location. Tree diameters are corrected with the same factor, assuming that the diameter-height relationship 
-#' does not depend on tree height. This leads consequently in a change in basal area, in addition to changes in dominant tree height. 
+#' Function \code{modify_forest_structure} can be used to modify specific structure variables of the imputed forests 
+#' building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
+#' the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}}) 
+#' and the input map in the target location. Locations where the metric value in the map is missing are left unmodified. 
+#' Options for structural variables are the following:
+#' \itemize{
+#'   \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
+#'   \item{\code{dominant_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
+#'   \item{\code{tree_density}: Should contain values in individuals per hectare. Corrects tree density.}
+#'   \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
+#'   \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
+#' }
 #' 
-#' Analogously to the correction of heights, correction of tree density does not take the density value of the map 
-#' for the target location, but the ratio of values between the target location and the forest inventory plot used as reference for imputation. 
-#' This ratio is used to correct tree density.
 #' 
-#' @return A modified object of class \code{\link{sf}} with column 'forest'.
+#' @return Both functions return a modified object of class \code{\link{sf}}. 
+#' 
 #' @seealso [create_landscape()], [add_soilgrids()], \code{\link[medfate]{forest_mergeTrees}}
 #' @export
-#'
+#' @name forest_parametrization
 #' @examples
 #' \dontrun{
 #'   # See vignette 'Preparing inputs'
@@ -154,7 +161,7 @@ impute_forests <-function(x, sf_nfi, dem,
 
 
 
-#' @rdname impute_forests
+#' @rdname forest_parametrization
 #' @param structure_map An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map
 #' @param variable Structural variable to correct. See options in details.
 #' @param map_var Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.
@@ -184,10 +191,10 @@ modify_forest_structure<-function(x, structure_map, variable,
   for(i in 1:nrow(x)) {
     if(verbose) cli::cli_progress_update()
     f <- x$forest[[i]]
-    if(!is.null(f)) {
+    if((!is.null(f)) && (!is.na(x_var[i]))) {
       if(variable=="mean_tree_height") {
         if(nrow(f$treeData)>0) {
-          mean_height_m <- stand_meanTreeHeight(f)/100
+          mean_height_m <- stand_meanTreeHeight(f)
           height_ratio <- x_var[i]/mean_height_m
           if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
           f$treeData$Height <- f$treeData$Height*height_ratio 
@@ -195,7 +202,7 @@ modify_forest_structure<-function(x, structure_map, variable,
         }
       } else if(variable=="dominant_tree_height") {
         if(nrow(f$treeData)>0) {
-          dominant_height_m <- stand_dominantTreeHeight(f)/100
+          dominant_height_m <- stand_dominantTreeHeight(f)
           height_ratio <- x_var[i]/dominant_height_m
           if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
           f$treeData$Height <- f$treeData$Height*height_ratio 
