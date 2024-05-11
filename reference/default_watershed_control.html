@@ -66,10 +66,11 @@
 <p>A list with the following items:</p><ul><li><p><code>watershed_model</code>: A string with the watershed model.</p></li>
 <li><p><code>weather_aggregation_factor [= 1]</code>: An integer specifying the spatial aggregation for interpolated weather.</p></li>
 <li><p><code>tetis_parameters</code>: A list of TETIS parameters with the following elements:
-</p><ul><li><p><code>rock_max_infiltration [= 10]</code>: Maximum infiltration rate (mm·day-1) for rock cells.</p></li>
-<li><p><code>R_localflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (local vertical flows).</p></li>
+</p><ul><li><p><code>R_localflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (local vertical flows).</p></li>
 <li><p><code>R_interflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).</p></li>
 <li><p><code>R_baseflow [= 10.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
+<li><p><code>rock_max_infiltration [= 10]</code>: Maximum infiltration rate (mm·day-1) for rock cells.</p></li>
+<li><p><code>deep_aquifer_loss [= 0]</code>: Daily loss rate from watershed aquifer towards a deeper aquifer not connected to outlets (mm·day-1).</p></li>
 </ul></li>
 <li><p><code>serghei_parameters</code>: A list of SERGHEI parameters with the following elements:
 </p><ul><li><p><code>input_dir [= ""]</code>: Path to SERGHEI input files.</p></li>
@@ -102,9 +103,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$rock_max_infiltration</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_localflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -113,6 +111,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_baseflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$rock_max_infiltration</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$deep_aquifer_loss</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $serghei_parameters</span>

@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / María González</h4>
             
-            <h4 data-toc-skip class="date">2024-05-09</h4>
+            <h4 data-toc-skip class="date">2024-05-11</h4>
       
       
       <div class="hidden name"><code>TetisWatershedParameters.Rmd</code></div>
@@ -152,17 +152,20 @@ transfer processes, in this case:</p>
 <p>The default parameterization for the three scaling factors is:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span></span></code></pre></div>
-<pre><code><span><span class="co">## $rock_max_infiltration</span></span>
-<span><span class="co">## [1] 10</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## $R_localflow</span></span>
+<pre><code><span><span class="co">## $R_localflow</span></span>
 <span><span class="co">## [1] 1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $R_interflow</span></span>
 <span><span class="co">## [1] 1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $R_baseflow</span></span>
-<span><span class="co">## [1] 10</span></span></code></pre>
+<span><span class="co">## [1] 10</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $rock_max_infiltration</span></span>
+<span><span class="co">## [1] 10</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $deep_aquifer_loss</span></span>
+<span><span class="co">## [1] 0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="simulations">Simulations<a class="anchor" aria-label="anchor" href="#simulations"></a>
@@ -186,13 +189,13 @@ two sources as export runoff.</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[26ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[27ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[116ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[118ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
@@ -204,18 +207,18 @@ two sources as export runoff.</p>
 <pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Building spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  11% | ETA: 20s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  12% | ETA: 19s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA: 17s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA: 13s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% | ETA: 10s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% | ETA:  7s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  82% | ETA:  4s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% | ETA:  1s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% | ETA: 11s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  8s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% | ETA:  5s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA:  3s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Done</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
@@ -235,7 +238,8 @@ two sources as export runoff.</p>
 <span><span class="co">##   Change in aquifer water content (mm): 41.73</span></span>
 <span><span class="co">##   Aquifer water balance result (mm): 41.73</span></span>
 <span><span class="co">##   Aquifer water balance components:</span></span>
-<span><span class="co">##     Deep drainage (mm) 46.33  Capillarity rise (mm) 0.58  Exfiltration (mm) 4.02</span></span>
+<span><span class="co">##     Deep drainage (mm) 46.33  Capillarity rise (mm) 0.58</span></span>
+<span><span class="co">##     Exfiltration (mm) 4.02  Deep aquifer loss (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Change in watershed water content (mm): 82.24</span></span>
 <span><span class="co">##   Watershed water balance result (mm): 82.24</span></span>
@@ -261,13 +265,13 @@ conductivity five times:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[33ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[34ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
@@ -279,18 +283,18 @@ conductivity five times:</p>
 <pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Building spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   8% | ETA: 19s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  22% | ETA: 16s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA: 13s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA: 11s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  7s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% | ETA:  4s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% | ETA:  1s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  12% | ETA: 20s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA: 17s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA: 14s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% | ETA: 10s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA:  7s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA:  4s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA:  1s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Done</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
@@ -310,7 +314,8 @@ conductivity five times:</p>
 <span><span class="co">##   Change in aquifer water content (mm): 101.01</span></span>
 <span><span class="co">##   Aquifer water balance result (mm): 101.01</span></span>
 <span><span class="co">##   Aquifer water balance components:</span></span>
-<span><span class="co">##     Deep drainage (mm) 107.3  Capillarity rise (mm) 0.89  Exfiltration (mm) 5.41</span></span>
+<span><span class="co">##     Deep drainage (mm) 107.3  Capillarity rise (mm) 0.89</span></span>
+<span><span class="co">##     Exfiltration (mm) 5.41  Deep aquifer loss (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Change in watershed water content (mm): 82.63</span></span>
 <span><span class="co">##   Watershed water balance result (mm): 82.63</span></span>
@@ -342,10 +347,10 @@ in upslope cells.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
@@ -357,21 +362,23 @@ in upslope cells.</p>
 <pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Building spwb input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   7% | ETA: 24s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  19% | ETA: 21s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  29% | ETA: 19s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA: 17s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% | ETA: 15s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% | ETA: 12s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% | ETA:  9s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% | ETA:  7s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■                              </span>   4% | ETA: 27s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  16% | ETA: 24s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA: 22s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA: 20s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA: 18s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% | ETA: 14s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% | ETA: 12s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% | ETA: 10s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% | ETA:  8s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA:  5s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% | ETA:  2s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA:  3s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  98% | ETA:  1s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Done</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
@@ -391,7 +398,8 @@ in upslope cells.</p>
 <span><span class="co">##   Change in aquifer water content (mm): 38.38</span></span>
 <span><span class="co">##   Aquifer water balance result (mm): 38.38</span></span>
 <span><span class="co">##   Aquifer water balance components:</span></span>
-<span><span class="co">##     Deep drainage (mm) 46.7  Capillarity rise (mm) 0.25  Exfiltration (mm) 8.07</span></span>
+<span><span class="co">##     Deep drainage (mm) 46.7  Capillarity rise (mm) 0.25</span></span>
+<span><span class="co">##     Exfiltration (mm) 8.07  Deep aquifer loss (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Change in watershed water content (mm): 70.15</span></span>
 <span><span class="co">##   Watershed water balance result (mm): 70.15</span></span>
@@ -408,7 +416,7 @@ resulting in a much larger saturation excess. It also impacts the amount
 of aquifer exfiltration.</p>
 <p><strong>Increasing groundwater lateral conductivity</strong> Let’s
 now perform a simulation with an increased groundwater conductivity:</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_localflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
@@ -421,10 +429,10 @@ now perform a simulation with an increased groundwater conductivity:</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
 <pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
@@ -439,15 +447,15 @@ now perform a simulation with an increased groundwater conductivity:</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  11% | ETA: 21s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA: 16s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA: 12s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% | ETA:  9s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% | ETA:  6s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA:  3s</span></span></code></pre>
-<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   7% | ETA: 23s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA: 19s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA: 14s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA: 11s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  7s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA:  4s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% | ETA:  2s</span></span></code></pre>
 <pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
 <pre><code><span><span class="co">## • Done</span></span></code></pre>
 <pre><code><span><span class="co">## • Water balance check</span></span></code></pre>
@@ -467,7 +475,8 @@ now perform a simulation with an increased groundwater conductivity:</p>
 <span><span class="co">##   Change in aquifer water content (mm): 30.26</span></span>
 <span><span class="co">##   Aquifer water balance result (mm): 30.26</span></span>
 <span><span class="co">##   Aquifer water balance components:</span></span>
-<span><span class="co">##     Deep drainage (mm) 46.33  Capillarity rise (mm) 0.58  Exfiltration (mm) 15.49</span></span>
+<span><span class="co">##     Deep drainage (mm) 46.33  Capillarity rise (mm) 0.58</span></span>
+<span><span class="co">##     Exfiltration (mm) 15.49  Deep aquifer loss (mm) 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Change in watershed water content (mm): 70.77</span></span>
 <span><span class="co">##   Watershed water balance result (mm): 70.77</span></span>
@@ -488,7 +497,7 @@ exfiltration.</p>
 <div class="section level3">
 <h3 id="flux-rate-series">Flux rate series<a class="anchor" aria-label="anchor" href="#flux-rate-series"></a>
 </h3>
-<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df1</span><span class="op">&lt;-</span> <span class="va">res_0</span><span class="op">$</span><span class="va">watershed_balance</span></span>
 <span><span class="va">df1</span><span class="op">$</span><span class="va">Scenario</span> <span class="op">&lt;-</span> <span class="st">"Baseline"</span></span>
 <span><span class="va">df2</span><span class="op">&lt;-</span> <span class="va">res_L5</span><span class="op">$</span><span class="va">watershed_balance</span></span>
@@ -500,89 +509,89 @@ exfiltration.</p>
 <span><span class="va">df</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df1</span>,<span class="va">df2</span>,<span class="va">df3</span>, <span class="va">df4</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">Scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Scenario</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baseline"</span>, <span class="st">"R_local x 5"</span>, <span class="st">"R_inter x 5"</span>, <span class="st">"R_base x 5"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Drainage</strong></p>
-<div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">DeepDrainage</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Deep drainage (mm)"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">DeepDrainage</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Deep drainage (mm)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Capillarity rise</strong></p>
-<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">CapillarityRise</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Capillarity rise (mm)"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">CapillarityRise</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Capillarity rise (mm)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Saturation excess</strong></p>
-<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">SaturationExcess</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Saturation excess (mm)"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">SaturationExcess</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Saturation excess (mm)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"><strong>Aquifer exfiltration</strong></p>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">AquiferExfiltration</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Aquifer exfiltration (mm)"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">AquiferExfiltration</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Aquifer exfiltration (mm)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Watershed export</strong></p>
-<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">WatershedExport</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Watershed export (mm)"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">WatershedExport</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Watershed export (mm)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="flux-rate-maps">Flux rate maps<a class="anchor" aria-label="anchor" href="#flux-rate-maps"></a>
 </h3>
 <p><strong>Drainage to aquifer</strong></p>
-<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
-<span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
-<span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
+<span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
+<span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Capillarity rise</strong></p>
-<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
-<span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
-<span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
+<span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
+<span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"CapillarityRise"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Sub-surface balance</strong></p>
-<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"InterflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"InterflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
 <span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"InterflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
 <span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"InterflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Groundwater balance</strong></p>
-<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"BaseflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"BaseflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
 <span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"BaseflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
 <span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_B5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"BaseflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
+<span>  <span class="fu">scale_fill_gradient2</span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_base x 5"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
