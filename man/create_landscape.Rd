@@ -13,7 +13,7 @@ create_landscape(
   rock = NULL,
   artificial = NULL,
   water = NULL,
-  verbose = TRUE
+  progress = TRUE
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ create_landscape(
 
 \item{wildland, agriculture, rock, artificial, water}{Strings indicating the mapping from the legend of land_cover_map.}
 
-\item{verbose}{A logical flag to print console output}
+\item{progress}{A logical flag to print console output}
 }
 \value{
 A modified object of class \code{\link{sf}} with columns:

@@ -13,7 +13,7 @@ add_soilgrids(
   widths = NULL,
   replace_existing = TRUE,
   default_values = c(clay = 25, sand = 25, bd = 1.5, rfc = 25),
-  verbose = TRUE
+  progress = TRUE
 )
 
 modify_soils(
@@ -22,7 +22,7 @@ modify_soils(
   depth_to_bedrock_map = NULL,
   regolith_rfc = 97.5,
   full_rock_filling = TRUE,
-  verbose = TRUE
+  progress = TRUE
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ cover types. Otherwise, soils are retrieved for all locations. For function \cod
 
 \item{default_values}{Vector of default values for locations with missing SoilGrids data.}
 
-\item{verbose}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
+\item{progress}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
 
 \item{soil_depth_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the soil depth (in \emph{mm}) values.}
 

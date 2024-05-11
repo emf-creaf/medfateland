@@ -16,7 +16,7 @@ impute_forests(
   replace_existing = FALSE,
   merge_trees = TRUE,
   merge_shrubs = TRUE,
-  verbose = TRUE
+  progress = TRUE
 )
 
 modify_forest_structure(
@@ -25,7 +25,7 @@ modify_forest_structure(
   variable,
   map_var = NA,
   ratio_limits = NULL,
-  verbose = TRUE
+  progress = TRUE
 )
 }
 \arguments{
@@ -49,7 +49,7 @@ For structural corrections, \code{x} should already contain a column named 'fore
 
 \item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).}
 
-\item{verbose}{A logical flag to print console output.}
+\item{progress}{A logical flag to print console output.}
 
 \item{structure_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map}
 
