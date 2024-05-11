@@ -14,7 +14,7 @@
 #' @param replace_existing A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.
 #' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
 #' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
-#' @param verbose A logical flag to print console output.
+#' @param progress A logical flag to print console output.
 #'
 #' @details
 #' Function \code{impute_forests()} performs imputation of forest inventory plots on target locations provided that 
@@ -54,8 +54,8 @@ impute_forests <-function(x, sf_nfi, dem,
                           var_class = NA, 
                           max_distance_km = 100,
                           replace_existing = FALSE, 
-                          merge_trees = TRUE, merge_shrubs = TRUE, verbose = TRUE) {
-  if(verbose) cli::cli_progress_step("Checking inputs")
+                          merge_trees = TRUE, merge_shrubs = TRUE, progress = TRUE) {
+  if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   land_cover_type <- rep("wildland", nrow(x))
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
@@ -63,30 +63,30 @@ impute_forests <-function(x, sf_nfi, dem,
   if(!inherits(forest_map, "SpatRaster") && !inherits(forest_map, "SpatVector")) cli::cli_abort("'forest_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(var_class)) var_class = 1
 
-  if(verbose) cli::cli_progress_step("Calculating northing-slope")
+  if(progress) cli::cli_progress_step("Calculating northing-slope")
   r_slope <- terra::terrain(dem, v = "slope", unit = "degrees")
   r_aspect <- terra::terrain(dem, v = "aspect", unit = "degrees")
   r_northing <- r_slope*cos(pi*r_aspect/180)
   rm(r_slope)
   rm(r_aspect)
   gc()
-  if(verbose) cli::cli_progress_step("Calculating topography mean and sd values")
+  if(progress) cli::cli_progress_step("Calculating topography mean and sd values")
   mean_elev <- mean(as.vector(dem), na.rm=TRUE)
   sd_elev <- sd(as.vector(dem), na.rm=TRUE)
   mean_northing <- mean(as.vector(r_northing), na.rm=TRUE)
   sd_northing <- sd(as.vector(r_northing), na.rm=TRUE)
 
-  if(verbose) cli::cli_progress_step("Extracting topography for 'x'")
+  if(progress) cli::cli_progress_step("Extracting topography for 'x'")
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(dem)))
   x_elevation <- terra::extract(dem, x_vect)[,2]
   x_northing <- terra::extract(r_northing, x_vect)[,2]
   x_m <- cbind((x_elevation - mean_elev)/sd_elev, (x_northing - mean_northing)/sd_northing)
-  if(verbose) cli::cli_progress_step("Extracting topography for 'sf_nfi'")
+  if(progress) cli::cli_progress_step("Extracting topography for 'sf_nfi'")
   nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(dem)))
   nfi_elevation <- terra::extract(dem, nfi_vect)[,2]
   nfi_northing <- terra::extract(r_northing, nfi_vect)[,2]
   nfi_m <- cbind((nfi_elevation - mean_elev)/sd_elev, (nfi_northing - mean_northing)/sd_northing)
-  if(verbose) cli::cli_progress_step("Extracting forest class for 'x'")
+  if(progress) cli::cli_progress_step("Extracting forest class for 'x'")
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(forest_map)))
   # Subset map to accelerate extraction
   forest_map_red <- terra::crop(forest_map, x_vect, ext = TRUE)
@@ -94,7 +94,7 @@ impute_forests <-function(x, sf_nfi, dem,
   x_class<- x_class[[var_class]]
   classes <- unique(x_class[!is.na(x_class)])
   forest_map_red <- forest_map[forest_map$Class %in% classes,]
-  if(verbose) cli::cli_progress_step("Extracting forest class for 'sf_nfi'")
+  if(progress) cli::cli_progress_step("Extracting forest class for 'sf_nfi'")
   nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(forest_map)))
   nfi_class<-terra::extract(forest_map_red, nfi_vect)[,-1, drop = FALSE]
   nfi_class<- nfi_class[[var_class]]
@@ -104,22 +104,22 @@ impute_forests <-function(x, sf_nfi, dem,
     cli::cli_alert_warning(paste0(length(non_included), " forest classes were not represented in nfi data and the class of ", sum(x_class %in% non_included)," locations was set to missing"))
     x_class[x_class %in% non_included] <- NA
   }
-  if(verbose) cli::cli_progress_step("Equidistant conic coordinates")
+  if(progress) cli::cli_progress_step("Equidistant conic coordinates")
   x_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(x), crs = "ESRI:54027"))
   nfi_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(sf_nfi), crs = "ESRI:54027"))
   
   if(!("forest" %in% names(x))) {
-    if(verbose) cli::cli_progress_step("Defining column 'forest'")
+    if(progress) cli::cli_progress_step("Defining column 'forest'")
     x$forest <- vector("list", nrow(x))
   }
-  if(verbose) {
+  if(progress) {
     cli::cli_progress_step("Imputation")
     cli::cli_progress_bar("Locations", total = nrow(x))
   }
   num_closest <- 0
   num_missing <- 0
   for(i in 1:nrow(x)) {
-    if(verbose) cli::cli_progress_update()
+    if(progress) cli::cli_progress_update()
     if(x$land_cover_type[i]=="wildland") {
       if(!is.na(x_class[i])) {
         nfi_sel <- nfi_class==x_class[i]
@@ -155,7 +155,7 @@ impute_forests <-function(x, sf_nfi, dem,
   }
   if(num_missing> 0)  cli::cli_alert_warning(paste0("Missing forest class for ", num_missing, " locations. Only geographic and topographic criteria used for those locations."))
   if(num_closest> 0)  cli::cli_alert_warning(paste0("Not enough plots of the same class within geographic distance limits for ", num_closest, " locations. The closest plot of the same class was chosen in those cases."))
-  if(verbose) cli::cli_progress_done()
+  if(progress) cli::cli_progress_done()
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
@@ -170,26 +170,26 @@ impute_forests <-function(x, sf_nfi, dem,
 modify_forest_structure<-function(x, structure_map, variable,
                                   map_var = NA, 
                                   ratio_limits = NULL,
-                                  verbose = TRUE) {
-  if(verbose) cli::cli_progress_step("Checking inputs")
+                                  progress = TRUE) {
+  if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   if(!inherits(structure_map, "SpatRaster") && !inherits(structure_map, "SpatVector")) cli::cli_abort("'structure_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(map_var)) map_var = 1
   variable <- match.arg(variable, c("mean_tree_height", "dominant_tree_height", "tree_density", "basal_area"))
   
-  if(verbose) cli::cli_progress_step(paste0("Extracting ", variable))
+  if(progress) cli::cli_progress_step(paste0("Extracting ", variable))
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(structure_map)))
   x_var<-terra::extract(structure_map, x_vect)[,-1, drop = FALSE]
   x_var<- x_var[[map_var]]
   
   
-  if(verbose) {
+  if(progress) {
     cli::cli_progress_step("Correction")
     cli::cli_progress_bar("Locations", total = nrow(x))
   }
   for(i in 1:nrow(x)) {
-    if(verbose) cli::cli_progress_update()
+    if(progress) cli::cli_progress_update()
     f <- x$forest[[i]]
     if((!is.null(f)) && (!is.na(x_var[i]))) {
       if(variable=="mean_tree_height") {
@@ -226,7 +226,7 @@ modify_forest_structure<-function(x, structure_map, variable,
       x$forest[[i]] <- f
     }
   }
-  if(verbose) {
+  if(progress) {
     cli::cli_progress_done()
   }
   return(sf::st_as_sf(tibble::as_tibble(x)))

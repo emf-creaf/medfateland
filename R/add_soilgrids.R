@@ -10,7 +10,7 @@
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
 #' @param default_values Vector of default values for locations with missing SoilGrids data.
 #' @param replace_existing A logical flag to force the replacement of existing soil data, when already present
-#' @param verbose A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.
+#' @param progress A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.
 #'
 #' @details 
 #' 
@@ -61,7 +61,7 @@
 add_soilgrids <- function(x, soilgrids_path = NULL, 
                           widths = NULL, replace_existing = TRUE, 
                           default_values = c("clay" = 25, "sand" = 25, "bd" = 1.5, "rfc" = 25),
-                          verbose = TRUE) {
+                          progress = TRUE) {
   if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
   coords <- sf::st_coordinates(x_lonlat)
@@ -72,11 +72,11 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   
   retrieved <- rep(FALSE, npoints)
   if(!("soil" %in% names(x))) {
-    if(verbose) cli::cli_progress_step("Defining column 'soil'")
+    if(progress) cli::cli_progress_step("Defining column 'soil'")
     x$soil <- vector("list", npoints)
   }
   if(is.null(soilgrids_path)) {
-    if(verbose) {
+    if(progress) {
       cli::cli_progress_step(paste0("Querying ", nsoil," points to rest.isric.org:\n"))
       cli::cli_progress_bar(name = "Points", total = npoints)
     }
@@ -85,7 +85,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     props_str <- "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
     depths_str <- "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
     for(i in 1:npoints) {
-      if(verbose) cli::cli_progress_update()
+      if(progress) cli::cli_progress_update()
       if(land_cover_type[i] %in% c("wildland", "agriculture")) {
         tryCatch( {
           resSG <- data.frame(matrix(nrow = 6, ncol = 6))
@@ -127,9 +127,9 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
         })
       }
     }
-    if(verbose) cli::cli_progress_done()
+    if(progress) cli::cli_progress_done()
   } else {
-    if(verbose) {
+    if(progress) {
       cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers:\n"))
     }
     vars <- c("sand", "clay", "soc", "nitrogen", "bdod", "cfvo")
@@ -179,7 +179,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
       }
     }
   }
-  if(verbose) {
+  if(progress) {
     cli::cli_progress_step("Checking for missing values in key parameters")
     cli::cli_progress_bar("Locations", total = nrow(x))
   }
@@ -188,7 +188,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   mis_bd <- 0
   mis_rfc <- 0
   for(i in 1:npoints) {
-    if(verbose) cli::cli_progress_update()
+    if(progress) cli::cli_progress_update()
     if(retrieved[i]) {
       s <- x$soil[[i]]
       if(any(is.na(s$clay))) {
@@ -210,7 +210,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
       x$soil[[i]] <- s
     }
   }
-  if(verbose) {
+  if(progress) {
     cli::cli_progress_done()
   }
   if(mis_clay>0) cli::cli_alert_warning(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
@@ -270,8 +270,8 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
 modify_soils <- function(x, soil_depth_map = NULL,
                          depth_to_bedrock_map = NULL, 
                          regolith_rfc = 97.5, full_rock_filling = TRUE,
-                         verbose = TRUE) {
-  if(verbose) cli::cli_progress_step("Checking inputs")
+                         progress = TRUE) {
+  if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   if(!("soil" %in% names(x))) cli_abort("Object 'x' should have a column called 'soil'")
   if(is.null(soil_depth_map) && !is.null(depth_to_bedrock_map)) cli_abort("Either 'soil_depth_map' or 'depth_to_bedrock_map' should be provided")
@@ -286,23 +286,23 @@ modify_soils <- function(x, soil_depth_map = NULL,
 
   x_soil_depth <- rep(NA, npoints)
   if(!is.null(soil_depth_map)) {
-    if(verbose) cli::cli_progress_step("Extracting soil depth")
+    if(progress) cli::cli_progress_step("Extracting soil depth")
     x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(soil_depth_map)))
     x_soil_depth<-terra::extract(soil_depth_map, x_vect)[,2, drop = TRUE]
   }
   x_depth_to_bedrock <- rep(NA, npoints)
   if(!is.null(depth_to_bedrock_map)) {
-    if(verbose) cli::cli_progress_step("Extracting depth to bedrock")
+    if(progress) cli::cli_progress_step("Extracting depth to bedrock")
     x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(depth_to_bedrock_map)))
     x_depth_to_bedrock<-terra::extract(depth_to_bedrock_map, x_vect)[,2, drop = TRUE]
   }
   if(!is.null(soil_depth_map) || !is.null(depth_to_bedrock_map)) {
-    if(verbose) {
+    if(progress) {
       cli::cli_progress_step("Modifying soil depths")
       cli::cli_progress_bar("Locations", total = nrow(x))
     }
     for(i in 1:npoints) {
-      if(verbose) cli::cli_progress_update()
+      if(progress) cli::cli_progress_update()
       if(is_soil[i]){
         if(!is.data.frame(x$soil[[i]])) cli_abort("Elements in 'soil' should be data frames of soil physical characteristics")
         x$soil[[i]] <- .modify_soil_definition(x$soil[[i]], 
@@ -312,7 +312,7 @@ modify_soils <- function(x, soil_depth_map = NULL,
                                                full_rock_filling)
       }
     }
-    if(verbose) {
+    if(progress) {
       cli::cli_progress_done()
     }
   }

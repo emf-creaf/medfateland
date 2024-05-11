@@ -111,7 +111,7 @@ y_1 <- create_landscape(x, dem = dem, land_cover_map = lcm,
                         agriculture = agriculture, 
                         rock = rock, 
                         artificial = artificial, 
-                        water = water)
+                        water = water, progress = FALSE)
 ```
 
 We can examine the result using:
@@ -167,7 +167,7 @@ Having these two inputs (forest map and forest inventory data), we can use funct
 
 ```{r}
 y_2 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
-                      forest_map = forest_map)
+                      forest_map = forest_map, progress = FALSE)
 ```
 
 For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). Warnings and errors can arise in the process. More details can be found in the documentation of `impute_forests()`.
@@ -218,7 +218,8 @@ We now call function `modify_forest_structure()` to correct mean tree height acc
 
 ```{r}
 height_map_40_cm <- height_map_40*100
-y_3 <- modify_forest_structure(y_2, height_map_40_cm, var = "mean_tree_height")
+y_3 <- modify_forest_structure(y_2, height_map_40_cm, var = "mean_tree_height",
+                               progress = FALSE)
 ```
 
 Correction of tree heights also affects tree diameters, because the function assumes that the diameter-height relationship needs to be preserved. If we inspect the same `forest` object again, we will be able to note changes in height and diameter values:
@@ -256,7 +257,8 @@ ggplot()+
 We now use the same function to correct basal area values (no unit conversion is needed in this case): 
 
 ```{r}
-y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area")
+y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area",
+                               progress = FALSE)
 ```
 
 Note that basal area (or tree density) corrections should be done after the height correction, because of the effect that height correction has on tree diameters. The correction of basal area operates on tree density values. As before, we can inspect changes in tree density:
@@ -346,7 +348,7 @@ Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, 
 
 ```{r}
 soilgrids_path = paste0(dataset_path,"Soils/Sources/Global/SoilGrids/Spain/")
-y_5 <- add_soilgrids(y_4, soilgrids_path = soilgrids_path, verbose = TRUE)
+y_5 <- add_soilgrids(y_4, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
 
 And the result has an extra column `soil`:
@@ -401,7 +403,8 @@ We can now call function `modify_soils()` with the two rasters to perform the co
 ```{r}
 y_6 <- modify_soils(y_5, 
                     soil_depth_map = soil_depth_mm, 
-                    depth_to_bedrock_map = depth_to_bedrock_mm)
+                    depth_to_bedrock_map = depth_to_bedrock_mm,
+                    progress = FALSE)
 ```
 
 In this case, the depth to bedrock values were deeper than 2m, so that only the soil depth map had an effect on the correction procedure. After the correction, the rock fragment content of the soil has changed substantially:
@@ -432,7 +435,8 @@ cowplot::plot_grid(p1, p2, ncol =1, nrow=2)
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y_6, SpParamsMED, defaultControl())
+z <- initialize_landscape(y_6, SpParamsMED, defaultControl(),
+                          progress = FALSE)
 ```
 
 
