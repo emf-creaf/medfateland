@@ -12,8 +12,8 @@
         selectInput(
           inputId = "plot_var",
           label = "Variable", 
-          choices = .getAllowedTopographyVars(),
-          selected = .getAllowedTopographyVars()[1]
+          choices = .getAllowedTopographyVars(x),
+          selected = .getAllowedTopographyVars(x)[1]
         ),
       ),
       mainPanel(
@@ -24,10 +24,10 @@
   server <- function(input, output, session) {
     observe({
       main_plot <- input$plot_main_type
-      if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars()
-      else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars()
-      else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars(SpParams)
-      else if(main_plot=="Watershed") sub_choices = .getAllowedWatershedVars()
+      if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars(x)
+      else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars(x)
+      else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars(x, SpParams)
+      else if(main_plot=="Watershed") sub_choices = .getAllowedWatershedVars(x)
       updateSelectInput(session, "plot_var",
                         choices = sub_choices)
     })

@@ -1,81 +1,69 @@
-.getAllowedTopographyVars <-function() {
-  return(c( "Elevation (m)" = "elevation", 
-            "Slope (degrees)" = "slope", 
-            "Aspect (degrees)" = "aspect", 
-            "Land cover type" = "land_cover_type"))
+.getAllowedTopographyVars <-function(obj) {
+  vars <- c( "Elevation (m)" = "elevation", 
+     "Slope (degrees)" = "slope", 
+     "Aspect (degrees)" = "aspect", 
+     "Land cover type" = "land_cover_type")
+  return(vars[vars %in% names(obj)])
 }
 .getLandscapeTopographyVar<-function(obj, variable) {
-  if(!(variable %in% names(obj))) stop(paste0("Object does not have a '", variable, "' column."))
+  if(!(variable %in% names(obj)))  cli::cli_abort(paste0("Object does not have a '", variable, "' column."))
   varplot = obj[[variable]]
   return(varplot)
 }
 
-.getAllowedSoilVars <-function() {
-  return(c("Texture (first layer)" = "texture1", 
-           "Texture (second layer)" = "texture2", 
-           "Texture (third layer)" ="texture3",
-           "Total water extractable volume (mm)" = "soilvolextract",
-           "Total water volume at saturation (mm)" = "soilvolsat",
-           "Total water volume at field capacity (mm)" = "soilvolfc",
-           "Total water volume at wilting point (mm)" = "soilvolwp",
-           "Current total water volume (mm)" = "soilvolcurr",
-           "Soil relative water content" = "soilrwc",
-           "Soil moisture (first layer)" = "theta1",
-           "Soil moisture (second layer)" = "theta2",
-           "Soil moisture (third layer)" = "theta3",
-           "Water potential (first layer)" = "psi1",
-           "Water potential (second layer)" = "psi2",
-           "Water potential (third layer)" = "psi3"))
+.getAllowedSoilVars <-function(obj) {
+  if(!("soil" %in% names(obj))) return(character(0))
+  return(c("Total water extractable volume (mm)" = "soil_vol_extract",
+           "Total water volume at saturation (mm)" = "soil_vol_sat",
+           "Total water volume at field capacity (mm)" = "soil_vol_fc",
+           "Total water volume at wilting point (mm)" = "soil_vol_wp",
+           "Current total water volume (mm)" = "soil_vol_curr",
+           "Soil relative water content (%)" = "soil_rwc_curr",
+           "Soil relative extractable water (%)" = "soil_rew_curr",
+           "Soil moisture content (% vol.)" = "soil_theta_curr",
+           "Soil water potential (MPa)" = "soil_psi_curr"))
 }
 .getLandscapeSoilVar<-function(obj, variable) {
-  if(!("soil" %in% names(obj))) stop("Object does not have a 'soil' column.")
+  if(!("soil" %in% names(obj))) cli::cli_abort("Object does not have a 'soil' column.")
   n = length(obj$soil)
   varplot = rep(NA, n)
   for(i in 1:n) {
     s = obj$soil[[i]]
     if(inherits(s, "data.frame")) s <- medfate::soil(s)
     if(inherits(s,"soil")) {
-      if(variable=="texture1") varplot[i] = soil_USDAType(s$clay[1],s$sand[1])
-      else if(variable=="texture2") varplot[i] = soil_USDAType(s$clay[2],s$sand[2])
-      else if(variable=="texture3") varplot[i] = soil_USDAType(s$clay[3],s$sand[3])
-      else if(variable=="soilrwc") varplot[i] = 100*sum(soil_water(s), na.rm=TRUE)/sum(soil_waterFC(s), na.rm=TRUE)
-      else if(variable=="soilvolextract") varplot[i] = sum(soil_waterExtractable(s), na.rm=TRUE)
-      else if(variable=="soilvolsat") varplot[i] = sum(soil_waterSAT(s), na.rm=TRUE)
-      else if(variable=="soilvolfc") varplot[i] = sum(soil_waterFC(s), na.rm=TRUE)
-      else if(variable=="soilvolwp") varplot[i] = sum(soil_waterWP(s), na.rm=TRUE)
-      else if(variable=="soilvolcurr") varplot[i] = sum(soil_water(s), na.rm=TRUE)
-      else if(variable=="theta1") varplot[i] = soil_theta(s)[1]
-      else if(variable=="theta2") varplot[i] = soil_theta(s)[2]
-      else if(variable=="theta3") varplot[i] = soil_theta(s)[3]
-      else if(variable=="psi1") varplot[i] = soil_psi(s)[1]
-      else if(variable=="psi2") varplot[i] = soil_psi(s)[2]
-      else if(variable=="psi3") varplot[i] = soil_psi(s)[3]
+      if(variable=="soil_vol_extract") varplot[i] = sum(soil_waterExtractable(s), na.rm=TRUE)
+      else if(variable=="soil_vol_sat") varplot[i] = sum(soil_waterSAT(s), na.rm=TRUE)
+      else if(variable=="soil_vol_fc") varplot[i] = sum(soil_waterFC(s), na.rm=TRUE)
+      else if(variable=="soil_vol_wp") varplot[i] = sum(soil_waterWP(s), na.rm=TRUE)
+      else if(variable=="soil_vol_curr") varplot[i] = sum(soil_water(s), na.rm=TRUE)
+      else if(variable=="soil_rwc_curr") varplot[i] = 100*sum(soil_water(s), na.rm=TRUE)/sum(soil_waterFC(s), na.rm=TRUE)
+      else if(variable=="soil_theta_curr") varplot[i] = 100*sum(soil_theta(s)*soil_waterSAT(s), na.rm=TRUE)/sum(soil_waterSAT(s), na.rm =TRUE)
+      else if(variable=="soil_rew_curr") varplot[i] = 100*sum(soil_water(s) - soil_waterPsi(s, psi = -5.0), na.rm=TRUE)/sum(soil_waterExtractable(s, minPsi = -5.0), na.rm =TRUE)
+      else if(variable=="soil_psi_curr") varplot[i] = sum(soil_psi(s)*soil_waterSAT(s), na.rm=TRUE)/sum(soil_waterSAT(s), na.rm =TRUE)
     }
   }
   return(varplot)
 }
 
-.getAllowedWatershedVars <-function(){
-  return(c("Depth to bedrock (m)" = "depth_to_bedrock",
-           "Bedrock porosity" = "bedrock_porosity", 
-           "Bedrock conductivity" = "bedrock_conductivity",
-           "Aquifer elevation (m)" = "aquifer_elevation", 
-           "Depth to aquifer (m)" = "depth_to_aquifer",
-           "Aquifer volume (mm)" = "aquifer", 
-           "Snowpack water equivalent (mm)" = "snowpack"))
+.getAllowedWatershedVars <-function(obj){
+  vars <- character(0)
+  if("depth_to_bedrock" %in% names(obj)) vars <- c(vars, "Depth to bedrock (m)" = "depth_to_bedrock") 
+  if("bedrock_porosity" %in% names(obj)) vars <- c(vars, "Bedrock porosity" = "bedrock_porosity") 
+  if("bedrock_conductivity" %in% names(obj)) vars <- c(vars, "Bedrock conductivity (m/day)" = "bedrock_conductivity") 
+  if("snowpack" %in% names(obj)) vars <- c(vars, "Snowpack water equivalent (mm)" = "snowpack") 
+  if("aquifer" %in% names(obj)) {
+    vars <- c(vars, "Aquifer volume (mm)" = "aquifer") 
+    if("bedrock_porosity" %in% names(obj)) {
+      vars <- c(vars, "Depth to aquifer (m)" = "depth_to_aquifer") 
+      if("elevation" %in% names(obj)) {
+        vars <- c(vars, "Aquifer elevation (m)" = "aquifer_elevation") 
+      }
+    }
+  }
+  return(vars)
 }
 .getLandscapeWatershedVar<-function(obj, variable) {
-  if(variable=="num_neigh") {
-    varplot = sapply(obj$queenNeigh,"length")
-  } else if(variable=="water_order") {
-    wo = obj$waterOrder
-    varplot = 1:length(wo)
-    varplot[wo] = 1:length(wo)
-  } else if(variable=="outlets") {
-    outlets = which(unlist(lapply(obj$waterQ, sum))==0)
-    varplot = rep(FALSE, length(obj$waterQ))
-    varplot[outlets] = TRUE
-  } else if(variable =="depth_to_bedrock") {
+  if(variable =="depth_to_bedrock") {
     varplot = obj$depth_to_bedrock/1000.0  # in m
   } else if(variable =="bedrock_porosity") {
     varplot = obj$bedrock_porosity
@@ -102,7 +90,8 @@
   return(varplot)
 }
 
-.getAllowedForestStandVars <-function(SpParams = NULL) {
+.getAllowedForestStandVars <-function(obj, SpParams = NULL) {
+  if(!("forest" %in% names(obj))) return(character(0))
   vars <- c("Basal area (m2/ha)"="basal_area",
             "Tree density (ind/ha)"="tree_density",
             "Mean tree height (cm)" = "mean_tree_height",
@@ -114,12 +103,13 @@
     vars <- c(vars,
               "Leaf area index (m2/m2)" = "leaf_area_index", 
               "Foliar biomass (kg/m2)" = "foliar_biomass", 
-              "Fine live fuel (kg/m2)" = "fuel_loading")
+              "Fine live fuel (kg/m2)" = "fuel_loading",
+              "Shrub volume (m3/m2)" = "shrub_volume")
   }
   return(vars)
 }
 .getLandscapeForestStandVar<-function(obj, variable, SpParams = NULL) {
-  if(!("forest" %in% names(obj))) stop("Object does not have a 'forest' column.")
+  if(!("forest" %in% names(obj)))  cli::cli_abort("Object does not have a 'forest' column.")
   n = length(obj$forest)
   varplot = rep(NA, n)
   for(i in 1:n) {
@@ -135,6 +125,7 @@
       else if(variable=="leaf_area_index") varplot[i] = stand_LAI(f, SpParams)
       else if(variable=="foliar_biomass") varplot[i] = stand_foliarBiomass(f, SpParams)
       else if(variable=="fuel_loading") varplot[i] = stand_fuelLoading(f, SpParams)
+      else if(variable=="shrub_volume") varplot[i] = stand_shrubVolume(f, SpParams)
     }
   }
   return(varplot)
@@ -142,18 +133,43 @@
 
 .getAllowedVars <-function(y, SpParams = NULL) {
   vars = character(0)
-  vars = c(vars, .getAllowedTopographyVars(),.getAllowedSoilVars(),.getAllowedForestStandVars(SpParams))
-  if("depth_to_bedrock" %in% names(y)) {
-    vars = c(vars, .getAllowedWatershedVars())
-  }
+  vars = c(vars, 
+           .getAllowedTopographyVars(y),
+           .getAllowedSoilVars(y),
+           .getAllowedForestStandVars(y, SpParams),
+           .getAllowedWatershedVars(y))
   return(vars)
 }
 .getLandscapeVar<-function(obj, variable, SpParams = NULL, ...) {
   variable = match.arg(variable, .getAllowedVars(obj, SpParams))
-  if(variable %in% .getAllowedTopographyVars()) return(.getLandscapeTopographyVar(obj, variable))
-  else if(variable %in% .getAllowedSoilVars()) return(.getLandscapeSoilVar(obj, variable))
-  else if(variable %in% .getAllowedWatershedVars()) return(.getLandscapeWatershedVar(obj, variable))
-  else if(variable %in% .getAllowedForestStandVars(SpParams)) return(.getLandscapeForestStandVar(obj, variable, SpParams))
+  if(variable %in% .getAllowedTopographyVars(obj)) return(.getLandscapeTopographyVar(obj, variable))
+  else if(variable %in% .getAllowedSoilVars(obj)) return(.getLandscapeSoilVar(obj, variable))
+  else if(variable %in% .getAllowedWatershedVars(obj)) return(.getLandscapeWatershedVar(obj, variable))
+  else if(variable %in% .getAllowedForestStandVars(obj, SpParams)) return(.getLandscapeForestStandVar(obj, variable, SpParams))
+}
+.getLegendName<-function(variable) {
+  legend <- "value"
+  if(variable =="elevation") legend = "m"
+  else if(variable =="slope") legend = "degrees"
+  else if(variable =="aspect") legend = "degrees"
+  else if(variable =="land_cover_type") legend = ""
+  else if(variable %in% c("soil_vol_extract", "soil_vol_sat", "soil_vol_fc", "soil_vol_wp", "soil_vol_curr")) legend = "mm"
+  else if(variable %in% c("soil_rwc_curr", "soil_rew_curr", "soil_theta_curr")) legend = "%"
+  else if(variable =="soil_psi_curr") legend = "MPa"
+  else if(variable =="depth_to_bedrock") legend = "m"
+  else if(variable =="bedrock_porosity") legend = ""
+  else if(variable =="bedrock_conductivity") legend = "m/day"
+  else if(variable %in% c("aquifer_elevation", "depth_to_aquifer")) legend = "m"
+  else if(variable %in% c("aquifer", "snowpack")) legend = "mm"
+  else if(variable =="basal_area") legend = "m2/ha"
+  else if(variable =="tree_density") legend = "ind/ha"
+  else if(variable %in% c("mean_tree_height", "dominant_tree_height", "dominant_tree_diameter", "quadratic_mean_tree_diameter")) legend = "cm"
+  else if(variable =="hart_becking_index") legend = "HB"
+  else if(variable =="leaf_area_index") legend = "m2/m2"
+  else if(variable =="foliar_biomass") legend = "kg/m2"
+  else if(variable =="fuel_loading") legend = "kg/m2"
+  else if(variable =="shrub_volume") legend = "m3/m2"
+  return(legend)
 }
 
 
@@ -169,6 +185,7 @@
 #' @param ... Additional arguments (not used).
 #' 
 #' @details The following string values are available for \code{vars}. 
+#' 
 #'  \emph{Topography}:
 #'    \itemize{
 #'       \item{\code{"elevation"}: Elevation in m.}
@@ -179,37 +196,45 @@
 #'    
 #'  \emph{Soil}:
 #'    \itemize{
-#'      \item{\code{"texture1"}: Texture class of the first soil layer.}
-#'      \item{\code{"texture2"}: Texture class of the second soil layer.} 
-#'      \item{\code{"texture3"}: Texture class of the third soil layer.} 
-#'      \item{\code{"soilvolextract"}: Total water extractable volume (mm).}
-#'      \item{\code{"soilvolsat"}: Total water volume at saturation (mm).}
-#'      \item{\code{"soilvolfc"}: Total water volume at field capacity (mm).}
-#'      \item{\code{"soilvolwp"}: Total water volume at wilting point (mm).}
-#'      \item{\code{"soilvolcurr"}: Current total water volume (mm).}
+#'      \item{\code{"soil_vol_extract"}: Total water extractable volume (mm).}
+#'      \item{\code{"soil_vol_sat"}: Total water volume at saturation (mm).}
+#'      \item{\code{"soil_vol_fc"}: Total water volume at field capacity (mm).}
+#'      \item{\code{"soil_vol_wp"}: Total water volume at wilting point (mm).}
+#'      \item{\code{"soil_vol_curr"}: Current total water volume (mm).}
+#'      \item{\code{"soil_rwc_curr"}: Current soil relative water content (%).}
+#'      \item{\code{"soil_rew_curr"}: Current soil relative extractable water (%).}
+#'      \item{\code{"soil_theta_curr"}: Current soil moisture content (% vol.)}
+#'      \item{\code{"soil_psi_curr"}: Current soil water potential (MPa).}
 #'    }
 #'    
 #'  \emph{Watershed}:
 #'    \itemize{
 #'      \item{\code{"depth_to_bedrock"}: Depth to bedrock (m).}
 #'      \item{\code{"bedrock_porosity"}: Bedrock porosity.}
-#'      \item{\code{"bedrock_conductivity"}: Bedrock conductivity.}
+#'      \item{\code{"bedrock_conductivity"}: Bedrock conductivity (m/day).}
 #'      \item{\code{"aquifer_elevation"}: Aquifer elevation over bedrock (m).}
 #'      \item{\code{"depth_to_aquifer"}: Depth to aquifer (m).}
-#'      \item{\code{"aquifer_volume"}: Aquifer volume (mm).}
+#'      \item{\code{"aquifer"}: Aquifer volume (mm).}
 #'      \item{\code{"snowpack"}: Snowpack water equivalent (mm).}
 #'    }
 #'
 #' \emph{Forest stand}:
 #'    \itemize{
 #'      \item{\code{"basal_area"}: Basal area (m2/ha).}
+#'      \item{\code{"tree_density"}: Tree density (ind/ha).}
+#'      \item{\code{"mean_tree_height"}: Mean tree height (cm).}
+#'      \item{\code{"dominant_tree_height"}: Dominant tree height (cm).}
+#'      \item{\code{"dominant_tree_diameter"}: Dominant tree diameter (cm).}
+#'      \item{\code{"quadratic_mean_tree_diameter"}: Quadratic mean tree diameter (cm).}
+#'      \item{\code{"hart_becking_index"}: Hart-Becking index.}
 #'      \item{\code{"leaf_area_index"}: Leaf area index (m2/m2).} 
 #'      \item{\code{"foliar_biomass"}: Foliar biomass (kg/m2).} 
 #'      \item{\code{"fuel_loading"}: Fine live fuel loading (kg/m2).} 
-#'      \item{\code{"shrub_volume"}: Shrub shrub_volume (m3/m2).}
+#'      \item{\code{"shrub_volume"}: Shrub volume (m3/m2).}
 #'    }
 #'
-#' @returns An object of class \code{\link{sf}} with the desired variables.
+#' @returns Function \code{extract_variables()} returns an object of class \code{\link{sf}} with the desired variables.
+#' Function \code{plot_variables()} returns a ggplot object.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
@@ -228,7 +253,7 @@
 #' @name extract_variables
 #' @export
 extract_variables<-function(x, vars = "land_cover_type", SpParams = NULL, ...) {
-  if(!inherits(x, "sf")) stop("'x' has to be of class 'sf'")
+  if(!inherits(x, "sf"))  cli::cli_abort("'x' has to be of class 'sf'")
   df = sf::st_sf(geometry = sf::st_geometry(x))
   for(var in vars) {
     df[[var]] = .getLandscapeVar(x, var, SpParams, ...)
@@ -244,9 +269,9 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
   if(is.null(r)) {
     g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))
     if(character_var) {
-      g <- g + scale_color_discrete(..., na.value = NA)
+      g <- g + scale_color_discrete(.getLegendName(variable),..., na.value = NA)
     } else {
-      g <- g + scale_color_continuous(..., na.value = NA)
+      g <- g + scale_color_continuous(.getLegendName(variable),..., na.value = NA)
     }
   } else {
     if(character_var) {
@@ -269,9 +294,9 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
     g<-ggplot()+
       geom_spatraster(aes(fill=.data$m1), data = raster_var)
     if(character_var) {
-      g <- g + scale_fill_discrete(..., na.value = NA)
+      g <- g + scale_fill_discrete(.getLegendName(variable),..., na.value = NA)
     } else {
-      g <- g + scale_fill_continuous(..., na.value = NA)
+      g <- g + scale_fill_continuous(.getLegendName(variable),..., na.value = NA)
     }
   }
   g+theme_bw()

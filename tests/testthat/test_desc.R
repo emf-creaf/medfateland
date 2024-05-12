@@ -7,8 +7,9 @@ yws = example_watershed
 
 data("SpParamsMED")
 vars <- c("elevation", "slope", "aspect", "land_cover_type",
-          "texture1", "texture2", "texture3", "soilvolextract", "soilvolsat", "soilvolfc", "soilvolwp", "soilvolcurr",
-          "basal_area", "leaf_area_index", "foliar_biomass", "fuel")
+          "soil_vol_extract", "soil_vol_sat", "soil_vol_fc", "soil_vol_wp", "soil_vol_curr",
+          "soil_theta_curr", "soil_psi_curr", "soil_rwc_curr", "soil_rew_curr",
+          "basal_area", "leaf_area_index", "foliar_biomass", "fuel", "shrub_volume")
 vars_ws <- c(vars,
              "depth_to_bedrock","bedrock_porosity", "bedrock_conductivity",
              "aquifer_elevation", "depth_to_aquifer","aquifer", "snowpack")

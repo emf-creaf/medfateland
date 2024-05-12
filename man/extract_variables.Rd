@@ -23,13 +23,15 @@ plot_variable(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...)
 \item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
 }
 \value{
-An object of class \code{\link{sf}} with the desired variables.
+Function \code{extract_variables()} returns an object of class \code{\link{sf}} with the desired variables.
+Function \code{plot_variables()} returns a ggplot object.
 }
 \description{
 Extract or estimate variables from landscape objects (class 'sf').
 }
 \details{
 The following string values are available for \code{vars}.
+
 \emph{Topography}:
 \itemize{
 \item{\code{"elevation"}: Elevation in m.}
@@ -40,34 +42,41 @@ The following string values are available for \code{vars}.
 
 \emph{Soil}:
 \itemize{
-\item{\code{"texture1"}: Texture class of the first soil layer.}
-\item{\code{"texture2"}: Texture class of the second soil layer.}
-\item{\code{"texture3"}: Texture class of the third soil layer.}
-\item{\code{"soilvolextract"}: Total water extractable volume (mm).}
-\item{\code{"soilvolsat"}: Total water volume at saturation (mm).}
-\item{\code{"soilvolfc"}: Total water volume at field capacity (mm).}
-\item{\code{"soilvolwp"}: Total water volume at wilting point (mm).}
-\item{\code{"soilvolcurr"}: Current total water volume (mm).}
+\item{\code{"soil_vol_extract"}: Total water extractable volume (mm).}
+\item{\code{"soil_vol_sat"}: Total water volume at saturation (mm).}
+\item{\code{"soil_vol_fc"}: Total water volume at field capacity (mm).}
+\item{\code{"soil_vol_wp"}: Total water volume at wilting point (mm).}
+\item{\code{"soil_vol_curr"}: Current total water volume (mm).}
+\item{\code{"soil_rwc_curr"}: Current soil relative water content (\%).}
+\item{\code{"soil_rew_curr"}: Current soil relative extractable water (\%).}
+\item{\code{"soil_theta_curr"}: Current soil moisture content (\% vol.)}
+\item{\code{"soil_psi_curr"}: Current soil water potential (MPa).}
 }
 
 \emph{Watershed}:
 \itemize{
 \item{\code{"depth_to_bedrock"}: Depth to bedrock (m).}
 \item{\code{"bedrock_porosity"}: Bedrock porosity.}
-\item{\code{"bedrock_conductivity"}: Bedrock conductivity.}
+\item{\code{"bedrock_conductivity"}: Bedrock conductivity (m/day).}
 \item{\code{"aquifer_elevation"}: Aquifer elevation over bedrock (m).}
 \item{\code{"depth_to_aquifer"}: Depth to aquifer (m).}
-\item{\code{"aquifer_volume"}: Aquifer volume (mm).}
+\item{\code{"aquifer"}: Aquifer volume (mm).}
 \item{\code{"snowpack"}: Snowpack water equivalent (mm).}
 }
 
 \emph{Forest stand}:
 \itemize{
 \item{\code{"basal_area"}: Basal area (m2/ha).}
+\item{\code{"tree_density"}: Tree density (ind/ha).}
+\item{\code{"mean_tree_height"}: Mean tree height (cm).}
+\item{\code{"dominant_tree_height"}: Dominant tree height (cm).}
+\item{\code{"dominant_tree_diameter"}: Dominant tree diameter (cm).}
+\item{\code{"quadratic_mean_tree_diameter"}: Quadratic mean tree diameter (cm).}
+\item{\code{"hart_becking_index"}: Hart-Becking index.}
 \item{\code{"leaf_area_index"}: Leaf area index (m2/m2).}
 \item{\code{"foliar_biomass"}: Foliar biomass (kg/m2).}
 \item{\code{"fuel_loading"}: Fine live fuel loading (kg/m2).}
-\item{\code{"shrub_volume"}: Shrub shrub_volume (m3/m2).}
+\item{\code{"shrub_volume"}: Shrub volume (m3/m2).}
 }
 }
 \examples{

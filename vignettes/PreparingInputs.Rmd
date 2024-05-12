@@ -24,16 +24,16 @@ Before reading this vignette, users should be familiar with *forest* and *soil* 
 
 Let's first load necessary libraries.
 
-```{r}
+```{r, echo = TRUE, message= FALSE}
 library(medfate)
 library(medfateland)
 library(ggplot2)
 library(tidyterra)
 ```
 
-## Target coordinates
+## Target area
 
-Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 100 m in EPSG:32631 (UTM for fuse 31) projection.
+Any spatial data set should begin with the definition of spatial elements. Here we will use a watershed in Catalonia as example, which we will describe using cells of 200 m in EPSG:32631 (UTM for fuse 31) projection.
 
 First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya [river code "2005528"]):
 ```{r}
@@ -45,7 +45,7 @@ watershed
 
 We can draw a map with the location of the watershed within Catalonia using:
 
-```{r}
+```{r, fig.width=5, fig.height=5, fig.align="center"}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Sources/Catalunya/Comarques/comarques.shp"))
 ggplot()+
@@ -149,7 +149,7 @@ Our task here will be to perform imputations of forest inventory plots to our ta
 
 ### Forest imputation
 
-A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the Spanish Forest Map (1:25000) for the region of Catalonia, which is in vector format, using package `terra`:
+A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the [Spanish Forest Map (1:25000)](https://www.miteco.gob.es/en/biodiversidad/temas/inventarios-nacionales/mapa-forestal-espana/mfe_25.html) for the region of Catalonia, which is in vector format, using package `terra`:
 ```{r}
 forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"))
 forest_map
@@ -189,7 +189,7 @@ y_2$forest[[1]]
 
 The former imputation result would be already useful for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest types are the same. Therefore, it is advisable to correct the forest structure with available information.
 
-There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use structural information derived from LiDAR flights in Catalonia (years 2016-2017). First we will load a mean tree height raster at 20-m resolution:
+There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use [biophysical structural maps](https://www.icgc.cat/ca/Geoinformacio-i-mapes/Mapes/Mapes-de-variables-biofisiques-de-larbrat-de-Catalunya) derived from LiDAR flights in Catalonia (years 2016-2017). First we will load a mean tree height raster at 20-m resolution:
 
 ```{r}
 height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
@@ -362,7 +362,7 @@ y_5$soil[[1]]
 ```
 
 
-### Correction for soil depth
+### Soil depth and rock content modification
 
 SoilGrids 2.0 does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. Function `modify_soils()` allows modifying soil definitions, if information is available for soil depth, depth to the (unaltered) bedrock, or both. Soil depth maps are not common in many regions, so here we will resort on a global product at 250m-resolution by  [Shangguan et al. (2017)](https://doi.org/10.1002/2016MS000686), which consists on three rasters:
 
@@ -417,12 +417,12 @@ We can compare the effect of the correction on the soil water capacity (in mm) b
 
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
-p1 <- plot_variable(y_5, "soilvolextract", r = r)+ 
+p1 <- plot_variable(y_5, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids alone")+
   theme_bw()
-p2 <- plot_variable(y_6, "soilvolextract", r = r)+ 
+p2 <- plot_variable(y_6, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids + depth correction")+
