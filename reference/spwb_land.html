@@ -54,10 +54,10 @@ and resprouting.
     </div>
 
     <div class="ref-description">
-    <p>Functions to perform simulations on a watershed described by a set of connected grid cells.</p><ul><li><p>Function <code>spwb_land</code> implements a distributed hydrological model that simulates daily local water balance, from <code>spwb_day</code>,
+    <p>Functions to perform simulations on a watershed described by a set of connected grid cells.</p><ul><li><p>Function <code>spwb_land</code> implements a distributed hydrological model that simulates daily local water balance, from <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>,
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.</p></li>
 <li><p>Function <code>growth_land</code> is similar to <code>spwb_land</code>, but includes daily local carbon balance, growth and mortality processes in grid cells,
-provided by <code>growth_day</code>.</p></li>
+provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></li>
 <li><p>Function <code>fordyn_land</code> extends the previous two functions with the simulation of management, seed dispersal, recruitment
 and resprouting.</p></li>
 </ul></div>
@@ -124,9 +124,9 @@ and resprouting.</p></li>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
 <li><p><code>aspect</code>: Aspect (in degrees).</p></li>
 <li><p><code>land_cover_type</code>: Land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').</p></li>
-<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
-<li><p><code>soil</code>: Objects of class <code>soil</code> or data frames of physical properties.</p></li>
-<li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
+<li><p><code>forest</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>.</p></li>
+<li><p><code>soil</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code> or data frames of physical properties.</p></li>
+<li><p><code>state</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
 <li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific cells (values can be <code>NULL</code> for the remaining ones).</p></li>
@@ -142,7 +142,7 @@ and resprouting.</p></li>
 
 
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
 
 
 <dt>meteo</dt>
@@ -163,7 +163,7 @@ In <code>fordyn_land</code> summaries are always produced at monthly resolution.
 
 
 <dt>local_control</dt>
-<dd><p>A list of control parameters (see <code>defaultControl</code>) for function <code>spwb_day</code> or <code>growth_day</code>.</p></dd>
+<dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>) for function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></dd>
 
 
 <dt>watershed_control</dt>
@@ -188,7 +188,7 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 
 
 <dt>management_function</dt>
-<dd><p>A function that implements forest management actions (see <code>fordyn</code>).
+<dd><p>A function that implements forest management actions (see <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>).
 of such lists, one per spatial unit.</p></dd>
 
 </dl></div>
@@ -238,7 +238,7 @@ with the following columns:
 <li><p><code>outlet</code>: A logical vector indicating outlet cells.</p></li>
 </ul>
 In function <code>fordyn_land</code> the <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> object contains additional columns:
-<ul><li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
+<ul><li><p><code>forest</code>: A list of <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>management_arguments</code>: A list of management arguments for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>tree_table</code>: A list of data frames for each simulated stand, containing the living trees at each time step.</p></li>
 <li><p><code>shrub_table</code>: A list of data frames for each simulated stand, containing the living shrub at each time step.</p></li>
@@ -274,7 +274,7 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>, <code><a href="spwb_land_day.html">spwb_land_day</a></code>, <code>spwb_day</code>,  <code>growth_day</code>,
+    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>, <code><a href="spwb_land_day.html">spwb_land_day</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>,  <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>,
 <code><a href="spwb_spatial.html">spwb_spatial</a></code>, <code><a href="spwb_spatial.html">fordyn_spatial</a></code>, <code><a href="dispersal.html">dispersal</a></code></p></div>
     </div>
     <div id="author">

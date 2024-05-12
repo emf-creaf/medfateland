@@ -58,7 +58,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>An object of class <code>sf</code> with the appropriate columns.</p></dd>
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the appropriate columns.</p></dd>
 
 
 <dt>vars</dt>
@@ -66,7 +66,7 @@
 
 
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>), required for most forest stand variables.</p></dd>
+<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>), required for most forest stand variables.</p></dd>
 
 
 <dt>...</dt>
@@ -85,39 +85,47 @@
     <h2>Value</h2>
     
 
-<p>An object of class <code>sf</code> with the desired variables.</p>
+<p>Function <code>extract_variables()</code> returns an object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the desired variables.
+Function <code>plot_variables()</code> returns a ggplot object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>The following string values are available for <code>vars</code>.
-<em>Topography</em>:</p><ul><li><p><code>"elevation"</code>: Elevation in m.</p></li>
+    <p>The following string values are available for <code>vars</code>.</p>
+<p><em>Topography</em>:</p><ul><li><p><code>"elevation"</code>: Elevation in m.</p></li>
 <li><p><code>"slope"</code>: Slope in degrees.</p></li>
 <li><p><code>"aspect"</code>: Slope in degrees.</p></li>
 <li><p><code>"land_cover_type"</code>: Land cover type.</p></li>
-</ul><p><em>Soil</em>:</p><ul><li><p><code>"texture1"</code>: Texture class of the first soil layer.</p></li>
-<li><p><code>"texture2"</code>: Texture class of the second soil layer.</p></li>
-<li><p><code>"texture3"</code>: Texture class of the third soil layer.</p></li>
-<li><p><code>"soilvolextract"</code>: Total water extractable volume (mm).</p></li>
-<li><p><code>"soilvolsat"</code>: Total water volume at saturation (mm).</p></li>
-<li><p><code>"soilvolfc"</code>: Total water volume at field capacity (mm).</p></li>
-<li><p><code>"soilvolwp"</code>: Total water volume at wilting point (mm).</p></li>
-<li><p><code>"soilvolcurr"</code>: Current total water volume (mm).</p></li>
+</ul><p><em>Soil</em>:</p><ul><li><p><code>"soil_vol_extract"</code>: Total water extractable volume (mm).</p></li>
+<li><p><code>"soil_vol_sat"</code>: Total water volume at saturation (mm).</p></li>
+<li><p><code>"soil_vol_fc"</code>: Total water volume at field capacity (mm).</p></li>
+<li><p><code>"soil_vol_wp"</code>: Total water volume at wilting point (mm).</p></li>
+<li><p><code>"soil_vol_curr"</code>: Current total water volume (mm).</p></li>
+<li><p><code>"soil_rwc_curr"</code>: Current soil relative water content (%).</p></li>
+<li><p><code>"soil_rew_curr"</code>: Current soil relative extractable water (%).</p></li>
+<li><p><code>"soil_theta_curr"</code>: Current soil moisture content (% vol.)</p></li>
+<li><p><code>"soil_psi_curr"</code>: Current soil water potential (MPa).</p></li>
 </ul><p><em>Watershed</em>:</p><ul><li><p><code>"depth_to_bedrock"</code>: Depth to bedrock (m).</p></li>
 <li><p><code>"bedrock_porosity"</code>: Bedrock porosity.</p></li>
-<li><p><code>"bedrock_conductivity"</code>: Bedrock conductivity.</p></li>
+<li><p><code>"bedrock_conductivity"</code>: Bedrock conductivity (m/day).</p></li>
 <li><p><code>"aquifer_elevation"</code>: Aquifer elevation over bedrock (m).</p></li>
 <li><p><code>"depth_to_aquifer"</code>: Depth to aquifer (m).</p></li>
-<li><p><code>"aquifer_volume"</code>: Aquifer volume (mm).</p></li>
+<li><p><code>"aquifer"</code>: Aquifer volume (mm).</p></li>
 <li><p><code>"snowpack"</code>: Snowpack water equivalent (mm).</p></li>
 </ul><p><em>Forest stand</em>:</p><ul><li><p><code>"basal_area"</code>: Basal area (m2/ha).</p></li>
+<li><p><code>"tree_density"</code>: Tree density (ind/ha).</p></li>
+<li><p><code>"mean_tree_height"</code>: Mean tree height (cm).</p></li>
+<li><p><code>"dominant_tree_height"</code>: Dominant tree height (cm).</p></li>
+<li><p><code>"dominant_tree_diameter"</code>: Dominant tree diameter (cm).</p></li>
+<li><p><code>"quadratic_mean_tree_diameter"</code>: Quadratic mean tree diameter (cm).</p></li>
+<li><p><code>"hart_becking_index"</code>: Hart-Becking index.</p></li>
 <li><p><code>"leaf_area_index"</code>: Leaf area index (m2/m2).</p></li>
 <li><p><code>"foliar_biomass"</code>: Foliar biomass (kg/m2).</p></li>
 <li><p><code>"fuel_loading"</code>: Fine live fuel loading (kg/m2).</p></li>
-<li><p><code>"shrub_volume"</code>: Shrub shrub_volume (m3/m2).</p></li>
+<li><p><code>"shrub_volume"</code>: Shrub volume (m3/m2).</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>forest</code>, <code>soil</code>, <code>summary.forest</code>, <code><a href="shinyplot_land.html">shinyplot_land</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">summary.forest</a></code>, <code><a href="shinyplot_land.html">shinyplot_land</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
