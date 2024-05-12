@@ -22,9 +22,11 @@ reference:
   contents:
   - create_landscape
   - impute_forests
+  - modify_forest_structure
+  - check_forests
   - add_soilgrids
   - modify_soils
-  - modify_forest_structure
+  - check_soils
   
 - title: Example data
   desc:  Example data sets for distributed stands and watershed

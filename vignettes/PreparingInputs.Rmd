@@ -361,6 +361,13 @@ The elements of the list are the usual data frames of soil properties in **medfa
 y_5$soil[[1]]
 ```
 
+During data retrieval, there might be some locations where SoilGrids 2.0 data was missing. We can use function `check_soils()` to detect those cases and fill them with default values:
+
+```{r}
+y_6 <- check_soils(y_5, fill_missing = TRUE)
+```
+
+
 
 ### Soil depth and rock content modification
 
@@ -401,7 +408,7 @@ depth_to_bedrock_mm <- bdticm*10
 We can now call function `modify_soils()` with the two rasters to perform the correction of soil characteristics:
 
 ```{r}
-y_6 <- modify_soils(y_5, 
+y_7 <- modify_soils(y_6, 
                     soil_depth_map = soil_depth_mm, 
                     depth_to_bedrock_map = depth_to_bedrock_mm,
                     progress = FALSE)
@@ -410,19 +417,19 @@ y_6 <- modify_soils(y_5,
 In this case, the depth to bedrock values were deeper than 2m, so that only the soil depth map had an effect on the correction procedure. After the correction, the rock fragment content of the soil has changed substantially:
 
 ```{r}
-y_6$soil[[1]]
+y_7$soil[[1]]
 ```
 
 We can compare the effect of the correction on the soil water capacity (in mm) by inspecting the following plots (note the change in magnitude and spatial pattern):
 
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
-p1 <- plot_variable(y_5, "soil_vol_extract", r = r)+ 
+p1 <- plot_variable(y_6, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids alone")+
   theme_bw()
-p2 <- plot_variable(y_6, "soil_vol_extract", r = r)+ 
+p2 <- plot_variable(y_7, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids + depth correction")+
@@ -435,7 +442,7 @@ cowplot::plot_grid(p1, p2, ncol =1, nrow=2)
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y_6, SpParamsMED, defaultControl(),
+z <- initialize_landscape(y_7, SpParamsMED, defaultControl(),
                           progress = FALSE)
 ```
 

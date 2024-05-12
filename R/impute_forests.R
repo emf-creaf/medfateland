@@ -231,3 +231,17 @@ modify_forest_structure<-function(x, structure_map, variable,
   }
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
+
+#' @rdname forest_parametrization
+#' @export
+check_forests <-function(x) {
+  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
+  if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
+  npoints <- nrow(x)
+  land_cover_type <- rep("wildland", nrow(x))
+  if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
+  forest_cover <- land_cover_type %in% c("wildland")
+  is_forest <- !unlist(lapply(x$forest, is.null))
+  cli::cli_alert_info(paste0(sum(is_forest), " non-null 'forest' elements out of ", npoints," locations"))
+  cli::cli_alert_info(paste0(sum(is_forest & forest_cover), " non-null 'forest' elements out of ", sum(forest_cover)," wildland locations"))
+}

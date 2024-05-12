@@ -187,7 +187,7 @@ names(example_watershed_mod)
 Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the relative water content:
 
 ```{r, fig.align='center', fig.width=7}
-plot_variable(example_watershed_mod, variable = "soilrwc", r = r)
+plot_variable(example_watershed_mod, variable = "soil_rwc_curr", r = r)
 ```
 
 Now we can continue our simulation, in this case adding an extra month:

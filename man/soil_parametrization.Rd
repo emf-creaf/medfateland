@@ -5,6 +5,7 @@
 \alias{soil_parametrization}
 \alias{add_soilgrids}
 \alias{modify_soils}
+\alias{check_soils}
 \title{Landscape soil parametrization}
 \usage{
 add_soilgrids(
@@ -12,7 +13,6 @@ add_soilgrids(
   soilgrids_path = NULL,
   widths = NULL,
   replace_existing = TRUE,
-  default_values = c(clay = 25, sand = 25, bd = 1.5, rfc = 25),
   progress = TRUE
 )
 
@@ -24,18 +24,23 @@ modify_soils(
   full_rock_filling = TRUE,
   progress = TRUE
 )
+
+check_soils(
+  x,
+  fill_missing = FALSE,
+  default_values = c(clay = 25, sand = 25, bd = 1.5, rfc = 25),
+  progress = FALSE
+)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
-cover types. Otherwise, soils are retrieved for all locations. For function \code{modify_soils}, \code{x} should already contain a column named "soil".}
+cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".}
 
 \item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.}
 
 \item{widths}{A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.}
 
 \item{replace_existing}{A logical flag to force the replacement of existing soil data, when already present}
-
-\item{default_values}{Vector of default values for locations with missing SoilGrids data.}
 
 \item{progress}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
 
@@ -46,14 +51,18 @@ cover types. Otherwise, soils are retrieved for all locations. For function \cod
 \item{regolith_rfc}{Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).}
 
 \item{full_rock_filling}{Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.}
+
+\item{fill_missing}{Logical flag to fill missing values in key parameters with defaults.}
+
+\item{default_values}{Vector of default values for locations with missing data.}
 }
 \value{
 A modified object of class \code{\link{sf}} with column 'soil'.
 }
 \description{
-Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). Optionally, it modifies the resulting
-soil definition with additional information on soil depth and depth to bedrock. Function \code{modify_soils} modifies soil definition according to
-soil depth and depth to bedrock information.
+Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021).
+Function \code{modify_soils} modifies soil definition according to soil depth and depth to bedrock information.
+Function \code{check_soils} verifies that soil data does not contain missing values for key variables and, if so, assigns default values.
 }
 \details{
 If \code{soilgrids_path = NULL} the function connects with the SoilGrids REST API (https://rest.isric.org)

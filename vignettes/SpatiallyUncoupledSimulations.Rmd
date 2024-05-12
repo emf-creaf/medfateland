@@ -214,10 +214,10 @@ example_ifn_mod <- update_landscape(example_ifn, res)
 names(example_ifn_mod)
 ```
 
-Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the water potential in the first soil layer:
+Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the soil water potential:
 
 ```{r, fig.align='center', fig.width=7}
-plot_variable(example_ifn_mod, "psi1")
+plot_variable(example_ifn_mod, "soil_psi_curr")
 ```
 
 By using this new object as input we can now simulate water balance in the set of stands for an extra month:
@@ -250,6 +250,6 @@ Once we have this object, using it is straightforward, via parameter `meteo`:
 res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator, 
                       local_control = local_control, 
                       summary_function = summary.spwb, summary_arguments = list(freq = "months"),
-                      parallelize = TRUE)
+                      parallelize = FALSE)
 ```
 

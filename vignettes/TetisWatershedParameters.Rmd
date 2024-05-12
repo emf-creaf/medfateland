@@ -79,7 +79,7 @@ Now we launch the simulation. Focus on the values (in mm) predicted for aquifer 
 ```{r}
 res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                    dates = dates, summary_frequency = "month",
-                   watershed_control = ws_control)
+                   watershed_control = ws_control, progress = FALSE)
 ```
 
 In the following we compare these values to those issued from simulations with altered scaling factors.
@@ -94,7 +94,7 @@ ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
 res_L5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
-                     watershed_control = ws_control)
+                     watershed_control = ws_control, progress = FALSE)
 ```
 
 Increasing `R_localflow` has the effect of increasing the drainage from soils to the aquifer (hence, decreasing soil moisture). It also increases capillarity rise due to the higher conductivity. Aquifer exfiltration increases downslope as a consequence of the larger recharge in upslope cells. 
@@ -109,7 +109,7 @@ ws_control$tetis_parameters$R_interflow <- 5
 ws_control$tetis_parameters$R_baseflow <- 1
 res_I5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
-                     watershed_control = ws_control)
+                     watershed_control = ws_control, progress = FALSE)
 ```
 
 Increasing lateral conductivity for subsurface fluxes increases the rate of lateral exchange (i.e. the speed of the kinematic wave), resulting in a much larger saturation excess. It also impacts the amount of aquifer exfiltration. 
@@ -123,7 +123,7 @@ ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 5
 res_B5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",
-                     watershed_control = ws_control)
+                     watershed_control = ws_control, progress = FALSE)
 ```
 
 Increasing the speed of groundwater fluxes leads to a much shallower water table downslope, significantly increasing the amont of exfiltration.

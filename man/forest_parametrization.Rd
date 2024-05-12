@@ -4,6 +4,7 @@
 \alias{forest_parametrization}
 \alias{impute_forests}
 \alias{modify_forest_structure}
+\alias{check_forests}
 \title{Landscape forest parametrization}
 \usage{
 impute_forests(
@@ -27,6 +28,8 @@ modify_forest_structure(
   ratio_limits = NULL,
   progress = TRUE
 )
+
+check_forests(x)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}}. If it contains a column named 'land_cover_type', imputation

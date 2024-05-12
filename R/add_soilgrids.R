@@ -1,14 +1,13 @@
 #' Landscape soil parametrization
 #'
-#' Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). Optionally, it modifies the resulting
-#' soil definition with additional information on soil depth and depth to bedrock. Function \code{modify_soils} modifies soil definition according to 
-#' soil depth and depth to bedrock information.
+#' Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). 
+#' Function \code{modify_soils} modifies soil definition according to soil depth and depth to bedrock information.
+#' Function \code{check_soils} verifies that soil data does not contain missing values for key variables and, if so, assigns default values. 
 #'
 #' @param x An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
-#'          cover types. Otherwise, soils are retrieved for all locations. For function \code{modify_soils}, \code{x} should already contain a column named "soil".
+#'          cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".
 #' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
-#' @param default_values Vector of default values for locations with missing SoilGrids data.
 #' @param replace_existing A logical flag to force the replacement of existing soil data, when already present
 #' @param progress A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.
 #'
@@ -60,7 +59,6 @@
 #'
 add_soilgrids <- function(x, soilgrids_path = NULL, 
                           widths = NULL, replace_existing = TRUE, 
-                          default_values = c("clay" = 25, "sand" = 25, "bd" = 1.5, "rfc" = 25),
                           progress = TRUE) {
   if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
@@ -70,7 +68,6 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
   nsoil <- sum(land_cover_type %in% c("wildland", "agriculture"))
   
-  retrieved <- rep(FALSE, npoints)
   if(!("soil" %in% names(x))) {
     if(progress) cli::cli_progress_step("Defining column 'soil'")
     x$soil <- vector("list", npoints)
@@ -115,7 +112,6 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
             }
           }
           if(is.null(x$soil[[i]]) || replace_existing) {
-            retrieved[i] <- TRUE
             if(!is.null(widths)) {
               x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
             } else {
@@ -130,7 +126,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     if(progress) cli::cli_progress_done()
   } else {
     if(progress) {
-      cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers:\n"))
+      cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers."))
     }
     vars <- c("sand", "clay", "soc", "nitrogen", "bdod", "cfvo")
     layers <- c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm")
@@ -169,7 +165,6 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
           } 
         }
         if(is.null(x$soil[[i]]) || replace_existing) {
-          retrieved[i] <- TRUE
           if(!is.null(widths)) {
             x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
           } else {
@@ -179,44 +174,6 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
       }
     }
   }
-  if(progress) {
-    cli::cli_progress_step("Checking for missing values in key parameters")
-    cli::cli_progress_bar("Locations", total = nrow(x))
-  }
-  mis_clay <- 0
-  mis_sand <- 0
-  mis_bd <- 0
-  mis_rfc <- 0
-  for(i in 1:npoints) {
-    if(progress) cli::cli_progress_update()
-    if(retrieved[i]) {
-      s <- x$soil[[i]]
-      if(any(is.na(s$clay))) {
-        mis_clay <- mis_clay + 1
-        s$clay[is.na(s$clay)] <- default_values["clay"]
-      }
-      if(any(is.na(s$sand))) {
-        mis_sand <- mis_sand + 1
-        s$sand[is.na(s$sand)] <- default_values["sand"]
-      }
-      if(any(is.na(s$bd))) {
-        mis_bd <- mis_bd + 1
-        s$bd[is.na(s$bd)] <- default_values["bd"]
-      }
-      if(any(is.na(s$rfc))) {
-        mis_rfc <- mis_rfc + 1
-        s$rfc[is.na(s$rfc)] <- default_values["rfc"]
-      }
-      x$soil[[i]] <- s
-    }
-  }
-  if(progress) {
-    cli::cli_progress_done()
-  }
-  if(mis_clay>0) cli::cli_alert_warning(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
-  if(mis_sand>0) cli::cli_alert_warning(paste0("Default 'sand' values assigned for ", mis_sand, " locations"))
-  if(mis_bd>0) cli::cli_alert_warning(paste0("Default 'bd' values assigned for ", mis_bd, " locations"))
-  if(mis_rfc>0) cli::cli_alert_warning(paste0("Default 'rfc' values assigned for ", mis_rfc, " locations"))
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
@@ -317,4 +274,71 @@ modify_soils <- function(x, soil_depth_map = NULL,
     }
   }
   return(sf::st_as_sf(tibble::as_tibble(x)))
+}
+
+#' @rdname soil_parametrization
+#' @param fill_missing Logical flag to fill missing values in key parameters with defaults.
+#' @param default_values Vector of default values for locations with missing data.
+#' @export
+check_soils <-function(x, 
+                       fill_missing = FALSE,
+                       default_values = c("clay" = 25, "sand" = 25, "bd" = 1.5, "rfc" = 25),
+                       progress = FALSE) {
+  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
+  npoints <- nrow(x)
+  if(!("soil" %in% names(x))) cli::cli_abort("Column 'soil' must be defined.")
+  land_cover_type <- rep("wildland", npoints)
+  if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
+  soil_cover <- land_cover_type %in% c("wildland", "agriculture")
+  is_soil <- !unlist(lapply(x$soil, is.null))
+  cli::cli_alert_info(paste0(sum(is_soil), " non-null 'soil' elements out of ", npoints," locations"))
+  cli::cli_alert_info(paste0(sum(is_soil & soil_cover), " non-null 'soil' elements out of ", sum(soil_cover)," wildland/agriculture locations"))
+  if(sum(is_soil & soil_cover) < sum(soil_cover)) cli::cli_alert_warning(paste0("Soil needs to be defined for: ",sum(soil_cover) - sum(is_soil & soil_cover), " locations"))
+  if(progress) {
+    cli::cli_progress_step("Checking for missing values in key soil parameters")
+    cli::cli_progress_bar("Locations", total = nrow(x))
+  }
+  mis_clay <- 0
+  mis_sand <- 0
+  mis_bd <- 0
+  mis_rfc <- 0
+  for(i in 1:npoints) {
+    if(progress) cli::cli_progress_update()
+    if(is_soil[i]) {
+      s <- x$soil[[i]]
+      if(any(is.na(s$clay))) {
+        mis_clay <- mis_clay + 1
+        if(fill_missing) s$clay[is.na(s$clay)] <- default_values["clay"]
+      }
+      if(any(is.na(s$sand))) {
+        mis_sand <- mis_sand + 1
+        if(fill_missing) s$sand[is.na(s$sand)] <- default_values["sand"]
+      }
+      if(any(is.na(s$bd))) {
+        mis_bd <- mis_bd + 1
+        if(fill_missing) s$bd[is.na(s$bd)] <- default_values["bd"]
+      }
+      if(any(is.na(s$rfc))) {
+        mis_rfc <- mis_rfc + 1
+        if(fill_missing) s$rfc[is.na(s$rfc)] <- default_values["rfc"]
+      }
+      x$soil[[i]] <- s
+    }
+  }
+  if(progress) {
+    cli::cli_progress_done()
+  }
+  if(!fill_missing) {
+    if(mis_clay>0) cli::cli_alert_warning(paste0("Missing 'clay' values detected for ", mis_clay, " locations"))
+    if(mis_sand>0) cli::cli_alert_warning(paste0("Missing 'sand' values detected for ", mis_sand, " locations"))
+    if(mis_bd>0) cli::cli_alert_warning(paste0("Missing 'bd' values detected for ", mis_bd, " locations"))
+    if(mis_rfc>0) cli::cli_alert_warning(paste0("Missing 'rfc' values detected for ", mis_rfc, " locations"))
+  } else {
+    if(mis_clay>0) cli::cli_alert_info(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
+    if(mis_sand>0) cli::cli_alert_info(paste0("Default 'sand' values assigned for ", mis_sand, " locations"))
+    if(mis_bd>0) cli::cli_alert_info(paste0("Default 'bd' values assigned for ", mis_bd, " locations"))
+    if(mis_rfc>0) cli::cli_alert_info(paste0("Default 'rfc' values assigned for ", mis_rfc, " locations"))
+  }
+  if(mis_clay==0 && mis_bd==0 && mis_rfc ==0 && mis_sand==0) cli::cli_alert_info("No missing values detected in key parameters")
+  if(fill_missing) return(x)
 }
