@@ -53,7 +53,7 @@ For structural corrections or when checking, \code{x} should already contain a c
 
 \item{missing_class_imputation}{A logical flag to force imputation in locations where forest class is not defined. If \code{missing_class_imputation = TRUE}, imputation in those locations will be based on geographic and topographic criteria only.}
 
-\item{missing_class_forest}{A \code{\link{object}} to be used for locations with missing class.}
+\item{missing_class_forest}{A \code{\link{forest}} object to be used for locations with missing class.}
 
 \item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).}
 

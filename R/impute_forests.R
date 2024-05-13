@@ -17,7 +17,7 @@
 #' @param var_class Variable name or index containing forest classes in \code{forest_map}. If missing the first column is taken.
 #' @param replace_existing A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.
 #' @param missing_class_imputation A logical flag to force imputation in locations where forest class is not defined. If \code{missing_class_imputation = TRUE}, imputation in those locations will be based on geographic and topographic criteria only.
-#' @param missing_class_forest A \code{\link{object}} to be used for locations with missing class.
+#' @param missing_class_forest A \code{\link{forest}} object to be used for locations with missing class.
 #' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
 #' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
 #' @param progress A logical flag to print console output.
