@@ -290,10 +290,10 @@ check_soils <-function(x,
   land_cover_type <- rep("wildland", npoints)
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
   soil_cover <- land_cover_type %in% c("wildland", "agriculture")
+  ntarget <- sum(soil_cover)
   is_soil <- !unlist(lapply(x$soil, is.null))
-  cli::cli_alert_info(paste0(sum(is_soil), " non-null 'soil' elements out of ", npoints," locations"))
-  cli::cli_alert_info(paste0(sum(is_soil & soil_cover), " non-null 'soil' elements out of ", sum(soil_cover)," wildland/agriculture locations"))
-  if(sum(is_soil & soil_cover) < sum(soil_cover)) cli::cli_alert_warning(paste0("Soil needs to be defined for: ",sum(soil_cover) - sum(is_soil & soil_cover), " locations"))
+  cli::cli_alert_info(paste0(sum(is_soil & soil_cover), " non-null 'soil' elements out of ", ntarget," wildland/agriculture locations (",round(100*sum(is_soil & soil_cover)/ntarget,1),"%)."))
+  if(sum(is_soil & soil_cover) < sum(soil_cover)) cli::cli_alert_warning(paste0("Soil needs to be defined for: ",sum(soil_cover) - sum(is_soil & soil_cover), " locations (",round(100*(sum(soil_cover) - sum(is_soil & soil_cover))/ntarget,1),"%)."))
   if(progress) {
     cli::cli_progress_step("Checking for missing values in key soil parameters")
     cli::cli_progress_bar("Locations", total = nrow(x))
@@ -329,16 +329,16 @@ check_soils <-function(x,
     cli::cli_progress_done()
   }
   if(!fill_missing) {
-    if(mis_clay>0) cli::cli_alert_warning(paste0("Missing 'clay' values detected for ", mis_clay, " locations"))
-    if(mis_sand>0) cli::cli_alert_warning(paste0("Missing 'sand' values detected for ", mis_sand, " locations"))
-    if(mis_bd>0) cli::cli_alert_warning(paste0("Missing 'bd' values detected for ", mis_bd, " locations"))
-    if(mis_rfc>0) cli::cli_alert_warning(paste0("Missing 'rfc' values detected for ", mis_rfc, " locations"))
+    if(mis_clay>0) cli::cli_alert_warning(paste0("Missing 'clay' values detected for ", mis_clay, " locations (", round(100*mis_clay/ntarget,1),"%)."))
+    if(mis_sand>0) cli::cli_alert_warning(paste0("Missing 'sand' values detected for ", mis_sand, " locations (", round(100*mis_sand/ntarget,1),"%)."))
+    if(mis_bd>0) cli::cli_alert_warning(paste0("Missing 'bd' values detected for ", mis_bd, " locations (", round(100*mis_bd/ntarget,1),"%)."))
+    if(mis_rfc>0) cli::cli_alert_warning(paste0("Missing 'rfc' values detected for ", mis_rfc, " locations (", round(100*mis_rfc/ntarget,1),"%)."))
   } else {
-    if(mis_clay>0) cli::cli_alert_info(paste0("Default 'clay' values assigned for ", mis_clay, " locations"))
-    if(mis_sand>0) cli::cli_alert_info(paste0("Default 'sand' values assigned for ", mis_sand, " locations"))
-    if(mis_bd>0) cli::cli_alert_info(paste0("Default 'bd' values assigned for ", mis_bd, " locations"))
-    if(mis_rfc>0) cli::cli_alert_info(paste0("Default 'rfc' values assigned for ", mis_rfc, " locations"))
+    if(mis_clay>0) cli::cli_alert_info(paste0("Default 'clay' values assigned for ", mis_clay, " locations (", round(100*mis_clay/ntarget,1),"%)."))
+    if(mis_sand>0) cli::cli_alert_info(paste0("Default 'sand' values assigned for ", mis_sand, " locations (", round(100*mis_sand/ntarget,1),"%)."))
+    if(mis_bd>0) cli::cli_alert_info(paste0("Default 'bd' values assigned for ", mis_bd, " locations (", round(100*mis_bd/ntarget,1),"%)."))
+    if(mis_rfc>0) cli::cli_alert_info(paste0("Default 'rfc' values assigned for ", mis_rfc, " locations (", round(100*mis_rfc/ntarget,1),"%)."))
   }
-  if(mis_clay==0 && mis_bd==0 && mis_rfc ==0 && mis_sand==0) cli::cli_alert_info("No missing values detected in key parameters")
+  if(mis_clay==0 && mis_bd==0 && mis_rfc ==0 && mis_sand==0) cli::cli_alert_info("No missing values detected in key soil attributes.")
   if(fill_missing) return(x)
 }

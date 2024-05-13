@@ -136,6 +136,14 @@ and the land cover types:
 ```{r, echo = FALSE, fig.width=6, fig.height=4.5}
 plot_variable(y_1, "land_cover_type", r = r, name = "")
 ```
+```{r, include = FALSE}
+rm(agriculture)
+rm(artificial)
+rm(rock)
+rm(water)
+rm(wildland)
+```
+
 
 ## Forest parameterization
 
@@ -166,11 +174,11 @@ Note that this is already an `sf` object suitable for simulations, but refers to
 Having these two inputs (forest map and forest inventory data), we can use function `impute_forests()` to perform the imputation for us (this normally takes some time):
 
 ```{r}
-y_2 <- impute_forests(y_1, sf_nfi = sf_nfi, dem = dem, 
+y_2 <- impute_forests(y_1, sf_fi = sf_nfi, dem = dem, 
                       forest_map = forest_map, progress = FALSE)
 ```
 
-For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). Warnings and errors can arise in the process. More details can be found in the documentation of `impute_forests()`.
+For each target location, the function selects forest inventory plots that correspond to the same forest class, defined in the forest map, and are geographically closer than a pre-specified maximum distance. Among the multiple plots that can fulfill this criterion, the function chooses the plot that has the most similar elevation and position in the N-to-S slopes (i.e. the product of the cosine of aspect and slope). More details can be found in the documentation of `impute_forests()`. 
 
 The resulting `sf` has an extra column named `forest`:
 
@@ -183,11 +191,65 @@ Only `wildland` locations will have a `forest` object, for example:
 ```{r}
 y_2$forest[[1]]
 ```
+It is important to know whether the forest inputs are complete and suitable for simulations. This can be done using function `check_forests()`:
+
+```{r}
+check_forests(y_2)
+```
+
+There are some *wildland* locations missing forest data. These correspond to shrublands or pastures, therefore not included in the forest inventory data. At this point, we could call again `impute_forests()` including the option `missing_class_imputation = TRUE`, which would force imputation of forest inventory plots on non-forest cells. The alternative is to provide more suitable data.
+
+```{r, include = FALSE}
+rm(sf_nfi)
+rm(forest_map)
+rm(nfi_path)
+gc()
+```
+
+
+### Shrubland imputation
+
+In this section we illustrate how to use function `impute_forest()` to impute `forest` objects in shrubland areas. To this aim, we use a vegetation map representing habitats of interest for the EU: [*Hàbitats d'interès comunitari*](https://agricultura.gencat.cat/ca/serveis/cartografia-sig/bases-cartografiques/habitats/habitats-catalunya/):
+
+```{r}
+veg_map <- terra::vect(paste0(dataset_path,"ForestMaps/Sources/Catalunya/Habitats_v2/Habitats_interes_com.shp"))
+veg_map
+```
+In this case we use a database of 575 shrubland inventory plots in Catalonia described in [Casals et al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
+
+```{r}
+sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/Combuscat/"
+sf_sfi <- readRDS(paste0(sfi_path, "Products/Combuscat_final.rds"))
+sf_sfi
+```
+
+We now call again `impute_forests()` with this information. Unless we force it, the function will not overwrite those `forest` objects already present in `y_2`. On the other hand, we will assume that any wildland location not classified as forest or shrubland should correspond to pastures. Hence, in this case we will ask the function to make imputations in locations with missing vegetation class (`missing_class_imputation = TRUE`) and define a empty forest to be imputed in those (`missing_class_forest = emptyforest()`):
+
+```{r}
+y_3 <- impute_forests(y_2, sf_fi = sf_sfi, dem = dem, 
+                      forest_map = veg_map, 
+                      var_class = "TEXT_HIC1",
+                      missing_class_imputation = TRUE,
+                      missing_class_forest = emptyforest(),
+                      progress = FALSE)
+```
+
+We call again function `check_forests()` to verify that there are no wildland cells without a `forest` object defined:
+
+```{r}
+check_forests(y_3)
+```
+
+```{r, include=FALSE}
+rm(veg_map)
+rm(sf_sfi)
+gc()
+```
 
 
 ### Structure correction
 
-The former imputation result would be already useful for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest types are the same. Therefore, it is advisable to correct the forest structure with available information.
+The forests resulting from imputation are formally fine for simulations, but the forest structure in the target locations can be very different than that of the forest inventory used as reference, even if the forest  types are the same. Therefore, it is advisable to correct the forest structure with available information.
 
 There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use [biophysical structural maps](https://www.icgc.cat/ca/Geoinformacio-i-mapes/Mapes/Mapes-de-variables-biofisiques-de-larbrat-de-Catalunya) derived from LiDAR flights in Catalonia (years 2016-2017). First we will load a mean tree height raster at 20-m resolution:
 
@@ -218,14 +280,14 @@ We now call function `modify_forest_structure()` to correct mean tree height acc
 
 ```{r}
 height_map_40_cm <- height_map_40*100
-y_3 <- modify_forest_structure(y_2, height_map_40_cm, var = "mean_tree_height",
+y_4 <- modify_forest_structure(y_3, height_map_40_cm, var = "mean_tree_height",
                                progress = FALSE)
 ```
 
 Correction of tree heights also affects tree diameters, because the function assumes that the diameter-height relationship needs to be preserved. If we inspect the same `forest` object again, we will be able to note changes in height and diameter values:
 
 ```{r}
-y_3$forest[[1]]
+y_4$forest[[1]]
 ```
 
 Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
@@ -257,32 +319,32 @@ ggplot()+
 We now use the same function to correct basal area values (no unit conversion is needed in this case): 
 
 ```{r}
-y_4 <- modify_forest_structure(y_3, basal_area_map_40, var = "basal_area",
+y_5 <- modify_forest_structure(y_4, basal_area_map_40, var = "basal_area",
                                progress = FALSE)
 ```
 
 Note that basal area (or tree density) corrections should be done after the height correction, because of the effect that height correction has on tree diameters. The correction of basal area operates on tree density values. As before, we can inspect changes in tree density:
 
 ```{r}
-y_4$forest[[1]]
+y_5$forest[[1]]
 ```
 
 
 To finish this section, we will show the effect of imputation and correction on structural variables, compared with the LiDAR data. 
 
-```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
-p1 <- plot_variable(y_2, "basal_area", r = r)+
+```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE}
+p1 <- plot_variable(y_3, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
-  labs(title = "Imputation")+theme_bw()
-p2 <- plot_variable(y_3, "basal_area", r = r)+
+  labs(title = "a) Imputation")+theme_bw()
+p2 <- plot_variable(y_4, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
-  labs(title = "Imputation + H correction")+theme_bw()
-p3 <- plot_variable(y_4, "basal_area", r = r)+
+  labs(title = "b) Imputation + H correction")+theme_bw()
+p3 <- plot_variable(y_5, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
-  labs(title = "Imputation + H/BA correction")+theme_bw()
+  labs(title = "c) Imputation + H/BA correction")+theme_bw()
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
 x_vect$basal_area <- terra::extract(basal_area_map_40, x_vect)$basal_area
 r_ba<-terra::rasterize(x_vect, r, field = "basal_area")
@@ -290,34 +352,35 @@ p4 <- ggplot()+
   geom_spatraster(aes(fill=last), data=r_ba)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
-  labs(title = "Basal area from Lidar")+
+  labs(title = "d) Basal area from LiDAR")+
   theme_bw()
-cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
+cowplot::plot_grid(p1, p2, p3, p4, nrow = 4, ncol = 1)
 ```
-where it is apparent that both the height correction and the basal area correction have an effect in basal area. Note that the map after the two corrections differs from the LiDAR basal area in locations that have not been corrected because of missing LiDAR values (or missing tree data). We can quantitatively assess the relationship between predicted basal area and the observed one using:
+
+where it is apparent that both the height correction and the basal area correction have an effect in basal area. Correcting only for height is not satisfactory in terms of basal area, because of the modification of diameters (without correcting density). Note that the map after the two corrections differs from the LiDAR basal area in locations that have not been corrected because of missing LiDAR values (or missing tree data). We can quantitatively assess the relationship between predicted basal area and the observed one using:
 
 ```{r}
-ba_4 <- extract_variables(y_4, "basal_area")$basal_area
-cor.test(ba_4, x_vect$basal_area)
+ba_5 <- extract_variables(y_5, "basal_area")$basal_area
+cor.test(ba_5, x_vect$basal_area)
 ```
 
 We can also see the effect of the imputation and correction on mean tree height:
 
-```{r, echo = TRUE, fig.width=8, fig.height=5.5, warning = FALSE, message = TRUE}
-p1 <- plot_variable(y_2, "mean_tree_height", r = r)+
+```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE}
+p1 <- plot_variable(y_3, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  labs(title = "Imputation")+
+  labs(title = "a) Imputation")+
   theme_bw()
-p2 <- plot_variable(y_3, "mean_tree_height", r = r)+
+p2 <- plot_variable(y_4, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  labs(title = "Imputation + H mean_tree_height")+
+  labs(title = "b) Imputation + H mean_tree_height")+
   theme_bw()
-p3 <- plot_variable(y_4, "mean_tree_height", r = r)+
+p3 <- plot_variable(y_5, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
-  labs(title = "Imputation + H/BA correction")+
+  labs(title = "c) Imputation + H/BA correction")+
   theme_bw()
 
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40_cm)))
@@ -327,20 +390,27 @@ p4 <- ggplot()+
   geom_spatraster(aes(fill=last), data=r_ba)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
-  labs(title = "Mean tree height from Lidar")+
+  labs(title = "d) Mean tree height from LiDAR")+
   theme_bw()
-cowplot::plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2)
+cowplot::plot_grid(p1, p2, p3, p4, nrow = 4, ncol = 1)
 ```
+
 Here the basal area correction did not have any effect on mean tree height. The relationship between estimated and predicted mean tree height is:
 
 ```{r}
-mth_4 <- extract_variables(y_4, "mean_tree_height")$mean_tree_height
-cor.test(mth_4, x_vect$height)
+mth_5 <- extract_variables(y_5, "mean_tree_height")$mean_tree_height
+cor.test(mth_5, x_vect$height)
+```
+
+Finally, we check again that forests are well-defined, using function `check_forests()`:
+
+```{r}
+check_forests(y_5)
 ```
 
 ## Soil parameterization
 
-Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution. 
+Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution [Hengl et al. (2017)](https://doi.org/10.1371/journal.pone.0169748) [Poggio et al. (2021)](https://doi.org/10.5194/soil-7-217-2021). 
 
 ### SoilGrids 2.0 data
 
@@ -348,23 +418,23 @@ Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, 
 
 ```{r}
 soilgrids_path = paste0(dataset_path,"Soils/Sources/Global/SoilGrids/Spain/")
-y_5 <- add_soilgrids(y_4, soilgrids_path = soilgrids_path, progress = FALSE)
+y_6 <- add_soilgrids(y_5, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
 
 And the result has an extra column `soil`:
 ```{r}
-y_5
+y_6
 ```
 
 The elements of the list are the usual data frames of soil properties in **medfate**:
 ```{r}
-y_5$soil[[1]]
+y_6$soil[[1]]
 ```
 
 During data retrieval, there might be some locations where SoilGrids 2.0 data was missing. We can use function `check_soils()` to detect those cases and fill them with default values:
 
 ```{r}
-y_6 <- check_soils(y_5, fill_missing = TRUE)
+y_7 <- check_soils(y_6, fill_missing = TRUE)
 ```
 
 
@@ -408,7 +478,7 @@ depth_to_bedrock_mm <- bdticm*10
 We can now call function `modify_soils()` with the two rasters to perform the correction of soil characteristics:
 
 ```{r}
-y_7 <- modify_soils(y_6, 
+y_8 <- modify_soils(y_7, 
                     soil_depth_map = soil_depth_mm, 
                     depth_to_bedrock_map = depth_to_bedrock_mm,
                     progress = FALSE)
@@ -417,19 +487,19 @@ y_7 <- modify_soils(y_6,
 In this case, the depth to bedrock values were deeper than 2m, so that only the soil depth map had an effect on the correction procedure. After the correction, the rock fragment content of the soil has changed substantially:
 
 ```{r}
-y_7$soil[[1]]
+y_8$soil[[1]]
 ```
 
 We can compare the effect of the correction on the soil water capacity (in mm) by inspecting the following plots (note the change in magnitude and spatial pattern):
 
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
-p1 <- plot_variable(y_6, "soil_vol_extract", r = r)+ 
+p1 <- plot_variable(y_7, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids alone")+
   theme_bw()
-p2 <- plot_variable(y_7, "soil_vol_extract", r = r)+ 
+p2 <- plot_variable(y_8, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
   labs(title="SoilGrids + depth correction")+
@@ -437,12 +507,20 @@ p2 <- plot_variable(y_7, "soil_vol_extract", r = r)+
 cowplot::plot_grid(p1, p2, ncol =1, nrow=2)
 ```
 
+
+Finally, we can call again `check_soils()` to verify that everything is fine:
+
+```{r}
+check_soils(y_8)
+```
+
+
 ## Initialization test
 
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y_7, SpParamsMED, defaultControl(),
+z <- initialize_landscape(y_8, SpParamsMED, defaultControl(),
                           progress = FALSE)
 ```
 

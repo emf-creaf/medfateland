@@ -9,12 +9,14 @@
 \usage{
 impute_forests(
   x,
-  sf_nfi,
+  sf_fi,
   dem,
   forest_map,
   var_class = NA,
   max_distance_km = 100,
   replace_existing = FALSE,
+  missing_class_imputation = FALSE,
+  missing_class_forest = NULL,
   merge_trees = TRUE,
   merge_shrubs = TRUE,
   progress = TRUE
@@ -26,27 +28,32 @@ modify_forest_structure(
   variable,
   map_var = NA,
   ratio_limits = NULL,
+  minDBH = 7.5,
   progress = TRUE
 )
 
-check_forests(x)
+check_forests(x, progress = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{\link{sf}}. If it contains a column named 'land_cover_type', imputation
 will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.
-For structural corrections, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.}
+For structural corrections or when checking, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.}
 
-\item{sf_nfi}{An object of class \code{\link{sf}} with forest inventory data column 'forest'.}
+\item{sf_fi}{An object of class \code{\link{sf}} with forest inventory data column 'forest'.}
 
 \item{dem}{A digital elevation model (class \code{\link{rast}}) with meters as units}
 
 \item{forest_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map}
 
-\item{var_class}{Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.}
+\item{var_class}{Variable name or index containing forest classes in \code{forest_map}. If missing the first column is taken.}
 
 \item{max_distance_km}{Maximum distance, in km, for forest inventory plot imputation.}
 
 \item{replace_existing}{A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.}
+
+\item{missing_class_imputation}{A logical flag to force imputation in locations where forest class is not defined. If \code{missing_class_imputation = TRUE}, imputation in those locations will be based on geographic and topographic criteria only.}
+
+\item{missing_class_forest}{A \code{\link{object}} to be used for locations with missing class.}
 
 \item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).}
 
@@ -61,13 +68,21 @@ For structural corrections, \code{x} should already contain a column named 'fore
 \item{map_var}{Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.}
 
 \item{ratio_limits}{Limits for ratio of variable in corrections, used to avoid outliers.}
+
+\item{minDBH}{Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
+because of the missing stand metric.}
 }
 \value{
-Both functions return a modified object of class \code{\link{sf}}.
+Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
+Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 }
 \description{
-Function \code{impute_forests()} performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates.
-Function \code{modify_forest_structure()} uses forest structure rasters supplied by the user to correct forest structure metrics.
+Utility functions to define forest inputs in a landscape:
+\itemize{
+\item{\code{impute_forests()} performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates. }
+\item{\code{modify_forest_structure()} uses forest structure rasters supplied by the user to correct forest structure metrics.}
+\item{\code{check_forests()} checks that forests are defined and do not contain missing values in key tree/shrub attributes.}
+}
 }
 \details{
 Function \code{impute_forests()} performs imputation of forest inventory plots on target locations provided that
@@ -79,7 +94,7 @@ weight on the imputation equal. This imputation method will be more or less succ
 the number of forest inventory plots available for each of them. Additionally, tree and shrub cohorts can be simplified after imputation (\code{merge_trees} and \code{merge_shrubs}),
 to reduce the number of records (and hence, speed-up simulations).
 
-Function \code{modify_forest_structure} can be used to modify specific structure variables of the imputed forests
+Function \code{modify_forest_structure()} can be used to modify specific structure variables of the imputed forests
 building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
 the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}})
 and the input map in the target location. Locations where the metric value in the map is missing are left unmodified.
@@ -91,6 +106,9 @@ Options for structural variables are the following:
 \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
 \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
 }
+
+Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
+data in tree or shrub attributes required for simulations. The function does not modify the data.
 }
 \examples{
 \dontrun{

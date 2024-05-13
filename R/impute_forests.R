@@ -1,17 +1,23 @@
 #' Landscape forest parametrization
 #' 
-#' Function \code{impute_forests()} performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates. 
-#' Function \code{modify_forest_structure()} uses forest structure rasters supplied by the user to correct forest structure metrics.
+#' Utility functions to define forest inputs in a landscape:
+#' \itemize{
+#'  \item{\code{impute_forests()} performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates. }
+#'  \item{\code{modify_forest_structure()} uses forest structure rasters supplied by the user to correct forest structure metrics.}
+#'  \item{\code{check_forests()} checks that forests are defined and do not contain missing values in key tree/shrub attributes.}
+#' }
 #'
 #' @param x An object of class \code{\link{sf}}. If it contains a column named 'land_cover_type', imputation
 #'          will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.
-#'          For structural corrections, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.
-#' @param sf_nfi An object of class \code{\link{sf}} with forest inventory data column 'forest'. 
+#'          For structural corrections or when checking, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.
+#' @param sf_fi An object of class \code{\link{sf}} with forest inventory data column 'forest'. 
 #' @param dem A digital elevation model (class \code{\link{rast}}) with meters as units
 #' @param forest_map An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map
 #' @param max_distance_km Maximum distance, in km, for forest inventory plot imputation.
-#' @param var_class Variable name or index containing forest classes in 'forest_map'. If missing the first column is taken.
+#' @param var_class Variable name or index containing forest classes in \code{forest_map}. If missing the first column is taken.
 #' @param replace_existing A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.
+#' @param missing_class_imputation A logical flag to force imputation in locations where forest class is not defined. If \code{missing_class_imputation = TRUE}, imputation in those locations will be based on geographic and topographic criteria only.
+#' @param missing_class_forest A \code{\link{object}} to be used for locations with missing class.
 #' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
 #' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
 #' @param progress A logical flag to print console output.
@@ -26,7 +32,7 @@
 #' the number of forest inventory plots available for each of them. Additionally, tree and shrub cohorts can be simplified after imputation (\code{merge_trees} and \code{merge_shrubs}), 
 #' to reduce the number of records (and hence, speed-up simulations).
 #' 
-#' Function \code{modify_forest_structure} can be used to modify specific structure variables of the imputed forests 
+#' Function \code{modify_forest_structure()} can be used to modify specific structure variables of the imputed forests 
 #' building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
 #' the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}}) 
 #' and the input map in the target location. Locations where the metric value in the map is missing are left unmodified. 
@@ -39,8 +45,11 @@
 #'   \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
 #' }
 #' 
+#' Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
+#' data in tree or shrub attributes required for simulations. The function does not modify the data.
 #' 
-#' @return Both functions return a modified object of class \code{\link{sf}}. 
+#' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
+#'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 #' 
 #' @seealso [create_landscape()], [add_soilgrids()], \code{\link[medfate]{forest_mergeTrees}}
 #' @export
@@ -49,11 +58,13 @@
 #' \dontrun{
 #'   # See vignette 'Preparing inputs'
 #' }
-impute_forests <-function(x, sf_nfi, dem, 
+impute_forests <-function(x, sf_fi, dem, 
                           forest_map, 
                           var_class = NA, 
                           max_distance_km = 100,
                           replace_existing = FALSE, 
+                          missing_class_imputation = FALSE,
+                          missing_class_forest = NULL,
                           merge_trees = TRUE, merge_shrubs = TRUE, progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
@@ -63,6 +74,17 @@ impute_forests <-function(x, sf_nfi, dem,
   if(!inherits(forest_map, "SpatRaster") && !inherits(forest_map, "SpatVector")) cli::cli_abort("'forest_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(var_class)) var_class = 1
 
+  # Number of target locations 
+  if(replace_existing) {
+    is_target <- x$land_cover_type=="wildland"
+  } else {
+    is_target <- (unlist(lapply(x$forest, is.null)) & x$land_cover_type=="wildland")
+  }
+  num_target_wildland <- sum(is_target)
+  num_closest <- 0
+  num_missing <- 0
+  num_imputed <- 0 
+  
   if(progress) cli::cli_progress_step("Calculating northing-slope")
   r_slope <- terra::terrain(dem, v = "slope", unit = "degrees")
   r_aspect <- terra::terrain(dem, v = "aspect", unit = "degrees")
@@ -81,11 +103,11 @@ impute_forests <-function(x, sf_nfi, dem,
   x_elevation <- terra::extract(dem, x_vect)[,2]
   x_northing <- terra::extract(r_northing, x_vect)[,2]
   x_m <- cbind((x_elevation - mean_elev)/sd_elev, (x_northing - mean_northing)/sd_northing)
-  if(progress) cli::cli_progress_step("Extracting topography for 'sf_nfi'")
-  nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(dem)))
-  nfi_elevation <- terra::extract(dem, nfi_vect)[,2]
-  nfi_northing <- terra::extract(r_northing, nfi_vect)[,2]
-  nfi_m <- cbind((nfi_elevation - mean_elev)/sd_elev, (nfi_northing - mean_northing)/sd_northing)
+  if(progress) cli::cli_progress_step("Extracting topography for 'sf_fi'")
+  fi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_fi), terra::crs(dem)))
+  fi_elevation <- terra::extract(dem, fi_vect)[,2]
+  fi_northing <- terra::extract(r_northing, fi_vect)[,2]
+  fi_m <- cbind((fi_elevation - mean_elev)/sd_elev, (fi_northing - mean_northing)/sd_northing)
   if(progress) cli::cli_progress_step("Extracting forest class for 'x'")
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(forest_map)))
   # Subset map to accelerate extraction
@@ -94,19 +116,21 @@ impute_forests <-function(x, sf_nfi, dem,
   x_class<- x_class[[var_class]]
   classes <- unique(x_class[!is.na(x_class)])
   forest_map_red <- forest_map[forest_map$Class %in% classes,]
-  if(progress) cli::cli_progress_step("Extracting forest class for 'sf_nfi'")
-  nfi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_nfi), terra::crs(forest_map)))
-  nfi_class<-terra::extract(forest_map_red, nfi_vect)[,-1, drop = FALSE]
-  nfi_class<- nfi_class[[var_class]]
-  # Check for classes not defined in nfi data  
-  non_included = unique(x_class[which(!(x_class %in% nfi_class))])
+  if(progress) cli::cli_progress_step("Extracting forest class for 'sf_fi'")
+  fi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_fi), terra::crs(forest_map)))
+  fi_class<-terra::extract(forest_map_red, fi_vect)[,-1, drop = FALSE]
+  fi_class<- fi_class[[var_class]]
+  # Check for classes not defined in fi data  
+  non_included <- unique(x_class[which(!(x_class %in% fi_class))])
+  # print(non_included)
   if(length(non_included)>0) {
-    cli::cli_alert_warning(paste0(length(non_included), " forest classes were not represented in nfi data and the class of ", sum(x_class %in% non_included)," locations was set to missing"))
-    x_class[x_class %in% non_included] <- NA
+    cli::cli_alert_warning(paste0(length(non_included), " forest classes were not represented in forest inventory data. Geographic/topographic criteria used for ", sum((x_class %in% non_included) & is_target)," target locations."))
+    x_class[x_class %in% non_included] <- "no_match_class"
   }
+  # print(sum(is.na(x_class) & land_cover_type=="wildland"))
   if(progress) cli::cli_progress_step("Equidistant conic coordinates")
   x_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(x), crs = "ESRI:54027"))
-  nfi_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(sf_nfi), crs = "ESRI:54027"))
+  fi_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(sf_fi), crs = "ESRI:54027"))
   
   if(!("forest" %in% names(x))) {
     if(progress) cli::cli_progress_step("Defining column 'forest'")
@@ -116,45 +140,73 @@ impute_forests <-function(x, sf_nfi, dem,
     cli::cli_progress_step("Imputation")
     cli::cli_progress_bar("Locations", total = nrow(x))
   }
-  num_closest <- 0
-  num_missing <- 0
+  
   for(i in 1:nrow(x)) {
     if(progress) cli::cli_progress_update()
     if(x$land_cover_type[i]=="wildland") {
       if(!is.na(x_class[i])) {
-        nfi_sel <- nfi_class==x_class[i]
-        nfi_sel[is.na(nfi_sel)] <- FALSE
-        if(sum(nfi_sel)==0) cli::cli_abort("Could not find plots of the same forest class. Revise inputs.")
+        if(x_class[i]=="no_match_class") {
+          fi_sel <- rep(TRUE, length(fi_class))
+        } else {
+          fi_sel <- fi_class==x_class[i]
+          fi_sel[is.na(fi_sel)] <- FALSE
+          if(sum(fi_sel)==0) cli::cli_abort("Could not find plots of the same forest class. Revise inputs.")
+        }
       } else {
-        nfi_sel <- rep(TRUE, length(nfi_class))
-        num_missing <- num_missing + 1
+        if(missing_class_imputation) {
+          if(!is.null(missing_class_forest)) {
+            if(is.null(x$forest[[i]]) || replace_existing) {
+              num_imputed <- num_imputed + 1
+              x$forest[[i]] <- missing_class_forest
+            }
+            fi_sel <- rep(FALSE, length(fi_class))
+          } else {
+            fi_sel <- rep(TRUE, length(fi_class))
+          }
+        } else {
+          fi_sel <- rep(FALSE, length(fi_class))
+        }
+        if(is.null(x$forest[[i]]) || replace_existing) num_missing <- num_missing + 1
       }
-      if(!is.null(max_distance_km)) {
-        if(!is.na(max_distance_km)) {
-          cc_1 <- x_equi_cc[i,1] - nfi_equi_cc[,1] 
-          cc_2 <- x_equi_cc[i,2] - nfi_equi_cc[,2] 
-          d_km <- sqrt(cc_1^2 + cc_2^2)/1000
-          nfi_sel[d_km > max_distance_km] <- FALSE
-          if(sum(nfi_sel)==0) {
-            num_closest <- num_closest + 1
-            nfi_sel[which.min(d_km)] <- TRUE
+      if(sum(fi_sel)>0) {
+        if(!is.null(max_distance_km)) {
+          if(!is.na(max_distance_km)) {
+            cc_1 <- x_equi_cc[i,1] - fi_equi_cc[,1] 
+            cc_2 <- x_equi_cc[i,2] - fi_equi_cc[,2] 
+            d_km <- sqrt(cc_1^2 + cc_2^2)/1000
+            if(sum((d_km <= max_distance_km) & fi_sel)>0) {# If there are > 0 plots of the right class and closer than the distance, remove the remaining
+              fi_sel[d_km > max_distance_km] <- FALSE
+            } else { # If not, select the closest plot among those of the right class
+              fi_sel[fi_sel] <- (d_km[fi_sel] == min(d_km[fi_sel]))
+              num_closest <- num_closest + 1
+            }
+          }
+        }
+        fi_w <- which(fi_sel)
+        if(length(fi_w)>0) {
+          y_1 <- x_m[i,1] - fi_m[fi_w,1] 
+          y_2 <- x_m[i,2] - fi_m[fi_w,2] 
+          fi_i <- fi_w[which.min(y_1^2 + y_2^2)]
+          f <- sf_fi$forest[[fi_i]]
+          if(is.null(x$forest[[i]]) || replace_existing) {
+            num_imputed <- num_imputed + 1
+            if(merge_trees)  f <- medfate::forest_mergeTrees(f)
+            if(merge_shrubs)  f <- medfate::forest_mergeShrubs(f)
+            x$forest[[i]] <- f
           }
         }
       }
-      nfi_w <- which(nfi_sel)
-      y_1 <- x_m[i,1] - nfi_m[nfi_w,1] 
-      y_2 <- x_m[i,2] - nfi_m[nfi_w,2] 
-      nfi_i <- nfi_w[which.min(y_1^2 + y_2^2)]
-      f <- sf_nfi$forest[[nfi_i]]
-      if(is.null(x$forest[[i]]) || replace_existing) {
-        if(merge_trees)  f <- medfate::forest_mergeTrees(f)
-        if(merge_shrubs)  f <- medfate::forest_mergeShrubs(f)
-        x$forest[[i]] <- f
-      }
     }
   }
-  if(num_missing> 0)  cli::cli_alert_warning(paste0("Missing forest class for ", num_missing, " locations. Only geographic and topographic criteria used for those locations."))
-  if(num_closest> 0)  cli::cli_alert_warning(paste0("Not enough plots of the same class within geographic distance limits for ", num_closest, " locations. The closest plot of the same class was chosen in those cases."))
+  cli::cli_alert_info(paste0("Forest imputed on ", num_imputed, " out of ", num_target_wildland," target wildland locations (", round(100*num_imputed/num_target_wildland,1),"%)."))
+  if(num_missing> 0)  {
+    if(missing_class_imputation) {
+      cli::cli_alert_info(paste0("Forest class was missing for ", num_missing, " locations and forests were imputed there according to geographic and topographic criteria."))
+    } else {
+      cli::cli_alert_info(paste0("Forest class was missing for ", num_missing, " locations and forests were not imputed there."))
+    }
+  }
+  if(num_closest> 0)  cli::cli_alert_info(paste0("Not enough plots of the same class within geographic distance limits for ", num_closest, " locations. The closest plot of the same class was chosen in those cases."))
   if(progress) cli::cli_progress_done()
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
@@ -165,11 +217,14 @@ impute_forests <-function(x, sf_nfi, dem,
 #' @param structure_map An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map
 #' @param variable Structural variable to correct. See options in details.
 #' @param map_var Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.
+#' @param minDBH Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
+#' because of the missing stand metric.
 #' @param ratio_limits Limits for ratio of variable in corrections, used to avoid outliers. 
 #' @export
 modify_forest_structure<-function(x, structure_map, variable,
                                   map_var = NA, 
                                   ratio_limits = NULL,
+                                  minDBH = 7.5,
                                   progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
@@ -194,33 +249,41 @@ modify_forest_structure<-function(x, structure_map, variable,
     if((!is.null(f)) && (!is.na(x_var[i]))) {
       if(variable=="mean_tree_height") {
         if(nrow(f$treeData)>0) {
-          mean_height_m <- stand_meanTreeHeight(f)
-          height_ratio <- x_var[i]/mean_height_m
-          if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
-          f$treeData$Height <- f$treeData$Height*height_ratio 
-          f$treeData$DBH <- f$treeData$DBH*height_ratio
+          mean_height_cm <- stand_meanTreeHeight(f, minDBH = minDBH)
+          if(!is.na(mean_height_cm)) {
+            height_ratio <- x_var[i]/mean_height_cm
+            if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+            f$treeData$Height <- f$treeData$Height*height_ratio 
+            f$treeData$DBH <- f$treeData$DBH*height_ratio
+          }
         }
       } else if(variable=="dominant_tree_height") {
         if(nrow(f$treeData)>0) {
-          dominant_height_m <- stand_dominantTreeHeight(f)
-          height_ratio <- x_var[i]/dominant_height_m
-          if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
-          f$treeData$Height <- f$treeData$Height*height_ratio 
-          f$treeData$DBH <- f$treeData$DBH*height_ratio
+          dominant_height_cm <- stand_dominantTreeHeight(f, minDBH = minDBH)
+          if(!is.na(dominant_height_cm)) {
+            height_ratio <- x_var[i]/dominant_height_cm
+            if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+            f$treeData$Height <- f$treeData$Height*height_ratio 
+            f$treeData$DBH <- f$treeData$DBH*height_ratio
+          }
         }
       } else if(variable=="tree_density") {
         if(nrow(f$treeData)>0) {
-          tree_density <- stand_treeDensity(f)
-          density_ratio <- x_var[i]/tree_density
-          if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
-          f$treeData$N <- f$treeData$N*density_ratio
+          tree_density <- stand_treeDensity(f, minDBH = minDBH)
+          if(!is.na(tree_density)) {
+            density_ratio <- x_var[i]/tree_density
+            if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
+            f$treeData$N <- f$treeData$N*density_ratio
+          }
         }
       } else if(variable=="basal_area") {
         if(nrow(f$treeData)>0) {
-          basal_area <- stand_basalArea(f)
-          basal_area_ratio <- x_var[i]/basal_area
-          if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
-          f$treeData$N <- f$treeData$N*basal_area_ratio
+          basal_area <- stand_basalArea(f, minDBH = minDBH)
+          if(!is.na(basal_area)) {
+            basal_area_ratio <- x_var[i]/basal_area
+            if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
+            f$treeData$N <- f$treeData$N*basal_area_ratio
+          }
         }
       }
       x$forest[[i]] <- f
@@ -234,14 +297,83 @@ modify_forest_structure<-function(x, structure_map, variable,
 
 #' @rdname forest_parametrization
 #' @export
-check_forests <-function(x) {
+check_forests <-function(x, 
+                         progress = FALSE) {
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   npoints <- nrow(x)
   land_cover_type <- rep("wildland", nrow(x))
   if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
-  forest_cover <- land_cover_type %in% c("wildland")
+  is_wildland <- land_cover_type %in% c("wildland")
+  nwildland <- sum(is_wildland) 
   is_forest <- !unlist(lapply(x$forest, is.null))
-  cli::cli_alert_info(paste0(sum(is_forest), " non-null 'forest' elements out of ", npoints," locations"))
-  cli::cli_alert_info(paste0(sum(is_forest & forest_cover), " non-null 'forest' elements out of ", sum(forest_cover)," wildland locations"))
+  # cli::cli_alert_info(paste0(sum(is_forest), " non-null 'forest' elements out of ", npoints," locations (",round(100*sum(is_forest)/npoints,1),"%)."))
+  cli::cli_alert_info(paste0(sum(is_forest & is_wildland), " non-null 'forest' elements out of ", nwildland," wildland locations (", round(100*sum(is_forest & is_wildland)/nwildland,1),"%)."))
+  if(progress) {
+    cli::cli_progress_step("Checking forest list")
+    cli::cli_progress_bar("Locations", total = nrow(x))
+  }
+  mis_forest <- rep(FALSE, npoints)
+  wrong_class <- rep(FALSE, npoints)
+  mis_tree_N <- rep(FALSE, npoints)
+  mis_tree_DBH <- rep(FALSE, npoints)
+  mis_tree_height <- rep(FALSE, npoints)
+  mis_tree_species <- rep(FALSE, npoints)
+  mis_shrub_cover <- rep(FALSE, npoints)
+  mis_shrub_height <- rep(FALSE, npoints)
+  mis_shrub_species <- rep(FALSE, npoints)
+  for(i in 1:npoints) {
+    if(progress) cli::cli_progress_update()
+    if(land_cover_type[i] == "wildland") {
+      f <- x$forest[[i]]
+      if(!is.null(f)) {
+        if(inherits(f, "forest")) {
+          if(nrow(f$treeData)>0) {
+            mis_tree_N[i] <- any(is.na(f$treeData$N))
+            mis_tree_DBH[i] <- any(is.na(f$treeData$DBH))
+            mis_tree_height[i] <- any(is.na(f$treeData$Height))
+            mis_tree_species[i] <- any(is.na(f$treeData$Species))
+          }
+          if(nrow(f$shrubData)>0) {
+            mis_shrub_cover[i] <- any(is.na(f$shrubData$Cover))
+            mis_shrub_height[i] <- any(is.na(f$shrubData$Height))
+            mis_shrub_species[i] <- any(is.na(f$shrubData$Species))
+          }
+        } else {
+          wrong_class[i] <- TRUE
+        }
+      } else {
+        mis_forest[i] <- TRUE
+      }
+    }
+  }
+  if(progress) {
+    cli::cli_progress_done()
+  }
+  if(sum(mis_forest)>0) cli::cli_alert_warning(paste0("Missing 'forest' data in ", sum(mis_forest), " wildland locations (", round(100*sum(mis_forest)/nwildland ,1) ,"%)."))
+  else cli::cli_alert_info("No wildland locations with NULL values in column 'forest'.")
+  if(sum(wrong_class)>0) cli::cli_alert_warning(paste0("Wrong class in 'forest' column for ", sum(wrong_class), " wildland locations (", round(100*sum(wrong_class)/nwildland ,1) ,"%)."))
+  else cli::cli_alert_info("All objects in column 'forest' have the right class.")
+  if(sum(mis_tree_species)>0) cli::cli_alert_warning(paste0("Missing tree species detected for ", sum(mis_tree_species), " wildland locations (", round(100*sum(mis_tree_species)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_N)>0) cli::cli_alert_warning(paste0("Missing tree density values detected for ", sum(mis_tree_N), " wildland locations (", round(100*sum(mis_tree_N)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_height)>0) cli::cli_alert_warning(paste0("Missing tree height values detected for ", sum(mis_tree_height), " wildland locations (", round(100*sum(mis_tree_height)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_DBH)>0) cli::cli_alert_warning(paste0("Missing tree dbh values detected for ", sum(mis_tree_DBH), " wildland locations (", round(100*sum(mis_tree_DBH)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_species)>0) cli::cli_alert_warning(paste0("Missing shrub species detected for ", sum(mis_shrub_species), " wildland locations (", round(100*sum(mis_shrub_species)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_cover)>0) cli::cli_alert_warning(paste0("Missing shrub cover values detected for ", sum(mis_shrub_cover), " wildland locations (", round(100*sum(mis_shrub_cover)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_height)>0) cli::cli_alert_warning(paste0("Missing shrub height values detected for ", sum(mis_shrub_height), " wildland locations (", round(100*sum(mis_shrub_height)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_species)==0 && sum(mis_tree_N)==0 && 
+     sum(mis_tree_height) ==0 && sum(mis_tree_DBH)==0 &&
+     sum(mis_shrub_height) ==0 && sum(mis_shrub_cover)==0 &&
+     sum(mis_shrub_species) ==0) cli::cli_alert_info("No missing values detected in key tree/shrub attributes of 'forest' objects.")
+  
+  out <- data.frame(missing_forest = mis_forest,
+                    wrong_forest_class = wrong_class,
+                    tree_species = mis_tree_species,
+                    tree_dbh = mis_tree_DBH,
+                    tree_height = mis_tree_height,
+                    tree_density = mis_tree_N,
+                    shrub_species = mis_shrub_species,
+                    shrub_cover = mis_shrub_cover,
+                    shrub_height = mis_shrub_height)
+  return(invisible(tibble::as_tibble(out)))
 }
