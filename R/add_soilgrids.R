@@ -69,7 +69,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   nsoil <- sum(land_cover_type %in% c("wildland", "agriculture"))
   
   if(!("soil" %in% names(x))) {
-    if(progress) cli::cli_progress_step("Defining column 'soil'")
+    if(progress) cli::cli_progress_step("Defining new column 'soil'")
     x$soil <- vector("list", npoints)
   }
   if(is.null(soilgrids_path)) {

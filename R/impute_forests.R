@@ -74,6 +74,10 @@ impute_forests <-function(x, sf_fi, dem,
   if(!inherits(forest_map, "SpatRaster") && !inherits(forest_map, "SpatVector")) cli::cli_abort("'forest_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(var_class)) var_class = 1
 
+  if(!("forest" %in% names(x))) {
+    if(progress) cli::cli_progress_step("Defining new column 'forest'")
+    x$forest <- vector("list", nrow(x))
+  }
   # Number of target locations 
   if(replace_existing) {
     is_target <- x$land_cover_type=="wildland"
@@ -132,10 +136,7 @@ impute_forests <-function(x, sf_fi, dem,
   x_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(x), crs = "ESRI:54027"))
   fi_equi_cc <- sf::st_coordinates(sf::st_transform(sf::st_geometry(sf_fi), crs = "ESRI:54027"))
   
-  if(!("forest" %in% names(x))) {
-    if(progress) cli::cli_progress_step("Defining column 'forest'")
-    x$forest <- vector("list", nrow(x))
-  }
+
   if(progress) {
     cli::cli_progress_step("Imputation")
     cli::cli_progress_bar("Locations", total = nrow(x))

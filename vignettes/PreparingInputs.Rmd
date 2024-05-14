@@ -77,6 +77,11 @@ x
 
 We will use the raster definition for plots.
 
+```{r}
+rm(v)
+gc()
+```
+
 ## Topography and land cover type
 
 Once an object `sf` has been defined with target locations, we need to determine topographic features (elevation, slope, aspect) and land cover corresponding to those locations. You should have access to a Digital Elevation Model (DEM) at a desired resolution. Here we will use a DEM raster for Catalonia at 30 m resolution, which we load using package `terra`:
@@ -243,6 +248,7 @@ check_forests(y_3)
 ```{r, include=FALSE}
 rm(veg_map)
 rm(sf_sfi)
+rm(dem)
 gc()
 ```
 
@@ -264,6 +270,11 @@ This resolution is a bit finer than the size of forest inventory plots. Hence, w
 height_map_40 <- terra::aggregate(terra::crop(height_map, r), 
                                   fact = 2, fun = "mean", na.rm = TRUE)
 height_map_40
+```
+
+```{r, include = FALSE}
+rm(height_map)
+gc()
 ```
 
 Mean tree height data has the following distribution:
@@ -303,6 +314,12 @@ We perform the same aggregation done for heights:
 basal_area_map_40 <- terra::aggregate(terra::crop(basal_area_map, r), 
                                       fact = 2, fun = "mean", na.rm = TRUE)
 basal_area_map_40
+```
+
+
+```{r, include = FALSE}
+rm(basal_area_map)
+gc()
 ```
 
 Basal area geographic distribution looks as follows:
@@ -406,6 +423,16 @@ Finally, we check again that forests are well-defined, using function `check_for
 
 ```{r}
 check_forests(y_5)
+```
+
+```{r, include = FALSE}
+rm(basal_area_map_40)
+rm(height_map_40)
+rm(height_map_40_cm)
+rm(mth_5)
+rm(ba_5)
+rm(r_ba)
+gc()
 ```
 
 ## Soil parameterization
@@ -515,6 +542,83 @@ check_soils(y_8)
 ```
 
 
+## Additional variables
+
+In this section we illustrate the estimation of additional variables that are needed in some occasions. At present, there are no specific functions in **medfateland** for these variables. 
+
+### Crop factors for agricultural areas
+
+If there are target locations whose land cover type is **agriculture** we should supply a column called `crop_factor` in our `sf` input object, so that soil water balance can be conducted in agriculture locations. Crop maps for Europe can be found, for example in [d'Andrimont et al. (2021)](https://doi.org/10.1016/j.rse.2021.112708). In our case we will use regional data from the Catalan administration ([Mapa de cultius](https://agricultura.gencat.cat/ca/ambits/desenvolupament-rural/sigpac/mapa-cultius/index.html) from 2018). We start by reading the crop map and subsetting it to the target area: 
+
+```{r}
+file_crop_map <- paste0(dataset_path,"Agriculture/Sources/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp")
+crop_map <- sf::st_read(file_crop_map, options = "ENCODING=UTF-8")
+crop_map <- terra::crop(terra::vect(crop_map[,"Cultiu"]), r)
+```
+
+```{r, include = FALSE}
+gc()
+```
+
+Crops in the target watershed, occupy valley bottoms as expected:
+
+```{r, fig.width=6, fig.height=4}
+ggplot()+
+  geom_spatvector(aes(fill=Cultiu), data=crop_map)+
+  geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
+  theme_bw()+theme(legend.position = "none")
+```
+
+To obtain our crop factors, we first extract the crop name corresponding to **agriculture** locations:
+```{r}
+sel_agr <- y_1$land_cover_type=="agriculture"
+x_agr <- sf::st_geometry(x)[sel_agr]
+x_agr_crop <- terra::extract(crop_map, 
+                             terra::vect(x_agr))
+head(x_agr_crop)
+```
+
+Some cells may have missing values, specially if the land cover map and the crop map are not consistent:
+```{r}
+df_agr_crop <- as.data.frame(x_agr_crop)
+table(is.na(df_agr_crop$Cultiu))
+```
+
+For simplicity we will assume the missing values correspond to Ray-grass, the most common crop in the area:
+```{r}
+df_agr_crop$Cultiu[is.na(df_agr_crop$Cultiu)] <- "RAY-GRASS"
+```
+
+In order to transform crop names into crop factors, we need a look-up table, which we prepared for Catalonia
+```{r}
+crop_lookup_table <- readxl::read_xlsx(paste0(dataset_path, "Agriculture/Sources/Catalunya/Kc_CAT_MOD.xlsx"))
+head(crop_lookup_table)
+```
+
+We join the two tables by the crop name column and get the crop factor (column `Kc`):
+```{r}
+df_agr_crop <- df_agr_crop |>
+  left_join(crop_lookup_table, by=c("Cultiu"="Cultiu_map"))
+y_8$crop_factor <- NA
+y_8$crop_factor[sel_agr] <- df_agr_crop$Kc
+summary(y_8$crop_factor[sel_agr])
+```
+
+```{r, include = FALSE}
+rm(sel_agr)
+rm(file_crop_map)
+rm(crop_map)
+rm(df_agr_crop)
+rm(crop_table)
+rm(x_agr)
+rm(x_agr_crop)
+gc()
+```
+
+### Hydrogeology
+
+
+
 ## Initialization test
 
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
@@ -525,4 +629,3 @@ z <- initialize_landscape(y_8, SpParamsMED, defaultControl(),
 ```
 
 
-Other variables may be needed, depending on the simulation function we want to use (crop factors, bedrock conductivity and porosity, etc.), but here we illustrated the most important ones.

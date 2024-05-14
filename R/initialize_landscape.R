@@ -53,6 +53,8 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
   if(!("soil" %in% names(x))) cli::cli_abort("Column 'soil' must be defined.")
   forestlist = x$forest
   soillist  = x$soil
+  # Set local control verbose to FALSE
+  local_control$verbose = FALSE
   n <- length(forestlist)
   if("state" %in% names(x)) {
     xlist  = x$state
