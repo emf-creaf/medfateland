@@ -81,8 +81,10 @@ Cáceres / Núria Aquilué / Paula Martín / María González</h4>
 <p>This vignette has been created to illustrate the creation of spatial
 inputs to be used in model simulations with the package, starting from a
 set of coordinates. The functions introduced in this document are meant
-to be executed sequentially to progressively add spatial information,
-but users are free to use them in the most convenient way.</p>
+to be executed sequentially to progressively add spatial information, as
+illustrated in the workflow below, but users are free to use them in the
+most convenient way.</p>
+<p><img src="Landscape_init_workflow.png" width="70%" style="display: block; margin: auto;"></p>
 <p>Before reading this vignette, users should be familiar with
 <em>forest</em> and <em>soil</em> structures in package
 <strong>medfate</strong>. Moreover, a brief introduction to spatial
@@ -133,7 +135,7 @@ using:</p>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">counties</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-3-1.png" width="480" style="display: block; margin: auto;"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-4-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>Now we define a raster at 200 m resolution, including the target
 area. We intersect it with the watershed boundaries to keep the target
 locations:</p>
@@ -167,9 +169,9 @@ object:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used (Mb)</span></span>
-<span><span class="co">## Ncells 2026993 108.3    4089820 218.5  2563424  137</span></span>
-<span><span class="co">## Vcells 3435791  26.3    8388608  64.0  8379857   64</span></span></code></pre>
+<pre><code><span><span class="co">##           used  (Mb) gc trigger (Mb) max used  (Mb)</span></span>
+<span><span class="co">## Ncells 2027817 108.3    4155370  222  2489316 133.0</span></span>
+<span><span class="co">## Vcells 3437595  26.3    8388608   64  8341601  63.7</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -253,9 +255,9 @@ features to our starting <code>sf</code>:</p>
 <code>r</code> to draw cells instead of points:</p>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
-<p>and the land cover types:</p>
 <p><img src="PreparingInputs_files/figure-html/unnamed-chunk-15-1.png" width="576"></p>
+<p>and the land cover types:</p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="forest-parameterization">Forest parameterization<a class="anchor" aria-label="anchor" href="#forest-parameterization"></a>
@@ -561,7 +563,7 @@ crop to the target area:</p>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"m"</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-32-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-33-1.png" width="576"></p>
 <p>We now call function <code><a href="../reference/forest_parametrization.html">modify_forest_structure()</a></code> to
 correct mean tree height according to the LiDAR data (Note the
 correction of units: tree heights are in cm in
@@ -643,7 +645,7 @@ from LiDAR flights:</p>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"m2/ha"</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">70</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-38-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-39-1.png" width="576"></p>
 <p>We now use the same function to correct basal area values (no unit
 conversion is needed in this case):</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
@@ -722,7 +724,7 @@ correction on structural variables, compared with the LiDAR data.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"d) Basal area from LiDAR"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-41-1.png" width="768"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-42-1.png" width="768"></p>
 <p>where it is apparent that both the height correction and the basal
 area correction have an effect in basal area. Correcting only for height
 is not satisfactory in terms of basal area, because of the modification
@@ -782,7 +784,7 @@ tree height:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"d) Mean tree height from LiDAR"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-43-1.png" width="768"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-44-1.png" width="768"></p>
 <p>Here the basal area correction did not have any effect on mean tree
 height. The relationship between estimated and predicted mean tree
 height is:</p>
@@ -949,7 +951,7 @@ magnitude and spatial pattern):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"SoilGrids + depth correction"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span><span class="fl">1</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-57-1.png" width="672"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-58-1.png" width="672"></p>
 <p>Finally, we can call again <code><a href="../reference/soil_parametrization.html">check_soils()</a></code> to verify that
 everything is fine:</p>
 <div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
@@ -996,7 +998,7 @@ subsetting it to the target area:</p>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">Cultiu</span><span class="op">)</span>, data<span class="op">=</span><span class="va">crop_map</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-62-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-63-1.png" width="576"></p>
 <p>To obtain our crop factors, we first extract the crop name
 corresponding to <em>agriculture</em> locations:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
@@ -1067,7 +1069,7 @@ al. (2017)</a>, that we already transformed to mm:</p>
 <span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y_8</span><span class="op">$</span><span class="va">depth_to_bedrock</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span></span></code></pre></div>
 <p>which we can plot using:</p>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-70-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-71-1.png" width="576"></p>
 <p>If regional maps are not available to inform about permeability and
 conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0
 (<a href="https://doi.org/10.1002/2017GL075860" class="external-link">Huscroft et
@@ -1125,7 +1127,7 @@ the proportion:</p>
 <p>Its geographic distribution is quite simple:</p>
 <div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_porosity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-75-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-76-1.png" width="576"></p>
 <p>GLHYMPS 2.0 provides permeability in the log scale, and the following
 operations are needed to obtain hydraulic conductivity in m/day:</p>
 <div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
@@ -1148,7 +1150,7 @@ object:</p>
 <p>Its geographic distribution is very simple, again:</p>
 <div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_conductivity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-78-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-79-1.png" width="576"></p>
 </div>
 <div class="section level3">
 <h3 id="other-variables">Other variables<a class="anchor" aria-label="anchor" href="#other-variables"></a>
