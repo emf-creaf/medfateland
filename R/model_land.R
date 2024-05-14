@@ -649,6 +649,10 @@
     if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'sf'.")
     if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'sf'.")
     if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'sf'.")
+    if(sum(y$bedrock_porosity<=0)>0) {
+      y$bedrock_porosity[y$bedrock_porosity<=0] <- 0.001
+      cli::cli_alert_info("Minimum bedrock porosity set to 0.1%.")
+    }
     if(!("aquifer" %in% names(y))) {
       cli::cli_alert_info("Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.")
       y$aquifer <- rep(0, nrow(y))

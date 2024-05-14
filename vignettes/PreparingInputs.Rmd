@@ -18,7 +18,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Aim
 
-This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting from a set of coordinates. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, but users are free to use them in the most convenient way.
+This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting from a set of coordinates. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
+
+```{r, out.width='70%', fig.align="center", echo=FALSE}
+knitr::include_graphics("Landscape_init_workflow.png")
+```
+
 
 Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html). 
 
@@ -71,7 +76,7 @@ v <- terra::intersect(terra::as.points(r), watershed)
 
 And finally we transform the result into a `sf` object:
 ```{r}
-x <- sf::st_geometry(sf::st_as_sf(v))
+x <- sf::st_as_sf(v)[,"geometry", drop = FALSE]
 x
 ```
 
@@ -667,10 +672,10 @@ gc()
 For porosity we simply divide the GLHYMPS 2.0 value by 100 to find the proportion:
 
 ```{r}
-y_8$bedrock_porosity <- pmax(0.001, x_glhymps[,"Porosity_x", drop = TRUE]/100)
+y_8$bedrock_porosity <- x_glhymps[,"Porosity_x", drop = TRUE]/100
 ```
 
-We force a minimum of 0.1% porosity to avoid numerical problems during simulations. Its geographic distribution is quite simple:
+Its geographic distribution is quite simple:
 
 ```{r, fig.width=6, fig.height=4.5}
 plot_variable(y_8, "bedrock_porosity", r = r)
@@ -728,7 +733,7 @@ Since the data set corresponds to a watershed, we should also store the raster:
 
 ```{r}
 r$value <- TRUE
-terra::writeRaster(r, "bianya_raster.tif")
+terra::writeRaster(r, "bianya_raster.tif", overwrite=TRUE)
 ```
 
 
