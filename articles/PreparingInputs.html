@@ -64,7 +64,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Preparing inputs</h1>
                         <h4 data-toc-skip class="author">Miquel De
-Cáceres / Núria Aquilué</h4>
+Cáceres / Núria Aquilué / Paula Martín / María González</h4>
             
             <h4 data-toc-skip class="date">2024-05-14</h4>
       
@@ -144,7 +144,7 @@ locations:</p>
 <p>And finally we transform the result into a <code>sf</code>
 object:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">[</span>,<span class="st">"geometry"</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">[</span>,<span class="st">"geometry"</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="va">x</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 2550 features and 0 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -167,9 +167,9 @@ object:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2026653 108.3    4147917 221.6  2577534 137.7</span></span>
-<span><span class="co">## Vcells 3434901  26.3   10146329  77.5 10146329  77.5</span></span></code></pre>
+<pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used (Mb)</span></span>
+<span><span class="co">## Ncells 2026993 108.3    4089820 218.5  2563424  137</span></span>
+<span><span class="co">## Vcells 3435791  26.3    8388608  64.0  8379857   64</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -816,9 +816,9 @@ height is:</p>
 <p>Soil information is most usually lacking for the target locations.
 Regional maps of soil properties may be available in some cases. Here we
 assume this information is not available, so that we resort to global
-products. In particular, we will use information provided in <a href="https://soilgrids.org/" class="external-link">SoilGrids</a> at 250 m resolution <a href="https://doi.org/10.1371/journal.pone.0169748" class="external-link">Hengl et
-al. (2017)</a> <a href="https://doi.org/10.5194/soil-7-217-2021" class="external-link">Poggio
-et al. (2021)</a>.</p>
+products. In particular, we will use information provided in <a href="https://soilgrids.org/" class="external-link">SoilGrids</a> at 250 m resolution (<a href="https://doi.org/10.1371/journal.pone.0169748" class="external-link">Hengl et
+al. (2017)</a>; <a href="https://doi.org/10.5194/soil-7-217-2021" class="external-link">Poggio
+et al. (2021)</a>).</p>
 <div class="section level3">
 <h3 id="soilgrids-2-0-data">SoilGrids 2.0 data<a class="anchor" aria-label="anchor" href="#soilgrids-2-0-data"></a>
 </h3>
@@ -996,7 +996,7 @@ subsetting it to the target area:</p>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">Cultiu</span><span class="op">)</span>, data<span class="op">=</span><span class="va">crop_map</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-61-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-62-1.png" width="576"></p>
 <p>To obtain our crop factors, we first extract the crop name
 corresponding to <em>agriculture</em> locations:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
@@ -1067,7 +1067,7 @@ al. (2017)</a>, that we already transformed to mm:</p>
 <span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y_8</span><span class="op">$</span><span class="va">depth_to_bedrock</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span></span></code></pre></div>
 <p>which we can plot using:</p>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-69-1.png" width="576"></p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-70-1.png" width="576"></p>
 <p>If regional maps are not available to inform about permeability and
 conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0
 (<a href="https://doi.org/10.1002/2017GL075860" class="external-link">Huscroft et
@@ -1123,10 +1123,12 @@ the proportion:</p>
 <div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_porosity</span> <span class="op">&lt;-</span> <span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"Porosity_x"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span></span></code></pre></div>
 <p>Its geographic distribution is quite simple:</p>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-74-1.png" width="576"></p>
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_porosity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-75-1.png" width="576"></p>
 <p>GLHYMPS 2.0 provides permeability in the log scale, and the following
 operations are needed to obtain hydraulic conductivity in m/day:</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Permeability m2</span></span>
 <span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="op">(</span><span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"logK_Ferr_"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="co"># Water density kg·m-3</span></span>
@@ -1141,10 +1143,12 @@ operations are needed to obtain hydraulic conductivity in m/day:</p>
 <span><span class="va">K_day</span> <span class="op">&lt;-</span> <span class="va">K</span><span class="op">*</span><span class="fl">3600</span><span class="op">*</span><span class="fl">24</span></span></code></pre></div>
 <p>Finally, we assign the conductivity values to the <code>sf</code>
 object:</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_conductivity</span> <span class="op">&lt;-</span> <span class="va">K_day</span></span></code></pre></div>
 <p>Its geographic distribution is very simple, again:</p>
-<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-77-1.png" width="576"></p>
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_conductivity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-78-1.png" width="576"></p>
 </div>
 <div class="section level3">
 <h3 id="other-variables">Other variables<a class="anchor" aria-label="anchor" href="#other-variables"></a>
@@ -1157,11 +1161,25 @@ scenarios</a>.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="storing">Storing<a class="anchor" aria-label="anchor" href="#storing"></a>
+</h2>
+<p>At the end of the process of building spatial inputs, we should store
+the result as an RDS file, to be loaded at the time of performing
+simulations, e.g.</p>
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bianya.rds"</span><span class="op">)</span></span></code></pre></div>
+<p>Since the data set corresponds to a watershed, we should also store
+the raster:</p>
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">r</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html" class="external-link">writeRaster</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"bianya_raster.tif"</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="initialization-test">Initialization test<a class="anchor" aria-label="anchor" href="#initialization-test"></a>
 </h2>
 <p>We can check whether the input data set is well formed by calling
 function <code><a href="../reference/initialize_landscape.html">initialize_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="va">SpParamsMED</span>, <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                          progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
