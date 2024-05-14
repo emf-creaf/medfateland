@@ -168,8 +168,8 @@ object:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2026353 108.3    4089457 218.5  2529121 135.1</span></span>
-<span><span class="co">## Vcells 3433612  26.2    8388608  64.0  8333781  63.6</span></span></code></pre>
+<span><span class="co">## Ncells 2026653 108.3    4147917 221.6  2577534 137.7</span></span>
+<span><span class="co">## Vcells 3434901  26.3   10146329  77.5 10146329  77.5</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -968,7 +968,7 @@ functions in <strong>medfateland</strong> for these variables.</p>
 <h3 id="crop-factors-for-agricultural-areas">Crop factors for agricultural areas<a class="anchor" aria-label="anchor" href="#crop-factors-for-agricultural-areas"></a>
 </h3>
 <p>If there are target locations whose land cover type is
-<strong>agriculture</strong> we should supply a column called
+<em>agriculture</em> we should supply a column called
 <code>crop_factor</code> in our <code>sf</code> input object, so that
 soil water balance can be conducted in agriculture locations. Crop maps
 for Europe can be found, for example in <a href="https://doi.org/10.1016/j.rse.2021.112708" class="external-link">d’Andrimont et
@@ -998,23 +998,15 @@ subsetting it to the target area:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PreparingInputs_files/figure-html/unnamed-chunk-61-1.png" width="576"></p>
 <p>To obtain our crop factors, we first extract the crop name
-corresponding to <strong>agriculture</strong> locations:</p>
+corresponding to <em>agriculture</em> locations:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel_agr</span> <span class="op">&lt;-</span> <span class="va">y_1</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">==</span><span class="st">"agriculture"</span></span>
-<span><span class="va">x_agr</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="va">sel_agr</span><span class="op">]</span></span>
+<span><span class="va">x_agr</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="va">sel_agr</span><span class="op">]</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">crop_map</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_agr_crop</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">crop_map</span>, </span>
-<span>                             <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">x_agr</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x_agr_crop</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   id.y Cultiu</span></span>
-<span><span class="co">## 1    1   &lt;NA&gt;</span></span>
-<span><span class="co">## 2    2   &lt;NA&gt;</span></span>
-<span><span class="co">## 3    3   &lt;NA&gt;</span></span>
-<span><span class="co">## 4    4   &lt;NA&gt;</span></span>
-<span><span class="co">## 5    5   &lt;NA&gt;</span></span>
-<span><span class="co">## 6    6   &lt;NA&gt;</span></span></code></pre>
+<span>                             <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">x_agr</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Some cells may have missing values, specially if the land cover map
 and the crop map are not consistent:</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">x_agr_crop</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -1022,11 +1014,11 @@ and the crop map are not consistent:</p>
 <span><span class="co">##   196   131</span></span></code></pre>
 <p>For simplicity we will assume the missing values correspond to
 Ray-grass, the most common crop in the area:</p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"RAY-GRASS"</span></span></code></pre></div>
 <p>In order to transform crop names into crop factors, we need a look-up
 table, which we prepared for Catalonia</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crop_lookup_table</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Agriculture/Sources/Catalunya/Kc_CAT_MOD.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">crop_lookup_table</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
@@ -1040,7 +1032,7 @@ table, which we prepared for Catalonia</p>
 <span><span class="co">## <span style="color: #BCBCBC;">6</span> ALGARROBA HERBACIA NO SIEGA Algarroba herbacia no siega LLEGU… Mitjana … 0.36</span></span></code></pre>
 <p>We join the two tables by the crop name column and get the crop
 factor (column <code>Kc</code>):</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span> <span class="op">&lt;-</span> <span class="va">df_agr_crop</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">crop_lookup_table</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cultiu"</span><span class="op">=</span><span class="st">"Cultiu_map"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y_8</span><span class="op">$</span><span class="va">crop_factor</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -1052,6 +1044,116 @@ factor (column <code>Kc</code>):</p>
 <div class="section level3">
 <h3 id="hydrogeology">Hydrogeology<a class="anchor" aria-label="anchor" href="#hydrogeology"></a>
 </h3>
+<p>Watershed simulations with <code>watershed_model = "tetis"</code>
+require defining spatial variables necessary for the simulation of
+groundwater flows and aquifer dynamics:</p>
+<ul>
+<li>
+<em>Depth to bedrock</em> [<code>depth_to_bedrock</code>] - Depth to
+unweathered bedrock, in mm.</li>
+<li>
+<em>Bedrock hydraulic conductivity</em>
+[<code>bedrock_conductivity</code>] - Hydraulic conductivity of the
+bedrock, in m·day-1.</li>
+<li>
+<em>Bedrock porosity</em> [<code>bedrock_porosity</code>] - Bedrock
+porosity (as proportion of volume).</li>
+</ul>
+<p>As estimate of depth to bedrock, one can use the same variable from
+<a href="https://doi.org/10.1002/2016MS000686" class="external-link">Shangguan et
+al. (2017)</a>, that we already transformed to mm:</p>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">y_8</span><span class="op">)</span>, </span>
+<span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y_8</span><span class="op">$</span><span class="va">depth_to_bedrock</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span></span></code></pre></div>
+<p>which we can plot using:</p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-69-1.png" width="576"></p>
+<p>If regional maps are not available to inform about permeability and
+conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0
+(<a href="https://doi.org/10.1002/2017GL075860" class="external-link">Huscroft et
+al. 2021</a>):</p>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">glhymps_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Soils/Sources/Global/GLHYMPS2/GLHYMPS_Spain.shp"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">glhymps_map</span></span></code></pre></div>
+<pre><code><span><span class="co">##  class       : SpatVector </span></span>
+<span><span class="co">##  geometry    : polygons </span></span>
+<span><span class="co">##  dimensions  : 18954, 23  (geometries, attributes)</span></span>
+<span><span class="co">##  extent      : -556597.5, 445486.2, 3637705, 4410471  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">##  source      : GLHYMPS_Spain.shp</span></span>
+<span><span class="co">##  coord. ref. : Cylindrical_Equal_Area </span></span>
+<span><span class="co">##  names       : OBJECTID_1 IDENTITY_ logK_Ice_x logK_Ferr_ Porosity_x K_stdev_x1</span></span>
+<span><span class="co">##  type        :      &lt;int&gt;     &lt;chr&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;</span></span>
+<span><span class="co">##  values      :     943032   ESP3276      -1520      -1520         19        250</span></span>
+<span><span class="co">##                    943035   ESP3282      -1180      -1180          6        150</span></span>
+<span><span class="co">##                    943042   ESP3291      -1180      -1180          6        150</span></span>
+<span><span class="co">##  OBJECTID Descriptio    XX    YY (and 13 more)</span></span>
+<span><span class="co">##     &lt;int&gt;      &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              </span></span>
+<span><span class="co">##         0         NA    NA    NA              </span></span>
+<span><span class="co">##         0         NA    NA    NA              </span></span>
+<span><span class="co">##         0         NA    NA    NA</span></span></code></pre>
+<p>We first extract the GLHYMPS 2.0 data on the target locations:</p>
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">y_8</span><span class="op">)</span>, </span>
+<span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">glhymps_map</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x_glhymps</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">glhymps_map</span>, <span class="va">x_vect</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x_glhymps</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   id.y OBJECTID_1 IDENTITY_ logK_Ice_x logK_Ferr_ Porosity_x K_stdev_x1</span></span>
+<span><span class="co">## 1    1    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">## 2    2    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">## 3    3    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">## 4    4    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">## 5    5    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">## 6    6    1194174   ESP3435      -1520      -1520         19        250</span></span>
+<span><span class="co">##   OBJECTID Descriptio   XX   YY   ZZ   AA   DD Shape_Leng GUM_K Prmfrst</span></span>
+<span><span class="co">## 1        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">## 2        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">## 3        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">## 4        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">## 5        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">## 6        0       &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;          0     1       0</span></span>
+<span><span class="co">##   Shape_Le_1 Shape_Area Transmissi COUNT AREA_1 MEAN STD</span></span>
+<span><span class="co">## 1     939134 1701770734          0     0      0    0   0</span></span>
+<span><span class="co">## 2     939134 1701770734          0     0      0    0   0</span></span>
+<span><span class="co">## 3     939134 1701770734          0     0      0    0   0</span></span>
+<span><span class="co">## 4     939134 1701770734          0     0      0    0   0</span></span>
+<span><span class="co">## 5     939134 1701770734          0     0      0    0   0</span></span>
+<span><span class="co">## 6     939134 1701770734          0     0      0    0   0</span></span></code></pre>
+<p>For porosity we simply divide the GLHYMPS 2.0 value by 100 to find
+the proportion:</p>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_porosity</span> <span class="op">&lt;-</span> <span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"Porosity_x"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span></span></code></pre></div>
+<p>Its geographic distribution is quite simple:</p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-74-1.png" width="576"></p>
+<p>GLHYMPS 2.0 provides permeability in the log scale, and the following
+operations are needed to obtain hydraulic conductivity in m/day:</p>
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Permeability m2</span></span>
+<span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="op">(</span><span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"logK_Ferr_"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co"># Water density kg·m-3</span></span>
+<span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fl">999.97</span> </span>
+<span><span class="co"># Gravity m·s-2</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fl">9.8</span></span>
+<span><span class="co"># Viscosity of water</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">1e-3</span></span>
+<span><span class="co"># Conductivity m/s</span></span>
+<span><span class="va">K</span> <span class="op">&lt;-</span> <span class="va">k</span><span class="op">*</span><span class="va">rho</span><span class="op">*</span><span class="va">g</span><span class="op">/</span><span class="va">mu</span></span>
+<span><span class="co"># Daily conductivity m/day</span></span>
+<span><span class="va">K_day</span> <span class="op">&lt;-</span> <span class="va">K</span><span class="op">*</span><span class="fl">3600</span><span class="op">*</span><span class="fl">24</span></span></code></pre></div>
+<p>Finally, we assign the conductivity values to the <code>sf</code>
+object:</p>
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_conductivity</span> <span class="op">&lt;-</span> <span class="va">K_day</span></span></code></pre></div>
+<p>Its geographic distribution is very simple, again:</p>
+<p><img src="PreparingInputs_files/figure-html/unnamed-chunk-77-1.png" width="576"></p>
+</div>
+<div class="section level3">
+<h3 id="other-variables">Other variables<a class="anchor" aria-label="anchor" href="#other-variables"></a>
+</h3>
+<p>Simulation of management scenarios requires defining additional
+variables in the <code>sf</code> object, concerning the area represented
+by each location and the management unit to which it belongs. This is
+illustrated in vignette <a href="https://emf-creaf.github.io/medfateland/articles/ManagementScenarios.html" class="external-link">Management
+scenarios</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -1059,7 +1161,7 @@ factor (column <code>Kc</code>):</p>
 </h2>
 <p>We can check whether the input data set is well formed by calling
 function <code><a href="../reference/initialize_landscape.html">initialize_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="va">SpParamsMED</span>, <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                          progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>

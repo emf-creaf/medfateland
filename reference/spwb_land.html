@@ -130,14 +130,14 @@ and resprouting.</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
 <li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific cells (values can be <code>NULL</code> for the remaining ones).</p></li>
-<li><p><code>snowpack</code>: A numeric vector with the snow water equivalent content of the snowpack in each cell.</p></li>
+<li><p><code>snowpack</code>: An optional numeric vector with the snow water equivalent content of the snowpack in each cell (in mm). If missing it will be initialized to zero.</p></li>
 <li><p><code>management_arguments</code>: Lists with management arguments (optional, relevant for <code>fordyn_land</code> only).</p></li>
 <li><p><code>result_cell</code>: A logical indicating that local model results are desired (optional, relevant for <code>spwb_land</code> and  <code>growth_land</code> only). Model results are only produced for wildland and agriculture cells.</p></li>
 </ul><p>When using TETIS watershed model, the following columns are also REQUIRED:</p><ul><li><p><code>depth_to_bedrock</code>: Depth to bedrock (mm).</p></li>
 <li><p><code>bedrock_conductivity</code>: Bedrock (saturated) conductivity (in m·day-1).</p></li>
-<li><p><code>bedrock_porosity</code>: Bedrock porosity.</p></li>
-<li><p><code>aquifer</code>: A numeric vector with the water content of the aquifer in each cell.</p></li>
-</ul><p>When using TETIS watershed model, the following columns are OPTIONAL:</p><ul><li><p><code>deep_aquifer_loss</code>: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from <code>deep_aquifer_loss</code> in <code><a href="default_watershed_control.html">default_watershed_control</a></code></p></li>
+<li><p><code>bedrock_porosity</code>: Bedrock porosity (the proportion of pore space in the rock).</p></li>
+</ul><p>When using TETIS watershed model, the following columns are OPTIONAL:</p><ul><li><p><code>aquifer</code>: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.</p></li>
+<li><p><code>deep_aquifer_loss</code>: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from <code>deep_aquifer_loss</code> in <code><a href="default_watershed_control.html">default_watershed_control</a></code></p></li>
 </ul></dd>
 
 
