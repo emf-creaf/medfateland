@@ -87,15 +87,20 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
           }
         }
       } else if(landcover[i] == "agriculture") {
-        if(inherits(soillist[[i]], c("soil","data.frame"))) {
+        s = soillist[[i]]
+        if(inherits(s, c("soil","data.frame"))) {
           init[i] <- TRUE
+          x_i = xlist[[i]]
+          if(!replace) {
+            if(inherits(x_i,"aspwbInput")) init[i] = FALSE
+          }
         }
       }
     }
     w_init = which(init)
     if(length(w_init)>0) {
       if(progress) { 
-        cli::cli_progress_step(paste0("Creating ", length(w_init), " input objects for model '", model, "'."))
+        cli::cli_progress_step(paste0("Creating ", length(w_init), " state objects for model '", model, "'."))
         cli::cli_progress_bar(name = "Stands", total = n)
       }
       for(w in 1:length(w_init)) {
@@ -131,7 +136,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
       }
       if(progress) cli::cli_progress_done()
     } else {
-      if(progress) cli::cli_alert_info(paste0("All input objects are already available for '", model, "'. Use 'replace = TRUE' to force replacing current inputs."))
+      if(progress) cli::cli_alert_info(paste0("All state objects are already available for '", model, "'."))
     }
   } 
   x[["state"]] <- xlist

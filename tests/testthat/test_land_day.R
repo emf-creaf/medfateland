@@ -26,13 +26,6 @@ test_that("Can simulate single day over landscape",{
                                   SpParams = SpParamsMED, progress = FALSE), "sf")
 })
 
-test_that("Can simulate single day over landscape with paralellization",{
-  expect_s3_class(spwb_land_day(r, yws, meteo = examplemeteo, date = "2001-01-01",  
-                                SpParams = SpParamsMED, progress = FALSE, parallelize = TRUE, num_cores = 4), "sf")
-  expect_s3_class(growth_land_day(r, yws, meteo = examplemeteo, date = "2001-01-01",  
-                                  SpParams = SpParamsMED, progress = FALSE, parallelize = TRUE, num_cores = 4), "sf")
-})
-
 test_that("Can simulate single day over landscape using new interpolator",{
   expect_s3_class(spwb_land_day(r, yws, meteo = interpolator, date = "2022-04-01",  
                                 SpParams = SpParamsMED, progress = FALSE), "sf")

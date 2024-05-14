@@ -1,6 +1,6 @@
 ---
 title: "Preparing inputs"
-author: "Miquel De Cáceres / Núria Aquilué"
+author: "Miquel De Cáceres / Núria Aquilué / Paula Martín / María González"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -71,7 +71,7 @@ v <- terra::intersect(terra::as.points(r), watershed)
 
 And finally we transform the result into a `sf` object:
 ```{r}
-x <- sf::st_as_sf(v)[,"geometry"]
+x <- sf::st_geometry(sf::st_as_sf(v))
 x
 ```
 
@@ -437,7 +437,7 @@ gc()
 
 ## Soil parameterization
 
-Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution [Hengl et al. (2017)](https://doi.org/10.1371/journal.pone.0169748) [Poggio et al. (2021)](https://doi.org/10.5194/soil-7-217-2021). 
+Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution ([Hengl et al. (2017)](https://doi.org/10.1371/journal.pone.0169748); [Poggio et al. (2021)](https://doi.org/10.5194/soil-7-217-2021)). 
 
 ### SoilGrids 2.0 data
 
@@ -539,6 +539,13 @@ Finally, we can call again `check_soils()` to verify that everything is fine:
 
 ```{r}
 check_soils(y_8)
+```
+
+```{r, include = FALSE}
+rm(bdricm)
+rm(bdrlog)
+rm(bdticm)
+gc()
 ```
 
 
@@ -660,12 +667,12 @@ gc()
 For porosity we simply divide the GLHYMPS 2.0 value by 100 to find the proportion:
 
 ```{r}
-y_8$bedrock_porosity <- x_glhymps[,"Porosity_x", drop = TRUE]/100
+y_8$bedrock_porosity <- pmax(0.001, x_glhymps[,"Porosity_x", drop = TRUE]/100)
 ```
 
-Its geographic distribution is quite simple:
+We force a minimum of 0.1% porosity to avoid numerical problems during simulations. Its geographic distribution is quite simple:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+```{r, fig.width=6, fig.height=4.5}
 plot_variable(y_8, "bedrock_porosity", r = r)
 ```
 
@@ -694,13 +701,35 @@ y_8$bedrock_conductivity <- K_day
 
 Its geographic distribution is very simple, again:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+```{r, fig.width=6, fig.height=4.5}
 plot_variable(y_8, "bedrock_conductivity", r = r)
 ```
+
+```{r, include = FALSE}
+rm(x_glhymps)
+gc()
+```
+
 
 ### Other variables
 
 Simulation of management scenarios requires defining additional variables in the `sf` object, concerning the area represented by each location and the management unit to which it belongs. This is illustrated in vignette [Management scenarios](https://emf-creaf.github.io/medfateland/articles/ManagementScenarios.html).
+
+
+## Storing 
+
+At the end of the process of building spatial inputs, we should store the result as an RDS file, to be loaded at the time of performing simulations, e.g.
+
+```{r, eval = FALSE}
+saveRDS(y_8, "bianya.rds")
+```
+
+Since the data set corresponds to a watershed, we should also store the raster:
+
+```{r}
+r$value <- TRUE
+terra::writeRaster(r, "bianya_raster.tif")
+```
 
 
 ## Initialization test

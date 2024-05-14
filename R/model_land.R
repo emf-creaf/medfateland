@@ -745,37 +745,8 @@
     if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
   }
 
- 
-  if(header_footer) cli::cli_progress_step(paste0("Building ", local_model, " input"))
-  initialized_cells <- 0
-  for(i in 1:nCells) { #Initialize if not previously initialized
-    local_control_i <- NULL
-    if("local_control" %in% names(y)) {
-      if(!is.null(y$local_control[[i]])) {
-        if(inherits(y$local_control[[i]], "list")) local_control_i <- y$local_control[[i]]
-      }
-    }
-    if(is.null(local_control_i)) local_control_i <- local_control
-    
-    if((y$land_cover_type[i] == "wildland") && (is.null(y$state[[i]]))) {
-      f <- y$forest[[i]]
-      s <- y$soil[[i]]
-      if(inherits(s, "data.frame")) s <- medfate::soil(s)
-      if(local_model=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control_i)
-      else if(local_model=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control_i)
-      initialized_cells <- initialized_cells + 1
-    } 
-    else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
-      s <- y$soil[[i]]
-      cf <- y$crop_factor[i]
-      if(inherits(s, "data.frame")) s <- medfate::soil(s)
-      y$state[[i]] <- medfate::aspwbInput(cf, local_control_i, s)
-      initialized_cells <- initialized_cells + 1
-    } 
-  }
-  if(header_footer) {
-    cli::cli_progress_step(paste0( initialized_cells, " cells needed initialization"))
-  }
+  y <- initialize_landscape(y, SpParams = SpParams, local_control = local_control, 
+                            model = local_model, replace = FALSE, progress = progress)
 
   #Output matrices
   if(watershed_model =="tetis") {
