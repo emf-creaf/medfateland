@@ -70,7 +70,7 @@ fordyn_land(
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
-\item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
+\item{\code{snowpack}: An optional numeric vector with the snow water equivalent content of the snowpack in each cell (in mm). If missing it will be initialized to zero.}
 \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }
 }
@@ -78,11 +78,11 @@ When using TETIS watershed model, the following columns are also REQUIRED:
 \itemize{
 \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
-\item{\code{bedrock_porosity}: Bedrock porosity.}
-\item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
+\item{\code{bedrock_porosity}: Bedrock porosity (the proportion of pore space in the rock).}
 }
 When using TETIS watershed model, the following columns are OPTIONAL:
 \itemize{
+\item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 }}
 

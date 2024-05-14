@@ -548,7 +548,7 @@ In this section we illustrate the estimation of additional variables that are ne
 
 ### Crop factors for agricultural areas
 
-If there are target locations whose land cover type is **agriculture** we should supply a column called `crop_factor` in our `sf` input object, so that soil water balance can be conducted in agriculture locations. Crop maps for Europe can be found, for example in [d'Andrimont et al. (2021)](https://doi.org/10.1016/j.rse.2021.112708). In our case we will use regional data from the Catalan administration ([Mapa de cultius](https://agricultura.gencat.cat/ca/ambits/desenvolupament-rural/sigpac/mapa-cultius/index.html) from 2018). We start by reading the crop map and subsetting it to the target area: 
+If there are target locations whose land cover type is *agriculture* we should supply a column called `crop_factor` in our `sf` input object, so that soil water balance can be conducted in agriculture locations. Crop maps for Europe can be found, for example in [d'Andrimont et al. (2021)](https://doi.org/10.1016/j.rse.2021.112708). In our case we will use regional data from the Catalan administration ([Mapa de cultius](https://agricultura.gencat.cat/ca/ambits/desenvolupament-rural/sigpac/mapa-cultius/index.html) from 2018). We start by reading the crop map and subsetting it to the target area: 
 
 ```{r}
 file_crop_map <- paste0(dataset_path,"Agriculture/Sources/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp")
@@ -569,13 +569,12 @@ ggplot()+
   theme_bw()+theme(legend.position = "none")
 ```
 
-To obtain our crop factors, we first extract the crop name corresponding to **agriculture** locations:
+To obtain our crop factors, we first extract the crop name corresponding to *agriculture* locations:
 ```{r}
 sel_agr <- y_1$land_cover_type=="agriculture"
-x_agr <- sf::st_geometry(x)[sel_agr]
+x_agr <- sf::st_transform(sf::st_geometry(x)[sel_agr], terra::crs(crop_map))
 x_agr_crop <- terra::extract(crop_map, 
                              terra::vect(x_agr))
-head(x_agr_crop)
 ```
 
 Some cells may have missing values, specially if the land cover map and the crop map are not consistent:
@@ -617,6 +616,91 @@ gc()
 
 ### Hydrogeology
 
+Watershed simulations with `watershed_model = "tetis"` require defining spatial variables necessary for the simulation of groundwater flows and aquifer dynamics: 
+
+ + *Depth to bedrock* [`depth_to_bedrock`] - Depth to unweathered bedrock, in mm.
+ + *Bedrock hydraulic conductivity* [`bedrock_conductivity`] - Hydraulic conductivity of the bedrock, in m·day-1.
+ + *Bedrock porosity* [`bedrock_porosity`] - Bedrock porosity (as proportion of volume).
+
+As estimate of depth to bedrock, one can use the same variable from [Shangguan et al. (2017)](https://doi.org/10.1002/2016MS000686), that we already transformed to mm:
+
+```{r}
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(y_8), 
+                                       terra::crs(depth_to_bedrock_mm)))
+y_8$depth_to_bedrock <-terra::extract(depth_to_bedrock_mm, x_vect)[,2, drop = TRUE]
+```
+
+which we can plot using:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_8, "depth_to_bedrock", r = r)
+```
+
+If regional maps are not available to inform about permeability and conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0 ([Huscroft et al. 2021](https://doi.org/10.1002/2017GL075860)):
+
+```{r}
+glhymps_map <- terra::vect(paste0(dataset_path,"Soils/Sources/Global/GLHYMPS2/GLHYMPS_Spain.shp"))
+glhymps_map
+```
+
+We first extract the GLHYMPS 2.0 data on the target locations:
+
+```{r}
+x_vect <- terra::vect(sf::st_transform(sf::st_geometry(y_8), 
+                                       terra::crs(glhymps_map)))
+x_glhymps <- terra::extract(glhymps_map, x_vect)
+head(x_glhymps)
+```
+
+```{r, include = FALSE}
+rm(glhymps_map)
+gc()
+```
+
+For porosity we simply divide the GLHYMPS 2.0 value by 100 to find the proportion:
+
+```{r}
+y_8$bedrock_porosity <- x_glhymps[,"Porosity_x", drop = TRUE]/100
+```
+
+Its geographic distribution is quite simple:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_8, "bedrock_porosity", r = r)
+```
+
+GLHYMPS 2.0 provides permeability in the log scale, and the following operations are needed to obtain hydraulic conductivity in m/day:
+
+```{r}
+# Permeability m2
+k <- 10^(x_glhymps[,"logK_Ferr_", drop = TRUE]/100)
+# Water density kg·m-3
+rho <- 999.97 
+# Gravity m·s-2
+g <- 9.8
+# Viscosity of water
+mu <- 1e-3
+# Conductivity m/s
+K <- k*rho*g/mu
+# Daily conductivity m/day
+K_day <- K*3600*24
+```
+
+Finally, we assign the conductivity values to the `sf` object:
+
+```{r}
+y_8$bedrock_conductivity <- K_day
+```
+
+Its geographic distribution is very simple, again:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_8, "bedrock_conductivity", r = r)
+```
+
+### Other variables
+
+Simulation of management scenarios requires defining additional variables in the `sf` object, concerning the area represented by each location and the management unit to which it belongs. This is illustrated in vignette [Management scenarios](https://emf-creaf.github.io/medfateland/articles/ManagementScenarios.html).
 
 
 ## Initialization test

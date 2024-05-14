@@ -620,9 +620,10 @@
   
   #check input
   
-  if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
-  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
   if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
+  
+  if(header_footer) cli::cli_progress_step(paste0("Checking raster topology"))
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
   if(sf::st_crs(y)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
   sf_coords <- sf::st_coordinates(y)
   sf2cell <- terra::cellFromXY(r, sf_coords)
@@ -632,20 +633,26 @@
   cell2sf <- rep(NA, nrastercells)
   for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
   
-  if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data"))
+  if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data columns"))
   .check_sf_input(y)
   if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("'dates' has to be of class 'Date'.")
-  if(!("snowpack" %in% names(y))) cli::cli_abort("'snowpack' has to be defined in 'y'.")
+
   represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
   patchsize <- mean(represented_area_m2, na.rm=TRUE)
-  
-  
+
+  if(!("snowpack" %in% names(y))) {
+    cli::cli_alert_info("Column 'snowpack' was missing in 'sf'. Initializing empty snowpack.")
+    y$snowpack <- rep(0, nrow(y))
+  }
   ## TETIS: Check additional elements
   if(watershed_model == "tetis") {
-    if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'y'.")
-    if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'y'.")
-    if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'y'.")
-    if(!("aquifer" %in% names(y))) cli::cli_abort("'aquifer' has to be defined in 'y'.")
+    if(!("depth_to_bedrock" %in% names(y))) cli::cli_abort("'depth_to_bedrock' has to be defined in 'sf'.")
+    if(!("bedrock_conductivity" %in% names(y))) cli::cli_abort("'bedrock_conductivity' has to be defined in 'sf'.")
+    if(!("bedrock_porosity" %in% names(y))) cli::cli_abort("'bedrock_porosity' has to be defined in 'sf'.")
+    if(!("aquifer" %in% names(y))) {
+      cli::cli_alert_info("Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.")
+      y$aquifer <- rep(0, nrow(y))
+    }
   }
   ## SERGHEI: Enforce same soil layer definition
   if(watershed_model=="serghei") {
@@ -655,7 +662,7 @@
   
   #duplicate input (to avoid modifying input objects)
   y <- rlang::duplicate(y)
-
+  
   #get latitude (for medfate)  
   latitude <- sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
@@ -1230,7 +1237,7 @@
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 #'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
-#'     \item{\code{snowpack}: A numeric vector with the snow water equivalent content of the snowpack in each cell.}
+#'     \item{\code{snowpack}: An optional numeric vector with the snow water equivalent content of the snowpack in each cell (in mm). If missing it will be initialized to zero.}
 #'     \item{\code{management_arguments}: Lists with management arguments (optional, relevant for \code{fordyn_land} only).}
 #'     \item{\code{result_cell}: A logical indicating that local model results are desired (optional, relevant for \code{spwb_land} and  \code{growth_land} only). Model results are only produced for wildland and agriculture cells. }
 #'   }
@@ -1238,11 +1245,11 @@
 #'   \itemize{
 #'     \item{\code{depth_to_bedrock}: Depth to bedrock (mm).}
 #'     \item{\code{bedrock_conductivity}: Bedrock (saturated) conductivity (in m·day-1).}
-#'     \item{\code{bedrock_porosity}: Bedrock porosity.}
-#'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell.}
+#'     \item{\code{bedrock_porosity}: Bedrock porosity (the proportion of pore space in the rock).}
 #'   }
 #'   When using TETIS watershed model, the following columns are OPTIONAL:
 #'   \itemize{
+#'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 #'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).

@@ -11,11 +11,12 @@ articles:
 - title: Running simulation models
   contents:
     - starts_with("SpatiallyUncoupled")
-    - starts_with("ManagementScenario")
     - starts_with("Watershed")
+    - starts_with("ManagementScenario")
 - title: Model analysis and parametrization
   contents:
     - starts_with("TetisWatershedParameters")
+
 reference:
 - title: Input preparation
   desc: Functions to help preparing spatial inputs
