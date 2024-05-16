@@ -88,8 +88,7 @@ void copySnowpackToSoil(List y) {
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[i]);
-      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
-      soil["SWE"] = snowpack[i];
+      x["snowpack"] = snowpack[i];
     }
   }
 }
@@ -126,8 +125,7 @@ void copySnowpackFromSoil(List y) {
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
       List x = Rcpp::as<Rcpp::List>(xList[i]);
-      List soil = Rcpp::as<Rcpp::List>(x["soil"]);
-      snowpack[i] = soil["SWE"];
+      snowpack[i] = x["snowpack"];
     }
   }
 }
@@ -169,7 +167,7 @@ DataFrame tetisWatershedFlows(List y,
   double n = 3.0;
   
   List x, soil, control;
-  NumericVector dVec, Ksat;
+  NumericVector widths, Ksat;
   double D;
   
   //A1. Calculate soil and aquifer water table elevation (heads)
@@ -185,8 +183,8 @@ DataFrame tetisWatershedFlows(List y,
       if(!NumericVector::is_na(WTD[i])) {
         SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0); //in m
       } else {
-        dVec = soil["dVec"];
-        D = sum(dVec); //Soil depth in mm
+        widths = soil["widths"];
+        D = sum(widths); //Soil depth in mm
         SoilSaturatedLayerElevation[i] = elevation[i] - (D/1000.0); //in m
       }
       
@@ -209,9 +207,9 @@ DataFrame tetisWatershedFlows(List y,
       if(!NumericVector::is_na(WTD[i])) {
         x = Rcpp::as<Rcpp::List>(xList[i]);
         soil = Rcpp::as<Rcpp::List>(x["soil"]);
-        dVec = soil["dVec"];
+        widths = soil["widths"];
         Ksat = soil["Ksat"];
-        D = sum(dVec); //Soil depth in mm
+        D = sum(widths); //Soil depth in mm
         double Ks1 = 0.01*Ksat[0]/cmdTOmmolm2sMPa; //cm/day to m/day
         double Kinterflow = R_interflow*Ks1;
         if(WTD[i]<D) {
@@ -483,8 +481,8 @@ List initSerghei(NumericVector limits, int nrow, int ncol,
         List soil = Rcpp::as<Rcpp::List>(x["soil"]);
         soilListSerghei[sf2cell[i] - 1] = clone(soil); //indices in R
         NumericVector W = soil["W"];
-        // NumericVector dVec = soil["dVec"];
-        // for(int l=0;l<dVec.size();l++) Rcout<< dVec[l]<<" ";
+        // NumericVector widths = soil["widths"];
+        // for(int l=0;l<widths.size();l++) Rcout<< widths[l]<<" ";
         // Rcout<<"\n";
         NumericVector vup(W.size(), NA_REAL);
         uptake[sf2cell[i] - 1] = vup; //indices in R

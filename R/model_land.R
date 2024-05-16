@@ -2,24 +2,24 @@
 # Checks that soils have equal number of layers and width
 .check_equal_soil_discretization<-function(soil_column, force_equal_layer_widths) {
   nlayers <- NA
-  dVec <- NA
+  widths <- NA
   for(i in 1:length(soil_column)) {
     s <- soil_column[[i]]
     if(!is.null(s) && inherits(s, "soil")) {
-      dVec_i <- s[["dVec"]]
+      widths_i <- s[["widths"]]
       if(!is.na(nlayers)) {
         if(length(dVec_i)!=nlayers) stop("All soil elements need to have the same number of layers.")
-        if(!all(dVec_i==dVec)) {
+        if(!all(widths_i==widths)) {
           if(!force_equal_layer_widths) stop("Soil layer width needs to be the same for all cells.")
           for(l in 1:nlayers) {
-            dVec_i[l] <- dVec[l]
+            widths_i[l] <- widths[l]
           }
-          s[["dVec"]] <- dVec_i
+          s[["widths"]] <- widths_i
           soil_column[[i]] <- s
         }
       } else {
-        dVec <- dVec_i
-        nlayers <- length(dVec_i)
+        widths <- widths_i
+        nlayers <- length(widths_i)
       }
     }
   }
@@ -314,9 +314,9 @@
     if(y$land_cover_type[i] %in% c("wildland","agriculture")) {
       x_i <- y$state[[i]]
       soil_i <- x_i[["soil"]]
-      dVec <- soil_i$dVec
+      widths <- soil_i$widths
       lambda <- 1 - soil_i$rfc/100
-      w <- (dVec*lambda)/sum(dVec*lambda)
+      w <- (widths*lambda)/sum(widths*lambda)
       lateralFlows[[i]] <- InterflowBalance[i]*w # layer flow
     }
   }
@@ -873,7 +873,7 @@
           model <- control$soilFunctions
           water_mm <- sum(soil_water(s, model))
           water_fc_mm <- sum(soil_waterFC(s, model))
-          l <- list(SWE = s$SWE,
+          l <- list(SWE = object$snowpack,
                     RWC = 100*water_mm/water_fc_mm,
                     SoilVol = water_mm,
                     WTD = soil_saturatedWaterDepth(s, model))
@@ -961,15 +961,15 @@
         x <- y$state[[i]]
         if(local_model=="spwb") {
           if(isWildlandCell[i]) {
-            medfate:::.fillSPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
+            medfate:::.fillSPWBDailyOutput(resultlist[[i]], x = x, sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], x = x, sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           }
         } else if(local_model =="growth") {
           if(isWildlandCell[i]) {
-            medfate:::.fillGrowthDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
+            medfate:::.fillGrowthDailyOutput(resultlist[[i]], x = x, sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           } else if(isAgricultureCell[i]) {
-            medfate:::.fillASPWBDailyOutput(resultlist[[i]], soil = x[["soil"]], sDay = local_res_day[[i]]$simulation_results, iday = day-1)
+            medfate:::.fillASPWBDailyOutput(resultlist[[i]], x = x, sDay = local_res_day[[i]]$simulation_results, iday = day-1)
           }
         }
       }

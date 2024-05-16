@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.0
+- Compliance with medfate v. 4.3.0
+
 # Version 2.3.0
 - Infiltration and runoff in non-soil cells
 - Helper functions to create landscape sf objects

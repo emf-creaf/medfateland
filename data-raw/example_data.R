@@ -12,7 +12,7 @@
 # for(i in 1:nrow(example_watershed)) {
 #   s = example_watershed$soil[[i]]
 #   if(!is.null(s)) {
-#     df = data.frame(width = s$dVec, clay = s$clay, sand = s$sand, om = s$om, bd = s$bd, rfc = s$rfc)
+#     df = data.frame(width = s$widths, clay = s$clay, sand = s$sand, om = s$om, bd = s$bd, rfc = s$rfc)
 #     example_watershed$soil[[i]] = df
 #   }
 # }
