@@ -278,9 +278,11 @@ modify_soils <- function(x, soil_depth_map = NULL,
 
 #' @rdname soil_parametrization
 #' @param fill_missing Logical flag to fill missing values in key parameters with defaults.
+#' @param check_equal_layers Logical flag to test whether soils have the same number of layers.
 #' @param default_values Vector of default values for locations with missing data.
 #' @export
 check_soils <-function(x, 
+                       check_equal_layers = FALSE,
                        fill_missing = FALSE,
                        default_values = c("clay" = 25, "sand" = 25, "bd" = 1.5, "rfc" = 25),
                        progress = FALSE) {
@@ -298,14 +300,28 @@ check_soils <-function(x,
     cli::cli_progress_step("Checking for missing values in key soil parameters")
     cli::cli_progress_bar("Locations", total = nrow(x))
   }
+  mis_widths <- 0
   mis_clay <- 0
   mis_sand <- 0
   mis_bd <- 0
   mis_rfc <- 0
+  widths <- NA
+  unequal_layers <- FALSE
+  rfc_over_100 <- FALSE
   for(i in 1:npoints) {
     if(progress) cli::cli_progress_update()
     if(is_soil[i]) {
       s <- x$soil[[i]]
+      if(any(is.na(s$widths))) {
+        mis_widths <- mis_widths +1
+      } else if(check_equal_layers) {
+        if(!is.na(widths)) {
+          widths <- s$widths
+        } else {
+          if(length(widths)!=length(s$widths)) unequal_layers <- TRUE
+        }
+      }
+      
       if(any(is.na(s$clay))) {
         mis_clay <- mis_clay + 1
         if(fill_missing) s$clay[is.na(s$clay)] <- default_values["clay"]
@@ -321,6 +337,8 @@ check_soils <-function(x,
       if(any(is.na(s$rfc))) {
         mis_rfc <- mis_rfc + 1
         if(fill_missing) s$rfc[is.na(s$rfc)] <- default_values["rfc"]
+      } else {
+        if(any(s$rfc>=100)) rfc_over_100 <-TRUE
       }
       x$soil[[i]] <- s
     }
@@ -328,12 +346,16 @@ check_soils <-function(x,
   if(progress) {
     cli::cli_progress_done()
   }
+  if(unequal_layers) cli::cli_alert_warning("Unequal number of layers were detected.")
+  if(rfc_over_100) cli::cli_alert_warning("At least one soil with rfc values >= 100%.")
   if(!fill_missing) {
+    if(mis_widths>0) cli::cli_alert_warning(paste0("Missing 'widths' values detected for ", mis_clay, " locations (", round(100*mis_widths/ntarget,1),"%)."))
     if(mis_clay>0) cli::cli_alert_warning(paste0("Missing 'clay' values detected for ", mis_clay, " locations (", round(100*mis_clay/ntarget,1),"%)."))
     if(mis_sand>0) cli::cli_alert_warning(paste0("Missing 'sand' values detected for ", mis_sand, " locations (", round(100*mis_sand/ntarget,1),"%)."))
     if(mis_bd>0) cli::cli_alert_warning(paste0("Missing 'bd' values detected for ", mis_bd, " locations (", round(100*mis_bd/ntarget,1),"%)."))
     if(mis_rfc>0) cli::cli_alert_warning(paste0("Missing 'rfc' values detected for ", mis_rfc, " locations (", round(100*mis_rfc/ntarget,1),"%)."))
   } else {
+    if(mis_widths>0) cli::cli_alert_warning(paste0("Missing 'widths' values detected for ", mis_clay, " locations (", round(100*mis_widths/ntarget,1),"%) and cannot be imputed!"))
     if(mis_clay>0) cli::cli_alert_info(paste0("Default 'clay' values assigned for ", mis_clay, " locations (", round(100*mis_clay/ntarget,1),"%)."))
     if(mis_sand>0) cli::cli_alert_info(paste0("Default 'sand' values assigned for ", mis_sand, " locations (", round(100*mis_sand/ntarget,1),"%)."))
     if(mis_bd>0) cli::cli_alert_info(paste0("Default 'bd' values assigned for ", mis_bd, " locations (", round(100*mis_bd/ntarget,1),"%)."))
@@ -342,3 +364,4 @@ check_soils <-function(x,
   if(mis_clay==0 && mis_bd==0 && mis_rfc ==0 && mis_sand==0) cli::cli_alert_info("No missing values detected in key soil attributes.")
   if(fill_missing) return(x)
 }
+

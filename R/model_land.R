@@ -67,6 +67,8 @@
   return(queenNeigh)
 }
 
+
+
 .f_landunit_day<-function(xi, model, date){
   out <- NA
   if(model=="spwb") {
@@ -297,16 +299,20 @@
 
   
   # A. Landscape interflow and baseflow
-  watershed_flows <- .tetisWatershedFlows(y,
-                                          waterOrder, queenNeigh, waterQ,
-                                          watershed_control,
-                                          patchsize)
-  InterflowInput <- watershed_flows[["InterflowInput"]]
-  InterflowOutput <- watershed_flows[["InterflowOutput"]]
-  InterflowBalance <- watershed_flows[["InterflowBalance"]]
-  BaseflowInput <- watershed_flows[["BaseflowInput"]]
-  BaseflowOutput <- watershed_flows[["BaseflowOutput"]]
-  BaseflowBalance <- watershed_flows[["BaseflowBalance"]]
+  inter_flow <- .tetisInterFlow(y,
+                                waterOrder, queenNeigh, waterQ,
+                                watershed_control,
+                                patchsize)
+  InterflowInput <- inter_flow[["InterflowInput"]]
+  InterflowOutput <- inter_flow[["InterflowOutput"]]
+  InterflowBalance <- inter_flow[["InterflowBalance"]]
+  base_flow <- .tetisBaseFlow(y,
+                               waterOrder, queenNeigh, waterQ,
+                               watershed_control,
+                               patchsize)
+  BaseflowInput <- base_flow[["BaseflowInput"]]
+  BaseflowOutput <- base_flow[["BaseflowOutput"]]
+  BaseflowBalance <- base_flow[["BaseflowBalance"]]
 
   # A3a. Estimate lateral interflow per layer
   lateralFlows <- vector("list", nX)
@@ -1746,6 +1752,21 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   return(l)
 }
 
+#' @rdname spwb_land
+#' @export
+cell_neighbors<-function(x, r) {
+  if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
+  if(sf::st_crs(x)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(x)
+  sf2cell <- terra::cellFromXY(r, sf_coords)
+  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  nrastercells <- prod(dim(r)[1:2])
+  cell2sf <- rep(NA, nrastercells)
+  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
+  return(.neighFun(r, sf2cell, cell2sf))
+}
 
 .simulate_land_day<-function(land_model = "spwb_land_day", 
                              r, y, SpParams, meteo, date,

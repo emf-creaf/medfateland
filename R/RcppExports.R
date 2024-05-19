@@ -69,8 +69,12 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
 }
 
-.tetisWatershedFlows <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    .Call(`_medfateland_tetisWatershedFlows`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
+.tetisInterFlow <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    .Call(`_medfateland_tetisInterFlow`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
+}
+
+.tetisBaseFlow <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    .Call(`_medfateland_tetisBaseFlow`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
 }
 
 .tetisApplyBaseflowChangesToAquifer <- function(y, baseflowBalance, patchsize) {

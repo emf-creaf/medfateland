@@ -274,23 +274,14 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
       g <- g + scale_color_continuous(.getLegendName(variable),..., na.value = NA)
     }
   } else {
-    if(character_var) {
-      df[[variable]] <- as.factor(df[[variable]])
-      levels <- levels(df[[variable]])
-      raster_var<-terra::rasterize(terra::vect(df),r, variable, 
-                                   fun = function(x) {
-                                     as.numeric(sort(names(table(as.numeric(x))), 
-                                                     decreasing = TRUE))
-                                   })
-      vals <- as.data.frame(raster_var[[variable]], na.rm = FALSE)[,1]
-      f <- rep(NA, length(vals))
-      f[!is.na(vals)] <- levels[vals[!is.na(vals)]+1]
-      raster_var$m1<- f
-      raster_var[[variable]]<-NULL
-    } else {
-      raster_var<-terra::rasterize(terra::vect(df),r, variable, fun = mean, na.rm = TRUE)
-    }
-    names(raster_var) <- "m1"
+    sf_coords <- sf::st_coordinates(x)
+    sf2cell <- terra::cellFromXY(r, sf_coords)
+    if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+    if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+    raster_var <- r
+    m1 <- rep(NA, terra::ncell(r))
+    m1[sf2cell] <- df[[variable]]
+    raster_var$m1 <- m1
     g<-ggplot()+
       geom_spatraster(aes(fill=.data$m1), data = raster_var)
     if(character_var) {

@@ -142,11 +142,137 @@ void copyStateFromResults(List y, List localResults) {
   }
 }
 
-// [[Rcpp::export(".tetisWatershedFlows")]]
-DataFrame tetisWatershedFlows(List y,
-                              IntegerVector waterO, List queenNeigh, List waterQ,
-                              List watershed_control,
-                              double patchsize) {
+// [[Rcpp::export(".tetisInterFlow")]]
+DataFrame tetisInterFlow(List y,
+                         IntegerVector waterO, List queenNeigh, List waterQ,
+                         List watershed_control,
+                         double patchsize) {
+  
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  int nX = xList.size();
+  NumericVector elevation = y["elevation"];
+  
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double R_interflow = tetis_parameters["R_interflow"];
+  double n_interflow = tetis_parameters["n_interflow"];
+  int num_daily_substeps = tetis_parameters["num_daily_substeps"];
+
+  //A. Subsurface fluxes
+  double cellWidth = sqrt(patchsize); //cell width in m
+
+  List x, soil, control;
+  NumericVector widths, Ksat;
+
+  //A1. Calculate soil and aquifer water table elevation (heads)
+  LogicalVector is_soil(nX, false);
+  NumericVector K_inter_max(nX,NA_REAL); //Maximum interflow conductivity
+  NumericVector D(nX,NA_REAL); //Soil depth (mm)
+  NumericVector WTD(nX,NA_REAL); //Water table depth (mm)
+  NumericVector SoilSaturatedLayerElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
+  for(int i=0;i<nX;i++){
+    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+      is_soil[i] = true;
+      x = Rcpp::as<Rcpp::List>(xList[i]);
+      soil = Rcpp::as<Rcpp::List>(x["soil"]);
+      widths = soil["widths"];
+      Ksat = soil["Ksat"];
+      control = x["control"];
+      D[i] = sum(widths); //Soil depth in mm
+      WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]); //Depth to saturated layer in mm
+      if(NumericVector::is_na(WTD[i])) WTD[i] = D[i]; //If missing, set to soil depth (should not create flow)
+      SoilSaturatedLayerElevation[i] = elevation[i] - (WTD[i]/1000.0); //in m
+      if(NumericVector::is_na(SoilSaturatedLayerElevation[i])) stop("Missing soil saturated elevation");
+      double Ks1 = 0.01*Ksat[0]/cmdTOmmolm2sMPa; //cm/day to m/day
+      K_inter_max[i] = R_interflow*Ks1/((double) num_daily_substeps); //Conductivity in m per substep
+    }
+  }
+  
+  //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
+  NumericVector interflowInput(nX, NA_REAL);
+  NumericVector interflowOutput(nX, NA_REAL);
+  NumericVector interflowBalance(nX, NA_REAL);
+  for(int i=0;i<nX;i++){
+    if(is_soil[i]) {
+      interflowInput[i] = 0.0;
+      interflowOutput[i] = 0.0;
+    }
+  }
+  for(int s = 0;s<num_daily_substeps;s++) {
+    //Set step flows to zero
+    NumericVector interflowInputStep(nX, 0.0);
+    NumericVector interflowOutputStep(nX, 0.0);
+    //Calculate step flows
+    for(int i=0;i<nX;i++){
+      if(is_soil[i]) {
+        if(WTD[i]<D[i]) {
+          double T = ((K_inter_max[i]*D[i]*0.001)/n_interflow)*pow(1.0-(WTD[i]/D[i]),n_interflow); //Transmissivity in m2/day
+          IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
+          NumericVector qni(ni.size(), 0.0);
+          //water table slope between target and neighbours
+          for(int j=0;j<ni.size();j++) {
+            if(is_soil[ni[j]-1]) { //Only flows to other wildland or agriculture cells
+              double tanBeta = (SoilSaturatedLayerElevation[i]-SoilSaturatedLayerElevation[ni[j]-1])/cellWidth;
+              if(tanBeta>0.0) {
+                double q_m3 = tanBeta*T*cellWidth; //flow in m3/substep 
+                qni[j] = (1000.0*q_m3)/patchsize; //in mm/substep
+              }
+            }
+          }
+          double qntotal = sum(qni);
+          if(qntotal>0.0) {
+            double qntotalallowed = std::min(qntotal, D[i]- WTD[i]); //avoid excessive outflow
+            double corrfactor = qntotalallowed/qntotal;
+            if(NumericVector::is_na(corrfactor)) {
+              Rcout<< D[i]<< " "<< WTD[i]<< " "<< qntotal<< " " << qntotalallowed << " " << corrfactor << "\n";
+              stop("Missing corrfactor."); 
+            }
+            for(int j=0;j<ni.size();j++) {
+              if(is_soil[ni[j]-1]) { //Only flows to other wildland or agriculture cells
+                interflowInputStep[ni[j]-1] += qni[j]*corrfactor;
+                interflowOutputStep[i] += qni[j]*corrfactor;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    //Update WTD and SoilSaturatedLayerElevation
+    //Add substep input/output flows
+    for(int i=0;i<nX;i++){
+      if(is_soil[i]) {
+        // subtract input (to make it shallower) and add output (to make it deeper)
+        WTD[i] = WTD[i] - interflowInputStep[i] + interflowOutputStep[i];
+        SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0); //in m
+        if(NumericVector::is_na(interflowInputStep[i])) stop("Missing interflowInputStep.");
+        if(NumericVector::is_na(interflowOutputStep[i])) stop("Missing interflowOutputStep.");
+        interflowInput[i] +=interflowInputStep[i];
+        interflowOutput[i] +=interflowOutputStep[i];
+      }
+    }
+  }
+  
+  //A3. Balance
+  double balsum =0.0;
+  for(int i=0;i<nX;i++){
+    if(is_soil[i]) {
+      interflowBalance[i] = interflowInput[i] - interflowOutput[i];
+      balsum +=interflowBalance[i];
+    }
+  }
+  if(balsum>0.00001) stop("Non-negligible balance sum");
+  DataFrame out = DataFrame::create(_["InterflowInput"] = interflowInput, 
+                                    _["InterflowOutput"] = interflowOutput,
+                                    _["InterflowBalance"] = interflowBalance);
+  return(out);
+}
+
+// [[Rcpp::export(".tetisBaseFlow")]]
+DataFrame tetisBaseFlow(List y,
+                        IntegerVector waterO, List queenNeigh, List waterQ,
+                        List watershed_control,
+                        double patchsize) {
   
   CharacterVector lct = y["land_cover_type"];
   List xList = y["state"];
@@ -158,80 +284,17 @@ DataFrame tetisWatershedFlows(List y,
   NumericVector elevation = y["elevation"];
   
   List tetis_parameters = watershed_control["tetis_parameters"];
-  double R_interflow = tetis_parameters["R_interflow"];
   double R_baseflow = tetis_parameters["R_baseflow"];
+  double n_baseflow = tetis_parameters["n_baseflow"];
   
   //A. Subsurface fluxes
   double cellArea = patchsize; //cell size in m2
   double cellWidth = sqrt(patchsize); //cell width in m
-  double n = 3.0;
-  
-  List x, soil, control;
-  NumericVector widths, Ksat;
-  double D;
   
   //A1. Calculate soil and aquifer water table elevation (heads)
-  NumericVector WTD(nX,NA_REAL); //Water table depth
-  NumericVector SoilSaturatedLayerElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
-      x = Rcpp::as<Rcpp::List>(xList[i]);
-      soil = Rcpp::as<Rcpp::List>(x["soil"]);
-      control = x["control"];
-      WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]); //in mm
-      if(!NumericVector::is_na(WTD[i])) {
-        SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0); //in m
-      } else {
-        widths = soil["widths"];
-        D = sum(widths); //Soil depth in mm
-        SoilSaturatedLayerElevation[i] = elevation[i] - (D/1000.0); //in m
-      }
-      
-    }
     AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
-  }
-  
-  //A2a. Calculate INTERFLOW input/output for each cell (in m3/day)
-  NumericVector interflowInput(nX, NA_REAL);
-  NumericVector interflowOutput(nX, NA_REAL);
-  NumericVector interflowBalance(nX, NA_REAL);
-  for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      interflowInput[i] = 0.0;
-      interflowOutput[i] = 0.0;
-    }
-  }
-  for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      if(!NumericVector::is_na(WTD[i])) {
-        x = Rcpp::as<Rcpp::List>(xList[i]);
-        soil = Rcpp::as<Rcpp::List>(x["soil"]);
-        widths = soil["widths"];
-        Ksat = soil["Ksat"];
-        D = sum(widths); //Soil depth in mm
-        double Ks1 = 0.01*Ksat[0]/cmdTOmmolm2sMPa; //cm/day to m/day
-        double Kinterflow = R_interflow*Ks1;
-        if(WTD[i]<D) {
-          double T = ((Kinterflow*D*0.001)/n)*pow(1.0-(WTD[i]/D),n); //Transmissivity in m2/day
-          IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
-          //water table slope between target and neighbours
-          for(int j=0;j<ni.size();j++) {
-            if((lct[ni[j]-1]=="wildland") || (lct[ni[j]-1]=="agriculture")) { //Only flows to other wildland or agriculture cells
-              double tanBeta = (SoilSaturatedLayerElevation[i]-SoilSaturatedLayerElevation[ni[j]-1])/cellWidth;
-              if(!NumericVector::is_na(tanBeta)) {
-                if(tanBeta>0.0) {
-                  double q_m3 = tanBeta*T*cellWidth; //flow in m3/day 
-                  double q_mm = (1000.0*q_m3)/patchsize; //in mm/day
-                  interflowInput[ni[j]-1] += q_mm;
-                  interflowOutput[i] += q_mm;
-                }
-              } 
-            }
-          }
-        }
-      }
-    }
   }
   
   //A2b. Calculate BASEFLOW output for each cell (in m3/day)
@@ -241,7 +304,7 @@ DataFrame tetisWatershedFlows(List y,
   for(int i=0;i<nX;i++){
     double Kbaseflow = R_baseflow*bedrock_conductivity[i]; //m/day
     if(aquifer[i]>0) {
-      double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n); //Transmissivity in m2
+      double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n_baseflow)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n_baseflow); //Transmissivity in m2
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
       //water table slope between target and neighbours
       NumericVector qni(ni.size(), 0.0);
@@ -263,14 +326,8 @@ DataFrame tetisWatershedFlows(List y,
   //A3. Balance
   for(int i=0;i<nX;i++){
     baseflowBalance[i] = baseflowInput[i] - baseflowOutput[i];
-    if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      interflowBalance[i] = interflowInput[i] - interflowOutput[i];
-    }
   }
-  DataFrame out = DataFrame::create(_["InterflowInput"] = interflowInput, 
-                                    _["InterflowOutput"] = interflowOutput,
-                                    _["InterflowBalance"] = interflowBalance,
-                                    _["BaseflowInput"] = baseflowInput, 
+  DataFrame out = DataFrame::create(_["BaseflowInput"] = baseflowInput, 
                                     _["BaseflowOutput"] = baseflowOutput,
                                     _["BaseflowBalance"] = baseflowBalance);
   return(out);
@@ -322,7 +379,7 @@ NumericVector tetisApplyDeepAquiferLossToAquifer(List y,
   }
   NumericVector DeepAquiferLoss(nX, 0.0);
   for(int i=0;i<nX;i++){
-    DeepAquiferLoss[i] = std::min(aquifer[i], loss_rate[i]);
+    DeepAquiferLoss[i] = std::max(std::min(aquifer[i], loss_rate[i]), 0.0);
     aquifer[i] -= DeepAquiferLoss[i];
   }
   return(DeepAquiferLoss);

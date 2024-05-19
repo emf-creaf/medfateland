@@ -4,6 +4,7 @@
 \alias{spwb_land}
 \alias{growth_land}
 \alias{fordyn_land}
+\alias{cell_neighbors}
 \title{Watershed simulations}
 \usage{
 spwb_land(
@@ -53,6 +54,8 @@ fordyn_land(
   chunk_size = NULL,
   progress = TRUE
 )
+
+cell_neighbors(x, r)
 }
 \arguments{
 \item{r}{An object of class \code{\link{SpatRaster}}, defining the raster topology.}
