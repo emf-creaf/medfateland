@@ -119,6 +119,7 @@ of such lists, one per spatial unit.}
 \value{
 Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 \itemize{
+\item{\code{watershed_control}: A list with input control parameters.}
 \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}},
 with the following columns:
 \itemize{

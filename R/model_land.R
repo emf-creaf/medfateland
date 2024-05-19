@@ -1179,7 +1179,8 @@
   sf$outlet <- isOutlet
   
   if(watershed_model=="tetis") {
-    l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
+    l <- list(watershed_control = watershed_control,
+              sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
               outlet_export_m3s = OutletExport_m3s)
@@ -1251,6 +1252,7 @@
 #'  
 #' @return Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 #' \itemize{
+#'   \item{\code{watershed_control}: A list with input control parameters.}
 #'   \item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}}, 
 #'   with the following columns:
 #'     \itemize{
@@ -1744,7 +1746,8 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   out_sf$dead_shrub_table <- deadShrubTableVec
   out_sf$cut_tree_table <- cutTreeTableVec
   out_sf$cut_shrub_table <- cutShrubTableVec
-  l <- list(sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
+  l <- list(watershed_control = watershed_control,
+            sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
             outlet_export_m3s = OutletExport_m3s)
