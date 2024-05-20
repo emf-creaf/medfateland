@@ -8,7 +8,7 @@
     if(!is.null(s) && inherits(s, "soil")) {
       widths_i <- s[["widths"]]
       if(!is.na(nlayers)) {
-        if(length(dVec_i)!=nlayers) stop("All soil elements need to have the same number of layers.")
+        if(length(widths_i)!=nlayers) stop("All soil elements need to have the same number of layers.")
         if(!all(widths_i==widths)) {
           if(!force_equal_layer_widths) stop("Soil layer width needs to be the same for all cells.")
           for(l in 1:nlayers) {
@@ -1757,11 +1757,11 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
 
 #' @rdname spwb_land
 #' @export
-cell_neighbors<-function(x, r) {
-  if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
+cell_neighbors<-function(sf, r) {
+  if(!inherits(sf, "sf"))  cli::cli_abort("Object 'sf' has to be of class 'sf'")
   if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
-  if(sf::st_crs(x)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
-  sf_coords <- sf::st_coordinates(x)
+  if(sf::st_crs(sf)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(sf)
   sf2cell <- terra::cellFromXY(r, sf_coords)
   if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
   if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
