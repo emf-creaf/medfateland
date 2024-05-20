@@ -147,31 +147,167 @@
   else if(variable %in% .getAllowedWatershedVars(obj)) return(.getLandscapeWatershedVar(obj, variable))
   else if(variable %in% .getAllowedForestStandVars(obj, SpParams)) return(.getLandscapeForestStandVar(obj, variable, SpParams))
 }
-.getLegendName<-function(variable) {
-  legend <- "value"
-  if(variable =="elevation") legend = "m"
-  else if(variable =="slope") legend = "degrees"
-  else if(variable =="aspect") legend = "degrees"
-  else if(variable =="land_cover_type") legend = ""
-  else if(variable %in% c("soil_vol_extract", "soil_vol_sat", "soil_vol_fc", "soil_vol_wp", "soil_vol_curr")) legend = "mm"
-  else if(variable %in% c("soil_rwc_curr", "soil_rew_curr", "soil_theta_curr")) legend = "%"
-  else if(variable =="soil_psi_curr") legend = "MPa"
-  else if(variable =="depth_to_bedrock") legend = "m"
-  else if(variable =="bedrock_porosity") legend = ""
-  else if(variable =="bedrock_conductivity") legend = "m/day"
-  else if(variable %in% c("aquifer_elevation", "depth_to_aquifer")) legend = "m"
-  else if(variable %in% c("aquifer", "snowpack")) legend = "mm"
-  else if(variable =="basal_area") legend = "m2/ha"
-  else if(variable =="tree_density") legend = "ind/ha"
-  else if(variable %in% c("mean_tree_height", "dominant_tree_height", "dominant_tree_diameter", "quadratic_mean_tree_diameter")) legend = "cm"
-  else if(variable =="hart_becking_index") legend = "HB"
-  else if(variable =="leaf_area_index") legend = "m2/m2"
-  else if(variable =="foliar_biomass") legend = "kg/m2"
-  else if(variable =="fuel_loading") legend = "kg/m2"
-  else if(variable =="shrub_volume") legend = "m3/m2"
-  return(legend)
+.getDefaultScale<-function(variable, fill = FALSE, ...) {
+  if(variable =="elevation") {
+    if(fill) {
+      scale <- scale_fill_distiller("m", palette="Spectral", ..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("m", palette="Spectral", ..., na.value = NA)
+    }
+  }
+  else if(variable =="slope") {
+    if(fill) {
+      scale <- scale_fill_distiller("degrees", palette="Spectral", limits = c(0,90),..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("degrees", palette="Spectral", limits = c(0,90),..., na.value = NA)    
+    }
+  }
+  else if(variable =="aspect") {
+    if(fill) {
+      scale <- scale_fill_distiller("degrees", 
+                                    palette = "BrBG",
+                                    limits = c(0,360),..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("degrees", 
+                                     palette = "BrBG",
+                                     limits = c(0,360),..., na.value = NA)    
+    }
+  } 
+  else if(variable =="land_cover_type") {
+    if(fill) {
+      scale <- scale_fill_brewer("", palette = "Set1", ..., na.value = NA)
+    } else {
+      scale <- scale_color_brewer("",palette = "Set1", ..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("soil_vol_extract", "soil_vol_sat", "soil_vol_fc", "soil_vol_wp", "soil_vol_curr")) {
+    if(fill) {
+      scale <- scale_fill_distiller("mm", palette = "Blues",direction = 1,  ..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("mm", palette = "Blues", direction = 1, ..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("soil_rwc_curr", "soil_rew_curr")) {
+    if(fill) {
+      scale <- scale_fill_distiller("%", palette = "Blues", direction = 1, limits = c(0,150),..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("%", palette = "Blues",direction = 1, limits = c(0,150), ..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("soil_theta_curr")) {
+    if(fill) {
+      scale <- scale_fill_distiller("%", palette = "Blues",  direction = 1, limits = c(0,60), ..., na.value = NA)
+    } else {
+      scale <- scale_color_distiller("%", palette = "Blues", direction = 1, limits = c(0,60),..., na.value = NA)
+    }
+  }
+  else if(variable =="soil_psi_curr") {
+    if(fill) {
+      scale <- scale_fill_continuous("MPa", type = "viridis", limits = c(-10,0),..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("MPa", type = "viridis", limits = c(-10,0),..., na.value = NA)
+    }
+  }
+  else if(variable =="depth_to_bedrock") {
+    if(fill) {
+      scale <- scale_fill_continuous("m", type = "viridis", ..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m", type = "viridis", ..., na.value = NA)
+    }
+  }
+  else if(variable =="bedrock_porosity") {
+    if(fill) {
+      scale <- scale_fill_continuous("", limits = c(0,0.2),..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("",  limits = c(0,0.2),..., na.value = NA)
+    }
+  }
+  else if(variable =="bedrock_conductivity") {
+    if(fill) {
+      scale <- scale_fill_continuous("m/day",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m/day",..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("aquifer_elevation", "depth_to_aquifer")) {
+    if(fill) {
+      scale <- scale_fill_continuous("m",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m",..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("aquifer", "snowpack")) {
+    if(fill) {
+      scale <- scale_fill_continuous("mm",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("mm",..., na.value = NA)
+    }
+  }
+  else if(variable =="basal_area") {
+    if(fill) {
+      scale <- scale_fill_continuous("m2/ha",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m2/ha",..., na.value = NA)
+    }
+  }
+  else if(variable =="tree_density") {
+    if(fill) {
+      scale <- scale_fill_continuous("ind/ha",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("ind/ha",..., na.value = NA)
+    }
+  }
+  else if(variable %in% c("mean_tree_height", "dominant_tree_height", "dominant_tree_diameter", "quadratic_mean_tree_diameter")) {
+    if(fill) {
+      scale <- scale_fill_continuous("cm",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("cm",..., na.value = NA)
+    }
+  }
+  else if(variable =="hart_becking_index") {
+    if(fill) {
+      scale <- scale_fill_continuous("HB",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("HB",..., na.value = NA)
+    }
+  }
+  else if(variable =="leaf_area_index") {
+    if(fill) {
+      scale <- scale_fill_continuous("m2/m2",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m2/m2",..., na.value = NA)
+    }
+  }
+  else if(variable =="foliar_biomass") {
+    if(fill) {
+      scale <- scale_fill_continuous("kg/m2",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("kg/m2",..., na.value = NA)
+    }
+  }
+  else if(variable =="fuel_loading") {
+    if(fill) {
+      scale <- scale_fill_continuous("kg/m2",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("kg/m2",..., na.value = NA)
+    }
+  }
+  else if(variable =="shrub_volume") {
+    if(fill) {
+      scale <- scale_fill_continuous("m3/m2",..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("m3/m2",..., na.value = NA)
+    }
+  }
+  else {
+    if(fill) {
+      scale <- scale_fill_continuous("value", ..., na.value = NA)
+    } else {
+      scale <- scale_color_continuous("value", ..., na.value = NA)
+    }
+  }
+  return(scale)
 }
-
 
 #' Landscape variables
 #' 
@@ -267,12 +403,8 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
   df = extract_variables(x, vars= variable, SpParams = SpParams)
   character_var <- is.character(df[[variable]])
   if(is.null(r)) {
-    g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]]))
-    if(character_var) {
-      g <- g + scale_color_discrete(.getLegendName(variable),..., na.value = NA)
-    } else {
-      g <- g + scale_color_continuous(.getLegendName(variable),..., na.value = NA)
-    }
+    g<-ggplot()+geom_sf(data=df, aes(col=.data[[variable]])) +
+      .getDefaultScale(variable, fill = FALSE, ...)
   } else {
     sf_coords <- sf::st_coordinates(x)
     sf2cell <- terra::cellFromXY(r, sf_coords)
@@ -283,12 +415,8 @@ plot_variable<-function(x, variable = "land_cover_type", SpParams = NULL, r = NU
     m1[sf2cell] <- df[[variable]]
     raster_var$m1 <- m1
     g<-ggplot()+
-      geom_spatraster(aes(fill=.data$m1), data = raster_var)
-    if(character_var) {
-      g <- g + scale_fill_discrete(.getLegendName(variable),..., na.value = NA)
-    } else {
-      g <- g + scale_fill_continuous(.getLegendName(variable),..., na.value = NA)
-    }
+      geom_spatraster(aes(fill=.data$m1), data = raster_var) +
+      .getDefaultScale(variable, fill = TRUE, ...)
   }
   g+theme_bw()
 }

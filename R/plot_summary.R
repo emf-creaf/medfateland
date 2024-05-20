@@ -34,6 +34,22 @@
   }
   return(character(0))
 }
+.getSummaryScale<-function(variable, fill, ...) {
+  if(fill) {
+    scale <- scale_fill_continuous("", ..., na.value = NA)
+  } else {
+    scale <- scale_color_continuous("", ..., na.value = NA)
+  }
+  if(variable %in% c("InterflowBalance", "BaseflowBalance")) {
+    if(fill) {
+      scale <- scale_fill_gradient2("", low = "brown", mid = "white", high = "blue",..., na.value = NA)
+    } else {
+      scale <- scale_color_gradient2("", low = "brown", mid = "white", high = "blue",..., na.value = NA)
+    } 
+  }
+  return(scale)
+}
+  
 
 #' Displays spatial simulation summaries
 #' 
@@ -48,7 +64,8 @@
 #' @details Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
 #' Alternatively, if summary functions were specified at the time of performing simulations, 
 #' the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}}) 
-#' will already contain the summaries.
+#' will already contain the summaries. A special case is made for \code{\link{spwb_land}} and \code{\link{growth_land}}, 
+#' that are accepted inputs as \code{x}, because its element 'sf' is used.
 #' 
 #' @return An object of class \code{\link{ggplot}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
@@ -56,6 +73,7 @@
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{simulation_summary}}
 #' @export
 plot_summary<-function(x, variable, date, r = NULL, ...) {
+  if(inherits(x, "spwb_land") || inherits(x, "growth_land"))  x <- x$sf
   if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
   if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")
   match.arg(variable, .getSummaryMatrixVarNames(x))
@@ -65,15 +83,21 @@ plot_summary<-function(x, variable, date, r = NULL, ...) {
   df = sf::st_sf(sf::st_geometry(x), y = vec)
   if(is.null(r)) {
     g<-ggplot()+geom_sf(data=df, aes(col=.data$y))+
-      scale_color_continuous("", ...)+
+      .getSummaryScale(variable, fill = FALSE, ...)+
       labs(title = paste0(variable, " [", date,"]"))+
       theme_bw()
   } else {
-    raster_var<-terra::rasterize(terra::vect(df),r, "y", fun = mean, na.rm = TRUE)
-    names(raster_var) <- "m1"
+    sf_coords <- sf::st_coordinates(x)
+    sf2cell <- terra::cellFromXY(r, sf_coords)
+    if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+    if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+    raster_var <- r
+    m1 <- rep(NA, terra::ncell(r))
+    m1[sf2cell] <- vec
+    raster_var$m1 <- m1
     g<-ggplot()+
       tidyterra::geom_spatraster(aes(fill=.data$m1), data = raster_var)+
-      scale_fill_continuous("", ..., na.value = NA)+
+      .getSummaryScale(variable, fill=TRUE, ...)+
       labs(title = paste0(variable, " [", date,"]"))+
       theme_bw()
   }
