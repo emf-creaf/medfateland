@@ -51,7 +51,7 @@
 #' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
 #'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 #' 
-#' @seealso [create_landscape()], [add_soilgrids()], \code{\link[medfate]{forest_mergeTrees}}
+#' @seealso [create_landscape()], [add_forests()], [add_soilgrids()], \code{\link[medfate]{forest_mergeTrees}}
 #' @export
 #' @name forest_parametrization
 #' @examples

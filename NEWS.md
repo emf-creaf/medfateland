@@ -3,7 +3,7 @@
 ----------------------------------
 
 # Version 2.4.1
-- New function add_forests() to parse plot data
+- New helper function add_forests() to parse forest plot data tables
 
 # Version 2.4.0
 - Compliance with medfate v. 4.3.0

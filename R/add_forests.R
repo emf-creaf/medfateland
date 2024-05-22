@@ -39,6 +39,7 @@
 #' @details The current implementation will replace existing forests of the indicated 'id' values.
 #'
 #' @return A modified object of class \code{\link{sf}} with column 'forest'.
+#' @seealso [impute_forests()], \code{\link[medfate]{forest_mapWoodyTables}}, \code{\link[medfate]{forest_mergeTrees}}
 #' @export
 #'
 #' @examples
@@ -115,6 +116,8 @@ add_forests<-function(x,
     if("plot.size" %in% names(shrub_mapping)) shrub_mapping <- c(shrub_mapping, "plot_size_y" = shrub_mapping[["plot.size"]])
   }  
   if(is.null(tree_table) && is.null(shrub_table)) cli::cli_abort("Provide either 'tree_table' or 'shrub_table', and corresponding mapping.")
+  
+  if(progress) cli::cli_alert_info(paste0("Number of forest stands to be read: ", length(ids)))
   
   if(!("forest" %in% names(x))) {
     if(progress) cli::cli_progress_step("Defining new column 'forest'")
