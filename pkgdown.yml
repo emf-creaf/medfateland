@@ -4,9 +4,10 @@ pkgdown_sha: ~
 articles:
   ManagementScenarios: ManagementScenarios.html
   PackageOverview: PackageOverview.html
-  PreparingInputs: PreparingInputs.html
+  PreparingInputs_I: PreparingInputs_I.html
+  PreparingInputs_II: PreparingInputs_II.html
   SpatiallyUncoupledSimulations: SpatiallyUncoupledSimulations.html
   TetisWatershedParameters: TetisWatershedParameters.html
   WatershedSimulations: WatershedSimulations.html
-last_built: 2024-05-14T16:11Z
+last_built: 2024-05-22T15:15Z
 

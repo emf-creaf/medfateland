@@ -10,7 +10,10 @@
     <loc>/articles/PackageOverview.html</loc>
   </url>
   <url>
-    <loc>/articles/PreparingInputs.html</loc>
+    <loc>/articles/PreparingInputs_I.html</loc>
+  </url>
+  <url>
+    <loc>/articles/PreparingInputs_II.html</loc>
   </url>
   <url>
     <loc>/articles/SpatiallyUncoupledSimulations.html</loc>
@@ -32,6 +35,9 @@
   </url>
   <url>
     <loc>/news/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_forests.html</loc>
   </url>
   <url>
     <loc>/reference/create_fire_regime.html</loc>

@@ -19,7 +19,7 @@ Function check_soils verifies that soil data does not contain missing values for
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
       </span>
     </div>
 
@@ -73,6 +73,7 @@ Function <code>check_soils</code> verifies that soil data does not contain missi
 <span></span>
 <span><span class="fu">check_soils</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  check_equal_layers <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  fill_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  default_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>clay <span class="op">=</span> <span class="fl">25</span>, sand <span class="op">=</span> <span class="fl">25</span>, bd <span class="op">=</span> <span class="fl">1.5</span>, rfc <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -116,6 +117,10 @@ cover types only. Otherwise, soils are retrieved for all locations. For function
 
 <dt>full_rock_filling</dt>
 <dd><p>Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.</p></dd>
+
+
+<dt>check_equal_layers</dt>
+<dd><p>Logical flag to test whether soils have the same number of layers.</p></dd>
 
 
 <dt>fill_missing</dt>

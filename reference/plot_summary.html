@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
       </span>
     </div>
 
@@ -79,14 +79,15 @@
     <h2>Value</h2>
     
 
-<p>An object of class <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code>.</p>
+<p>An object of class <code>ggplot</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>Appropriate values for <code>x</code> can originate from calls to <code><a href="simulation_summary.html">simulation_summary</a></code>.
 Alternatively, if summary functions were specified at the time of performing simulations,
 the result of the spatial simulation function (e.g. <code><a href="spwb_spatial.html">spwb_spatial</a></code>)
-will already contain the summaries.</p>
+will already contain the summaries. A special case is made for <code><a href="spwb_land.html">spwb_land</a></code> and <code><a href="spwb_land.html">growth_land</a></code>,
+that are accepted inputs as <code>x</code>, because its element 'sf' is used.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
