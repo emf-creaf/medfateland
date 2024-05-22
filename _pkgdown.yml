@@ -23,6 +23,7 @@ reference:
   desc: Functions to help preparing spatial inputs
   contents:
   - create_landscape
+  - add_forests
   - impute_forests
   - modify_forest_structure
   - check_forests

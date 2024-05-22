@@ -2,8 +2,13 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.1
+- New function add_forests() to parse plot data
+
 # Version 2.4.0
 - Compliance with medfate v. 4.3.0
+- New watershed parameters n_interflow, n_baseflow
+- Daily substeps allowed in interflow calculations
 
 # Version 2.3.0
 - Infiltration and runoff in non-soil cells
