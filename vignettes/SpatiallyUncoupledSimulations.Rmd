@@ -108,7 +108,7 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
                     parallelize = TRUE)
 ```
 
-Function `spwb_spatial()` first initializes model inputs by calling `forest2spwbInput()` for each forest stand described in the **sf** landscape object.  Then it calls function `spwb()` for each forest stand and stores the result. In this case, we asked for parallel computation via the parameter `parallelize = TRUE`. 
+Function `spwb_spatial()` first initializes model inputs by calling `spwbInput()` for each forest stand described in the **sf** landscape object.  Then it calls function `spwb()` for each forest stand and stores the result. In this case, we asked for parallel computation via the parameter `parallelize = TRUE`. 
 
 The simulation result is also an object of class **sf** with the following columns:
 

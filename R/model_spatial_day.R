@@ -140,9 +140,9 @@
           f <- forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
             if(model=="spwb") {
-              xlist[[i]] <- medfate::forest2spwbInput(f, s, SpParams, local_control_i)
+              xlist[[i]] <- medfate::spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] <- medfate::forest2growthInput(f, s, SpParams, local_control_i)
+              xlist[[i]] <- medfate::growthInput(f, s, SpParams, local_control_i)
             }
           }
         } else if(landcover[i] == "agriculture") {

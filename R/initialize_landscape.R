@@ -139,9 +139,9 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
               f = medfate::forest_reduceToDominant(f, SpParams)
             }
             if(model=="spwb") {
-              xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control_i)
+              xlist[[i]] = medfate::spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] = medfate::forest2growthInput(f, s, SpParams, local_control_i)
+              xlist[[i]] = medfate::growthInput(f, s, SpParams, local_control_i)
             }
           }
         } else if(landcover[i] == "agriculture") {

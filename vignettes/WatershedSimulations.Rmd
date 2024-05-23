@@ -98,7 +98,7 @@ example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
 example_init
 ```
 
-Here we use function `defaultControl()` to specify the control parameters for local processes. Function `initialize_landscape()` makes internal calls to `forest2spwbInput()` of **medfate** and defines a column `state` with the initialized inputs.
+Here we use function `defaultControl()` to specify the control parameters for local processes. Function `initialize_landscape()` makes internal calls to `spwbInput()` of **medfate** and defines a column `state` with the initialized inputs.
 
 At this point is important to learn one option that may speed up calculations. Initialization may be done while simplifying forest structure to the dominant species (see function `forest_reduceToDominant()` in package **medfate**). Hence, we can initialize using `simplify = TRUE`:
 

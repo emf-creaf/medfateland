@@ -1922,8 +1922,8 @@ cell_neighbors<-function(sf, r) {
       f <- y$forest[[i]]
       s <- y$soil[[i]]
       if(inherits(s, "data.frame")) s <- medfate::soil(s)
-      if(local_model=="spwb") y$state[[i]] <- forest2spwbInput(f, s, SpParams, local_control_i)
-      else if(local_model=="growth") y$state[[i]] <- forest2growthInput(f, s, SpParams, local_control_i)
+      if(local_model=="spwb") y$state[[i]] <- medfate::spwbInput(f, s, SpParams, local_control_i)
+      else if(local_model=="growth") y$state[[i]] <- medfate::growthInput(f, s, SpParams, local_control_i)
       initialized_cells <- initialized_cells + 1
     } 
     else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {

@@ -557,7 +557,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
           y$soil[[i]] <- y_backup$soil[[i]]
           if(inherits(y$soil[[i]], "data.frame")) y$soil[[i]] <- soil(y$soil[[i]])
         }
-        if(is.null(y$state[[i]])) y$state[[i]] <- forest2growthInput(y$forest[[i]], y$soil[[i]], SpParams, local_control)
+        if(is.null(y$state[[i]])) y$state[[i]] <- growthInput(y$forest[[i]], y$soil[[i]], SpParams, local_control)
         
         if("management_arguments" %in% names(y_backup)) {
           man_backup  <- y_backup$management_arguments[[i]]
