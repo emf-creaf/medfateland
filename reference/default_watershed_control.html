@@ -68,7 +68,7 @@
 <li><p><code>tetis_parameters</code>: A list of TETIS parameters with the following elements:
 </p><ul><li><p><code>R_localflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (local vertical flows).</p></li>
 <li><p><code>R_interflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).</p></li>
-<li><p><code>R_baseflow [= 10.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
+<li><p><code>R_baseflow [= 1.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
 <li><p><code>n_interflow [= 1.0]</code>: Exponent for the determination of interflow.</p></li>
 <li><p><code>n_baseflow [= 1.0]</code>: Exponent for the determination of baseflow.</p></li>
 <li><p><code>num_daily_substeps [= 1]</code>: Number of daily sub-steps for interflow calculations.</p></li>
@@ -116,10 +116,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$n_interflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$n_baseflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$num_daily_substeps</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>

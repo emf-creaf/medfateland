@@ -277,7 +277,7 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>, <code><a href="spwb_land_day.html">spwb_land_day</a></code>, <code>spwb_day</code>,  <code>growth_day</code>,
+    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>, <code><a href="initialize_landscape.html">initialize_landscape</a></code>, <code><a href="spwb_land_day.html">spwb_land_day</a></code>, <code>spwb_day</code>,  <code>growth_day</code>,
 <code><a href="spwb_spatial.html">spwb_spatial</a></code>, <code><a href="spwb_spatial.html">fordyn_spatial</a></code>, <code><a href="dispersal.html">dispersal</a></code></p></div>
     </div>
     <div id="author">
@@ -329,13 +329,23 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-in"><span>                 dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
 <span class="r-in"><span>                 watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
 <span class="r-in"><span>                 </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Option 'simplify = TRUE' in initialization, may be useful to speed up calculations</span></span></span>
+<span class="r-in"><span><span class="va">example_simplified</span> <span class="op">&lt;-</span> <span class="fu"><a href="initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span></span>
+<span class="r-in"><span>                                           local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                           simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Launch simulations overs simplified landscape (should be considerably faster)</span></span></span>
+<span class="r-in"><span><span class="va">res_simplified</span> <span class="op">&lt;-</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">r</span>, <span class="va">example_simplified</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
+<span class="r-in"><span>                            dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
+<span class="r-in"><span>                            watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compare results with an analogous simulation using a data set where </span></span></span>
-<span class="r-in"><span><span class="co"># a burnin period has been done</span></span></span>
+<span class="r-in"><span><span class="co"># a burnin period has been carried out</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res_burnin</span> <span class="op">&lt;-</span> <span class="fu">spwb_land</span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
 <span class="r-in"><span>                        dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
 <span class="r-in"><span>                        watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
