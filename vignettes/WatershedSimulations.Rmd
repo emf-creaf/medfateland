@@ -88,6 +88,28 @@ Analogously to local-scale simulations with **medfate**, watershed simulations h
 ws_control <- default_watershed_control("tetis")
 ```
 
+## Initialization
+
+Simulation model inputs need to be created for the target watershed before launching simulations. This may be done automatically, though, when calling watershed simulation functions, but in many occasions it is practical to perform this step separately. If we plan to use function `spwb_land()`, watershed initialization would be as follows:
+
+```{r}
+example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
+                                     local_control = defaultControl())
+example_init
+```
+
+Here we use function `defaultControl()` to specify the control parameters for local processes. Function `initialize_landscape()` makes internal calls to `forest2spwbInput()` of **medfate** and defines a column `state` with the initialized inputs.
+
+At this point is important to learn one option that may speed up calculations. Initialization may be done while simplifying forest structure to the dominant species (see function `forest_reduceToDominant()` in package **medfate**). Hence, we can initialize using `simplify = TRUE`:
+
+```{r}
+example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
+                                           local_control = defaultControl(),
+                                           simplify = TRUE)
+example_simplified
+```
+
+For computational reasons, we will keep with this simplified initialization in the next sections.
 
 ## Carrying out simulations
 
@@ -97,7 +119,7 @@ To speed up calculations, we call function `spwb_land()` for a single month:
 
 ```{r, warning=FALSE}
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
-res_ws1 <- spwb_land(r, example_watershed,
+res_ws1 <- spwb_land(r, example_simplified,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
 ```
@@ -150,14 +172,14 @@ The idea of generating summaries arises from the fact that local models can prod
 
 ```{r}
 # Set request for daily model results in cells number 3 and 9
-example_watershed$result_cell <- FALSE
-example_watershed$result_cell[c(3,9)] <- TRUE
+example_simplified$result_cell <- FALSE
+example_simplified$result_cell[c(3,9)] <- TRUE
 ```
 
 If we launch the simulations again (omitting progress information):
 
 ```{r}
-res_ws1 <- spwb_land(r, example_watershed,
+res_ws1 <- spwb_land(r, example_simplified,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
 ```
@@ -223,12 +245,14 @@ data.frame("before" = res_ws1$watershed_balance$WatershedExport,
 
 ### Simulations of watershed forest dynamics
 
-Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. A call to `fordyn_land()` for a single year is given here starting from a watershed after burnin:
+Running `growth_land()` is very similar to running `spwb_land()`. However, a few things change when we want to simulate forest dynamics using `fordyn_land()`. Regarding the `sf` input, an additional column `management_arguments` may be defined to specify the forest management arguments (i.e. silviculture) of cells. Furthermore, the function does not allow choosing the temporal scale of summaries. Strong simplification of forest structure to dominant species will not normally make sense in this kind of simulation, since the focus is on forest dynamics. 
+
+A call to `fordyn_land()` for a single year is given here, as an example, starting from the initial example watershed:
 
 ```{r}
-res_ws4 <- fordyn_land(r, example_watershed_burnin,
+res_ws4 <- fordyn_land(r, example_watershed,
                        SpParamsMED, examplemeteo,
-                       watershed_control = ws_control, progress = TRUE)
+                       watershed_control = ws_control, progress = FALSE)
 ```
 
 In this case, the `sf` part of the output contains additional columns, analogous to those of `fordyn_scenario()`.

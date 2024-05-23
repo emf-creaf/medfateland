@@ -1342,7 +1342,7 @@
 #' 
 #' Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
 #' 
-#' @seealso \code{\link{default_watershed_control}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
+#' @seealso \code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
 #' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 #' 
 #' @references 
@@ -1390,13 +1390,23 @@
 #'                  dates = dates, summary_frequency = "month",
 #'                  watershed_control = ws_control)
 #'                  
+#' 
+#' # Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
+#' example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
+#'                                            local_control = defaultControl(), 
+#'                                            simplify = TRUE)
+#' 
+#' # Launch simulations overs simplified landscape (should be considerably faster)
+#' res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo, 
+#'                             dates = dates, summary_frequency = "month",
+#'                             watershed_control = ws_control)
+#'
 #' # Compare results with an analogous simulation using a data set where 
-#' # a burnin period has been done
+#' # a burnin period has been carried out
 #' data("example_watershed_burnin")
 #' res_burnin <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
 #'                         dates = dates, summary_frequency = "month",
 #'                         watershed_control = ws_control)
-#' 
 #' }
 #' 
 #' @name spwb_land

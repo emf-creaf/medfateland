@@ -251,13 +251,23 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
                  
+
+# Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
+example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
+                                           local_control = defaultControl(), 
+                                           simplify = TRUE)
+
+# Launch simulations overs simplified landscape (should be considerably faster)
+res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo, 
+                            dates = dates, summary_frequency = "month",
+                            watershed_control = ws_control)
+
 # Compare results with an analogous simulation using a data set where 
-# a burnin period has been done
+# a burnin period has been carried out
 data("example_watershed_burnin")
 res_burnin <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                         dates = dates, summary_frequency = "month",
                         watershed_control = ws_control)
-
 }
 
 }
@@ -267,7 +277,7 @@ res_burnin <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
 \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 }
 \seealso{
-\code{\link{default_watershed_control}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
 \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 }
 \author{

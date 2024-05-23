@@ -107,11 +107,14 @@ impute_forests <-function(x, sf_fi, dem,
   x_elevation <- terra::extract(dem, x_vect)[,2]
   x_northing <- terra::extract(r_northing, x_vect)[,2]
   x_m <- cbind((x_elevation - mean_elev)/sd_elev, (x_northing - mean_northing)/sd_northing)
+  if(any(is.na(x_m))) cli::cli_abort("Missing values in topography for 'x'")
   if(progress) cli::cli_progress_step("Extracting topography for 'sf_fi'")
   fi_vect <- terra::vect(sf::st_transform(sf::st_geometry(sf_fi), terra::crs(dem)))
   fi_elevation <- terra::extract(dem, fi_vect)[,2]
   fi_northing <- terra::extract(r_northing, fi_vect)[,2]
   fi_m <- cbind((fi_elevation - mean_elev)/sd_elev, (fi_northing - mean_northing)/sd_northing)
+  if(any(is.na(fi_m))) cli::cli_abort("Missing values in topography for 'sf_fi'")
+  
   if(progress) cli::cli_progress_step("Extracting forest class for 'x'")
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(forest_map)))
   # Subset map to accelerate extraction

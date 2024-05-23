@@ -18,7 +18,7 @@ A list with the following items:
 \itemize{
 \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
 \item{\code{R_interflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-\item{\code{R_baseflow [= 10.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
+\item{\code{R_baseflow [= 1.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 \item{\code{n_interflow [= 1.0]}: Exponent for the determination of interflow.}
 \item{\code{n_baseflow [= 1.0]}: Exponent for the determination of baseflow.}
 \item{\code{num_daily_substeps [= 1]}: Number of daily sub-steps for interflow calculations.}

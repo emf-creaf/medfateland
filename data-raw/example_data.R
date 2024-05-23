@@ -36,14 +36,14 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
                 nrow = 8, ncol = 15, crs = "epsg:32631")
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-12-31"), by="day")
 ws_control <- default_watershed_control("tetis")
-# ws_control$tetis_parameters$n_interflow <- 0.7
-# ws_control$tetis_parameters$R_interflow <- 1
-# ws_control$tetis_parameters$num_daily_substeps <-12
+example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
+                                     local_control = defaultControl(),
+                                     simplify = TRUE)
 # first year
-res1 <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
+res1 <- spwb_land(r, example_init, SpParamsMED, examplemeteo, 
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
-example_watershed_burnin <- update_landscape(example_watershed, res1)
+example_watershed_burnin <- update_landscape(example_init, res1)
 plot(res1$watershed_balance$WatershedExport, type="l")
 # second year
 res2 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
