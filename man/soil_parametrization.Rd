@@ -104,7 +104,7 @@ Poggio L, de Sousa LM, Batjes NH, Heuvelink GBM, Kempen B, Ribeiro E, Rossiter D
 Shangguan W, Hengl T, Mendes de Jesus J, Yuan H, Dai J (2017). Mapping the global depth to bedrock for land surface modeling. Journal of Advances in Modeling Earth Systems 9: 65-88. doi: 10.1002/2016MS000686
 }
 \seealso{
-\code{\link[=create_landscape]{create_landscape()}}, \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
+\code{\link[=add_topography]{add_topography()}}, \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
 }
 \author{
 \enc{Víctor}{Victor} Granda, EMF-CREAF

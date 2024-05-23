@@ -4,6 +4,7 @@
 
 # Version 2.4.1
 - New helper function add_forests() to parse forest plot data tables
+- New option `simplify` in function initialize_landscape()
 
 # Version 2.4.0
 - Compliance with medfate v. 4.3.0

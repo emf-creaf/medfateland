@@ -65,13 +65,12 @@ dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETR
 dem
 ```
 
-Having these inputs, we can use function `create_landscape()` to add topographic and land cover features to our starting `sf`:
+Having these inputs, we can use function `add_topography()` to add topographic features to our starting `sf`:
 ```{r}
-y_1 <- create_landscape(x, dem = dem, progress = FALSE)
+y_1 <- add_topography(x, dem = dem, progress = FALSE)
 y_1
 ```
 
-Note that by default, the function `create_landscape()` assumes that are locations are `wildland`. Land cover type was not needed here, but it may be relevant in other target locations/areas.
 
 ## Forest inventory parsing
 

@@ -116,5 +116,5 @@ data in tree or shrub attributes required for simulations. The function does not
 }
 }
 \seealso{
-\code{\link[=create_landscape]{create_landscape()}}, \code{\link[=add_forests]{add_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}, \code{\link[medfate]{forest_mergeTrees}}
+\code{\link[=add_topography]{add_topography()}}, \code{\link[=add_forests]{add_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}, \code{\link[medfate]{forest_mergeTrees}}
 }

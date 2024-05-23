@@ -114,14 +114,16 @@ artificial <- 21:35
 water <- 36:41
 ```
 
-Having these inputs, we can use function `create_landscape()` to add topographic and land cover features to our starting `sf`:
+Having these inputs, we can use functions `add_topography()` and `add_land_cover()` to add topographic and land cover features to our starting `sf`:
 ```{r}
-y_1 <- create_landscape(x, dem = dem, land_cover_map = lcm, 
-                        wildland = wildland, 
-                        agriculture = agriculture, 
-                        rock = rock, 
-                        artificial = artificial, 
-                        water = water, progress = FALSE)
+y_1 <- add_topography(x, dem = dem)
+y_1 <- add_land_cover(y_1, 
+                      land_cover_map = lcm, 
+                      wildland = wildland, 
+                      agriculture = agriculture, 
+                      rock = rock, 
+                      artificial = artificial, 
+                      water = water, progress = FALSE)
 ```
 
 We can examine the result using:

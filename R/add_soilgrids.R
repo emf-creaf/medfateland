@@ -46,7 +46,7 @@
 #' 
 #' Shangguan W, Hengl T, Mendes de Jesus J, Yuan H, Dai J (2017). Mapping the global depth to bedrock for land surface modeling. Journal of Advances in Modeling Earth Systems 9: 65-88. doi: 10.1002/2016MS000686
 #' 
-#' @seealso [create_landscape()], [impute_forests()], \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
+#' @seealso [add_topography()], [impute_forests()], \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
 #'
 #' @examples
 #'  \dontrun{

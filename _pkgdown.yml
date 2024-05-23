@@ -22,7 +22,8 @@ reference:
 - title: Input preparation
   desc: Functions to help preparing spatial inputs
   contents:
-  - create_landscape
+  - add_topography
+  - add_land_cover
   - add_forests
   - impute_forests
   - modify_forest_structure

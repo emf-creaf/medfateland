@@ -9,6 +9,7 @@ initialize_landscape(
   SpParams,
   local_control,
   model = "spwb",
+  simplify = FALSE,
   replace = FALSE,
   progress = TRUE
 )
@@ -30,6 +31,9 @@ initialize_landscape(
 
 \item{model}{A string to indicate the model, either \code{"spwb"} or \code{"growth"}.}
 
+\item{simplify}{Boolean flag to simplify forest to the cohort with largest leaf area index (the leaf area index of the whole stand will be attributed to this cohort).
+See function \code{\link{forest_reduceToDominant}}.}
+
 \item{replace}{Boolean flag to replace existing initialized states}
 
 \item{progress}{Boolean flag to display progress information.}
@@ -44,6 +48,9 @@ Initializes state for local models \code{\link{spwb}} or \code{\link{growth}}.
 \details{
 Initialization is dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
 \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
+
+Option \code{simplify} has been implemented to allow simplification of forests to a single dominant cohort during watershed simulations where focus is on runoff (e.g. calibration of watershed parameters or burnin periods).
+Elements identified as \code{result_cell} will not be simplified.
 }
 \examples{
 # Load example landscape data

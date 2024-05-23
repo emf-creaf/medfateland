@@ -14,6 +14,8 @@
 #' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
 #' @param local_control A list of control parameters (see \code{\link{defaultControl}}).
 #' @param model A string to indicate the model, either \code{"spwb"} or \code{"growth"}.
+#' @param simplify Boolean flag to simplify forest to the cohort with largest leaf area index (the leaf area index of the whole stand will be attributed to this cohort). 
+#'                 See function \code{\link{forest_reduceToDominant}}. 
 #' @param replace Boolean flag to replace existing initialized states
 #' @param progress Boolean flag to display progress information.
 #' 
@@ -23,6 +25,9 @@
 #' @details
 #' Initialization is dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
 #' \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
+#' 
+#' Option \code{simplify} has been implemented to allow simplification of forests to a single dominant cohort during watershed simulations where focus is on runoff (e.g. calibration of watershed parameters or burnin periods).
+#' Elements identified as \code{result_cell} will not be simplified.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
@@ -46,7 +51,9 @@
 #' 
 #' @name initialize_landscape
 #' @export
-initialize_landscape<- function(x, SpParams, local_control, model = "spwb", replace = FALSE, progress = TRUE) {
+initialize_landscape<- function(x, SpParams, local_control, model = "spwb", 
+                                simplify = FALSE, 
+                                replace = FALSE, progress = TRUE) {
   match.arg(model, c("spwb", "growth"))
   if(!inherits(x, "sf")) cli::cli_abort("'x' has to be an object of class 'sf'.")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
@@ -70,6 +77,11 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
     cropfactor <- x$crop_factor
   } else {
     cropfactor <- rep(NA, n)
+  }
+  if("result_cell" %in% names(x)) {
+    result_cell <- x$result_cell
+  } else {
+    result_cell <- rep(FALSE, n)
   }
   n = length(forestlist)
   if(model %in% c("spwb", "growth")) {
@@ -113,16 +125,19 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb", repl
           }
         }
         if(is.null(local_control_i)) local_control_i <- local_control
+        if(any(is.na(s$clay))) cli::cli_abort(paste0("Missing 'clay' values in soil #", i, ". Please correct."))
+        if(any(is.na(s$sand))) cli::cli_abort(paste0("Missing 'sand' values in soil #", i, ". Please correct."))
+        if(any(is.na(s$bd))) cli::cli_abort(paste0("Missing 'bd' values in soil #", i, ". Please correct."))
+        if(any(is.na(s$rfc))) cli::cli_abort(paste0("Missing 'rfc' values in soil #", i, ". Please correct."))
         if(inherits(s, "data.frame")) {
-          if(any(is.na(s$clay))) cli::cli_abort(paste0("Missing 'clay' values in soil #", i, ". Please correct."))
-          if(any(is.na(s$sand))) cli::cli_abort(paste0("Missing 'sand' values in soil #", i, ". Please correct."))
-          if(any(is.na(s$bd))) cli::cli_abort(paste0("Missing 'bd' values in soil #", i, ". Please correct."))
-          if(any(is.na(s$rfc))) cli::cli_abort(paste0("Missing 'rfc' values in soil #", i, ". Please correct."))
-          s <- soil(s)
+          s <- soil(s, VG_PTF = local_control$VG_PTF)
         }
         if(landcover[i] == "wildland") {
           f = forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
+            if(simplify && (!result_cell[i])) {
+              f = medfate::forest_reduceToDominant(f, SpParams)
+            }
             if(model=="spwb") {
               xlist[[i]] = medfate::forest2spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
