@@ -89,6 +89,8 @@ gc()
 
 ## Topography and land cover type
 
+**Topography**
+
 Once an object `sf` has been defined with target locations, we need to determine topographic features (elevation, slope, aspect) and land cover corresponding to those locations. You should have access to a Digital Elevation Model (DEM) at a desired resolution. Here we will use a DEM raster for Catalonia at 30 m resolution, which we load using package `terra`:
 
 ```{r}
@@ -97,14 +99,40 @@ dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETR
 dem
 ```
 
-Similarly, you should have downloaded a land cover map, in this case we will use a land cover raster for Catalonia, issued in 2018:
+
+
+Having a digital elevation model, we can use function `add_topography()` to extract elevation and calculate aspect and slope:
+
+```{r}
+y_0 <- add_topography(x, dem = dem)
+y_0
+```
+
+We can check that there are no missing values in topographic features using:
+
+```{r}
+check_topography(y_0)
+```
+
+
+We can now examine the elevation of the area, using the raster `r` to draw cells instead of points:
+
+```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+plot_variable(y_0, "elevation", r = r)+
+  scale_fill_distiller("m", palette="Spectral", na.value = NA)+
+  theme_bw()
+```
+
+**Land cover type**
+
+In addition to topography, users should have access to a land cover map, in this case we will use a land cover raster for Catalonia, issued in 2018:
 
 ```{r}
 lcm <- terra::rast(paste0(dataset_path,"LandCover/Sources/Catalunya/cobertes-sol-v1r0-2018.tif"))
 lcm
 ```
 
-You should examine the legend of their land cover map and decide how to map legend elements to the five land cover types used in **medfateland**. After inspecting our land cover map legend, we define the following vectors to perform the legend mapping:
+Users should examine the legend of their land cover map and decide how to map legend elements to the five land cover types used in **medfateland**. After inspecting our land cover map legend, we define the following vectors to perform the legend mapping:
 
 ```{r}
 agriculture <- 1:6
@@ -114,36 +142,32 @@ artificial <- 21:35
 water <- 36:41
 ```
 
-Having these inputs, we can use functions `add_topography()` and `add_land_cover()` to add topographic and land cover features to our starting `sf`:
+Having these inputs, we can use `add_land_cover()` to add land cover to our starting `sf`:
 ```{r}
-y_1 <- add_topography(x, dem = dem)
-y_1 <- add_land_cover(y_1, 
+y_1 <- add_land_cover(y_0, 
                       land_cover_map = lcm, 
                       wildland = wildland, 
                       agriculture = agriculture, 
                       rock = rock, 
                       artificial = artificial, 
                       water = water, progress = FALSE)
-```
-
-We can examine the result using:
-```{r}
 y_1
 ```
+
+As before, we can check for missing data:
+```{r}
+check_land_cover(y_1)
+```
+
+
+
 ```{r, echo = FALSE, include = FALSE}
 rm(lcm)
 gc()
 ```
 
-We can now examine the elevation of the area, using the raster `r` to draw cells instead of points:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
-plot_variable(y_1, "elevation", r = r)+
-  scale_fill_distiller("m", palette="Spectral", na.value = NA)+
-  theme_bw()
-```
-
-and the land cover types:
+We can examine the land cover types in our target area using:
 
 ```{r, echo = FALSE, fig.width=6, fig.height=4.5}
 plot_variable(y_1, "land_cover_type", r = r, name = "")

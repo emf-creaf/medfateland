@@ -23,7 +23,9 @@ reference:
   desc: Functions to help preparing spatial inputs
   contents:
   - add_topography
+  - check_topography
   - add_land_cover
+  - check_landcover
   - add_forests
   - impute_forests
   - modify_forest_structure

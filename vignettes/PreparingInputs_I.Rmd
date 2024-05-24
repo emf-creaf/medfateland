@@ -71,6 +71,12 @@ y_1 <- add_topography(x, dem = dem, progress = FALSE)
 y_1
 ```
 
+We can check that there are no missing values in topographic features:
+
+```{r}
+check_topography(y_1)
+```
+
 
 ## Forest inventory parsing
 
