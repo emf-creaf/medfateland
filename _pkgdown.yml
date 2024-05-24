@@ -25,7 +25,7 @@ reference:
   - add_topography
   - check_topography
   - add_land_cover
-  - check_landcover
+  - check_land_cover
   - add_forests
   - impute_forests
   - modify_forest_structure

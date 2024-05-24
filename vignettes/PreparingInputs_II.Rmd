@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting **from a set of coordinates** corresponding to **arbitrary locations**. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
 
-```{r, out.width='70%', fig.align="center", echo=FALSE}
+```{r, out.width='90%', fig.align="center", echo=FALSE}
 knitr::include_graphics("Landscape_init_workflow.png")
 ```
 
