@@ -51,9 +51,8 @@ complemented with two companion packages:
   provides functions to help creating species parameter inputs for
   **medfate** and **medfateland** simulation functions \[*under
   development*\].
-- Package [**medfateutils**](https://emf-creaf.github.io/medfateutils)
-  provides miscellaneous functions for **medfate** and **medfateland**
-  simulation functions \[*under development*\].
+
+<img src="man/figures/packages.png" width="60%" style="display: block; margin: auto;" />
 
 ## Authorship
 
