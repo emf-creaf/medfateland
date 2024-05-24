@@ -61,7 +61,11 @@
 <span>  artificial <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  water <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_topography</span><span class="op">(</span><span class="va">x</span>, filter_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_land_cover</span><span class="op">(</span><span class="va">x</span>, filter_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,6 +88,10 @@
 
 <dt>wildland, agriculture, rock, artificial, water</dt>
 <dd><p>Strings indicating the mapping from the legend of land_cover_map.</p></dd>
+
+
+<dt>filter_missing</dt>
+<dd><p>Boolean flag to filter locations with missing data</p></dd>
 
 </dl></div>
     <div id="value">
