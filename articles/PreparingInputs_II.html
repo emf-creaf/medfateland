@@ -85,7 +85,7 @@ inputs to be used in model simulations with the package, starting
 document are meant to be executed sequentially to progressively add
 spatial information, as illustrated in the workflow below, but users are
 free to use them in the most convenient way.</p>
-<p><img src="Landscape_init_workflow.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="Landscape_init_workflow.png" width="90%" style="display: block; margin: auto;"></p>
 <p>Before reading this vignette, users should be familiar with
 <em>forest</em> and <em>soil</em> structures in package
 <strong>medfate</strong>. Moreover, a brief introduction to spatial
@@ -171,8 +171,8 @@ object:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2034523 108.7    4134034 220.8  2515779 134.4</span></span>
-<span><span class="co">## Vcells 3444543  26.3    8388608  64.0  8361126  63.8</span></span></code></pre>
+<span><span class="co">## Ncells 2034523 108.7    4134500 220.9  2515662 134.4</span></span>
+<span><span class="co">## Vcells 3444543  26.3    8388608  64.0  8359817  63.8</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -202,14 +202,14 @@ and slope:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'id'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography</span></span></code></pre>
 <pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[11s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[12s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span></span></code></pre></div>
