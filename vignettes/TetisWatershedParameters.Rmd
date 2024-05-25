@@ -203,10 +203,10 @@ cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 
 **Capillarity rise**
 ```{r, fig.align='center', fig.width=7, fig.height=12}
-g1 <- plot_summary(res_0$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "Baseline")
-g2 <- plot_summary(res_L5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 4))+labs(title = "R_base x 5")
+g1 <- plot_summary(res_0$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "Baseline")
+g2 <- plot_summary(res_L5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_local x 5")
+g3 <- plot_summary(res_I5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_inter x 5")
+g4 <- plot_summary(res_B5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_base x 5")
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 

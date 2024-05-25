@@ -366,6 +366,8 @@
         "CO2" = C02Vec[i]
       )
       Runon[i] <- nonsoilResults$Runon[i]
+      wtd = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])
+      if(wtd<0.0) cat(paste0("Negative WTD in ", i,"\n"))
       XI[[i]] <- list(i = i, 
                       x = y$state[[i]],
                       meteovec = meteovec,
@@ -375,7 +377,7 @@
                       aspect = y$aspect[i],
                       runon = Runon[i], # Take runon from non-soil cells to input
                       lateralFlows = lateralFlows[[i]],
-                      waterTableDepth = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])) # // New depth to aquifer (mm)
+                      waterTableDepth = wtd) # // New depth to aquifer (mm)
     }
   }
   if(parallelize) {
@@ -417,6 +419,10 @@
       SaturationExcess[i] <- DB["SaturationExcess"]
       DeepDrainage[i] <- DB["DeepDrainage"]
       CapillarityRise[i] <- DB["CapillarityRise"]
+      if(DeepDrainage[i]> CapillarityRise[i]) {
+        DeepDrainage[i] = DeepDrainage[i] - CapillarityRise[i]
+        CapillarityRise[i]  = 0.0
+      }
       if(y$land_cover_type[i]=="wildland") {
         PL <- s[["Plants"]]
         Transpiration[i] <- sum(PL["Transpiration"])

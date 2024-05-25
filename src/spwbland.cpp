@@ -321,11 +321,19 @@ DataFrame tetisBaseFlow(List y,
         }
       }
     }
+    // if(baseflowOutput[i]>aquifer[i]) {
+    //   Rcerr<< " Baseoutflow greater than aquifer in "<< (i+1) <<"\n";
+    //   Rcout<< baseflowOutput[i]<<" "<< aquifer[i] <<"\n";
+    // }
   }
+
   //A3. Balance
+  double balsum =0.0;
   for(int i=0;i<nX;i++){
     baseflowBalance[i] = baseflowInput[i] - baseflowOutput[i];
+    balsum +=baseflowBalance[i];
   }
+  if(balsum>0.00001) stop("Non-negligible baseflow balance sum");
   DataFrame out = DataFrame::create(_["BaseflowInput"] = baseflowInput, 
                                     _["BaseflowOutput"] = baseflowOutput,
                                     _["BaseflowBalance"] = baseflowBalance);
@@ -343,7 +351,11 @@ NumericVector tetisApplyBaseflowChangesToAquifer(List y,
   int nX = aquifer.size();
   NumericVector AquiferExfiltration(nX, 0.0);
   for(int i=0;i<nX;i++){
-    aquifer[i] = std::max(0.0, aquifer[i] + baseflowBalance[i]); //New water amount in the aquifer (mm water)
+    aquifer[i] = aquifer[i] + baseflowBalance[i]; //New water amount in the aquifer (mm water)
+    if(aquifer[i] < 0.0) {
+      // Rcerr << "negative aquifer in cell "<< (i+1)<<" after base flows\n";
+      aquifer[i] = 0.0;
+    }
     double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
     if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
       AquiferExfiltration[i] = - DTAn*bedrock_porosity[i];
@@ -361,7 +373,12 @@ void tetisApplyLocalFlowsToAquifer(List y,
   
   int nX = aquifer.size();
   for(int i=0;i<nX;i++){
-    aquifer[i] = std::max(0.0, aquifer[i] + DeepDrainage[i] - CapillarityRise[i]);
+    aquifer[i] = aquifer[i] + DeepDrainage[i] - CapillarityRise[i];
+    if(aquifer[i]< 0.0) {
+      // Rcerr << "negative aquifer in cell "<< (i+1)<<" after local flows\n";
+      // Rcout << DeepDrainage[i]<< " " << CapillarityRise[i]<<"\n";
+      aquifer[i] = 0.0;
+    }
   }
 }
 // [[Rcpp::export(".tetisApplyDeepAquiferLossToAquifer")]]
