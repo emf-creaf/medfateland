@@ -63,8 +63,7 @@ res4 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
                   watershed_control = ws_control)
 example_watershed_burnin <- update_landscape(example_watershed_burnin, res4)
 plot(res4$watershed_balance$WatershedExport, type="l")
-usethis::use_data(example_watershed_burnin, overwrite = T)
-# REBUILD!!
+
 
 #Example sf from IFN3 (original coordinates)
 ifn3 <- readRDS("/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/Products/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds")
@@ -78,7 +77,11 @@ example_ifn$forest <- lapply(example_ifn$forest, function(x){
   })
 sf::st_geometry(example_ifn) <- sf::st_geometry(original_coords[1001:1100,])
 example_ifn <- sf::st_transform(example_ifn, 4326) # TO geographic coordinates
-usethis::use_data(example_ifn, overwrite = T)
+
+
+## Save as INTERNAL
+usethis::use_data(example_ifn, example_watershed, example_watershed_burnin, overwrite = T, internal = TRUE)
+## REBUILD
 
 defaultPrescriptionsBySpecies<-openxlsx::read.xlsx("data-raw/DefaultPrescriptionsBySpecies.xlsx")
 usethis::use_data(defaultPrescriptionsBySpecies, overwrite = TRUE)

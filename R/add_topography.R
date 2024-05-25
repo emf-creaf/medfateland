@@ -63,8 +63,9 @@ add_land_cover<-function(x, land_cover_map,
                          progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
-  if(!is.null(land_cover_map)) if(!inherits(dem, "SpatRaster")) cli::cli_abort("'dem' should be of class 'SpatRaster'")
-  
+  if(!is.null(land_cover_map)) {
+    if(!inherits(land_cover_map, "SpatRaster") && !inherits(land_cover_map, "SpatVector")) cli::cli_abort("'land_cover_map' should be of class 'SpatRaster' or 'SpatVector'")
+  }
   if(!("id" %in% names(x))) {
     if(progress) cli::cli_progress_step("Defining column 'id'")
     x$id <- 1:nrow(x)
