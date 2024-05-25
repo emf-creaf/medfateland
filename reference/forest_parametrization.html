@@ -88,13 +88,13 @@ check_forests() checks that forests are defined and do not contain missing value
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>An object of class <code>sf</code>. If it contains a column named 'land_cover_type', imputation
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>. If it contains a column named 'land_cover_type', imputation
 will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.
-For structural corrections or when checking, <code>x</code> should already contain a column named 'forest' containing  <code>forest</code> objects.</p></dd>
+For structural corrections or when checking, <code>x</code> should already contain a column named 'forest' containing  <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects.</p></dd>
 
 
 <dt>sf_fi</dt>
-<dd><p>An object of class <code>sf</code> with forest inventory data column 'forest'.</p></dd>
+<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with forest inventory data column 'forest'.</p></dd>
 
 
 <dt>dem</dt>
@@ -114,7 +114,7 @@ For structural corrections or when checking, <code>x</code> should already conta
 
 
 <dt>replace_existing</dt>
-<dd><p>A logical flag to force the replacement of existing <code>forest</code> objects, when present.</p></dd>
+<dd><p>A logical flag to force the replacement of existing <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects, when present.</p></dd>
 
 
 <dt>missing_class_imputation</dt>
@@ -122,15 +122,15 @@ For structural corrections or when checking, <code>x</code> should already conta
 
 
 <dt>missing_class_forest</dt>
-<dd><p>A <code>forest</code> object to be used for locations with missing class.</p></dd>
+<dd><p>A <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> object to be used for locations with missing class.</p></dd>
 
 
 <dt>merge_trees</dt>
-<dd><p>A logical flag to simplify tree cohorts by merging tree records in DBH classes (see <code>forest_mergeTrees</code>).</p></dd>
+<dd><p>A logical flag to simplify tree cohorts by merging tree records in DBH classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeTrees</a></code>).</p></dd>
 
 
 <dt>merge_shrubs</dt>
-<dd><p>A logical flag to simplify shrub cohorts by merging shrub records in height classes (see <code>forest_mergeShrubs</code>).</p></dd>
+<dd><p>A logical flag to simplify shrub cohorts by merging shrub records in height classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeShrubs</a></code>).</p></dd>
 
 
 <dt>progress</dt>
@@ -162,7 +162,7 @@ because of the missing stand metric.</p></dd>
     <h2>Value</h2>
     
 
-<p>Functions <code>impute_forests()</code> and <code>modify_forest_structure()</code> return a modified object of class <code>sf</code>.
+<p>Functions <code>impute_forests()</code> and <code>modify_forest_structure()</code> return a modified object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>.
 Function <code>check_forests()</code> returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.</p>
     </div>
     <div id="details">
@@ -177,14 +177,14 @@ the number of forest inventory plots available for each of them. Additionally, t
 to reduce the number of records (and hence, speed-up simulations).</p>
 <p>Function <code>modify_forest_structure()</code> can be used to modify specific structure variables of the imputed forests
 building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
-the function will calculate the ratio of the structure metric between the target <code>forest</code> object (see <code><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_basalArea</a></code>)
+the function will calculate the ratio of the structure metric between the target <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> object (see <code><a href="https://emf-creaf.github.io/medfate/reference/stand_values.html" class="external-link">stand_basalArea</a></code>)
 and the input map in the target location. Locations where the metric value in the map is missing are left unmodified.
 Options for structural variables are the following:</p><ul><li><p><code>mean_tree_height</code>: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).</p></li>
 <li><p><code>dominant_tree_height</code>: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).</p></li>
 <li><p><code>tree_density</code>: Should contain values in individuals per hectare. Corrects tree density.</p></li>
 <li><p><code>basal_area</code>: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.</p></li>
 <li><p><code>mean_shrub_height</code>: Should contain values in cm. Corrects shrub cover.</p></li>
-</ul><p>Function <code>check_forest()</code> checks first that <code>forest</code> objects are defined in "wildland" locations. Then, it looks for missing
+</ul><p>Function <code>check_forest()</code> checks first that <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. The function does not modify the data.</p>
     </div>
     <div id="see-also">
