@@ -24,7 +24,7 @@ IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
     IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[nc-1]);
     NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[nc-1]);
     for(int j=0;j<ni.size();j++) {
-      if((ni[j]==iCell) & (qi[j]>0.0)) {
+      if((ni[j]==iCell) && (qi[j]>0.0)) {
         IntegerVector nicells = drainageCells(queenNeigh, waterQ, nc);
         for(int k=0;k<nicells.size();k++) {
           bool inBag = false;
