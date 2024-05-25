@@ -288,7 +288,6 @@ DataFrame tetisBaseFlow(List y,
   double n_baseflow = tetis_parameters["n_baseflow"];
   
   //A. Subsurface fluxes
-  double cellArea = patchsize; //cell size in m2
   double cellWidth = sqrt(patchsize); //cell width in m
   
   //A1. Calculate soil and aquifer water table elevation (heads)
@@ -313,7 +312,7 @@ DataFrame tetisBaseFlow(List y,
         if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
       }
       double qntotal = sum(qni);
-      double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*cellArea); //avoid excessive outflow
+      double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*patchsize); //avoid excessive outflow
       double corrfactor = qntotalallowed/qntotal;
       for(int j=0;j<ni.size();j++) {
         if(qni[j]>0.0) {
@@ -344,7 +343,7 @@ NumericVector tetisApplyBaseflowChangesToAquifer(List y,
   int nX = aquifer.size();
   NumericVector AquiferExfiltration(nX, 0.0);
   for(int i=0;i<nX;i++){
-    aquifer[i] = aquifer[i] + baseflowBalance[i]; //New water amount in the aquifer (mm water)
+    aquifer[i] = std::max(0.0, aquifer[i] + baseflowBalance[i]); //New water amount in the aquifer (mm water)
     double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
     if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
       AquiferExfiltration[i] = - DTAn*bedrock_porosity[i];
@@ -362,7 +361,7 @@ void tetisApplyLocalFlowsToAquifer(List y,
   
   int nX = aquifer.size();
   for(int i=0;i<nX;i++){
-    aquifer[i] += DeepDrainage[i] - CapillarityRise[i];
+    aquifer[i] = std::max(0.0, aquifer[i] + DeepDrainage[i] - CapillarityRise[i]);
   }
 }
 // [[Rcpp::export(".tetisApplyDeepAquiferLossToAquifer")]]
