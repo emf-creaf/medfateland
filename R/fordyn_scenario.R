@@ -50,6 +50,7 @@
 #' If NULL, the default volume function is used (not recommended!).
 #' @param volume_arguments List with additional arguments for the volume function.
 #' @param management_scenario A list defining the management scenario (see \code{\link{create_management_scenario}})
+#' @param dispersal_control A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated. 
 #' @param dates A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or 
@@ -156,7 +157,9 @@
 fordyn_scenario<-function(sf, SpParams, meteo = NULL, 
                          management_scenario, 
                          volume_function = NULL, volume_arguments = NULL,
-                         local_control = defaultControl(), dates = NULL,
+                         local_control = defaultControl(), 
+                         dispersal_control = default_dispersal_control(),
+                         dates = NULL,
                          CO2ByYear = numeric(0), fire_regime = NULL,
                          summary_function=NULL, summary_arguments=NULL,
                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
@@ -520,10 +523,17 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     prev_management_args <- y$management_arguments
     y$management_arguments[managed & (!managed_step)] <- list(NULL) # Deactivates management on plots that were not selected
     
-    if(progress) cli::cli_li(paste0("Seed bank dynamics and seed dispersal..."))
-    seedbank_list <- dispersal(y, SpParams, local_control, progress = progress)
-    for(i in 1:n) { 
-      y$forest[[i]]$seedBank <- seedbank_list[[i]]
+    if(!is.null(dispersal_control)) {
+      if(progress) cli::cli_li(paste0("Seed bank dynamics and seed dispersal..."))
+      seedbank_list <- dispersal(y, SpParams, local_control, 
+                                 distance_step = dispersal_control[["distance_step"]],
+                                 maximum_dispersal_distance = dispersal_control[["maximum_dispersal_distance"]],
+                                 min_percent = dispersal_control[["min_percent"]],
+                                 stochastic_resampling = dispersal_control[["stochastic_resampling"]],
+                                 progress = FALSE)
+      for(i in 1:n) { 
+        y$forest[[i]]$seedBank <- seedbank_list[[i]]
+      }
     }
     
     # B.2 Call fordyn_spatial()

@@ -12,6 +12,7 @@ fordyn_scenario(
   volume_function = NULL,
   volume_arguments = NULL,
   local_control = defaultControl(),
+  dispersal_control = default_dispersal_control(),
   dates = NULL,
   CO2ByYear = numeric(0),
   fire_regime = NULL,
@@ -57,6 +58,8 @@ If NULL, the default volume function is used (not recommended!).}
 \item{volume_arguments}{List with additional arguments for the volume function.}
 
 \item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
+
+\item{dispersal_control}{A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated.}
 
 \item{dates}{A \code{\link{Date}} object with the days of the period to be simulated. If \code{NULL}, then the whole period of \code{meteo} is used.}
 

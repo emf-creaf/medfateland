@@ -48,6 +48,7 @@ reference:
 - title: Default parameters
   desc:  Defaults for model inputs
   contents:
+  - default_dispersal_control
   - default_watershed_control
   - default_volume_function
   - create_management_scenario

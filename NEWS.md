@@ -2,10 +2,14 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.2
+- New control parameters for dispersal
+
 # Version 2.4.1
 - Compliance with medfate v. 4.3.1
 - New helper function add_forests() to parse forest plot data tables
 - New option `simplify` in function initialize_landscape()
+- Submission to CRAN
 
 # Version 2.4.0
 - Compliance with medfate v. 4.3.0

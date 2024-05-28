@@ -48,6 +48,7 @@ fordyn_land(
   CO2ByYear = numeric(0),
   local_control = medfate::defaultControl(),
   watershed_control = default_watershed_control(),
+  dispersal_control = default_dispersal_control(),
   management_function = NULL,
   parallelize = FALSE,
   num_cores = detectCores() - 1,
@@ -112,6 +113,8 @@ for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{C
 \item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+
+\item{dispersal_control}{A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated.}
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}

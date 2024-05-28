@@ -1455,11 +1455,13 @@ growth_land<-function(r, sf, SpParams, meteo = NULL, dates = NULL,
 }
 
 #' @rdname spwb_land
+#' @param dispersal_control A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated. 
 #' @export
 fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
                         local_control = medfate::defaultControl(),
                         watershed_control = default_watershed_control(),
+                        dispersal_control = default_dispersal_control(),
                         management_function = NULL,
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                         progress = TRUE) {
@@ -1501,8 +1503,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   nArti <- sum(sf$land_cover_type %in% c("artificial"))
   nWater <- sum(sf$land_cover_type %in% c("water"))
   
-  dispersal_params <- watershed_control[["dispersal_parameters"]]
-  
+
   if(is.null(dates)) {
     # Try to get dates from input
     if(!is.null(meteo)) {
@@ -1627,19 +1628,21 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
         cell_summary[[i]] <- rbind(cell_summary[[i]], GL$sf$summary[[i]])
       }
     }
-    if(progress) cli::cli_li(paste0("Seed production/dispersal"))
     
     # Seedbank dynamics, seed production and dispersal
-    seedbank_list <- dispersal(sf, SpParams, 
-                               local_control, 
-                               distance_step = dispersal_params[["distance_step"]],
-                               maximum_dispersal_distance = dispersal_params[["maximum_dispersal_distance"]],
-                               min_percent = dispersal_params[["min_percent"]],
-                               stochastic_resampling = dispersal_params[["stochastic_resampling"]],
-                               progress = FALSE)
-    for(i in 1:nCells) { 
-      if(sf$land_cover_type[i] == "wildland")  {
-        sf$forest[[i]]$seedBank <- seedbank_list[[i]]
+    if(!is.null(dispersal_control)) {
+      if(progress) cli::cli_li(paste0("Seed production/dispersal"))
+      seedbank_list <- dispersal(sf, SpParams, 
+                                 local_control, 
+                                 distance_step = dispersal_control[["distance_step"]],
+                                 maximum_dispersal_distance = dispersal_control[["maximum_dispersal_distance"]],
+                                 min_percent = dispersal_control[["min_percent"]],
+                                 stochastic_resampling = dispersal_control[["stochastic_resampling"]],
+                                 progress = FALSE)
+      for(i in 1:nCells) { 
+        if(sf$land_cover_type[i] == "wildland")  {
+          sf$forest[[i]]$seedBank <- seedbank_list[[i]]
+        }
       }
     }
     
