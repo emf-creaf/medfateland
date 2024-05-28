@@ -49,10 +49,10 @@ complemented with two companion packages:
 - Package [**meteoland**](https://emf-creaf.github.io/meteoland) allows
   generating daily weather input for simulation models in **medfate**
   and **medfateland**.
-- Package [**medfatetraits**](https://emf-creaf.github.io/medfatetraits)
+- Package [**traits4models**](https://emf-creaf.github.io/traits4models)
   provides functions to help creating species parameter inputs for
-  **medfate** and **medfateland** simulation functions \[*under
-  development*\].
+  process-based models such as those in for **medfate** and
+  **medfateland** functions \[*under development*\].
 
 <img src="man/figures/packages.png" width="60%" style="display: block; margin: auto;" />
 

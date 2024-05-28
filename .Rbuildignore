@@ -12,3 +12,6 @@
 ^vignettes/*$
 ^figures/*$
 ^man/figures/*$
+CRAN-SUBMISSION
+cran-comments.md
+^CRAN-SUBMISSION$
