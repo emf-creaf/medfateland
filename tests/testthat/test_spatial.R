@@ -1,9 +1,9 @@
 library(medfateland)
 
 data("example_ifn")
-ypts_swpb <- initialize_landscape(example_ifn, SpParams = SpParamsMED, local_control = defaultControl(),
+ypts_swpb <- initialize_landscape(example_ifn[1:2,], SpParams = SpParamsMED, local_control = defaultControl(),
                                  model = "spwb", progress = FALSE)
-ypts_growth <- initialize_landscape(example_ifn, SpParams = SpParamsMED, local_control = defaultControl(),
+ypts_growth <- initialize_landscape(example_ifn[1:2,], SpParams = SpParamsMED, local_control = defaultControl(),
                                    model = "growth", progress = FALSE)
 
 data("examplemeteo")
