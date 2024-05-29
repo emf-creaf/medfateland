@@ -66,7 +66,7 @@ No spatial processes are simulated.
 Simulation functions accept different formats for meteorological input (described in \code{\link{spwb_spatial}}).
 }
 \examples{
-\dontrun{
+\donttest{
 #Load example landscape data
 data("example_ifn")
 

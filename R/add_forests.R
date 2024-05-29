@@ -44,7 +44,6 @@
 #'
 #' @examples
 #' 
-#' \dontrun{
 #' # Load tree data
 #' data(poblet_trees)
 #' 
@@ -94,7 +93,7 @@
 #' 
 #' # Final check
 #' check_forests(y_3)
-#' }
+#' 
 add_forests<-function(x, 
                       tree_table = NULL, tree_mapping = NULL, 
                       shrub_table = NULL, shrub_mapping = NULL, 

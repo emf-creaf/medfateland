@@ -88,7 +88,7 @@ kernel_int <- function(r, alpha, c) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(example_watershed)
 #' data(SpParamsMED)
 #' 

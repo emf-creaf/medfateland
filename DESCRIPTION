@@ -13,7 +13,7 @@ Authors@R: c(
 	person('Mario', 'Morales-Hernández', role=c('aut')),
 	person('Mario', 'Beltrán', role=c('ctb')),
 	person('Roberto', 'Molowny-Horas', role=c('ctb'), comment = c(ORCID = "0000-0003-2626-6379")))
-Description: Functions to simulate forest hydrology, forest function and dynamics over landscapes.
+Description: Simulate forest hydrology, forest function and dynamics over landscapes [De Caceres et al. (2015) <doi:10.1016/j.agrformet.2015.06.012>]. Parallelization is allowed in several simulation functions and simulations may be conducted including spatial processes such as lateral water transfer and seed dispersal.
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes

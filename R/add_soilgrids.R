@@ -49,12 +49,12 @@
 #' @seealso [add_topography()], [impute_forests()], \code{\link[medfate]{soil}}, \code{\link[medfate]{defaultSoilParams}}
 #'
 #' @examples
-#'  \dontrun{
+#'  \donttest{
 #'    library(sf)
 #'    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
 #'    x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
 #'    x_soil
-#'    # See more complete examples in vignette 'Preparing inputs'
+#'    # See more complete examples in package vignettes 'Preparing inputs'
 #'  }
 #'
 add_soilgrids <- function(x, soilgrids_path = NULL, 

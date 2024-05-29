@@ -50,7 +50,7 @@ Dispersal kernel follows Clark et al. (1999) and potential seed donors (neighbor
 A maximum value of 100\% seed bank refill is attained for species with seed production in all seed donors and the local cell.
 }
 \examples{
-\dontrun{
+\donttest{
 data(example_watershed)
 data(SpParamsMED)
 

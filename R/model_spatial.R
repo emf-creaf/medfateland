@@ -308,6 +308,7 @@
   latitude = sf::st_coordinates(sf::st_transform(sf::st_geometry(y),4326))[,2]
 
   n <- nrow(y)
+  local_control$verbose <- local_verbose
   
   if("forest" %in% names(y)) {
     forestlist <- y$forest
@@ -613,7 +614,7 @@
 #' \code{\link{initialize_landscape}}, \code{\link{update_landscape}}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load example landscape data
 #' data("example_ifn")
 #'   

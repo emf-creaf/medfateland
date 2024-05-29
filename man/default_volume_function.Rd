@@ -11,6 +11,9 @@ default_volume_function(x, SpParams = NULL)
 
 \item{SpParams}{A data frame with species parameters (not used in the default function but will be called)}
 }
+\value{
+A function amenable for wood volume estimation.
+}
 \description{
 Example function for estimating wood volume (in m3/ha) from a tree table or forest object.
 }

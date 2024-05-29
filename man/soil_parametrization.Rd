@@ -87,12 +87,12 @@ When \code{depth_to_bedrock_map} is provided, the function truncates the total d
 If regional maps of soil depth are not available, users are recommended to resort on Shangguan et al (2017).
 }
 \examples{
- \dontrun{
+ \donttest{
    library(sf)
    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
    x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
    x_soil
-   # See more complete examples in vignette 'Preparing inputs'
+   # See more complete examples in package vignettes 'Preparing inputs'
  }
 
 }

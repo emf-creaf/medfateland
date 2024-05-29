@@ -60,9 +60,7 @@ The user should manually define the mapping of land cover classes in \code{land_
 used in medfateland.
 }
 \examples{
-\dontrun{
-  # See vignette 'Preparing inputs'
-}
+# See package vignettes 'Preparing inputs'
 }
 \seealso{
 \code{\link[=impute_forests]{impute_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}

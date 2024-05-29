@@ -12,6 +12,7 @@
 #'    \item{Output should be a numeric vector of length equal to the number of tree records in 'x'}
 #'  }
 #' 
+#' @returns A function amenable for wood volume estimation.
 #' @export
 default_volume_function<-function(x, SpParams = NULL){
   if(inherits(x, "forest")) x <- x$treeData

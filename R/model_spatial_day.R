@@ -240,7 +240,7 @@
 #' @seealso \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwb_spatial}}
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' #Load example landscape data
 #' data("example_ifn")
 #'

@@ -31,9 +31,7 @@
 #' 
 #' @name add_topography
 #' @examples
-#' \dontrun{
-#'   # See vignette 'Preparing inputs'
-#' }
+#' # See package vignettes 'Preparing inputs'
 add_topography<-function(x, dem,
                          progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")

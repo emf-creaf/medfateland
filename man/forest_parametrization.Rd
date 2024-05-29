@@ -111,9 +111,7 @@ Function \code{check_forest()} checks first that \code{\link{forest}} objects ar
 data in tree or shrub attributes required for simulations. The function does not modify the data.
 }
 \examples{
-\dontrun{
-  # See vignette 'Preparing inputs'
-}
+# See package vignettes 'Preparing inputs'
 }
 \seealso{
 \code{\link[=add_topography]{add_topography()}}, \code{\link[=add_forests]{add_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}, \code{\link[medfate]{forest_mergeTrees}}

@@ -69,7 +69,6 @@ The current implementation will replace existing forests of the indicated 'id' v
 }
 \examples{
 
-\dontrun{
 # Load tree data
 data(poblet_trees)
 
@@ -119,7 +118,7 @@ summary(y_3$forest[[1]], SpParamsMED)
 
 # Final check
 check_forests(y_3)
-}
+
 }
 \seealso{
 \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{forest_mapWoodyTables}}, \code{\link[medfate]{forest_mergeTrees}}

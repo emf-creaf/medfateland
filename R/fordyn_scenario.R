@@ -112,7 +112,6 @@
 #' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}, \code{\link{dispersal}}
 #' 
 #' @examples 
-#' \dontrun{
 #' # Load example landscape data
 #' data("example_ifn")
 #'   
@@ -151,7 +150,6 @@
 #' fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
 #'                        volume_function = NULL, management_scenario = scen,
 #'                        parallelize = TRUE)
-#'}
 #'
 #' @export
 fordyn_scenario<-function(sf, SpParams, meteo = NULL, 

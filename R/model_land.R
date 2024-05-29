@@ -367,7 +367,7 @@
       )
       Runon[i] <- nonsoilResults$Runon[i]
       wtd = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])
-      if(wtd<0.0) cat(paste0("Negative WTD in ", i,"\n"))
+      if(wtd<0.0) cli::cli_alert_warning(paste0("Negative WTD in ", i,"\n"))
       XI[[i]] <- list(i = i, 
                       x = y$state[[i]],
                       meteovec = meteovec,
@@ -924,16 +924,10 @@
                                       watershed_control[["weather_aggregation_factor"]])
   
   if(progress) {
-    # cli::cli_li(paste0("Initial average soil water content (mm): ", round(initialSoilContent,2)))
-    # cli::cli_li(paste0("Initial average snowpack water content (mm): ", round(initialSnowContent,2)))
-    # cli::cli_li(paste0("Initial average aquifer water content (mm): ", round(initialAquiferContent,2)))
-    # cli::cli_li(paste0("Initial watershed water content (mm): ", round(initialLandscapeContent,2)))
-    # 
     cli::cli_progress_bar("Daily simulations", total = nDays)
   }
   
   for(day in 1:nDays) {
-    # cat(paste("Day #", day))
     datechar <- as.character(dates[day])
     gridMeteo <- .build_grid_meteo_day(y, meteo, datesMeteo, dates[day], 
                                        meteo_mapping,
@@ -1064,19 +1058,12 @@
     if(progress) cli::cli_progress_update()
   }
   if(progress) cli::cli_progress_done()
-  if(header_footer)  cli::cli_li("Done")
+  
+
   
   #Average summaries
   LandscapeBalance$Precipitation <- LandscapeBalance$Rain + LandscapeBalance$Snow
   if(watershed_model=="tetis") {
-    
-    # if(progress){
-    #   cli::cli_li(paste0("Final average soil water content (mm): ", round(finalSoilContent,2)))
-    #   cli::cli_li(paste0("Final average snowpack water content (mm): ", round(finalSnowContent,2)))
-    #   cli::cli_li(paste0("Final average aquifer water content (mm): ", round(finalAquiferContent,2)))
-    #   cli::cli_li(paste0("Final watershed water content (mm): ", round(finalLandscapeContent,2)))
-    # }
-    
     SoilLandscapeBalance$Precipitation <- SoilLandscapeBalance$Rain + SoilLandscapeBalance$Snow
     
     finalSoilContent <- 0 
@@ -1110,66 +1097,44 @@
     WatershedExportsum <- sum(LandscapeBalance$WatershedExport, na.rm=T)
     InterflowBalancesum <- sum(LandscapeBalance$InterflowBalance , na.rm=T)
     BaseflowBalancesum <- sum(LandscapeBalance$BaseflowBalance , na.rm=T)
-    
-    SoilPrecipitationsum <- sum(SoilLandscapeBalance$Precipitation, na.rm=T)
-    SoilRainfallsum <- sum(SoilLandscapeBalance$Rain, na.rm=T)
-    SoilNetRainsum <- sum(SoilLandscapeBalance$NetRain, na.rm=T)
+    snowpack_wb <- Snowsum - Snowmeltsum
+    if(header_footer) {
+      cli::cli_li(paste0("Snowpack balance",
+                         " content (mm): ", round(finalSnowContent - initialSnowContent,2),
+                         " fluxes (mm): ", round(snowpack_wb,2)))
+    }
     SoilInterceptionsum <- sum(SoilLandscapeBalance$Interception, na.rm=T)
     SoilInfiltrationsum <- sum(SoilLandscapeBalance$Infiltration, na.rm=T)
     SoilSnowsum <- sum(SoilLandscapeBalance$Snow, na.rm=T)
     SoilSnowmeltsum <- sum(SoilLandscapeBalance$Snowmelt, na.rm=T)
-    SoilCellRunoffsum <- sum(SoilLandscapeBalance$CellRunoff, na.rm=T)
-    SoilCellRunonsum <- sum(SoilLandscapeBalance$CellRunon, na.rm=T)
     SoilSaturationExcesssum <- sum(SoilLandscapeBalance$SaturationExcess, na.rm=T)
     SoilDeepDrainagesum <- sum(SoilLandscapeBalance$DeepDrainage, na.rm=T)
     SoilCapillarityRisesum <- sum(SoilLandscapeBalance$CapillarityRise, na.rm=T)
-    SoilDeepAquiferLosssum <- sum(SoilLandscapeBalance$DeepAquiferLoss, na.rm=T)
     SoilSoilEvaporationsum <- sum(SoilLandscapeBalance$SoilEvaporation , na.rm=T)
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
-    SoilAquiferExfiltrationsum <- sum(SoilLandscapeBalance$AquiferExfiltration , na.rm=T)
     SoilInterflowBalancesum <- sum(SoilLandscapeBalance$InterflowBalance , na.rm=T)
-    snowpack_wb <- Snowsum - Snowmeltsum
-    if(header_footer) {
-      cli::cli_li("Water balance check")
-      cat(paste0("  Change in snowpack water content (mm): ", round(finalSnowContent - initialSnowContent,2),"\n"))
-      cat(paste0("  Snowpack water balance result (mm): ",round(snowpack_wb,2),"\n"))
-      cat(paste0("  Snowpack water balance components:\n"))
-      cat(paste0("    Snow fall (mm) ", round(Snowsum,2), "  Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
-    }
     soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowBalancesum)
     soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
     soil_wb <-  soil_input - soil_output
     if(header_footer) {
-      cat(paste0("\n  Change in soil water content (mm): ", round(finalSoilContent - initialSoilContent,2),"\n"))
-      cat(paste0("  Soil water balance result (mm): ",round(soil_wb,2),"\n"))
-      cat(paste0("  Soil water balance components:\n"))
-      cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"  Saturation excess (mm) ",round(SoilSaturationExcesssum,2),"\n"))
-      cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"  Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
-      cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2),  "  Plant transpiration (mm) ", round(SoilTranspirationsum + SoilHerbTranspirationsum,2),"\n"))
-      cat(paste0("    Interflow balance (mm) ", round(SoilInterflowBalancesum,2),"\n"))
+      cli::cli_li(paste0("Soil balance",
+                         " content (mm): ", round(finalSoilContent - initialSoilContent,2),
+                         " fluxes (mm): ",round(soil_wb,2)))
     }
     
     aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum - DeepAquiferLosssum
     if(header_footer){
-      cat(paste0("\n  Change in aquifer water content (mm): ", round(finalAquiferContent - initialAquiferContent,2),"\n"))
-      cat(paste0("  Aquifer water balance result (mm): ",round(aquifer_wb,2),"\n"))
-      cat(paste0("  Aquifer water balance components:\n"))
-      cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"\n"))
-      cat(paste0("    Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"  Deep aquifer loss (mm) ", round(DeepAquiferLosssum,2), "\n"))
+      cli::cli_li(paste0("Aquifer balance",
+                         " content (mm): ", round(finalAquiferContent - initialAquiferContent,2),
+                         " fluxes (mm): ",round(aquifer_wb,2)))
     }
     
     landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum - DeepAquiferLosssum
     if(header_footer) {
-      cat(paste0("\n  Change in watershed water content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),"\n"))
-      cat(paste0("  Watershed water balance result (mm): ",round(landscape_wb,2),"\n"))
-      cat(paste0("  Watershed water balance components:\n"))
-      cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
-      cat(paste0("    Interception (mm) ", round(Interceptionsum,2), "  Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))
-      cat(paste0("    Plant transpiration (mm) ",round(Transpirationsum + HerbTranspirationsum ,2),"\n"))
-      cat(paste0("    Subsurface flow balance (mm) ",round(InterflowBalancesum,2),"\n"))
-      cat(paste0("    Groundwater flow balance (mm) ", round(BaseflowBalancesum,2),"\n"))
-      cat(paste0("    Export runoff (mm) ", round(WatershedExportsum,2),"\n"))
+      cli::cli_li(paste0("Watershed balance",
+                         " content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),
+                         " fluxes (mm): ",round(landscape_wb,2)))
     }
   }
   if(watershed_model=="serghei") {
@@ -1357,7 +1322,7 @@
 #' \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' # Load example watershed data
 #' data("example_watershed")
 #' 
@@ -1396,6 +1361,8 @@
 #'                  dates = dates, summary_frequency = "month",
 #'                  watershed_control = ws_control)
 #'                  
+#' # Print a summary of water balance components
+#' summary(res)
 #' 
 #' # Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
 #' example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
@@ -2083,7 +2050,6 @@ cell_neighbors<-function(sf, r) {
 #' \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 #' 
 #' @examples 
-#' \dontrun{
 #' # Load example watershed data after burnin period
 #' data("example_watershed_burnin")
 #' 
@@ -2115,7 +2081,6 @@ cell_neighbors<-function(sf, r) {
 #' sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
 #'                         date = date, 
 #'                         watershed_control = ws_control)
-#' }
 #' 
 #' @name spwb_land_day
 #' @export
@@ -2144,4 +2109,83 @@ growth_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
                             watershed_control = watershed_control, 
                             parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                             progress = progress, header_footer = progress))
+}
+
+
+#' Summary of landscape simulations
+#'
+#' @param object An object of class \code{spwb_land} or \code{groth_land} 
+#' @param ... Additional parameters for summary functions
+#'
+#' @export
+#' 
+#' @rdname spwb_land
+summary.spwb_land<-function(object, ...){
+  wb <- object$watershed_balance
+  sb <- object$watershed_soil_balance
+  Precipitationsum <- sum(wb$Precipitation, na.rm=T)
+  Rainfallsum <- sum(wb$Rain, na.rm=T)
+  NetRainsum <- sum(wb$NetRain, na.rm=T)
+  Interceptionsum <- sum(wb$Interception, na.rm=T)
+  Infiltrationsum <- sum(wb$Infiltration, na.rm=T)
+  Snowsum <- sum(wb$Snow, na.rm=T)
+  Snowmeltsum <- sum(wb$Snowmelt, na.rm=T)
+  CellRunoffsum <- sum(wb$CellRunoff, na.rm=T)
+  CellRunonsum <- sum(wb$CellRunon, na.rm=T)
+  DeepDrainagesum <- sum(wb$DeepDrainage, na.rm=T)
+  CapillarityRisesum <- sum(wb$CapillarityRise, na.rm=T)
+  DeepAquiferLosssum <- sum(wb$DeepAquiferLoss, na.rm=T)
+  SaturationExcesssum <- sum(wb$SaturationExcess, na.rm=T)
+  SoilEvaporationsum <- sum(wb$SoilEvaporation , na.rm=T)
+  Transpirationsum <- sum(wb$Transpiration , na.rm=T)
+  HerbTranspirationsum <- sum(wb$HerbTranspiration , na.rm=T)
+  AquiferExfiltrationsum <- sum(wb$AquiferExfiltration , na.rm=T)
+  WatershedExportsum <- sum(wb$WatershedExport, na.rm=T)
+  InterflowBalancesum <- sum(wb$InterflowBalance , na.rm=T)
+  BaseflowBalancesum <- sum(wb$BaseflowBalance , na.rm=T)
+  
+  SoilPrecipitationsum <- sum(sb$Precipitation, na.rm=T)
+  SoilRainfallsum <- sum(sb$Rain, na.rm=T)
+  SoilNetRainsum <- sum(sb$NetRain, na.rm=T)
+  SoilInterceptionsum <- sum(sb$Interception, na.rm=T)
+  SoilInfiltrationsum <- sum(sb$Infiltration, na.rm=T)
+  SoilSnowsum <- sum(sb$Snow, na.rm=T)
+  SoilSnowmeltsum <- sum(sb$Snowmelt, na.rm=T)
+  SoilCellRunoffsum <- sum(sb$CellRunoff, na.rm=T)
+  SoilCellRunonsum <- sum(sb$CellRunon, na.rm=T)
+  SoilSaturationExcesssum <- sum(sb$SaturationExcess, na.rm=T)
+  SoilDeepDrainagesum <- sum(sb$DeepDrainage, na.rm=T)
+  SoilCapillarityRisesum <- sum(sb$CapillarityRise, na.rm=T)
+  SoilDeepAquiferLosssum <- sum(sb$DeepAquiferLoss, na.rm=T)
+  SoilSoilEvaporationsum <- sum(sb$SoilEvaporation , na.rm=T)
+  SoilHerbTranspirationsum <- sum(sb$HerbTranspiration , na.rm=T)
+  SoilTranspirationsum <- sum(sb$Transpiration , na.rm=T)
+  SoilAquiferExfiltrationsum <- sum(sb$AquiferExfiltration , na.rm=T)
+  SoilInterflowBalancesum <- sum(sb$InterflowBalance , na.rm=T)
+  
+  cat(paste0("  Snowpack water balance components:\n"))
+  cat(paste0("    Snow fall (mm) ", round(Snowsum,2), "  Snow melt (mm) ",round(Snowmeltsum,2),"\n"))
+  cat(paste0("  Soil water balance components:\n"))
+  cat(paste0("    Infiltration (mm) ", round(SoilInfiltrationsum,2),"  Saturation excess (mm) ",round(SoilSaturationExcesssum,2),"\n"))
+  cat(paste0("    Deep drainage (mm) ",round(SoilDeepDrainagesum,2),"  Capillarity rise (mm) ", round(SoilCapillarityRisesum,2),"\n"))
+  cat(paste0("    Soil evaporation (mm) ",round(SoilSoilEvaporationsum,2),  "  Plant transpiration (mm) ", round(SoilTranspirationsum + SoilHerbTranspirationsum,2),"\n"))
+  cat(paste0("    Interflow balance (mm) ", round(SoilInterflowBalancesum,2),"\n"))
+  cat(paste0("  Aquifer water balance components:\n"))
+  cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"\n"))
+  cat(paste0("    Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"  Deep aquifer loss (mm) ", round(DeepAquiferLosssum,2), "\n"))
+  cat(paste0("  Watershed water balance components:\n"))
+  cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
+  cat(paste0("    Interception (mm) ", round(Interceptionsum,2), "  Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))
+  cat(paste0("    Plant transpiration (mm) ",round(Transpirationsum + HerbTranspirationsum ,2),"\n"))
+  cat(paste0("    Subsurface flow balance (mm) ",round(InterflowBalancesum,2),"\n"))
+  cat(paste0("    Groundwater flow balance (mm) ", round(BaseflowBalancesum,2),"\n"))
+  cat(paste0("    Export runoff (mm) ", round(WatershedExportsum,2),"\n"))
+  
+}
+
+#' @export
+#' 
+#' @rdname spwb_land
+summary.growth_land <- function(object, ...) {
+  summary.spwb_land(object, ...)
 }

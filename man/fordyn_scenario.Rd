@@ -127,7 +127,6 @@ meaning that management parameters need to follow the structure of \code{\link{d
 Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
 }
 \examples{
-\dontrun{
 # Load example landscape data
 data("example_ifn")
   
@@ -166,7 +165,6 @@ fs_12 <- fordyn_scenario(example_ifn_utm31, SpParamsMED, meteo = meteo_01_02,
 fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
                        volume_function = NULL, management_scenario = scen,
                        parallelize = TRUE)
-}
 
 }
 \seealso{

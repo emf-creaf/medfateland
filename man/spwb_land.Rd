@@ -5,6 +5,8 @@
 \alias{growth_land}
 \alias{fordyn_land}
 \alias{cell_neighbors}
+\alias{summary.spwb_land}
+\alias{summary.growth_land}
 \title{Watershed simulations}
 \usage{
 spwb_land(
@@ -57,6 +59,10 @@ fordyn_land(
 )
 
 cell_neighbors(sf, r)
+
+\method{summary}{spwb_land}(object, ...)
+
+\method{summary}{growth_land}(object, ...)
 }
 \arguments{
 \item{r}{An object of class \code{\link{SpatRaster}}, defining the raster topology.}
@@ -118,6 +124,10 @@ for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{C
 
 \item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
 of such lists, one per spatial unit.}
+
+\item{object}{An object of class \code{spwb_land} or \code{groth_land}}
+
+\item{...}{Additional parameters for summary functions}
 }
 \value{
 Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
@@ -215,7 +225,7 @@ recommended to resort on weather interpolation (see \code{\link{spwb_spatial}}).
 than that of raster 'r', by changing the watershed control parameter called 'weather_aggregation_factor' (see \code{\link{default_watershed_control}}).
 }
 \examples{
-\dontrun{
+\donttest{
 # Load example watershed data
 data("example_watershed")
 
@@ -254,6 +264,8 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
                  
+# Print a summary of water balance components
+summary(res)
 
 # Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,

@@ -105,7 +105,6 @@ provided by \code{\link{growth_day}}.}
 See details in \code{\link{spwb_land}}.
 }
 \examples{
-\dontrun{
 # Load example watershed data after burnin period
 data("example_watershed_burnin")
 
@@ -137,7 +136,6 @@ date <- "2001-03-01"
 sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                         date = date, 
                         watershed_control = ws_control)
-}
 
 }
 \references{

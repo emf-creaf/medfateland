@@ -149,7 +149,7 @@ users can directly supply a fire regime instance matrix, derived from another so
 with fire regimes assumes all forest stands share the same period of simulation, but enforcing this is left to the user.
 }
 \examples{
-\dontrun{
+\donttest{
 # Load example landscape data
 data("example_ifn")
   

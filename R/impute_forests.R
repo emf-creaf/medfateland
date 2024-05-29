@@ -55,9 +55,7 @@
 #' @export
 #' @name forest_parametrization
 #' @examples
-#' \dontrun{
-#'   # See vignette 'Preparing inputs'
-#' }
+#' # See package vignettes 'Preparing inputs'
 impute_forests <-function(x, sf_fi, dem, 
                           forest_map, 
                           var_class = NA, 
