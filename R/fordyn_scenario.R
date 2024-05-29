@@ -62,6 +62,7 @@
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
+#' @param verbose Boolean flag to display additional console output.
 #' 
 #' @details This function allows coordinating the dynamics of simulated forest stands via a management scenario 
 #' defined at the landscape/regional level (see different kinds of scenarios and how to specify them in \code{\link{create_management_scenario}}).
@@ -112,20 +113,13 @@
 #' @seealso \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}, \code{\link{dispersal}}
 #' 
 #' @examples 
+#' \donttest{
 #' # Load example landscape data
 #' data("example_ifn")
 #'   
 #' # Load example meteo data frame from package meteoland
 #' data("examplemeteo")
 #'   
-#' #Prepare a three-year meteorological data in two blocks
-#' meteo_01_02 <- rbind(examplemeteo, examplemeteo)
-#' row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
-#'                               as.Date("2002-12-31"), by="day")
-#' meteo_03 <- examplemeteo
-#' row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
-#'                            as.Date("2003-12-31"), by="day")
-#'                          
 #' # Load default medfate parameters
 #' data("SpParamsMED")
 #' 
@@ -141,16 +135,14 @@
 #' # Transform to UTM31 (necessary for dispersal)
 #' example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
 #' 
-#' # Launch simulation scenario (years 2001 and 2002)
-#' fs_12 <- fordyn_scenario(example_ifn_utm31, SpParamsMED, meteo = meteo_01_02, 
-#'                        volume_function = NULL, management_scenario = scen,
-#'                        parallelize = TRUE)
-#'                        
-#' # Continue simulation scenario 1 (year 2003)
-#' fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
-#'                        volume_function = NULL, management_scenario = scen,
-#'                        parallelize = TRUE)
-#'
+#' # Subset three plots to speed-up calculations
+#' example_subset <- example_ifn_utm31[31:33, ]
+#' 
+#' # Launch simulation scenario
+#' fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo, 
+#'                          volume_function = NULL, management_scenario = scen,
+#'                          parallelize = FALSE)
+#' }
 #' @export
 fordyn_scenario<-function(sf, SpParams, meteo = NULL, 
                          management_scenario, 
@@ -160,7 +152,8 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
                          dates = NULL,
                          CO2ByYear = numeric(0), fire_regime = NULL,
                          summary_function=NULL, summary_arguments=NULL,
-                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, progress = TRUE){
+                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                         progress = TRUE, verbose = FALSE){
   
   if(progress)  cli::cli_h1(paste0("Simulation of a management/fire scenario with fordyn"))
   nspp = nrow(SpParams)
@@ -264,7 +257,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       }
     }
     if(scenario_type == "input_demand"){
-      if(progress) {
+      if(verbose) {
         cli::cli_li(paste0("Fixed demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
@@ -281,7 +274,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       if(is.null(names(extraction_rates))) stop("Extraction rates should be named")
       if(!all(as.character(years) %in% names(extraction_rates))) stop("Extraction rates have not been specified for all simulation years")
       extraction_rates <- extraction_rates[as.character(years)]
-      if(progress) {
+      if(verbose) {
         cli::cli_li(paste0("Input demand:\n"))
         if(is.vector(spp_demand)) {
           for(i in 1:length(spp_demand)) {
@@ -313,7 +306,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   names(managed) <- y$id
   
   units = sort(unique(y$management_unit), na.last = TRUE)
-  if(progress) {
+  if(verbose) {
     cli::cli_li(paste0("Management units:"))
     for(i in 1:length(units)) {
       if(!is.na(units[i])) cat(paste0("     ", sum(y$management_unit==units[i], na.rm=TRUE), 
@@ -494,7 +487,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
         sel_available_stands[is.na(sel_available_stands)] <- FALSE
       }
 
-      if(progress) {
+      if(verbose) {
         if(sum(managed_step)>0) {
           cli::cli_li(paste0(sum(managed_step), " stand(s) where management will be simulated (", sum(final_cuts) , " because of final cuts):"))
           for(i in 1:length(units)) {
@@ -554,7 +547,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
     restored <- 0
     for(i in 1:n) {
       if(inherits(fds$result[[i]], "error")) {
-        cat(paste0("Error in plot ", i, ":", fds$result[[i]], "\n"))
+        cli::cli_alert_warning(paste0("Error in plot ", i, ":", fds$result[[i]]))
         forest_backup <- y_backup$forest[[i]]
         y$forest[[i]] <- forest_backup
         if("state" %in% names(y_backup)) {
@@ -690,7 +683,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
       offset_demand <- demand_target[, yi] - extracted_target[,yi]
       last_growth <- growth_target_sum[yi]
     }
-    if(progress) {
+    if(verbose) {
       cli::cli_li(paste0("Management statistics (all species):"))
       cat(paste0("      Initial (m3): ", round(initial_sum[yi]),
                  "      Growth (m3): ", round(growth_sum[yi]), 

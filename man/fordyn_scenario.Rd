@@ -21,7 +21,8 @@ fordyn_scenario(
   parallelize = FALSE,
   num_cores = detectCores() - 1,
   chunk_size = NULL,
-  progress = TRUE
+  progress = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -80,6 +81,8 @@ If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_sp
 \item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
+
+\item{verbose}{Boolean flag to display additional console output.}
 }
 \value{
 An list of class 'fordyn_scenario' with the following elements:
@@ -127,20 +130,13 @@ meaning that management parameters need to follow the structure of \code{\link{d
 Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
 }
 \examples{
+\donttest{
 # Load example landscape data
 data("example_ifn")
   
 # Load example meteo data frame from package meteoland
 data("examplemeteo")
   
-#Prepare a three-year meteorological data in two blocks
-meteo_01_02 <- rbind(examplemeteo, examplemeteo)
-row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
-                              as.Date("2002-12-31"), by="day")
-meteo_03 <- examplemeteo
-row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
-                           as.Date("2003-12-31"), by="day")
-                         
 # Load default medfate parameters
 data("SpParamsMED")
 
@@ -156,16 +152,14 @@ example_ifn$represented_area_ha <- 100
 # Transform to UTM31 (necessary for dispersal)
 example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
 
-# Launch simulation scenario (years 2001 and 2002)
-fs_12 <- fordyn_scenario(example_ifn_utm31, SpParamsMED, meteo = meteo_01_02, 
-                       volume_function = NULL, management_scenario = scen,
-                       parallelize = TRUE)
-                       
-# Continue simulation scenario 1 (year 2003)
-fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
-                       volume_function = NULL, management_scenario = scen,
-                       parallelize = TRUE)
+# Subset three plots to speed-up calculations
+example_subset <- example_ifn_utm31[31:33, ]
 
+# Launch simulation scenario
+fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo, 
+                         volume_function = NULL, management_scenario = scen,
+                         parallelize = FALSE)
+}
 }
 \seealso{
 \code{\link{fordyn_spatial}}, \code{\link{create_management_scenario}}, \code{\link{dispersal}}

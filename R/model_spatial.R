@@ -624,45 +624,16 @@
 #' # Load default medfate parameters
 #' data("SpParamsMED")
 #'   
+#' # Subset two plots to speed-up calculations
+#' example_subset <- example_ifn[31:32, ]
+#' 
 #' # Perform simulation
 #' dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
-#' res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, dates = dates)
+#' res <- spwb_spatial(example_subset, SpParamsMED, examplemeteo, dates = dates)
 #'   
-#' # Generate summaries (these could have also been specified when calling 'spwbspatial')
-#' res_sum <- simulation_summary(res, summary_function = summary.spwb, freq="month")
-#' 
-#' # Plot summaries
-#' plot_summary(res_sum, "Transpiration", "2001-03-01")
-#' 
 #' # Perform fordyn simulation for one year (one stand) without management
-#' res_noman <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo)
+#' res_noman <- fordyn_spatial(example_subset, SpParamsMED, examplemeteo)
 #' 
-#' # Add management arguments to all stands
-#' example_ifn$management_arguments <- vector("list", nrow(example_ifn))
-#' for(i in 1:nrow(example_ifn)) example_ifn$management_arguments[[i]] <- defaultManagementArguments()
-#' 
-#' # Change thinning threshold for stand #1
-#' example_ifn$management_arguments[[1]]$thinningThreshold <- 15
-#' 
-#' # Perform fordyn simulation for one year (one stand) with management
-#' res_man <- fordyn_spatial(example_ifn[1,], SpParamsMED, examplemeteo,
-#'                           management_function = defaultManagementFunction)
-#' 
-#' # Compare table of cuttings with vs. without management
-#' res_noman$result[[1]]$CutTreeTable
-#' res_man$result[[1]]$CutTreeTable
-#' 
-#' # Perform fordyn simulation for one year with fire regime
-#' example_ifn10 <- example_ifn[1:10,]
-#' example_ifn10$represented_area_ha <- 100
-#' regime <- create_fire_regime(c("2001" = 200))
-#' res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
-#'                            fire_regime = regime)
-#' 
-#' # Perform fordyn simulation for one year with fire regime instance
-#' regime_instance <- fire_regime_instance(example_ifn10, regime)
-#' res_fire <- fordyn_spatial(example_ifn10, SpParamsMED, examplemeteo, 
-#'                            fire_regime = regime_instance)
 #' }
 #' 
 #' @name spwb_spatial
