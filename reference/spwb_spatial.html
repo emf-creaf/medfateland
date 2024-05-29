@@ -18,7 +18,7 @@ No spatial processes are simulated."><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.2</span>
       </span>
     </div>
 
@@ -232,7 +232,7 @@ with fire regimes assumes all forest stands share the same period of simulation,
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Load example landscape data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ifn"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
@@ -242,46 +242,46 @@ with fire regimes assumes all forest stands share the same period of simulation,
 <span class="r-in"><span><span class="co"># Load default medfate parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="co"># Subset two plots to speed-up calculations</span></span></span>
+<span class="r-in"><span><span class="va">example_subset</span> <span class="op">&lt;-</span> <span class="va">example_ifn</span><span class="op">[</span><span class="fl">31</span><span class="op">:</span><span class="fl">32</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Perform simulation</span></span></span>
 <span class="r-in"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-15"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spwb_spatial</span><span class="op">(</span><span class="va">example_subset</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 2 input objects for model 'spwb'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 2 input objects for model 'spwb' <span style="color: #B2B2B2;">[79ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'spwb' simulations on 2 locations</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'spwb' simulations on 2 locations <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span>  </span></span>
-<span class="r-in"><span><span class="co"># Generate summaries (these could have also been specified when calling 'spwbspatial')</span></span></span>
-<span class="r-in"><span><span class="va">res_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulation_summary.html">simulation_summary</a></span><span class="op">(</span><span class="va">res</span>, summary_function <span class="op">=</span> <span class="va">summary.spwb</span>, freq<span class="op">=</span><span class="st">"month"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot summaries</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-03-01"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Perform fordyn simulation for one year (one stand) without management</span></span></span>
-<span class="r-in"><span><span class="va">res_noman</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_ifn</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_noman</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_subset</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'fordyn'</span> <span style="color: #00BBBB;">────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[15ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'fordyn' simulations on 2 locations</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 2 locations <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  8s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Add management arguments to all stands</span></span></span>
-<span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">management_arguments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">example_ifn</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">example_ifn</span><span class="op">)</span><span class="op">)</span> <span class="va">example_ifn</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">defaultManagementArguments</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Change thinning threshold for stand #1</span></span></span>
-<span class="r-in"><span><span class="va">example_ifn</span><span class="op">$</span><span class="va">management_arguments</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thinningThreshold</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Perform fordyn simulation for one year (one stand) with management</span></span></span>
-<span class="r-in"><span><span class="va">res_man</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_ifn</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>,</span></span>
-<span class="r-in"><span>                          management_function <span class="op">=</span> <span class="va">defaultManagementFunction</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Compare table of cuttings with vs. without management</span></span></span>
-<span class="r-in"><span><span class="va">res_noman</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">CutTreeTable</span></span></span>
-<span class="r-in"><span><span class="va">res_man</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">CutTreeTable</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Perform fordyn simulation for one year with fire regime</span></span></span>
-<span class="r-in"><span><span class="va">example_ifn10</span> <span class="op">&lt;-</span> <span class="va">example_ifn</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">example_ifn10</span><span class="op">$</span><span class="va">represented_area_ha</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
-<span class="r-in"><span><span class="va">regime</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_fire_regime.html">create_fire_regime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2001"</span> <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res_fire</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_ifn10</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
-<span class="r-in"><span>                           fire_regime <span class="op">=</span> <span class="va">regime</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Perform fordyn simulation for one year with fire regime instance</span></span></span>
-<span class="r-in"><span><span class="va">regime_instance</span> <span class="op">&lt;-</span> <span class="fu"><a href="fire_regime_instance.html">fire_regime_instance</a></span><span class="op">(</span><span class="va">example_ifn10</span>, <span class="va">regime</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res_fire</span> <span class="op">&lt;-</span> <span class="fu">fordyn_spatial</span><span class="op">(</span><span class="va">example_ifn10</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
-<span class="r-in"><span>                           fire_regime <span class="op">=</span> <span class="va">regime_instance</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

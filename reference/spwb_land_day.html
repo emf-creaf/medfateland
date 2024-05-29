@@ -23,7 +23,7 @@ provided by growth_day.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.2</span>
       </span>
     </div>
 
@@ -194,8 +194,7 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Load example watershed data after burnin period</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example watershed data after burnin period</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set request for daily model results in cells number 3, 6 (outlet) and 9</span></span></span>
@@ -205,6 +204,8 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-in"><span><span class="co"># Get bounding box to determine limits</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">example_watershed_burnin</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    xmin    ymin    xmax    ymax </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  401430 4671870  402830 4672570 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Define a raster topology, using terra package, </span></span></span>
 <span class="r-in"><span><span class="co"># with the same CRS as the watershed. In this example cells have 100 m side.</span></span></span>
@@ -226,7 +227,30 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-in"><span><span class="va">sf_out</span> <span class="op">&lt;-</span> <span class="fu">spwb_land_day</span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span></span>
 <span class="r-in"><span>                        date <span class="op">=</span> <span class="va">date</span>, </span></span>
 <span class="r-in"><span>                        watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed for day '2001-03-01'</span> <span style="color: #00BBBB;">────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking topology</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[20ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[25ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Hydrological model: TETIS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of grid cells: 120 Number of target cells: 66</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Average cell area: 10006 m2, Total area: 120 ha, Target area: 66 ha</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Cell land use wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Cells with soil: 65</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of cells with daily model results requested: 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of outlet cells: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building spwb input</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[193ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

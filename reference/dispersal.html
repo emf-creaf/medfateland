@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.2</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_watershed</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -136,17 +136,111 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate seed production and dispersal over the watershed</span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span> <span class="op">&lt;-</span> <span class="fu">dispersal</span><span class="op">(</span><span class="va">example_watershed_utm31</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed production</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[18ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[901ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[3.8s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Species   Percent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          Acer campestre  2.608940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     Colutea arborescens 12.593774</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     Coriaria myrtifolia  2.161164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        Cornus sanguinea  1.779891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        Corylus avellana  1.779891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          Crataegus spp.  2.523497</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       Cytisus scoparius 11.281491</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8             Daphne spp.  2.528290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          Dorycnium spp. 32.933334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10           Genista spp. 53.627022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11           Hedera helix 17.491668</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Juniperus communis 11.127593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13         Lavandula spp.  1.863512</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14      Ligustrum vulgare 22.116229</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15          Lonicera spp. 15.433666</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Phillyrea angustifolia  5.497512</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17       Pinus halepensis  4.348542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18            Pinus nigra 17.521331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19       Pinus sylvestris 28.486686</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     Pistacia lentiscus  5.098280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21           Populus spp.  1.779891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      Quercus coccifera 34.397097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23        Quercus faginea 21.551717</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24           Quercus ilex  8.188401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25           Rhamnus spp.  2.452979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26             Ribes spp. 10.298544</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27              Rosa spp. 20.060708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28             Rubus spp. 64.958064</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29             Salix spp.  1.779891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30      Salvia rosmarinus 48.519881</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31              Ulex spp.  2.434644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32             Ulmus spp.  1.779891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33          Viburnum spp. 19.875410</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Transform to UTM31</span></span></span>
 <span class="r-in"><span><span class="va">example_ifn_utm31</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">example_ifn</span>, crs <span class="op">=</span> <span class="fl">32631</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate seed production and dispersal over the set of forest inventory plots</span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span> <span class="op">&lt;-</span> <span class="fu">dispersal</span><span class="op">(</span><span class="va">example_ifn_utm31</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[14ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed production</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[27ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1.1s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[15.7s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Species   Percent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          Acer campestre  3.930318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      Buxus sempervirens  1.105246</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     Colutea arborescens 63.099736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     Coriaria myrtifolia  3.613453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        Cornus sanguinea  2.423577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        Corylus avellana  2.423577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          Crataegus spp.  5.822714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       Cytisus scoparius 65.683790</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9             Daphne spp.  3.930318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         Dorycnium spp.  2.176420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11           Genista spp. 78.548559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12           Hedera helix 71.033800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     Juniperus communis 63.856709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         Lavandula spp.  1.818856</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      Ligustrum vulgare 74.805260</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16          Lonicera spp. 64.987150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Phillyrea angustifolia  3.687517</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18       Pinus halepensis  8.234622</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19            Pinus nigra 15.061614</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20       Pinus sylvestris 84.642661</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     Pistacia lentiscus  3.101224</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22           Populus spp.  2.991203</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23      Quercus coccifera 77.907326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24        Quercus faginea 73.178480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25           Quercus ilex  5.885623</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26           Rhamnus spp.  4.758933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27             Ribes spp. 64.087529</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28              Rosa spp. 73.242211</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29             Rubus spp. 90.007868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30             Salix spp.  2.423577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31      Salvia rosmarinus 14.565035</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32             Tilia spp.  1.506741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33              Ulex spp.  2.847994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34             Ulmus spp.  2.423577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35          Viburnum spp. 76.993421</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>

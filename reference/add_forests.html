@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.2</span>
       </span>
     </div>
 
@@ -138,7 +138,6 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Load tree data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">poblet_trees</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -153,12 +152,23 @@
 <span class="r-in"><span>                id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"POBL_CTL"</span>, <span class="st">"POBL_THI_BEF"</span>, <span class="st">"POBL_THI_AFT"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">d</span>, coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 3 features and 1 field</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 1.0215 ymin: 41.3432 xmax: 1.0219 ymax: 41.3443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             id               geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     POBL_CTL POINT (1.0215 41.3432)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 POBL_THI_BEF POINT (1.0219 41.3443)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 POBL_THI_AFT POINT (1.0219 41.3443)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Define tree mapping </span></span></span>
 <span class="r-in"><span><span class="va">mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"Plot.Code"</span>, <span class="st">"Species.name"</span> <span class="op">=</span> <span class="st">"Species"</span>, <span class="st">"DBH"</span> <span class="op">=</span> <span class="st">"Diameter.cm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Read tree data (warnings are raised)</span></span></span>
 <span class="r-in"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu">add_forests</span><span class="op">(</span><span class="va">x</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Taxon names that were not matched: Quercus humilis.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Taxon names that were not matched: Quercus humilis.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Correct scientific name for downy oak and repeat to avoid losing tree records</span></span></span>
 <span class="r-in"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">==</span><span class="st">"Quercus humilis"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Quercus pubescens"</span></span></span>
@@ -166,6 +176,12 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Display summary of first forest</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">y_1</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tree BA (m2/ha): 3.0179815  adult trees: 3.0179815  saplings: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Density (ind/ha) adult trees: 267  saplings: 0  shrubs (estimated): 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cover (%) adult trees: 42.3272186  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LAI (m2/m2) total: 0.5419688  adult trees: 0.5419688  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fuel loading (kg/m2) total: 0.1414227  adult trees: 0.1414227  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PAR ground (%): NA  SWR ground (%): NA </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add sampled plot surface and repeat reading to correct tree density</span></span></span>
 <span class="r-in"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">PlotSurface</span> <span class="op">&lt;-</span> <span class="fl">706.86</span></span></span>
@@ -173,9 +189,19 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu">add_forests</span><span class="op">(</span><span class="va">x</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cover (%) adult trees: 100  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LAI (m2/m2) total: 4.9189289  adult trees: 4.9189289  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fuel loading (kg/m2) total: 1.2992685  adult trees: 1.2992685  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PAR ground (%): NA  SWR ground (%): NA </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Check forests (height is missing!)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="forest_parametrization.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 3 non-null 'forest' elements out of 3 wildland locations (100%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No wildland locations with NULL values in column 'forest'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All objects in column 'forest' have the right class.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing tree height values detected for 3 wildland locations (100%).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate tree height using general allometric</span></span></span>
 <span class="r-in"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Height.cm</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">1.806</span><span class="op">*</span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Diameter.cm</span><span class="op">^</span><span class="fl">0.518</span></span></span>
@@ -185,10 +211,20 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu">add_forests</span><span class="op">(</span><span class="va">x</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cover (%) adult trees: 100  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LAI (m2/m2) total: 4.9189289  adult trees: 4.9189289  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fuel loading (kg/m2) total: 1.2992685  adult trees: 1.2992685  saplings: 0  shrubs: 0  herbs: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PAR ground (%): NA  SWR ground (%): NA </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Final check</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="forest_parametrization.html">check_forests</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 3 non-null 'forest' elements out of 3 wildland locations (100%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No wildland locations with NULL values in column 'forest'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All objects in column 'forest' have the right class.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No missing values detected in key tree/shrub attributes of 'forest' objects.</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
