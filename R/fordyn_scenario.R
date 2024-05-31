@@ -159,7 +159,7 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   nspp = nrow(SpParams)
   
   # Disable seed bank dynamics inside fordyn (it is dealt with in dispersal)
-  local_control$allowSeedBankDynamics <- FALSE
+  local_control$allowSeedBankDynamics <- is.null(dispersal_control)
     
   offset_demand <- NULL
   last_growth <- NULL 
@@ -383,6 +383,13 @@ fordyn_scenario<-function(sf, SpParams, meteo = NULL,
   initial_volume_spp <- .standingVolume(y, SpParams, volume_function, volume_arguments)
   if(progress) cli::cli_li(paste0("Initial volume: ", round(sum(initial_volume_spp)), " m3"))
   
+  if(progress) {
+    if(is.null(dispersal_control)) {
+      cli::cli_li("Seed dispersal process not considered.")
+    } else {
+      cli::cli_li("Seed dispersal process included.")
+    }
+  }
   # B. Year loop
   if(progress) cli::cli_h2("Simulation")
   for(yi in 1:length(years)) {

@@ -49,11 +49,11 @@ In this example we will use, for simplicity, the same weather data for all stand
 data("examplemeteo")
   
 meteo_01_02 <- rbind(examplemeteo, examplemeteo)
-row.names(meteo_01_02) <- seq(as.Date("2001-01-01"), 
-                              as.Date("2002-12-31"), by="day")
+meteo_01_02$dates <- seq(as.Date("2001-01-01"), 
+                         as.Date("2002-12-31"), by="day")
 meteo_03 <- examplemeteo
-row.names(meteo_03) <- seq(as.Date("2003-01-01"), 
-                           as.Date("2003-12-31"), by="day")
+meteo_03$dates <- seq(as.Date("2003-01-01"), 
+                      as.Date("2003-12-31"), by="day")
 ```
 
 ### Management prescriptions

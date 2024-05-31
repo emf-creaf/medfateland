@@ -1508,8 +1508,12 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                        " ha, Target area: ", round(sum(represented_area_m2[!is.na(cell2sf)], na.rm=TRUE)/10000)," ha"))
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
-    
     cli::cli_li(paste0("Number of years to simulate: ",nYears))
+    if(is.null(dispersal_control)) {
+      cli::cli_li("Seed dispersal process not considered.")
+    } else {
+      cli::cli_li("Seed dispersal process included.")
+    }
   }
   # Init growth 
   if(progress) cli::cli_h3(paste0("Initialisation"))
@@ -1602,6 +1606,22 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
       for(i in 1:nCells) { 
         if(sf$land_cover_type[i] == "wildland")  {
           sf$forest[[i]]$seedBank <- seedbank_list[[i]]
+        }
+      }
+    } else {
+      if(progress) cli::cli_li(paste0("Local seed dynamics"))
+      for(i in 1:nCells) { 
+        if(sf$land_cover_type[i] == "wildland")  {
+          # Reduce seed bank according to longevity
+          sf$forest[[i]]$seedBank <- regeneration_seedmortality(sf$forest[[i]]$seedBank, SpParams)
+          # Seed local production
+          seed_local <- regeneration_seedproduction(sf$forest[[i]], SpParams, control)
+          # Seed rain from control
+          seed_rain <- local_control$seedRain
+          if(!is.null(seed_rain)) seed <- unique(c(seed_local, seed_rain)) 
+          else seed <- seed_local
+          # Refill seed bank with new seeds
+          sf$forest[[i]]$seedBank <- regeneration_seedrefill(sf$forest[[i]]$seedBank, seed)
         }
       }
     }
