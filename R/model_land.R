@@ -1615,7 +1615,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
           # Reduce seed bank according to longevity
           sf$forest[[i]]$seedBank <- regeneration_seedmortality(sf$forest[[i]]$seedBank, SpParams)
           # Seed local production
-          seed_local <- regeneration_seedproduction(sf$forest[[i]], SpParams, control)
+          seed_local <- regeneration_seedproduction(sf$forest[[i]], SpParams, local_control)
           # Seed rain from control
           seed_rain <- local_control$seedRain
           if(!is.null(seed_rain)) seed <- unique(c(seed_local, seed_rain)) 
