@@ -2,8 +2,12 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.3
+- Revision fordyn_scenario vs dispersal
+
 # Version 2.4.2
 - New control parameters for dispersal
+- Version in CRAN
 
 # Version 2.4.1
 - Compliance with medfate v. 4.3.1
