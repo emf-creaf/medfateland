@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">medfateland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.4</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Núria Aquilué / Paula Martín / María González</h4>
             
-            <h4 data-toc-skip class="date">2024-06-03</h4>
+            <h4 data-toc-skip class="date">2024-06-20</h4>
       
       
       <div class="hidden name"><code>PreparingInputs_II.Rmd</code></div>
@@ -170,9 +170,9 @@ object:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##           used  (Mb) gc trigger (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2035187 108.7    4136405  221  2510606 134.1</span></span>
-<span><span class="co">## Vcells 3445549  26.3    8388608   64  8356025  63.8</span></span></code></pre>
+<pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
+<span><span class="co">## Ncells 2036237 108.8    4138874 221.1  2504433 133.8</span></span>
+<span><span class="co">## Vcells 3446991  26.3    8388608  64.0  8354878  63.8</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -209,7 +209,7 @@ and slope:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography</span></span></code></pre>
 <pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[10.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[10.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span></span></code></pre></div>
@@ -786,13 +786,13 @@ basal area and the observed one using:</p>
 <span><span class="co">##  Pearson's product-moment correlation</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## data:  ba_5 and x_vect$basal_area</span></span>
-<span><span class="co">## t = 68.761, df = 2047, p-value &lt; 2.2e-16</span></span>
+<span><span class="co">## t = 90.251, df = 2047, p-value &lt; 2.2e-16</span></span>
 <span><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
 <span><span class="co">## 95 percent confidence interval:</span></span>
-<span><span class="co">##  0.8218062 0.8480078</span></span>
+<span><span class="co">##  0.8849111 0.9023312</span></span>
 <span><span class="co">## sample estimates:</span></span>
 <span><span class="co">##       cor </span></span>
-<span><span class="co">## 0.8353809</span></span></code></pre>
+<span><span class="co">## 0.8939584</span></span></code></pre>
 <p>We can also see the effect of the imputation and correction on mean
 tree height:</p>
 <div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
