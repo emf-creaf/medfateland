@@ -27,7 +27,10 @@ Author: Núria Aquilué
 
 Contributor: Mario Beltrán
 
-Contributor: Roberto Molowny
+Contributor: Rodrigo Balaguer-Romano
+\href{https://orcid.org/0000-0003-2808-6777}{ORCID}
+
+Contributor: Roberto Molowny-Horas
 \href{https://orcid.org/0000-0003-2626-6379}{ORCID}
 }
 \keyword{internal}

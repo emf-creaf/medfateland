@@ -20,7 +20,10 @@
 #' 
 #' Contributor: Mario Beltrán
 #' 
-#' Contributor: Roberto Molowny
+#' Contributor: Rodrigo Balaguer-Romano
+#' [ORCID](https://orcid.org/0000-0003-2808-6777)
+#' 
+#' Contributor: Roberto Molowny-Horas
 #' [ORCID](https://orcid.org/0000-0003-2626-6379)
 #' 
 #' @seealso Useful links: \itemize{ \item{

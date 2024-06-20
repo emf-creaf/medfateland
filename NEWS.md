@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.4
+- Improvements in modify_forest_structure()
+
 # Version 2.4.3
 - Revision fordyn_scenario vs dispersal
 - Version submitted to CRAN

@@ -70,7 +70,7 @@ For structural corrections or when checking, \code{x} should already contain a c
 \item{ratio_limits}{Limits for ratio of variable in corrections, used to avoid outliers.}
 
 \item{minDBH}{Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
-because of the missing stand metric.}
+because of the missing stand metric. A special case occurs for correction following basal area (see details).}
 }
 \value{
 Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
@@ -97,15 +97,17 @@ to reduce the number of records (and hence, speed-up simulations).
 Function \code{modify_forest_structure()} can be used to modify specific structure variables of the imputed forests
 building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
 the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}})
-and the input map in the target location. Locations where the metric value in the map is missing are left unmodified.
-Options for structural variables are the following:
+and the input map in the target location. Options for structural variables are the following:
 \itemize{
 \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 \item{\code{dominant_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 \item{\code{tree_density}: Should contain values in individuals per hectare. Corrects tree density.}
-\item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
+\item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density. Forests that}
 \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
 }
+Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
+for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area,
+DBH values will be set to minDBH, and correction of basal area will be performed.
 
 Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. The function does not modify the data.
@@ -115,4 +117,9 @@ data in tree or shrub attributes required for simulations. The function does not
 }
 \seealso{
 \code{\link[=add_topography]{add_topography()}}, \code{\link[=add_forests]{add_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}, \code{\link[medfate]{forest_mergeTrees}}
+}
+\author{
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+
+Rodrigo Balaguer-Romano, CREAF
 }

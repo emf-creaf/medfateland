@@ -40,6 +40,8 @@
 #'
 #' @return A modified object of class \code{\link{sf}} with column 'forest'.
 #' @seealso [impute_forests()], \code{\link[medfate]{forest_mapWoodyTables}}, \code{\link[medfate]{forest_mergeTrees}}
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @export
 #'
 #' @examples

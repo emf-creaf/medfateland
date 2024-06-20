@@ -123,3 +123,6 @@ check_forests(y_3)
 \seealso{
 \code{\link[=impute_forests]{impute_forests()}}, \code{\link[medfate]{forest_mapWoodyTables}}, \code{\link[medfate]{forest_mergeTrees}}
 }
+\author{
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+}

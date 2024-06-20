@@ -35,21 +35,27 @@
 #' Function \code{modify_forest_structure()} can be used to modify specific structure variables of the imputed forests 
 #' building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
 #' the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}}) 
-#' and the input map in the target location. Locations where the metric value in the map is missing are left unmodified. 
-#' Options for structural variables are the following:
+#' and the input map in the target location. Options for structural variables are the following:
 #' \itemize{
 #'   \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 #'   \item{\code{dominant_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 #'   \item{\code{tree_density}: Should contain values in individuals per hectare. Corrects tree density.}
-#'   \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
+#'   \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density. Forests that}
 #'   \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
 #' }
+#' Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
+#' for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area, 
+#' DBH values will be set to minDBH, and correction of basal area will be performed.
 #' 
 #' Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 #' data in tree or shrub attributes required for simulations. The function does not modify the data.
 #' 
 #' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
 #'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @author Rodrigo Balaguer-Romano, CREAF
 #' 
 #' @seealso [add_topography()], [add_forests()], [add_soilgrids()], \code{\link[medfate]{forest_mergeTrees}}
 #' @export
@@ -220,7 +226,7 @@ impute_forests <-function(x, sf_fi, dem,
 #' @param variable Structural variable to correct. See options in details.
 #' @param map_var Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.
 #' @param minDBH Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
-#' because of the missing stand metric.
+#' because of the missing stand metric. A special case occurs for correction following basal area (see details).
 #' @param ratio_limits Limits for ratio of variable in corrections, used to avoid outliers. 
 #' @export
 modify_forest_structure<-function(x, structure_map, variable,
@@ -253,38 +259,54 @@ modify_forest_structure<-function(x, structure_map, variable,
         if(nrow(f$treeData)>0) {
           mean_height_cm <- stand_meanTreeHeight(f, minDBH = minDBH)
           if(!is.na(mean_height_cm)) {
-            height_ratio <- x_var[i]/mean_height_cm
-            if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
-            f$treeData$Height <- f$treeData$Height*height_ratio 
-            f$treeData$DBH <- f$treeData$DBH*height_ratio
+            if(mean_height_cm > 0) {
+              height_ratio <- x_var[i]/mean_height_cm
+              if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+              f$treeData$Height <- f$treeData$Height*height_ratio 
+              f$treeData$DBH <- f$treeData$DBH*height_ratio
+            }
           }
         }
       } else if(variable=="dominant_tree_height") {
         if(nrow(f$treeData)>0) {
           dominant_height_cm <- stand_dominantTreeHeight(f, minDBH = minDBH)
           if(!is.na(dominant_height_cm)) {
-            height_ratio <- x_var[i]/dominant_height_cm
-            if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
-            f$treeData$Height <- f$treeData$Height*height_ratio 
-            f$treeData$DBH <- f$treeData$DBH*height_ratio
+            if(dominant_height_cm > 0) {
+              height_ratio <- x_var[i]/dominant_height_cm
+              if(!is.null(ratio_limits)) height_ratio <- max(min(height_ratio, ratio_limits[2]), ratio_limits[1])
+              f$treeData$Height <- f$treeData$Height*height_ratio 
+              f$treeData$DBH <- f$treeData$DBH*height_ratio
+            }
           }
         }
       } else if(variable=="tree_density") {
         if(nrow(f$treeData)>0) {
           tree_density <- stand_treeDensity(f, minDBH = minDBH)
           if(!is.na(tree_density)) {
-            density_ratio <- x_var[i]/tree_density
-            if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
-            f$treeData$N <- f$treeData$N*density_ratio
+            if(tree_density > 0.0) {
+              density_ratio <- x_var[i]/tree_density
+              if(!is.null(ratio_limits)) density_ratio <- max(min(density_ratio, ratio_limits[2]), ratio_limits[1])
+              f$treeData$N <- f$treeData$N*density_ratio
+            }
           }
         }
       } else if(variable=="basal_area") {
         if(nrow(f$treeData)>0) {
           basal_area <- stand_basalArea(f, minDBH = minDBH)
           if(!is.na(basal_area)) {
-            basal_area_ratio <- x_var[i]/basal_area
-            if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
-            f$treeData$N <- f$treeData$N*basal_area_ratio
+            # If there are no trees >= minDBH but structural map indicates positive basal area, move DBH to minDBH and recalculate basal_area, to avoid division by 0
+            if((basal_area == 0.0) && (x_var[i]>0.0)) {
+              if(nrow(f$treeData)>0) {
+                f$treeData$DBH <- minDBH
+                basal_area <- stand_basalArea(f, minDBH = minDBH)
+              }
+            }
+            ## If there are trees >= minDBH in the target plot correct density
+            if(basal_area > 0.0) {
+              basal_area_ratio <- x_var[i]/basal_area
+              if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
+              f$treeData$N <- f$treeData$N*basal_area_ratio
+            } 
           }
         }
       }
