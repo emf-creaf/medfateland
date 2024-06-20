@@ -18,7 +18,7 @@ Description: Simulate forest hydrology, forest function and dynamics over landsc
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/index.html
 LazyLoad: yes
-Depends: R (>= 3.4.0), medfate (>= 4.3.2)
+Depends: R (>= 3.4.0), medfate (>= 4.3.1)
 Imports: 
     cli,
     ggplot2,
