@@ -54,6 +54,10 @@ complemented with two companion packages:
   process-based models such as those in for **medfate** and
   **medfateland** functions \[*under development*\].
 
+The relationships between the four packages are illustrated in the
+figure below, where black arrows indicate package dependencies and gray
+arrows indicate model parameter provision.
+
 <img src="man/figures/packages.png" width="60%" style="display: block; margin: auto;" />
 
 ## Authorship
