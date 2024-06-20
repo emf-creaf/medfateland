@@ -57,7 +57,7 @@
 <span>  <span class="va">management_scenario</span>,</span>
 <span>  volume_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  volume_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dispersal_control <span class="op">=</span> <span class="fu"><a href="default_dispersal_control.html">default_dispersal_control</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
@@ -75,14 +75,14 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>sf</dt>
-<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
+<dd><p>An object of class <code>sf</code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand identifiers.</p></li>
 <li><p><code>elevation</code>: Elevation above sea level (in m).</p></li>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
 <li><p><code>aspect</code>: Aspect (in degrees).</p></li>
-<li><p><code>forest</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>.</p></li>
-<li><p><code>soil</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>.</p></li>
-<li><p><code>state</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> (optional).</p></li>
+<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
+<li><p><code>soil</code>: Objects of class <code>soil</code>.</p></li>
+<li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>management_unit</code>: Management unit corresponding to each stand.</p></li>
 <li><p><code>represented_area_ha</code>: Area represented by each stand in hectares.</p></li>
@@ -94,7 +94,7 @@ to continue simulations.</p></dd>
 
 
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
 <dt>meteo</dt>
@@ -116,7 +116,7 @@ If NULL, the default volume function is used (not recommended!).</p></dd>
 
 
 <dt>local_control</dt>
-<dd><p>A list of local model control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>).</p></dd>
+<dd><p>A list of local model control parameters (see <code>defaultControl</code>).</p></dd>
 
 
 <dt>dispersal_control</dt>
@@ -138,7 +138,7 @@ If NULL, wildfires are not simulated. Details are given in <code><a href="spwb_s
 
 
 <dt>summary_function</dt>
-<dd><p>An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., <code><a href="https://emf-creaf.github.io/medfate/reference/summary.spwb.html" class="external-link">summary.fordyn</a></code>).</p></dd>
+<dd><p>An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., <code>summary.fordyn</code>).</p></dd>
 
 
 <dt>summary_arguments</dt>
@@ -198,8 +198,8 @@ and then calls function <code><a href="spwb_spatial.html">fordyn_spatial</a></co
 If the simulation of some stands results in an error, the function will try to restore
 the previous state of the forest stand for the next year steps. Finally, the function evaluates how much of the specified demand
 has been fulfilled and stores the results, including demand offsets to be applied the year after.</p>
-<p>Management is implemented using the <code><a href="https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html" class="external-link">defaultManagementFunction</a></code> in medfate,
-meaning that management parameters need to follow the structure of <code><a href="https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html" class="external-link">defaultManagementArguments</a></code></p>
+<p>Management is implemented using the <code>defaultManagementFunction</code> in medfate,
+meaning that management parameters need to follow the structure of <code>defaultManagementArguments</code></p>
 <p>Details about the inclusion of fire regimes in simulations are explained in <code><a href="spwb_spatial.html">fordyn_spatial</a></code>.</p>
     </div>
     <div id="see-also">
@@ -246,7 +246,7 @@ meaning that management parameters need to follow the structure of <code><a href
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of a management/fire scenario with fordyn</span> <span style="color: #00BBBB;">────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span>
@@ -273,14 +273,15 @@ meaning that management parameters need to follow the structure of <code><a href
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Seed bank dynamics and seed dispersal...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Calling fordyn_spatial...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'fordyn' simulations on 3 locations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 3 locations <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 3 locations <span style="color: #B2B2B2;">[12ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Package 'meteoland' [ver. 2.2.1]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA: 15s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>

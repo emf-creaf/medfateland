@@ -47,7 +47,7 @@ No spatial processes are simulated."><!-- mathjax --><script src="https://cdnjs.
     </div>
 
     <div class="ref-description">
-    <p>Functions that allow calling local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, for a set of forest stands distributed in specific locations.
+    <p>Functions that allow calling local models <code>spwb</code>, <code>growth</code> or <code>fordyn</code>, for a set of forest stands distributed in specific locations.
 No spatial processes are simulated.</p>
     </div>
 
@@ -56,7 +56,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -73,7 +73,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -91,7 +91,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -116,9 +116,9 @@ No spatial processes are simulated.</p>
 <li><p><code>slope</code>: Slope (in degrees).</p></li>
 <li><p><code>aspect</code>: Aspect (in degrees).</p></li>
 <li><p><code>land_cover_type</code>: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').</p></li>
-<li><p><code>forest</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>.</p></li>
-<li><p><code>soil</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code> or data frames of physical properties.</p></li>
-<li><p><code>state</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> (optional).</p></li>
+<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
+<li><p><code>soil</code>: Objects of class <code>soil</code> or data frames of physical properties.</p></li>
+<li><p><code>state</code>: Objects of class <code>spwbInput</code> or <code>growthInput</code> (optional).</p></li>
 <li><p><code>meteo</code>: Data frames with weather data (required if parameter <code>meteo = NULL</code>).</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
 <li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific locations (values can be <code>NULL</code> for the remaining ones).</p></li>
@@ -131,7 +131,7 @@ No spatial processes are simulated.</p>
 
 
 <dt>SpParams</dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
 <dt>meteo</dt>
@@ -139,7 +139,7 @@ No spatial processes are simulated.</p>
 
 
 <dt>local_control</dt>
-<dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>) for function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></dd>
+<dd><p>A list of control parameters (see <code>defaultControl</code>) for function <code>spwb_day</code> or <code>growth_day</code>.</p></dd>
 
 
 <dt>dates</dt>
@@ -155,7 +155,7 @@ No spatial processes are simulated.</p>
 
 
 <dt>summary_function</dt>
-<dd><p>An appropriate function to calculate summaries (e.g., <code><a href="https://emf-creaf.github.io/medfate/reference/summary.spwb.html" class="external-link">summary.spwb</a></code>).</p></dd>
+<dd><p>An appropriate function to calculate summaries (e.g., <code>summary.spwb</code>).</p></dd>
 
 
 <dt>summary_arguments</dt>
@@ -189,7 +189,7 @@ to be used in simulations with <code>fordyn_spatial</code>. If NULL, wildfires a
 
 
 <dt>management_function</dt>
-<dd><p>A function that implements forest management actions (see <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>).
+<dd><p>A function that implements forest management actions (see <code>fordyn</code>).
 of such lists, one per spatial unit.</p></dd>
 
 </dl></div>
@@ -199,8 +199,8 @@ of such lists, one per spatial unit.</p></dd>
 
 <p>An object of class 'sf' containing four elements:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
 <li><p><code>id</code>: Stand id, taken from the input.</p></li>
-<li><p><code>state</code>: A list of <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
-<li><p><code>forest</code>: A list of <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects for each simulated stand (only in function <code>fordyn_spatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
+<li><p><code>state</code>: A list of <code>spwbInput</code> or <code>growthInput</code> objects for each simulated stand, to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
+<li><p><code>forest</code>: A list of <code>forest</code> objects for each simulated stand (only in function <code>fordyn_spatial</code>), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>) or with NULL values whenever simulation errors occurred.</p></li>
 <li><p><code>management_arguments</code>: A list of management arguments for each simulated stand (only in function <code>fordyn_spatial</code> if management function was supplied), to be used in subsequent simulations (see <code><a href="update_landscape.html">update_landscape</a></code>).</p></li>
 <li><p><code>result</code>: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if <code>keep_results = FALSE</code>.</p></li>
 <li><p><code>summary</code>: A list of model output summaries for each simulated stand (if <code>summary_function</code> was not <code>NULL</code>), with NULL values whenever simulation errors occurred.</p></li>
@@ -221,7 +221,7 @@ with fire regimes assumes all forest stands share the same period of simulation,
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn</a></code>, <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code>,
+    <div class="dont-index"><p><code>spwb</code>, <code>growth</code>, <code>fordyn</code>, <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code>,
 <code><a href="simulation_summary.html">simulation_summary</a></code> , <code><a href="plot_summary.html">plot_summary</a></code>,
 <code><a href="initialize_landscape.html">initialize_landscape</a></code>, <code><a href="update_landscape.html">update_landscape</a></code></p></div>
     </div>
@@ -251,16 +251,16 @@ with fire regimes assumes all forest stands share the same period of simulation,
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 2 input objects for model 'spwb'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 2 input objects for model 'spwb' <span style="color: #B2B2B2;">[68ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 2 input objects for model 'spwb' <span style="color: #B2B2B2;">[72ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'spwb' simulations on 2 locations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'spwb' simulations on 2 locations <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'spwb' simulations on 2 locations <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span>  </span></span>
@@ -269,15 +269,15 @@ with fire regimes assumes all forest stands share the same period of simulation,
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'fordyn'</span> <span style="color: #00BBBB;">────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'fordyn' simulations on 2 locations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 2 locations <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 2 locations <span style="color: #B2B2B2;">[12ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  9s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span></span></span>
