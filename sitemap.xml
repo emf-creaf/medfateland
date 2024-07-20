@@ -1,123 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ManagementScenarios.html</loc>
-  </url>
-  <url>
-    <loc>/articles/PackageOverview.html</loc>
-  </url>
-  <url>
-    <loc>/articles/PreparingInputs_I.html</loc>
-  </url>
-  <url>
-    <loc>/articles/PreparingInputs_II.html</loc>
-  </url>
-  <url>
-    <loc>/articles/SpatiallyUncoupledSimulations.html</loc>
-  </url>
-  <url>
-    <loc>/articles/TetisWatershedParameters.html</loc>
-  </url>
-  <url>
-    <loc>/articles/WatershedSimulations.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_forests.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_topography.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_fire_regime.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_management_scenario.html</loc>
-  </url>
-  <url>
-    <loc>/reference/defaultPrescriptionsBySpecies.html</loc>
-  </url>
-  <url>
-    <loc>/reference/default_dispersal_control.html</loc>
-  </url>
-  <url>
-    <loc>/reference/default_volume_function.html</loc>
-  </url>
-  <url>
-    <loc>/reference/default_watershed_control.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dispersal.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_ifn.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_watershed.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract_variables.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fire_regime_instance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fordyn_scenario.html</loc>
-  </url>
-  <url>
-    <loc>/reference/forest_parametrization.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/initialize_landscape.html</loc>
-  </url>
-  <url>
-    <loc>/reference/landscape_summary.html</loc>
-  </url>
-  <url>
-    <loc>/reference/medfateland-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_summary.html</loc>
-  </url>
-  <url>
-    <loc>/reference/shinyplot_land.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simulation_summary.html</loc>
-  </url>
-  <url>
-    <loc>/reference/soil_parametrization.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spwb_land.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spwb_land_day.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spwb_spatial.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spwb_spatial_day.html</loc>
-  </url>
-  <url>
-    <loc>/reference/update_landscape.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://emf-creaf.github.io/medfateland/404.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/ManagementScenarios.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/PackageOverview.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/PreparingInputs_I.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/PreparingInputs_II.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/TetisWatershedParameters.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/articles/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/authors.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/news/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/add_forests.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/add_topography.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/create_fire_regime.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/create_management_scenario.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/defaultPrescriptionsBySpecies.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/default_dispersal_control.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/default_volume_function.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/default_watershed_control.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/dispersal.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/example_ifn.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/example_watershed.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/extract_variables.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/fire_regime_instance.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/fordyn_scenario.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/forest_parametrization.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/initialize_landscape.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/landscape_summary.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/medfateland-package.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/plot_summary.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/shinyplot_land.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/simulation_summary.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/soil_parametrization.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/spwb_land.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/spwb_land_day.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/spwb_spatial.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/spwb_spatial_day.html</loc></url>
+<url><loc>https://emf-creaf.github.io/medfateland/reference/update_landscape.html</loc></url>
 </urlset>
+
