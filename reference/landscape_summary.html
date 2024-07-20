@@ -36,6 +36,7 @@ in an object of class sf containing landscape information."><meta property="og:i
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/medfateland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -44,13 +45,13 @@ in an object of class sf containing landscape information."><meta property="og:i
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Forest and soil summaries over space</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/R/landscape_summary.R" class="external-link"><code>R/landscape_summary.R</code></a></small>
       <div class="d-none name"><code>landscape_summary.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p>Functions to calculates a summary function for the forest or soil of all spatial elements
-in an object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> containing landscape information.</p>
+in an object of class <code>sf</code> containing landscape information.</p>
     </div>
 
     <div class="section level2">
@@ -70,7 +71,7 @@ in an object of class <code><a href="https://r-spatial.github.io/sf/reference/sf
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>.</p></dd>
+<dd><p>An object of class <code>sf</code>.</p></dd>
 
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
@@ -78,7 +79,7 @@ in an object of class <code><a href="https://r-spatial.github.io/sf/reference/sf
 
 
 <dt id="arg-summary-function">summary_function<a class="anchor" aria-label="anchor" href="#arg-summary-function"></a></dt>
-<dd><p>A function that accepts objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>, <code>soil</code> or model input objects, respectively.</p></dd>
+<dd><p>A function that accepts objects of class <code>forest</code>, <code>soil</code> or model input objects, respectively.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -95,13 +96,13 @@ in an object of class <code><a href="https://r-spatial.github.io/sf/reference/sf
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> containing the calculated statistics.
+    <p>An object of class <code>sf</code> containing the calculated statistics.
 If <code>unlist = FALSE</code> column 'summary' is a list with summaries for each element.
 If <code>unlist = TRUE</code> different columns are returned instead, one per variable given in the summary function.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/summary.forest.html" class="external-link">summary.forest</a></code></p></div>
+    <div class="dont-index"><p><code>forest</code>, <code>soil</code>, <code>summary.forest</code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

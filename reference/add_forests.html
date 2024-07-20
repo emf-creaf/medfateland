@@ -34,6 +34,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/medfateland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,12 +43,12 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Add forests</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/R/add_forests.R" class="external-link"><code>R/add_forests.R</code></a></small>
       <div class="d-none name"><code>add_forests.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Creates and adds forest data to an <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> object by reading from tree and shrub data tables</p>
+    <p>Creates and adds forest data to an <code>sf</code> object by reading from tree and shrub data tables</p>
     </div>
 
     <div class="section level2">
@@ -70,7 +71,7 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with a valid CRS definition, and a column called 'id'.</p></dd>
+<dd><p>An object of class <code>sf</code> with a valid CRS definition, and a column called 'id'.</p></dd>
 
 
 <dt id="arg-tree-table">tree_table<a class="anchor" aria-label="anchor" href="#arg-tree-table"></a></dt>
@@ -109,15 +110,15 @@
 
 
 <dt id="arg-merge-trees">merge_trees<a class="anchor" aria-label="anchor" href="#arg-merge-trees"></a></dt>
-<dd><p>A logical flag to simplify tree cohorts by merging tree records in DBH classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeTrees</a></code>).</p></dd>
+<dd><p>A logical flag to simplify tree cohorts by merging tree records in DBH classes (see <code>forest_mergeTrees</code>).</p></dd>
 
 
 <dt id="arg-merge-shrubs">merge_shrubs<a class="anchor" aria-label="anchor" href="#arg-merge-shrubs"></a></dt>
-<dd><p>A logical flag to simplify shrub cohorts by merging shrub records in height classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeShrubs</a></code>).</p></dd>
+<dd><p>A logical flag to simplify shrub cohorts by merging shrub records in height classes (see <code>forest_mergeShrubs</code>).</p></dd>
 
 
 <dt id="arg-spparams">SpParams<a class="anchor" aria-label="anchor" href="#arg-spparams"></a></dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>) from which valid species names are drawn.</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>) from which valid species names are drawn.</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
@@ -126,7 +127,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A modified object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with column 'forest'.</p>
+    <p>A modified object of class <code>sf</code> with column 'forest'.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

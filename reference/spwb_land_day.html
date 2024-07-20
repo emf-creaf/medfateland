@@ -46,6 +46,7 @@ provided by growth_day.
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/medfateland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -54,15 +55,15 @@ provided by growth_day.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>One-day watershed simulations</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/R/model_land.R" class="external-link"><code>R/model_land.R</code></a></small>
       <div class="d-none name"><code>spwb_land_day.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Functions to perform one-day simulations on a watershed described by a set of connected grid cells.</p><ul><li><p>Function <code>spwb_land_day</code> implements a distributed hydrological model that simulates daily local water balance, from <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>,
+    <p>Functions to perform one-day simulations on a watershed described by a set of connected grid cells.</p><ul><li><p>Function <code>spwb_land_day</code> implements a distributed hydrological model that simulates daily local water balance, from <code>spwb_day</code>,
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.</p></li>
 <li><p>Function <code>growth_land_day</code> is similar to <code>spwb_land_day</code>, but includes daily local carbon balance, growth and mortality processes in grid cells,
-provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></li>
+provided by <code>growth_day</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -109,7 +110,7 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 
 
 <dt id="arg-spparams">SpParams<a class="anchor" aria-label="anchor" href="#arg-spparams"></a></dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
 <dt id="arg-meteo">meteo<a class="anchor" aria-label="anchor" href="#arg-meteo"></a></dt>
@@ -121,7 +122,7 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 
 
 <dt id="arg-local-control">local_control<a class="anchor" aria-label="anchor" href="#arg-local-control"></a></dt>
-<dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>) for function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>.</p></dd>
+<dd><p>A list of control parameters (see <code>defaultControl</code>) for function <code>spwb_day</code> or <code>growth_day</code>.</p></dd>
 
 
 <dt id="arg-watershed-control">watershed_control<a class="anchor" aria-label="anchor" href="#arg-watershed-control"></a></dt>
@@ -189,7 +190,7 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>,  <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>,  <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>,
+    <div class="dont-index"><p><code><a href="default_watershed_control.html">default_watershed_control</a></code>,  <code>spwb_day</code>,  <code>growth_day</code>,
 <code><a href="spwb_land.html">spwb_land</a></code>,</p></div>
     </div>
     <div class="section level2">
@@ -238,10 +239,10 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed for day '2001-03-01'</span> <span style="color: #00BBBB;">────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking topology</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[11ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[36ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[23ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[16ms]</span></span>
@@ -254,10 +255,10 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of cells with daily model results requested: 3</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of outlet cells: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building spwb input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[713ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[819ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

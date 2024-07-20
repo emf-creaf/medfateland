@@ -34,6 +34,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/medfateland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,7 +43,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Seed production, dispersal and seed bank dynamics</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/R/dispersal.R" class="external-link"><code>R/dispersal.R</code></a></small>
       <div class="d-none name"><code>dispersal.Rd</code></div>
     </div>
 
@@ -69,17 +70,17 @@
 
 
 <dl><dt id="arg-sf">sf<a class="anchor" aria-label="anchor" href="#arg-sf"></a></dt>
-<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> using a UTM projection (to measure distances in m) and with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
-<li><p><code>forest</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>.</p></li>
+<dd><p>An object of class <code>sf</code> using a UTM projection (to measure distances in m) and with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
+<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
 </ul></dd>
 
 
 <dt id="arg-spparams">SpParams<a class="anchor" aria-label="anchor" href="#arg-spparams"></a></dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
 <dt id="arg-local-control">local_control<a class="anchor" aria-label="anchor" href="#arg-local-control"></a></dt>
-<dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>)</p></dd>
+<dd><p>A list of control parameters (see <code>defaultControl</code>)</p></dd>
 
 
 <dt id="arg-distance-step">distance_step<a class="anchor" aria-label="anchor" href="#arg-distance-step"></a></dt>
@@ -139,16 +140,16 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-in"><span><span class="co"># Estimate seed production and dispersal over the watershed</span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span> <span class="op">&lt;-</span> <span class="fu">dispersal</span><span class="op">(</span><span class="va">example_watershed_utm31</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[11ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed production</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[16ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[996ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[4s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[4.2s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -193,16 +194,16 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-in"><span><span class="co"># Estimate seed production and dispersal over the set of forest inventory plots</span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span> <span class="op">&lt;-</span> <span class="fu">dispersal</span><span class="op">(</span><span class="va">example_ifn_utm31</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[14ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[15ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed production</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[19ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[20ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1.2s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[16.4s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[16.3s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>

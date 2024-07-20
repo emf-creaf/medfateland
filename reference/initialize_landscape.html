@@ -34,6 +34,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/medfateland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,12 +43,12 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Initialization of model inputs for spatially-distributed forest stands</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/R/initialize_landscape.R" class="external-link"><code>R/initialize_landscape.R</code></a></small>
       <div class="d-none name"><code>initialize_landscape.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Initializes state for local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth</a></code>.</p>
+    <p>Initializes state for local models <code>spwb</code> or <code>growth</code>.</p>
     </div>
 
     <div class="section level2">
@@ -68,9 +69,9 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
-<li><p><code>forest</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code>.</p></li>
-<li><p><code>soil</code>: Objects of class <code><a href="https://emf-creaf.github.io/medfate/reference/soil.html" class="external-link">soil</a></code> or data frames of physical properties.</p></li>
+<dd><p>An object of class <code>sf</code> with the following columns:</p><ul><li><p><code>geometry</code>: Spatial geometry.</p></li>
+<li><p><code>forest</code>: Objects of class <code>forest</code>.</p></li>
+<li><p><code>soil</code>: Objects of class <code>soil</code> or data frames of physical properties.</p></li>
 <li><p><code>land_cover_type</code>: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').</p></li>
 <li><p><code>crop_factor</code>: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.</p></li>
 <li><p><code>local_control</code>: A list of control parameters (optional). Used to override function parameter <code>local_control</code> for specific cells (values can be <code>NULL</code> for the remaining ones).</p></li>
@@ -78,11 +79,11 @@
 
 
 <dt id="arg-spparams">SpParams<a class="anchor" aria-label="anchor" href="#arg-spparams"></a></dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
+<dd><p>A data frame with species parameters (see <code>SpParamsMED</code>).</p></dd>
 
 
 <dt id="arg-local-control">local_control<a class="anchor" aria-label="anchor" href="#arg-local-control"></a></dt>
-<dd><p>A list of control parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></code>).</p></dd>
+<dd><p>A list of control parameters (see <code>defaultControl</code>).</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
@@ -91,7 +92,7 @@
 
 <dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
 <dd><p>Boolean flag to simplify forest to the tree and shrub cohorts with largest leaf area index. The leaf area index of the whole tree (respectively, shrub) layer will be attributed to the selected cohort.
-See function <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_reduceToDominant</a></code>.</p></dd>
+See function <code>forest_reduceToDominant</code>.</p></dd>
 
 
 <dt id="arg-replace">replace<a class="anchor" aria-label="anchor" href="#arg-replace"></a></dt>
@@ -104,7 +105,7 @@ See function <code><a href="https://emf-creaf.github.io/medfate/reference/forest
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Replaces or adds column 'state' whose elements are <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">spwbInput</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/modelInput.html" class="external-link">growthInput</a></code> objects
+    <p>Replaces or adds column 'state' whose elements are <code>spwbInput</code> or <code>growthInput</code> objects
 and returns the modified object of class 'sf'.</p>
     </div>
     <div class="section level2">
@@ -137,9 +138,9 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span><span class="co"># Initialize state for 'spwb' simulations</span></span></span>
 <span class="r-in"><span><span class="va">example_ifn_init</span> <span class="op">&lt;-</span> <span class="fu">initialize_landscape</span><span class="op">(</span><span class="va">example_ifn</span>, <span class="va">SpParamsMED</span>, </span></span>
-<span class="r-in"><span>                                         <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"spwb"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                         <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"spwb"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 100 state objects for model 'spwb'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
