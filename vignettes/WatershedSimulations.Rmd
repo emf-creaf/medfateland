@@ -249,16 +249,10 @@ Running `growth_land()` is very similar to running `spwb_land()`. However, a few
 
 A call to `fordyn_land()` for a single year is given here, as an example, starting from the initial example watershed:
 
-```{r}
+```{r, eval = FALSE}
 res_ws4 <- fordyn_land(r, example_watershed,
                        SpParamsMED, examplemeteo,
                        watershed_control = ws_control, progress = FALSE)
-```
-
-In this case, the `sf` part of the output contains additional columns, analogous to those of `fordyn_scenario()`.
-
-```{r}
-names(res_ws4$sf)
 ```
 
 

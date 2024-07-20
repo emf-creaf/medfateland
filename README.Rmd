@@ -1,5 +1,4 @@
 ---
-title: "medfateland - Mediterranean Landscape Simulation"
 output: github_document
 ---
 
@@ -8,13 +7,15 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "README-")
 knitr::opts_chunk$set(fig.path = "man/figures/")
 ```
 
+# Mediterranean landscape simulation <a href="https://emf-creaf.github.io/medfateland/"><img src="man/figures/logo.png" align="right" height="139" alt="medfateland website" /></a>
+
   [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/medfateland)](https://cran.r-project.org/package=medfateland)
   [![](https://cranlogs.r-pkg.org/badges/medfateland)](https://cran.rstudio.com/web/packages/medfateland/index.html)
  [![R-CMD-check](https://github.com/emf-creaf/medfateland/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/emf-creaf/medfateland/actions)
 
 ## Introduction
 
-The R package **medfateland** has been designed to extend the capabilities of package **medfate** in a spatially-explicit context. It allows running the stand-level models available in medfate on points and cells within landscape or region, including the possibility of parallelization. Additionally, medfateland allows considering seed dispersal and lateral water transfer processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   
+The R package **medfateland** has been designed to extend the capabilities of package **medfate** to a spatially-explicit context. It allows running the stand-level models available in medfate on points and cells within landscape or region, including the possibility of parallelization. Additionally, medfateland allows considering seed dispersal and lateral water transfer processes in forested watersheds. Hence, medfateland can be used as a tool for eco-hydrological applications.   
 
 
 ## Package installation
@@ -55,5 +56,5 @@ knitr::include_graphics("man/figures/packages.png")
 The set of R packages are developed and maintained by the [*Ecosystem Modelling Facility*](https://emf.creaf.cat) unit at [*CREAF*](https://www.creaf.cat/) (in Spain), in close collaboration with researchers from [*URFM-INRAE*](https://www6.paca.inrae.fr/ecologie_des_forets_mediterraneennes/) (in France) and [*CTFC*](https://www.ctfc.cat/) (in Spain).
 
 ```{r, out.width='60%', fig.align="center", echo=FALSE}
-knitr::include_graphics("man/figures/logos.png")
+knitr::include_graphics("man/figures/institution_logos.png")
 ```

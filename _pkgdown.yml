@@ -1,22 +1,41 @@
+url: https://emf-creaf.github.io/medfateland/
+
+template:
+  bootstrap: 5
+  bslib:
+    bootswatch: materia
+    pkgdown-nav-height: 100px
+    primary: "#241F1C"
+    
 home:
   links:
   - text: Reference book
     href: https://emf-creaf.github.io/medfatebook/index.html
 
-articles:
-- title: Introduction
-  contents:
-    - starts_with("Package")
-    - starts_with("PreparingInputs_I")
-    - starts_with("PreparingInputs_II")
-- title: Running simulation models
-  contents:
-    - starts_with("SpatiallyUncoupled")
-    - starts_with("Watershed")
-    - starts_with("ManagementScenario")
-- title: Model analysis and parametrization
-  contents:
-    - starts_with("TetisWatershedParameters")
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Introduction
+      - text: Package overview
+        href: articles/PackageOverview.html
+      - text: "Preparing inputs I: forest inventory plots"
+        href: articles/PreparingInputs_I.html
+      - text: "Preparing inputs II: arbitrary locations"
+        href: articles/PreparingInputs_II.html
+      - text: -------
+      - text: Running simulation models
+      - text: Spatially-uncoupled simulations
+        href: articles/SpatiallyUncoupledSimulations.html
+      - text: Watershed simulations
+        href: articles/WatershedSimulations.html
+      - text: Management scenarios
+        href: articles/ManagementScenarios.html
+      - text: -------
+      - text: Model analysis and parametrization
+      - text: Sensitivity to watershed parameters
+        href: articles/TetisWatershedParameters.html      
 
 reference:
 - title: Input preparation

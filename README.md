@@ -1,5 +1,5 @@
-medfateland - Mediterranean Landscape Simulation
-================
+
+# Mediterranean landscape simulation <a href="https://emf-creaf.github.io/medfateland/"><img src="man/figures/logo.png" align="right" height="139" alt="medfateland website" /></a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/medfateland)](https://cran.r-project.org/package=medfateland)
 [![](https://cranlogs.r-pkg.org/badges/medfateland)](https://cran.rstudio.com/web/packages/medfateland/index.html)
@@ -8,7 +8,7 @@ medfateland - Mediterranean Landscape Simulation
 ## Introduction
 
 The R package **medfateland** has been designed to extend the
-capabilities of package **medfate** in a spatially-explicit context. It
+capabilities of package **medfate** to a spatially-explicit context. It
 allows running the stand-level models available in medfate on points and
 cells within landscape or region, including the possibility of
 parallelization. Additionally, medfateland allows considering seed
@@ -69,4 +69,4 @@ with researchers from
 [*URFM-INRAE*](https://www6.paca.inrae.fr/ecologie_des_forets_mediterraneennes/)
 (in France) and [*CTFC*](https://www.ctfc.cat/) (in Spain).
 
-<img src="man/figures/logos.png" width="60%" style="display: block; margin: auto;" />
+<img src="man/figures/institution_logos.png" width="60%" style="display: block; margin: auto;" />
