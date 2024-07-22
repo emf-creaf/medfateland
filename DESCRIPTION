@@ -1,8 +1,8 @@
 Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Simulation
-Version: 2.4.4
-Date: 2024-06-20
+Version: 2.4.5
+Date: 2024-07-22
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -40,6 +40,7 @@ Imports:
     tibble,
     stats
 Suggests: 
+    forestables,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
@@ -48,6 +49,6 @@ Encoding: UTF-8
 NeedsCompilation: yes
 LazyData: true
 Config/testthat/edition: 3
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 BugReports: https://github.com/emf-creaf/medfateland/issues
 Roxygen: list(markdown = TRUE)

@@ -2,6 +2,9 @@
  NEWS for R Package "medfateland"
 ----------------------------------
 
+# Version 2.4.5
+- New helper function parse_forestable()
+
 # Version 2.4.4
 - Improvements in modify_forest_structure()
 
