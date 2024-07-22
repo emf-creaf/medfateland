@@ -147,10 +147,11 @@ parse_forestable <- function(x,
   }
   if(progress) cli::cli_progress_done()
   
-  # Removes tree and understory columns
   x <- x |>
+    dplyr::rename(id = id_unique_code) |>
     dplyr::select(-tree, -understory) |>
-    dplyr::relocate(forest, .before = geometry)
+    dplyr::relocate(forest, .before = geometry) |>
+    dplyr::relocate(geometry, .after = id)
   if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = elev)
   if("version" %in% names(x)) x <- x |> dplyr::relocate(version, .after = country)
   return(x)

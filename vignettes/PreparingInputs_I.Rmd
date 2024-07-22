@@ -18,12 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Aim
 
-This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting **from forest inventory plot data**. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
-
-```{r, out.width='80%', fig.align="center", echo=FALSE}
-knitr::include_graphics("forest_inventory_init_workflow.png")
-```
-
+This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting **from forest inventory plot data**. 
 
 Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html). 
 
@@ -34,9 +29,20 @@ library(medfate)
 library(medfateland)
 library(ggplot2)
 library(tidyterra)
+library(forestables)
 ```
 
-## Target locations
+The first section, **A**, shows how to create the spatial inputs from forest inventory data in tree lists, which will be the general case. The second section, **B**, shows the differences that occur when the starting point is a data structure issued from package **forestables**.
+
+## A. General procedure
+
+The functions introduced in this procedure are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
+
+```{r, out.width='80%', fig.align="center", echo=FALSE}
+knitr::include_graphics("forest_inventory_init_workflow.png")
+```
+
+### Target locations
 
 Package **medfate** includes a small dataset of tree data, corresponding to a dense holm oak forest in Poblet (Catalonia, Spain). As a result of the abandonment of previous coppicing exploitation, there is a high density of stems per individual. The data set includes data from a control plot and managed plot, where for the second two inventories have been carried out, one before management (thinning operation) and another afterwards. Hence, there are three stand structures.
 
@@ -55,7 +61,7 @@ x
 
 where `POBL_CTL` is the control forest plot, `POBL_THI_BEF` is the managed plot before thinning and `POBL_THI_AFT` is the managed plot after thinning.
 
-## Topography
+### Topography
 
 Once an object `sf` has been defined with target locations, we need to determine topographic features (elevation, slope, aspect) and land cover corresponding to those locations. You should have access to a Digital Elevation Model (DEM) at a desired resolution. Here we will use a DEM raster for Catalonia at 30 m resolution, which we load using package `terra`:
 
@@ -78,7 +84,7 @@ check_topography(y_1)
 ```
 
 
-## Forest inventory parsing
+### Forest inventory data parsing
 
 The next step is to define `forest` objects for our simulations. Forests should be defined for all target locations whose land cover is defined as `wildland` (here, all three stands). In our case, we will define `forest` objects from tree records in Poblet. While at this point you would read your own data from a file or data base, here we simply load the data from **medfate**:
 
@@ -156,11 +162,11 @@ If we check the forest data again, we should encounter no more issues:
 check_forests(y_2)
 ```
 
-## Soil parameterization
+### Soil parameterization
 
 Soil information is most usually lacking for the target locations. Regional maps of soil properties may be available in some cases. Here we assume this information is not available, so that we resort to global products. In particular, we will use information provided in [SoilGrids](https://soilgrids.org/) at 250 m resolution ([Hengl et al. (2017)](https://doi.org/10.1371/journal.pone.0169748); [Poggio et al. (2021)](https://doi.org/10.5194/soil-7-217-2021)). 
 
-### SoilGrids 2.0 data
+#### SoilGrids 2.0 data
 
 Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target locations is fast using this approach: 
 
@@ -186,7 +192,7 @@ check_soils(y_3)
 ```
 
 
-### Soil depth and rock content modification
+#### Soil depth and rock content modification
 
 SoilGrids 2.0 does not provide information on soil depth, and rock fragment content is normally underestimated, which leads to an overestimation of water holding capacity. Function `modify_soils()` allows modifying soil definitions, if information is available for soil depth, depth to the (unaltered) bedrock, or both. Soil depth maps are not common in many regions, so here we will resort on a global product at 250m-resolution by  [Shangguan et al. (2017)](https://doi.org/10.1002/2016MS000686), which consists on three rasters:
 
@@ -245,7 +251,7 @@ check_soils(y_4)
 
 
 
-## Initialization test
+### Initialization test
 
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
@@ -259,3 +265,87 @@ z
 ```
 
 Everything seems fine for simulations!
+
+## B. Procedure from forestables
+
+R package [**forestables**](https://emf-creaf.github.io/forestables/) allows reading and harmonizing national forest inventory data from the FIA (USA forest inventory), FFI (France forest inventory) and IFN (Spain forest inventory). When an data issued from this package is the starting point to create spatial inputs for **medfateland**, the general procedure is simplified, as shown below:
+
+### Example dataset
+
+To illustrate this procedure, we first load an example data set given in the **forestables** package for the Spanish national forest inventory:
+
+```{r}
+data("ifn_output_example")
+ifn_output_example
+```
+
+The dataset contains data from different forest inventory surveys:
+
+```{r}
+table(ifn_output_example$version)
+```
+
+Here we will use only data from the last survey (IFN4):
+
+```{r}
+ifn4_example <- ifn_output_example |>
+  filter(version == "ifn4")
+ifn4_example
+```
+
+### Parsing forestable data
+
+Function `parse_forestable()` allows parsing a data frame (or sf) issued from package **forestables** and reshaping it for **medfateland**. In this example we will only transform the first 100 rows:
+
+```{r}
+y_1 <- parse_forestable(ifn4_example[1:100,])
+y_1
+```
+
+As can be seen from the output, the function parsed plot ids, plot coordinates,  and topography. Importantly, it defined a new column called `forest` and parsed tree and shrub data into it.
+
+If we check the forest data, we may encounter issues to be solved:
+
+```{r}
+check_forests(y_1)
+```
+
+### Remaining steps
+
+The remaining steps are similar to the general procedure, but are repeated here for completeness.
+
+**Topography data**
+
+Topographic information in national forest inventory data can contain a lot of missing values. It is normally preferrable to extract topographic features from a digital elevation model (although the error in plot coordinates adds uncertainty into the result):
+
+```{r}
+y_2 <- add_topography(y_1, dem = dem, progress = FALSE)
+```
+
+**Soil data**
+
+Soil data is not normally sampled in national forest inventory data, or it is difficult to harmonize. Therefore, we will normally resort on SoilGrids as before:
+
+```{r}
+y_3 <- add_soilgrids(y_2, soilgrids_path = soilgrids_path, progress = FALSE)
+```
+
+We can now call function `modify_soils()` with the two rasters to perform the correction of soil characteristics:
+
+```{r}
+y_4 <- modify_soils(y_3, 
+                    soil_depth_map = soil_depth_mm, 
+                    depth_to_bedrock_map = depth_to_bedrock_mm,
+                    progress = FALSE)
+```
+
+Finally, we can call `check_soils()` to verify that everything is fine:
+
+```{r}
+check_soils(y_4)
+```
+
+**Initialization test**
+
+At this point we should test the initialization. Here, however, we should use an `SpParams` data frame having all the species mentioned in the forest inventory data.
+

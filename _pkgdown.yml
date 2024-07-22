@@ -48,6 +48,7 @@ reference:
   - add_forests
   - impute_forests
   - modify_forest_structure
+  - parse_forestable
   - check_forests
   - add_soilgrids
   - modify_soils
