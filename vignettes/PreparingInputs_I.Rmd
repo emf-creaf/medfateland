@@ -29,10 +29,14 @@ library(medfate)
 library(medfateland)
 library(ggplot2)
 library(tidyterra)
-library(forestables)
 ```
 
-The first section, **A**, shows how to create the spatial inputs from forest inventory data in tree lists, which will be the general case. The second section, **B**, shows the differences that occur when the starting point is a data structure issued from package **forestables**.
+
+The first section, **A**, shows how to create the spatial inputs from forest inventory data in tree lists, which will be the general case. The second section, **B**, shows the differences that occur when the starting point is a data structure issued from package **forestables**. For that part we need package **forestables** in our environment, because we will take an example data table from there. The package can be installed from GitHub:
+```{r}
+# remotes::install_github("emf-creaf/forestables")
+library(forestables)
+```
 
 ## A. General procedure
 
@@ -289,7 +293,7 @@ Here we will use only data from the last survey (IFN4):
 
 ```{r}
 ifn4_example <- ifn_output_example |>
-  filter(version == "ifn4")
+  dplyr::filter(version == "ifn4")
 ifn4_example
 ```
 
