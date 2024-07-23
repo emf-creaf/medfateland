@@ -17,7 +17,7 @@ spwb_land(
   dates = NULL,
   CO2ByYear = numeric(0),
   summary_frequency = "years",
-  local_control = medfate::defaultControl(),
+  local_control = defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
   num_cores = detectCores() - 1,
@@ -33,7 +33,7 @@ growth_land(
   dates = NULL,
   CO2ByYear = numeric(0),
   summary_frequency = "years",
-  local_control = medfate::defaultControl(),
+  local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
   num_cores = detectCores() - 1,
@@ -48,7 +48,7 @@ fordyn_land(
   meteo = NULL,
   dates = NULL,
   CO2ByYear = numeric(0),
-  local_control = medfate::defaultControl(),
+  local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   dispersal_control = default_dispersal_control(),
   management_function = NULL,
@@ -107,7 +107,8 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
+\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}. By default,
+parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
@@ -207,6 +208,8 @@ and resprouting.}
 }
 }
 \details{
+The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+
 Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"
 (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).
 
@@ -269,10 +272,10 @@ summary(res)
 
 # Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                           local_control = defaultControl(), 
+                                           local_control = defaultControl(soilDomains = "single"), 
                                            simplify = TRUE)
 
-# Launch simulations overs simplified landscape (should be considerably faster)
+# Launch simulations over simplified landscape (should be considerably faster)
 res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo, 
                             dates = dates, summary_frequency = "month",
                             watershed_control = ws_control)

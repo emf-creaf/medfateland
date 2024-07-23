@@ -20,9 +20,9 @@
                       DBH = .data$dbh,
                       Height = .data$height,
                       N = .data$density_factor) |>
-        dplyr::mutate(DBH = as.numeric(DBH),
-                      Height = as.numeric(Height)*100,
-                      N = as.numeric(N)) |>
+        dplyr::mutate(DBH = as.numeric(.data$DBH),
+                      Height = as.numeric(.data$Height)*100,
+                      N = as.numeric(.data$N)) |>
         dplyr::mutate(Z50 = as.numeric(NA),
                      Z95 = as.numeric(NA))
       if(country == "ES") {
@@ -49,7 +49,7 @@
         }
       }
       f$treeData <- f$treeData |>
-        dplyr::filter(DBH >= minimumTreeDBH)
+        dplyr::filter(.data$DBH >= minimumTreeDBH)
       if(!keepSpeciesCodes) {
         f$treeData <- f$treeData |>
           dplyr::select(-.data$SpeciesCode)
@@ -58,13 +58,13 @@
     if(is_shrub) {
       shrub <- understory$shrub[[1]]
       f$shrubData <- shrub |>
-        dplyr::select(.data$sp_name, .data$sp_code, .data$height, cover) |>
+        dplyr::select(.data$sp_name, .data$sp_code, .data$height, .data$cover) |>
         dplyr::rename(Species = .data$sp_name,
                       SpeciesCode = .data$sp_code,
                       Height = .data$height,
                       Cover = .data$cover) |>
-        dplyr::mutate(Height = as.numeric(Height),
-                      Cover = as.numeric(Cover),
+        dplyr::mutate(Height = as.numeric(.data$Height),
+                      Cover = as.numeric(.data$Cover),
                       Z50 = as.numeric(NA),
                       Z95 = as.numeric(NA))
       
@@ -148,11 +148,11 @@ parse_forestable <- function(x,
   if(progress) cli::cli_progress_done()
   
   x <- x |>
-    dplyr::rename(id = id_unique_code) |>
-    dplyr::select(-tree, -understory) |>
-    dplyr::relocate(forest, .before = geometry) |>
-    dplyr::relocate(geometry, .after = id)
-  if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = elev)
-  if("version" %in% names(x)) x <- x |> dplyr::relocate(version, .after = country)
+    dplyr::rename(id = .data$id_unique_code) |>
+    dplyr::select(-.data$tree, -.data$understory) |>
+    dplyr::relocate(.data$forest, .before = .data$geometry) |>
+    dplyr::relocate(.data$geometry, .after = .data$id)
+  if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = .data$elev)
+  if("version" %in% names(x)) x <- x |> dplyr::relocate(.data$version, .after = .data$country)
   return(x)
 }

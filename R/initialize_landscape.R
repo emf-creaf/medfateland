@@ -44,10 +44,16 @@
 #'   
 #' # Load default medfate parameters
 #' data("SpParamsMED")
-#'   
+#' 
+#' # Define local control parameters using function in medfate
+#' local_control <- defaultControl()
+#' 
+#' # If necessary, change defaults
+#' 
 #' # Initialize state for 'spwb' simulations
 #' example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED, 
-#'                                          defaultControl(), model = "spwb")
+#'                                          local_control = local_control, 
+#'                                          model = "spwb")
 #' 
 #' @name initialize_landscape
 #' @export
