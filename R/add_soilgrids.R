@@ -4,7 +4,7 @@
 #' Function \code{modify_soils} modifies soil definition according to soil depth and depth to bedrock information.
 #' Function \code{check_soils} verifies that soil data does not contain missing values for key variables and, if so, assigns default values. 
 #'
-#' @param x An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
+#' @param x An object of class \code{\link[sf]{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
 #'          cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".
 #' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
@@ -31,7 +31,7 @@
 #' When \code{depth_to_bedrock_map} is provided, the function truncates the total depth of the soil definition to the depth to bedrock.
 #' If regional maps of soil depth are not available, users are recommended to resort on Shangguan et al (2017).
 #' 
-#' @return A modified object of class \code{\link{sf}} with column 'soil'.
+#' @return A modified object of class \code{\link[sf]{sf}} with column 'soil'.
 #'
 #' @author \enc{Víctor}{Victor} Granda, EMF-CREAF
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
@@ -217,8 +217,8 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   return(soildf)
 }
 
-#' @param soil_depth_map An object of class \code{\link{rast}} or \code{\link{vect}} with the soil depth (in \emph{mm}) values.
-#' @param depth_to_bedrock_map An object of class \code{\link{rast}} or \code{\link{vect}} with depth to bedrock (in \emph{mm}) values.
+#' @param soil_depth_map An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with the soil depth (in \emph{mm}) values.
+#' @param depth_to_bedrock_map An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with depth to bedrock (in \emph{mm}) values.
 #' @param regolith_rfc Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).
 #' @param full_rock_filling Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.
 #'

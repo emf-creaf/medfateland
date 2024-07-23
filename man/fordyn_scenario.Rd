@@ -26,16 +26,16 @@ fordyn_scenario(
 )
 }
 \arguments{
-\item{sf}{An object of class \code{\link{sf}} with the following columns:
+\item{sf}{An object of class \code{\link[sf]{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand identifiers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
-\item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{soil}: Objects of class \code{\link{soil}}.}
-\item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+\item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+\item{\code{soil}: Objects of class \code{\link[medfate]{soil}}.}
+\item{\code{state}: Objects of class \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{management_unit}: Management unit corresponding to each stand.}
 \item{\code{represented_area_ha}: Area represented by each stand in hectares.}
@@ -46,7 +46,7 @@ fordyn_scenario(
 Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 to continue simulations.}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
 \item{meteo}{Meteorology data (see \code{\link{fordyn_spatial}}).}
 
@@ -58,7 +58,7 @@ If NULL, the default volume function is used (not recommended!).}
 
 \item{volume_arguments}{List with additional arguments for the volume function.}
 
-\item{local_control}{A list of local model control parameters (see \code{\link{defaultControl}}).}
+\item{local_control}{A list of local model control parameters (see \code{\link[medfate]{defaultControl}}).}
 
 \item{dispersal_control}{A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated.}
 
@@ -70,7 +70,7 @@ If NULL, the default volume function is used (not recommended!).}
 a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}).
 If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.}
 
-\item{summary_function}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).}
+\item{summary_function}{An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link[medfate]{summary.fordyn}}).}
 
 \item{summary_arguments}{List with additional arguments for the summary function.}
 
@@ -124,8 +124,8 @@ If the simulation of some stands results in an error, the function will try to r
 the previous state of the forest stand for the next year steps. Finally, the function evaluates how much of the specified demand
 has been fulfilled and stores the results, including demand offsets to be applied the year after.
 
-Management is implemented using the \code{\link{defaultManagementFunction}} in medfate,
-meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
+Management is implemented using the \code{\link[medfate]{defaultManagementFunction}} in medfate,
+meaning that management parameters need to follow the structure of \code{\link[medfate]{defaultManagementArguments}}
 
 Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
 }

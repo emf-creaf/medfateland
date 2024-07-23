@@ -7,18 +7,18 @@
 plot_summary(x, variable, date, r = NULL, ...)
 }
 \arguments{
-\item{x}{An object of class \code{sf}, with simulation summaries.}
+\item{x}{An object of class \code{\link[sf]{sf}}, with simulation summaries.}
 
 \item{variable}{The variable to be drawn.}
 
 \item{date}{The date of the summary to be plotted.}
 
-\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
+\item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
 
 \item{...}{Additional parameters (passed to scale definition, such as \code{limits}).}
 }
 \value{
-An object of class \code{\link{ggplot}}.
+An object of class \code{\link[ggplot2]{ggplot}}.
 }
 \description{
 Produces graphical output of the summaries of a simulation models

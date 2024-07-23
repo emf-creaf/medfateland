@@ -55,10 +55,10 @@
 #' 
 #' Produces graphical output of the summaries of a simulation models
 #' 
-#' @param x An object of class \code{sf}, with simulation summaries.
+#' @param x An object of class \code{\link[sf]{sf}}, with simulation summaries.
 #' @param variable The variable to be drawn.
 #' @param date The date of the summary to be plotted.
-#' @param r An object of class \code{\link{rast}}, defining the raster topology.
+#' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' @param ... Additional parameters (passed to scale definition, such as \code{limits}).
 #' 
 #' @details Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
@@ -67,7 +67,7 @@
 #' will already contain the summaries. A special case is made for \code{\link{spwb_land}} and \code{\link{growth_land}}, 
 #' that are accepted inputs as \code{x}, because its element 'sf' is used.
 #' 
-#' @return An object of class \code{\link{ggplot}}.
+#' @return An object of class \code{\link[ggplot2]{ggplot}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
 #' @seealso \code{\link{spwb_spatial}}, \code{\link{simulation_summary}}

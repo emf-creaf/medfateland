@@ -25,20 +25,20 @@ check_topography(x, filter_missing = FALSE)
 check_land_cover(x, filter_missing = FALSE)
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}}}
+\item{x}{An object of class \code{\link[sf]{sf}}}
 
-\item{dem}{A digital elevation model (class \code{\link{SpatRaster}}) with meters as units}
+\item{dem}{A digital elevation model (class \code{\link[terra]{SpatRaster}}) with meters as units}
 
 \item{progress}{A logical flag to print console output}
 
-\item{land_cover_map}{An object of class \code{\link{SpatRaster}} of land cover type. If missing, all locations are considered 'wildland'.}
+\item{land_cover_map}{An object of class \code{\link[terra]{SpatRaster}} of land cover type. If missing, all locations are considered 'wildland'.}
 
 \item{wildland, agriculture, rock, artificial, water}{Strings indicating the mapping from the legend of land_cover_map.}
 
 \item{filter_missing}{Boolean flag to filter locations with missing data}
 }
 \value{
-Function \code{add_topography()} returns a modified object of class \code{\link{sf}} with columns:
+Function \code{add_topography()} returns a modified object of class \code{\link[sf]{sf}} with columns:
 \itemize{
 \item{\code{id}: Numeric location identifiers (if not existing).}
 \item{\code{elevation}: Elevation above sea level (in m).}
@@ -46,7 +46,7 @@ Function \code{add_topography()} returns a modified object of class \code{\link{
 \item{\code{aspect}: Aspect (in degrees).}
 \item{\code{land_cover_type}: Land cover type.}
 }
-Function \code{add_land_cover()} returns a modified object of class \code{\link{sf}} with new column:
+Function \code{add_land_cover()} returns a modified object of class \code{\link[sf]{sf}} with new column:
 \itemize{
 \item{\code{id}: Numeric location identifiers (if not existing).}
 \item{\code{land_cover_type}: Land cover type.}

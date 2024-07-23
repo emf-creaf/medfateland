@@ -537,10 +537,10 @@
 
 #' Simulations for spatially-distributed forest stands
 #' 
-#' Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations. 
+#' Functions that allow calling local models \code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}} or \code{\link[medfate]{fordyn}}, for a set of forest stands distributed in specific locations. 
 #' No spatial processes are simulated.
 #' 
-#' @param sf An object of class \code{\link{sf}} with the following columns:
+#' @param sf An object of class \code{\link[sf]{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
 #'     \item{\code{id}: Stand identifiers.}
@@ -548,9 +548,9 @@
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
 #'     \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
-#'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
-#'     \item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
-#'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+#'     \item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+#'     \item{\code{soil}: Objects of class \code{\link[medfate]{soil}} or data frames of physical properties.}
+#'     \item{\code{state}: Objects of class \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 #'     \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific locations (values can be \code{NULL} for the remaining ones).}
@@ -560,30 +560,30 @@
 #'     \item{\code{ignition_weights}: Relative weights to determine stands to be burned. Optional, relevant for \code{fordyn_spatial} when 
 #'     \code{fire_regime} is supplied only).}
 #'   }
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).
 #' @param meteo Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.
-#' @param local_control A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.
+#' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}.
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or 
 #'                    a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}), 
 #'                    to be used in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated. 
 #' @param keep_results Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).
-#' @param summary_function An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).
+#' @param summary_function An appropriate function to calculate summaries (e.g., \code{\link[medfate]{summary.spwb}}).
 #' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chuncks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information of simulations.
 #' @param local_verbose Boolean flag to display detailed progress information in local simulations.
-#' @param management_function A function that implements forest management actions (see \code{\link{fordyn}}).
+#' @param management_function A function that implements forest management actions (see \code{\link[medfate]{fordyn}}).
 #' of such lists, one per spatial unit.
 #' 
 #' @details Simulation functions  accept different formats for meteorological input (parameter \code{meteo}). 
 #' The user may supply two kinds of daily weather sources: 
 #' \enumerate{
 #'   \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-#'   \item{An object or (a list of objects) of class \code{\link{stars}} with reference interpolation data created by package \code{\link{meteoland}}.
+#'   \item{An object or (a list of objects) of class \code{stars} with reference interpolation data created by package \code{\link[meteoland]{meteoland}}.
 #'         If a list of such \emph{interpolator} objects is supplied, the simulation functions will interpolate on the target locations for the periods covered by each interpolator, 
 #'         but the user will be responsible for supplying interpolators in the correct temporal order.}
 #' }
@@ -599,8 +599,8 @@
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
 #'   \item{\code{id}: Stand id, taken from the input.}
-#'   \item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
-#'   \item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+#'   \item{\code{state}: A list of \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+#'   \item{\code{forest}: A list of \code{\link[medfate]{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
 #'   \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in function \code{fordyn_spatial} if management function was supplied), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 #'   \item{\code{result}: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if \code{keep_results = FALSE}.}
 #'   \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}), with NULL values whenever simulation errors occurred.}
@@ -609,7 +609,7 @@
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' @seealso 
-#' \code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}}, 
+#' \code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}}, \code{\link[medfate]{fordyn}}, \code{\link{spwb_spatial_day}}, 
 #' \code{\link{simulation_summary}} , \code{\link{plot_summary}}, 
 #' \code{\link{initialize_landscape}}, \code{\link{update_landscape}}
 #' 

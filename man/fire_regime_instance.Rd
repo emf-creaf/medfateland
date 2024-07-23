@@ -7,7 +7,7 @@
 fire_regime_instance(sf, fire_regime)
 }
 \arguments{
-\item{sf}{An object of class \code{\link{sf}} with the following columns:
+\item{sf}{An object of class \code{\link[sf]{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand identifiers.}
@@ -32,7 +32,7 @@ Applies a fire regime object over a set of landscape units to determine a fire r
 \details{
 The function randomly determines the landscape units that will burn every year, depending on the specifications
 of the fire regime object. Users can define their own fire regime instances from other models (e.g. a fire landscape model)
-and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}-
+and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}.
 }
 \examples{
 # Load example data

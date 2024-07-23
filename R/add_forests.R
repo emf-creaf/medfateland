@@ -31,14 +31,14 @@
 #' \item{"Z50": Depth (in mm) corresponding to 50 percent of fine roots.}
 #' \item{"Z95": Depth (in mm) corresponding to 95 percent of fine roots.}
 #' }
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}) from which valid species names are drawn.
-#' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).
-#' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}) from which valid species names are drawn.
+#' @param merge_trees A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link[medfate]{forest_mergeTrees}}).
+#' @param merge_shrubs A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link[medfate]{forest_mergeShrubs}}).
 #' @param progress A logical flag to include a progress bar while processing the data.
 #'
 #' @details The current implementation will replace existing forests of the indicated 'id' values.
 #'
-#' @return A modified object of class \code{\link{sf}} with column 'forest'.
+#' @return A modified object of class \code{\link[sf]{sf}} with column 'forest'.
 #' @seealso [impute_forests()], \code{\link[medfate]{forest_mapWoodyTables}}, \code{\link[medfate]{forest_mergeTrees}}
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

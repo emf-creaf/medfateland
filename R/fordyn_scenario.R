@@ -23,16 +23,16 @@
 #' 
 #' Evaluates forest dynamics over a landscape including climate and management scenarios
 #'
-#' @param sf An object of class \code{\link{sf}} with the following columns:
+#' @param sf An object of class \code{\link[sf]{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
 #'     \item{\code{id}: Stand identifiers.}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{slope}: Slope (in degrees).}
 #'     \item{\code{aspect}: Aspect (in degrees).}
-#'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
-#'     \item{\code{soil}: Objects of class \code{\link{soil}}.}
-#'     \item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+#'     \item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+#'     \item{\code{soil}: Objects of class \code{\link[medfate]{soil}}.}
+#'     \item{\code{state}: Objects of class \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} (optional).}
 #'     \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 #'     \item{\code{management_unit}: Management unit corresponding to each stand.}
 #'     \item{\code{represented_area_ha}: Area represented by each stand in hectares.}
@@ -42,9 +42,9 @@
 #'   }
 #'   Alternatively, the user may supply the result of a previous call to \code{fordyn_scenario}, where
 #'   to continue simulations.
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}). 
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). 
 #' @param meteo Meteorology data (see \code{\link{fordyn_spatial}}).
-#' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
+#' @param local_control A list of local model control parameters (see \code{\link[medfate]{defaultControl}}).
 #' @param volume_function A function accepting a forest object or a tree data table, and a species parameter table, as input and 
 #' returning the wood volume (m3/ha) corresponding to each tree cohort. The function may accept additional arguments.
 #' If NULL, the default volume function is used (not recommended!).
@@ -56,7 +56,7 @@
 #' @param fire_regime A list of parameters defining the fire regime (see \code{\link{create_fire_regime}}) or 
 #'                    a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}). 
 #'                    If NULL, wildfires are not simulated. Details are given in \code{\link{fordyn_spatial}}.
-#' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link{summary.fordyn}}).
+#' @param summary_function An appropriate function to calculate summaries from an object of class 'fordyn' (e.g., \code{\link[medfate]{summary.fordyn}}).
 #' @param summary_arguments List with additional arguments for the summary function.
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
@@ -76,8 +76,8 @@
 #' the previous state of the forest stand for the next year steps. Finally, the function evaluates how much of the specified demand
 #' has been fulfilled and stores the results, including demand offsets to be applied the year after.
 #' 
-#' Management is implemented using the \code{\link{defaultManagementFunction}} in medfate, 
-#' meaning that management parameters need to follow the structure of \code{\link{defaultManagementArguments}}
+#' Management is implemented using the \code{\link[medfate]{defaultManagementFunction}} in medfate, 
+#' meaning that management parameters need to follow the structure of \code{\link[medfate]{defaultManagementArguments}}
 #' 
 #' Details about the inclusion of fire regimes in simulations are explained in \code{\link{fordyn_spatial}}.
 #'  

@@ -35,29 +35,29 @@ modify_forest_structure(
 check_forests(x, progress = FALSE)
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}}. If it contains a column named 'land_cover_type', imputation
+\item{x}{An object of class \code{\link[sf]{sf}}. If it contains a column named 'land_cover_type', imputation
 will be performed for locations whose land cover is "wildland". Otherwise, forest imputation is done for all locations.
-For structural corrections or when checking, \code{x} should already contain a column named 'forest' containing  \code{\link{forest}} objects.}
+For structural corrections or when checking, \code{x} should already contain a column named 'forest' containing  \code{\link[medfate]{forest}} objects.}
 
-\item{sf_fi}{An object of class \code{\link{sf}} with forest inventory data column 'forest'.}
+\item{sf_fi}{An object of class \code{\link[sf]{sf}} with forest inventory data column 'forest'.}
 
-\item{dem}{A digital elevation model (class \code{\link{rast}}) with meters as units}
+\item{dem}{A digital elevation model (class \code{\link[terra]{SpatRaster}}) with meters as units}
 
-\item{forest_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the forest class map}
+\item{forest_map}{An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with the forest class map}
 
 \item{var_class}{Variable name or index containing forest classes in \code{forest_map}. If missing the first column is taken.}
 
 \item{max_distance_km}{Maximum distance, in km, for forest inventory plot imputation.}
 
-\item{replace_existing}{A logical flag to force the replacement of existing \code{\link{forest}} objects, when present.}
+\item{replace_existing}{A logical flag to force the replacement of existing \code{\link[medfate]{forest}} objects, when present.}
 
 \item{missing_class_imputation}{A logical flag to force imputation in locations where forest class is not defined. If \code{missing_class_imputation = TRUE}, imputation in those locations will be based on geographic and topographic criteria only.}
 
-\item{missing_class_forest}{A \code{\link{forest}} object to be used for locations with missing class.}
+\item{missing_class_forest}{A \code{\link[medfate]{forest}} object to be used for locations with missing class.}
 
-\item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).}
+\item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link[medfate]{forest_mergeTrees}}).}
 
-\item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).}
+\item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link[medfate]{forest_mergeShrubs}}).}
 
 \item{progress}{A logical flag to print console output.}
 
@@ -96,7 +96,7 @@ to reduce the number of records (and hence, speed-up simulations).
 
 Function \code{modify_forest_structure()} can be used to modify specific structure variables of the imputed forests
 building on rasters supplied by the user (typically from aerial or satellite LiDAR products). For any given metric,
-the function will calculate the ratio of the structure metric between the target \code{\link{forest}} object (see \code{\link[medfate]{stand_basalArea}})
+the function will calculate the ratio of the structure metric between the target \code{\link[medfate]{forest}} object (see \code{\link[medfate]{stand_basalArea}})
 and the input map in the target location. Options for structural variables are the following:
 \itemize{
 \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}

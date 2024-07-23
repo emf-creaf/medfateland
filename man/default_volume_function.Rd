@@ -7,7 +7,7 @@
 default_volume_function(x, SpParams = NULL)
 }
 \arguments{
-\item{x}{A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link{forest}} object}
+\item{x}{A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link[medfate]{forest}} object}
 
 \item{SpParams}{A data frame with species parameters (not used in the default function but will be called)}
 }

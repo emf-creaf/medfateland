@@ -313,11 +313,11 @@
 #' 
 #' Extract or estimate variables from landscape objects (class 'sf').
 #' 
-#' @param x An object of class \code{\link{sf}} with the appropriate columns.
+#' @param x An object of class \code{\link[sf]{sf}} with the appropriate columns.
 #' @param vars A string vector with the name of the variables to extract (see details).
 #' @param variable A string with the name of the variables to draw (see details).
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
-#' @param r An object of class \code{\link{rast}}, defining the raster topology.
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.
+#' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' @param ... Additional arguments (not used).
 #' 
 #' @details The following string values are available for \code{vars}. 
@@ -369,12 +369,12 @@
 #'      \item{\code{"shrub_volume"}: Shrub volume (m3/m2).}
 #'    }
 #'
-#' @returns Function \code{extract_variables()} returns an object of class \code{\link{sf}} with the desired variables.
+#' @returns Function \code{extract_variables()} returns an object of class \code{\link[sf]{sf}} with the desired variables.
 #' Function \code{plot_variables()} returns a ggplot object.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplot_land}}
+#' @seealso \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot_land}}
 #' 
 #' @examples
 #' # Load data and species parameters from medfate

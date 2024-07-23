@@ -34,17 +34,17 @@ growth_land_day(
 )
 }
 \arguments{
-\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
+\item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
 
-\item{sf}{An object of class \code{\link{sf}} as described in \code{\link{spwb_land}}.}
+\item{sf}{An object of class \code{\link[sf]{sf}} as described in \code{\link{spwb_land}}.}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
 \item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}} and details).}
 
 \item{date}{A string with the date to be simulated.}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
+\item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
@@ -95,10 +95,10 @@ Functions \code{spwb_land_day} and \code{spwb_land_day} return a sf object:
 \description{
 Functions to perform one-day simulations on a watershed described by a set of connected grid cells.
 \itemize{
-\item{Function \code{spwb_land_day} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
+\item{Function \code{spwb_land_day} implements a distributed hydrological model that simulates daily local water balance, from \code{\link[medfate]{spwb_day}},
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 \item{Function \code{growth_land_day} is similar to \code{spwb_land_day}, but includes daily local carbon balance, growth and mortality processes in grid cells,
-provided by \code{\link{growth_day}}.}
+provided by \code{\link[medfate]{growth_day}}.}
 }
 }
 \details{
@@ -144,7 +144,7 @@ sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo,
 \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 }
 \seealso{
-\code{\link{default_watershed_control}},  \code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{default_watershed_control}},  \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
 \code{\link{spwb_land}},
 }
 \author{

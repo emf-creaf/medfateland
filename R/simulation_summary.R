@@ -6,11 +6,11 @@
 #' @param summary_function The summary function to be executed on simulation results (see details).
 #' @param ... Additional parameters to the summary function.
 #' 
-#' @details The function supplied should take as input an object of local simulation function, i.e. \code{\link{spwb}}, \code{\link{growth}}, or \code{\link{fordyn}}. 
+#' @details The function supplied should take as input an object of local simulation function, i.e. \code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}}, or \code{\link[medfate]{fordyn}}. 
 #' The output should be a matrix with dates as rows and variables in columns. 
-#' An example of suitable function is \code{\link{summary.spwb}}.
+#' An example of suitable function is \code{\link[medfate]{summary.spwb}}.
 #' 
-#' @return An object of class \code{\link{sf}}, with the following two elements:
+#' @return An object of class \code{\link[sf]{sf}}, with the following two elements:
 #'  \itemize{
 #'    \item{\code{geometry}: Spatial geometry.}
 #'    \item{\code{id}: Stand id, taken from the input.}

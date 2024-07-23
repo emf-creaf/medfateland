@@ -6,7 +6,7 @@
 \alias{example_watershed_burnin}
 \title{Example of watershed}
 \format{
-The data format is that of an object \code{\link{sf}}
+The data format is that of an object \code{\link[sf]{sf}}
 }
 \source{
 \itemize{
@@ -20,7 +20,7 @@ The data format is that of an object \code{\link{sf}}
 }
 }
 \description{
-An example of an object of \code{\link{sf}} with data for a small catchment of 66 ha (0.66 km2) in Catalonia.
+An example of an object of \code{\link[sf]{sf}} with data for a small catchment of 66 ha (0.66 km2) in Catalonia.
 Object \code{example_watershed_burnin} is the result of three years of burn-in period.
 }
 \references{

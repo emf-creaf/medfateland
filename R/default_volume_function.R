@@ -2,7 +2,7 @@
 #' 
 #' Example function for estimating wood volume (in m3/ha) from a tree table or forest object. 
 #' 
-#' @param x A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link{forest}} object
+#' @param x A data frame with columns 'DBH', 'Height' and 'N' or a \code{\link[medfate]{forest}} object
 #' @param SpParams A data frame with species parameters (not used in the default function but will be called)
 #' 
 #' @details Users should define their own functions taking into account that:

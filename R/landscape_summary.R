@@ -2,22 +2,22 @@
 #' Forest and soil summaries over space
 #' 
 #' Functions to calculates a summary function for the forest or soil of all spatial elements 
-#' in an object of class \code{\link{sf}} containing landscape information.
+#' in an object of class \code{\link[sf]{sf}} containing landscape information.
 #' 
-#' @param object An object of class \code{\link{sf}}.
+#' @param object An object of class \code{\link[sf]{sf}}.
 #' @param name A string of the element to summarize: "forest", "soil" or "state".
-#' @param summary_function A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.
+#' @param summary_function A function that accepts objects of class \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}} or model input objects, respectively.
 #' @param ... Additional arguments to the summary function.
 #' @param unlist Logical flag to try converting the summaries into different columns
 #' @param progress Boolean flag to display progress information
 #' 
-#' @returns An object of class \code{\link{sf}} containing the calculated statistics. 
+#' @returns An object of class \code{\link[sf]{sf}} containing the calculated statistics. 
 #' If \code{unlist = FALSE} column 'summary' is a list with summaries for each element. 
 #' If \code{unlist = TRUE} different columns are returned instead, one per variable given in the summary function.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}
+#' @seealso \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}
 #' 
 #' @examples 
 #' # Load plot data and species parameters from medfate

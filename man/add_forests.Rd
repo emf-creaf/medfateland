@@ -50,16 +50,16 @@ add_forests(
 \item{"Z95": Depth (in mm) corresponding to 95 percent of fine roots.}
 }}
 
-\item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link{forest_mergeTrees}}).}
+\item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link[medfate]{forest_mergeTrees}}).}
 
-\item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link{forest_mergeShrubs}}).}
+\item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link[medfate]{forest_mergeShrubs}}).}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}) from which valid species names are drawn.}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}) from which valid species names are drawn.}
 
 \item{progress}{A logical flag to include a progress bar while processing the data.}
 }
 \value{
-A modified object of class \code{\link{sf}} with column 'forest'.
+A modified object of class \code{\link[sf]{sf}} with column 'forest'.
 }
 \description{
 Creates and adds forest data to an \code{\link{sf}} object by reading from tree and shrub data tables

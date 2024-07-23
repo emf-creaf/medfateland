@@ -34,7 +34,7 @@ check_soils(
 )
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
+\item{x}{An object of class \code{\link[sf]{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
 cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".}
 
 \item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.}
@@ -45,9 +45,9 @@ cover types only. Otherwise, soils are retrieved for all locations. For function
 
 \item{progress}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
 
-\item{soil_depth_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with the soil depth (in \emph{mm}) values.}
+\item{soil_depth_map}{An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with the soil depth (in \emph{mm}) values.}
 
-\item{depth_to_bedrock_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with depth to bedrock (in \emph{mm}) values.}
+\item{depth_to_bedrock_map}{An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with depth to bedrock (in \emph{mm}) values.}
 
 \item{regolith_rfc}{Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).}
 
@@ -60,7 +60,7 @@ cover types only. Otherwise, soils are retrieved for all locations. For function
 \item{default_values}{Vector of default values for locations with missing data.}
 }
 \value{
-A modified object of class \code{\link{sf}} with column 'soil'.
+A modified object of class \code{\link[sf]{sf}} with column 'soil'.
 }
 \description{
 Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021).

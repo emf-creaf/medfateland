@@ -80,16 +80,16 @@
 #' Creates a shiny app with interactive plots for spatial inputs and simulation results 
 #' 
 #' @param x The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land', 'growth_land' or 'fordyn_land'.
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.
-#' @param r An object of class \code{\link{rast}}, defining the raster topology.
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.
+#' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' 
 #' @details Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
 #' 
 #'   \emph{Spatial inputs}:
-#'     This is the case if the user supplies an object of class \code{\link{sf}} with simulation inputs.
+#'     This is the case if the user supplies an object of class \code{\link[sf]{sf}} with simulation inputs.
 #'     
 #'   \emph{Simulation result summaries}:
-#'     This is the case if the user supplies an object of class \code{\link{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
+#'     This is the case if the user supplies an object of class \code{\link[sf]{sf}} with simulation summaries. Available plots depend on the summary function used to create the result summaries.
 #'     
 #' @return An object that represents the shiny app 
 #' 

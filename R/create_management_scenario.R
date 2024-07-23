@@ -11,7 +11,7 @@
 #'                   years according to the growth observed and the desired extraction rates.
 #' @param default_management_arguments A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults 
 #'                            copied for all management units and can later be modified. If NULL, the result of calling function 
-#'                            \code{\link{defaultManagementArguments}} will be taken.
+#'                            \code{\link[medfate]{defaultManagementArguments}} will be taken.
 #'
 #' @details 
 #' Three kinds of management scenarios are allowed:
@@ -48,7 +48,7 @@
 #' 
 #' Aitor \enc{Améztegui}{Ameztegui}, UdL
 #' 
-#' @seealso \code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_regime}}
+#' @seealso \code{\link{fordyn_scenario}}, \code{\link[medfate]{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_regime}}
 #' 
 #' @examples 
 #' 

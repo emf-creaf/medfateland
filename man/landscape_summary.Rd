@@ -14,11 +14,11 @@ landscape_summary(
 )
 }
 \arguments{
-\item{object}{An object of class \code{\link{sf}}.}
+\item{object}{An object of class \code{\link[sf]{sf}}.}
 
 \item{name}{A string of the element to summarize: "forest", "soil" or "state".}
 
-\item{summary_function}{A function that accepts objects of class \code{\link{forest}}, \code{soil} or model input objects, respectively.}
+\item{summary_function}{A function that accepts objects of class \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}} or model input objects, respectively.}
 
 \item{...}{Additional arguments to the summary function.}
 
@@ -27,13 +27,13 @@ landscape_summary(
 \item{progress}{Boolean flag to display progress information}
 }
 \value{
-An object of class \code{\link{sf}} containing the calculated statistics.
+An object of class \code{\link[sf]{sf}} containing the calculated statistics.
 If \code{unlist = FALSE} column 'summary' is a list with summaries for each element.
 If \code{unlist = TRUE} different columns are returned instead, one per variable given in the summary function.
 }
 \description{
 Functions to calculates a summary function for the forest or soil of all spatial elements
-in an object of class \code{\link{sf}} containing landscape information.
+in an object of class \code{\link[sf]{sf}} containing landscape information.
 }
 \examples{
 # Load plot data and species parameters from medfate
@@ -47,7 +47,7 @@ landscape_summary(example_ifn, "forest", summary.forest, SpParamsMED)
  
 }
 \seealso{
-\code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}
+\code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

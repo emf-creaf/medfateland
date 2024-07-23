@@ -16,15 +16,15 @@ dispersal(
 )
 }
 \arguments{
-\item{sf}{An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
+\item{sf}{An object of class \code{\link[sf]{sf}} using a UTM projection (to measure distances in m) and with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
-\item{\code{forest}: Objects of class \code{\link{forest}}.}
+\item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
 }}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}})}
+\item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}})}
 
 \item{distance_step}{Distance step in meters.}
 

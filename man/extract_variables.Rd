@@ -10,20 +10,20 @@ extract_variables(x, vars = "land_cover_type", SpParams = NULL, ...)
 plot_variable(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...)
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}} with the appropriate columns.}
+\item{x}{An object of class \code{\link[sf]{sf}} with the appropriate columns.}
 
 \item{vars}{A string vector with the name of the variables to extract (see details).}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}), required for most forest stand variables.}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.}
 
 \item{...}{Additional arguments (not used).}
 
 \item{variable}{A string with the name of the variables to draw (see details).}
 
-\item{r}{An object of class \code{\link{rast}}, defining the raster topology.}
+\item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
 }
 \value{
-Function \code{extract_variables()} returns an object of class \code{\link{sf}} with the desired variables.
+Function \code{extract_variables()} returns an object of class \code{\link[sf]{sf}} with the desired variables.
 Function \code{plot_variables()} returns a ggplot object.
 }
 \description{
@@ -91,7 +91,7 @@ extract_variables(example_ifn, vars = c("basal_area", "leaf_area_index"),
                   
 }
 \seealso{
-\code{\link{forest}}, \code{\link{soil}}, \code{\link{summary.forest}}, \code{\link{shinyplot_land}}
+\code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot_land}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

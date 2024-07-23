@@ -24,7 +24,7 @@ years according to the growth observed and the desired extraction rates.}
 
 \item{default_management_arguments}{A list of arguments to be passed to the managementFunction. These arguments will be taken as defaults
 copied for all management units and can later be modified. If NULL, the result of calling function
-\code{\link{defaultManagementArguments}} will be taken.}
+\code{\link[medfate]{defaultManagementArguments}} will be taken.}
 }
 \value{
 A list with the following structure:
@@ -81,7 +81,7 @@ scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 10
                                            "Pinus nigra" = 2000))
 }
 \seealso{
-\code{\link{fordyn_scenario}}, \code{\link{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_regime}}
+\code{\link{fordyn_scenario}}, \code{\link[medfate]{defaultManagementFunction}}, \code{\link{defaultPrescriptionsBySpecies}}, \code{\link{create_fire_regime}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

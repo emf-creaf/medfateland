@@ -61,7 +61,7 @@ fordyn_spatial(
 )
 }
 \arguments{
-\item{sf}{An object of class \code{\link{sf}} with the following columns:
+\item{sf}{An object of class \code{\link[sf]{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand identifiers.}
@@ -69,9 +69,9 @@ fordyn_spatial(
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
 \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
-\item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
-\item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+\item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+\item{\code{soil}: Objects of class \code{\link[medfate]{soil}} or data frames of physical properties.}
+\item{\code{state}: Objects of class \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific locations (values can be \code{NULL} for the remaining ones).}
@@ -82,11 +82,11 @@ fordyn_spatial(
 \code{fire_regime} is supplied only).}
 }}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
 \item{meteo}{Input meteorological data (see section details). If NULL, the function will expect a column 'meteo' in parameter \code{y}.}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}.}
+\item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}.}
 
 \item{dates}{A \code{\link{Date}} object describing the days of the period to be modeled.}
 
@@ -94,7 +94,7 @@ fordyn_spatial(
 
 \item{keep_results}{Boolean flag to indicate that point/cell simulation results are to be returned (set to \code{FALSE} and use summary functions for large data sets).}
 
-\item{summary_function}{An appropriate function to calculate summaries (e.g., \code{\link{summary.spwb}}).}
+\item{summary_function}{An appropriate function to calculate summaries (e.g., \code{\link[medfate]{summary.spwb}}).}
 
 \item{summary_arguments}{List with additional arguments for the summary function.}
 
@@ -112,7 +112,7 @@ fordyn_spatial(
 a matrix representing a fire regime instance (see \code{\link{fire_regime_instance}}),
 to be used in simulations with \code{\link{fordyn_spatial}}. If NULL, wildfires are not simulated.}
 
-\item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
+\item{management_function}{A function that implements forest management actions (see \code{\link[medfate]{fordyn}}).
 of such lists, one per spatial unit.}
 }
 \value{
@@ -120,15 +120,15 @@ An object of class 'sf' containing four elements:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
 \item{\code{id}: Stand id, taken from the input.}
-\item{\code{state}: A list of \code{\link{spwbInput}} or \code{\link{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
-\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+\item{\code{state}: A list of \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
+\item{\code{forest}: A list of \code{\link[medfate]{forest}} objects for each simulated stand (only in function \code{fordyn_spatial}), to be used in subsequent simulations (see \code{\link{update_landscape}}) or with NULL values whenever simulation errors occurred.}
 \item{\code{management_arguments}: A list of management arguments for each simulated stand (only in function \code{fordyn_spatial} if management function was supplied), to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{result}: A list of model output for each simulated stand. Some elements can contain an error condition if the simulation resulted in an error. Values will be NULL (or errors) if \code{keep_results = FALSE}.}
 \item{\code{summary}: A list of model output summaries for each simulated stand (if \code{summary_function} was not \code{NULL}), with NULL values whenever simulation errors occurred.}
 }
 }
 \description{
-Functions that allow calling local models \code{\link{spwb}}, \code{\link{growth}} or \code{\link{fordyn}}, for a set of forest stands distributed in specific locations.
+Functions that allow calling local models \code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}} or \code{\link[medfate]{fordyn}}, for a set of forest stands distributed in specific locations.
 No spatial processes are simulated.
 }
 \details{
@@ -136,7 +136,7 @@ Simulation functions  accept different formats for meteorological input (paramet
 The user may supply two kinds of daily weather sources:
 \enumerate{
 \item{A data frame with meteorological data common for all spatial location (spatial variation of weather not considered).}
-\item{An object or (a list of objects) of class \code{\link{stars}} with reference interpolation data created by package \code{\link{meteoland}}.
+\item{An object or (a list of objects) of class \code{stars} with reference interpolation data created by package \code{\link[meteoland]{meteoland}}.
 If a list of such \emph{interpolator} objects is supplied, the simulation functions will interpolate on the target locations for the periods covered by each interpolator,
 but the user will be responsible for supplying interpolators in the correct temporal order.}
 }
@@ -173,7 +173,7 @@ res_noman <- fordyn_spatial(example_subset, SpParamsMED, examplemeteo)
 
 }
 \seealso{
-\code{\link{spwb}}, \code{\link{growth}}, \code{\link{fordyn}}, \code{\link{spwb_spatial_day}},
+\code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}}, \code{\link[medfate]{fordyn}}, \code{\link{spwb_spatial_day}},
 \code{\link{simulation_summary}} , \code{\link{plot_summary}},
 \code{\link{initialize_landscape}}, \code{\link{update_landscape}}
 }

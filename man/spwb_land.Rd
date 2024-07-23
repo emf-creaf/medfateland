@@ -65,18 +65,18 @@ cell_neighbors(sf, r)
 \method{summary}{growth_land}(object, ...)
 }
 \arguments{
-\item{r}{An object of class \code{\link{SpatRaster}}, defining the raster topology.}
+\item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
 
-\item{sf}{An object of class \code{\link{sf}} with the following columns:
+\item{sf}{An object of class \code{\link[sf]{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{slope}: Slope (in degrees).}
 \item{\code{aspect}: Aspect (in degrees).}
 \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland', 'agriculture', 'rock', 'artificial' or 'water').}
-\item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
-\item{\code{state}: Objects of class \code{\link{spwbInput}} or \code{\link{growthInput}} (optional).}
+\item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+\item{\code{soil}: Objects of class \code{\link[medfate]{soil}} or data frames of physical properties.}
+\item{\code{state}: Objects of class \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} (optional).}
 \item{\code{meteo}: Data frames with weather data (required if parameter \code{meteo = NULL}).}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
@@ -96,7 +96,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 }}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
 \item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}} and details).}
 
@@ -107,7 +107,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}) for function \code{\link{spwb_day}} or \code{\link{growth_day}}. By default,
+\item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
 parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
@@ -123,7 +123,7 @@ for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{C
 
 \item{dispersal_control}{A list of dispersal control parameters (see \code{\link{default_dispersal_control}}). If NULL, then dispersal is not simulated.}
 
-\item{management_function}{A function that implements forest management actions (see \code{\link{fordyn}}).
+\item{management_function}{A function that implements forest management actions (see \code{\link[medfate]{fordyn}}).
 of such lists, one per spatial unit.}
 
 \item{object}{An object of class \code{spwb_land} or \code{groth_land}}
@@ -134,7 +134,7 @@ of such lists, one per spatial unit.}
 Functions \code{spwb_land}, \code{growth_land} and \code{fordyn_land} return a list of class of the same name as the function with the following elements:
 \itemize{
 \item{\code{watershed_control}: A list with input control parameters.}
-\item{\code{sf}: An object of class \code{\link{sf}}, similar to the output of \code{\link{spwb_spatial}},
+\item{\code{sf}: An object of class \code{\link[sf]{sf}}, similar to the output of \code{\link{spwb_spatial}},
 with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
@@ -178,9 +178,9 @@ with the following columns:
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
 }
-In function \code{fordyn_land} the \code{\link{sf}} object contains additional columns:
+In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 \itemize{
-\item{\code{forest}: A list of \code{\link{forest}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
+\item{\code{forest}: A list of \code{\link[medfate]{forest}} objects for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{management_arguments}: A list of management arguments for each simulated stand, to be used in subsequent simulations (see \code{\link{update_landscape}}).}
 \item{\code{tree_table}: A list of data frames for each simulated stand, containing the living trees at each time step.}
 \item{\code{shrub_table}: A list of data frames for each simulated stand, containing the living shrub at each time step.}
@@ -199,10 +199,10 @@ overall watershed export corresponds to the sum of row values.}
 \description{
 Functions to perform simulations on a watershed described by a set of connected grid cells.
 \itemize{
-\item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link{spwb_day}},
+\item{Function \code{spwb_land} implements a distributed hydrological model that simulates daily local water balance, from \code{\link[medfate]{spwb_day}},
 on grid cells of a watershed while accounting for overland runoff, subsurface flow and groundwater flow between cells.}
 \item{Function \code{growth_land} is similar to \code{spwb_land}, but includes daily local carbon balance, growth and mortality processes in grid cells,
-provided by \code{\link{growth_day}}.}
+provided by \code{\link[medfate]{growth_day}}.}
 \item{Function \code{fordyn_land} extends the previous two functions with the simulation of management, seed dispersal, recruitment
 and resprouting.}
 }
@@ -288,7 +288,7 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 \enc{Caviedes-Voullième}{Caviedes-Voullieme}, D., \enc{Morales-Hernández}{Morales-Hernandez}, M., Norman, M.R. & Ogzen-Xian, I. (2023). SERGHEI (SERGHEI-SWE) v1.0: a performance-portable high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics. Geoscientific Model Development, 16, 977-1008.
 }
 \seealso{
-\code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{spwb_land_day}}, \code{\link{spwb_day}},  \code{\link{growth_day}},
+\code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{spwb_land_day}}, \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
 \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 }
 \author{

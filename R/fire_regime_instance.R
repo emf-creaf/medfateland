@@ -2,7 +2,7 @@
 #' 
 #' Applies a fire regime object over a set of landscape units to determine a fire realization
 #'
-#' @param sf An object of class \code{\link{sf}} with the following columns:
+#' @param sf An object of class \code{\link[sf]{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
 #'     \item{\code{id}: Stand identifiers.}
@@ -14,7 +14,7 @@
 #' @details
 #' The function randomly determines the landscape units that will burn every year, depending on the specifications
 #' of the fire regime object. Users can define their own fire regime instances from other models (e.g. a fire landscape model)
-#' and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}-
+#' and then use those directly in functions \code{\link{fordyn_spatial}} or \code{\link{fordyn_scenario}}.
 #' 
 #' @return An integer matrix specifying the day of the year of burning of each landscape unit for every year in the fire regime definition.
 #' Values are interpreted as follows:

@@ -49,17 +49,18 @@ kernel_int <- function(r, alpha, c) {
 #   }
 #   plot(dist_vec, kernel_fun(dist_vec, alpha,c), type = "l", log = log)
 # }
+
 #' Seed production, dispersal and seed bank dynamics
 #' 
 #' Simulates seed bank mortality, seed production and dispersal among stands
 #'
-#' @param sf An object of class \code{\link{sf}} using a UTM projection (to measure distances in m) and with the following columns:
+#' @param sf An object of class \code{\link[sf]{sf}} using a UTM projection (to measure distances in m) and with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial geometry.}
-#'     \item{\code{forest}: Objects of class \code{\link{forest}}.}
+#'     \item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
 #'   }
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param local_control A list of control parameters (see \code{\link{defaultControl}})
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).
+#' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}})
 #' @param distance_step Distance step in meters.
 #' @param maximum_dispersal_distance Maximum dispersal distance in meters.
 #' @param min_percent A minimum percent of seed bank to retain entry in \code{seedBank} element of \code{forest}.

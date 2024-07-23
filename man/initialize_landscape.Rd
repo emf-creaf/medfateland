@@ -15,35 +15,35 @@ initialize_landscape(
 )
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}} with the following columns:
+\item{x}{An object of class \code{\link[sf]{sf}} with the following columns:
 \itemize{
 \item{\code{geometry}: Spatial geometry.}
-\item{\code{forest}: Objects of class \code{\link{forest}}.}
-\item{\code{soil}: Objects of class \code{\link{soil}} or data frames of physical properties.}
+\item{\code{forest}: Objects of class \code{\link[medfate]{forest}}.}
+\item{\code{soil}: Objects of class \code{\link[medfate]{soil}} or data frames of physical properties.}
 \item{\code{land_cover_type}: Land cover type of each grid cell (values should be 'wildland' or 'agriculture').}
 \item{\code{crop_factor}: Crop evapo-transpiration factor. Only required for 'agriculture' land cover type.}
 \item{\code{local_control}: A list of control parameters (optional). Used to override function parameter \code{local_control} for specific cells (values can be \code{NULL} for the remaining ones).}
 }}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
-\item{local_control}{A list of control parameters (see \code{\link{defaultControl}}).}
+\item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}).}
 
 \item{model}{A string to indicate the model, either \code{"spwb"} or \code{"growth"}.}
 
 \item{simplify}{Boolean flag to simplify forest to the tree and shrub cohorts with largest leaf area index. The leaf area index of the whole tree (respectively, shrub) layer will be attributed to the selected cohort.
-See function \code{\link{forest_reduceToDominant}}.}
+See function \code{\link[medfate]{forest_reduceToDominant}}.}
 
 \item{replace}{Boolean flag to replace existing initialized states}
 
 \item{progress}{Boolean flag to display progress information.}
 }
 \value{
-Replaces or adds column 'state' whose elements are \code{\link{spwbInput}} or \code{\link{growthInput}} objects
+Replaces or adds column 'state' whose elements are \code{\link[medfate]{spwbInput}} or \code{\link[medfate]{growthInput}} objects
 and returns the modified object of class 'sf'.
 }
 \description{
-Initializes state for local models \code{\link{spwb}} or \code{\link{growth}}.
+Initializes state for local models \code{\link[medfate]{spwb}} or \code{\link[medfate]{growth}}.
 }
 \details{
 Initialization is dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},

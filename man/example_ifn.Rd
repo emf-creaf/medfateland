@@ -5,7 +5,7 @@
 \alias{example_ifn}
 \title{Example of distributed forest inventory stands}
 \format{
-The data format is that of an object \code{\link{sf}}
+The data format is that of an object \code{\link[sf]{sf}}
 }
 \source{
 \itemize{

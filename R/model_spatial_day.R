@@ -211,21 +211,21 @@
 
 #' One-day simulation for spatially-distributed forest stands
 #' 
-#' Functions that allow calling local models \code{\link{spwb_day}} or \code{\link{growth_day}}, 
+#' Functions that allow calling local models \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}, 
 #' for a set of forest stands distributed in specific locations and a given date. 
 #' No spatial processes are simulated.
 #'
-#' @param sf An object of class \code{\link{sf}} with landscape information (see \code{\link{spwb_spatial}}).
+#' @param sf An object of class \code{\link[sf]{sf}} with landscape information (see \code{\link{spwb_spatial}}).
 #' @param meteo Meteorology data (see \code{\link{spwb_spatial}}).
 #' @param date A string with the date to be simulated.
-#' @param SpParams A data frame with species parameters (see \code{\link{SpParamsMED}}).
-#' @param local_control A list of local model control parameters (see \code{\link{defaultControl}}).
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).
+#' @param local_control A list of local model control parameters (see \code{\link[medfate]{defaultControl}}).
 #' @param parallelize Boolean flag to try parallelization (will use all clusters minus one).
 #' @param num_cores Integer with the number of cores to be used for parallel computation.
 #' @param chunk_size Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).
 #' @param progress Boolean flag to display progress information for simulations.
 #' 
-#' @returns An object of class \code{\link{sf}} the same name as the function called containing three elements:
+#' @returns An object of class \code{\link[sf]{sf}} the same name as the function called containing three elements:
 #' \itemize{
 #'   \item{\code{geometry}: Spatial geometry.}
 #'   \item{\code{id}: Stand id, taken from the input.}
@@ -237,7 +237,7 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
-#' @seealso \code{\link{spwb_day}}, \code{\link{growth_day}}, \code{\link{spwb_spatial}}
+#' @seealso \code{\link[medfate]{spwb_day}}, \code{\link[medfate]{growth_day}}, \code{\link{spwb_spatial}}
 #' 
 #' @examples 
 #' \donttest{
