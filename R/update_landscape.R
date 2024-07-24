@@ -6,7 +6,7 @@
 #' @param y The object resulting of a simulation previously carried on \code{x} 
 #'    using \code{\link{spwb_spatial}}, \code{\link{growth_spatial}}, \code{\link{spwb_land}}, etc.
 #' 
-#' @return An object of class \code{\link{sf}} with modified state variables.
+#' @return An object of class \code{\link[sf]{sf}} with modified state variables.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 

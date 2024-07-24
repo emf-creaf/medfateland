@@ -2,7 +2,7 @@
 #'
 #' Default management prescriptions by species, defined according current practices in Catalonia (NE Spain)
 #'
-#' A data frame with 27 species (or species groups) in rows and management parameters in columns (defined in \code{\link{defaultManagementArguments}})
+#' A data frame with 27 species (or species groups) in rows and management parameters in columns (defined in \code{\link[medfate]{defaultManagementArguments}})
 #' 
 #' @name defaultPrescriptionsBySpecies
 #' @aliases defaultPrescriptionsBySpecies

@@ -17,7 +17,7 @@ add_forests(
 )
 }
 \arguments{
-\item{x}{An object of class \code{\link{sf}} with a valid CRS definition, and a column called 'id'.}
+\item{x}{An object of class \code{\link[sf]{sf}} with a valid CRS definition, and a column called 'id'.}
 
 \item{tree_table}{A data frame with tree records in rows and attributes in columns. Tree records can correspond to individual trees or groups of trees with an associated density.}
 
@@ -62,7 +62,7 @@ add_forests(
 A modified object of class \code{\link[sf]{sf}} with column 'forest'.
 }
 \description{
-Creates and adds forest data to an \code{\link{sf}} object by reading from tree and shrub data tables
+Creates and adds forest data to an \code{\link[sf]{sf}} object by reading from tree and shrub data tables
 }
 \details{
 The current implementation will replace existing forests of the indicated 'id' values.

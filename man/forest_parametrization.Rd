@@ -61,7 +61,7 @@ For structural corrections or when checking, \code{x} should already contain a c
 
 \item{progress}{A logical flag to print console output.}
 
-\item{structure_map}{An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map}
+\item{structure_map}{An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with a forest structural variable map}
 
 \item{variable}{Structural variable to correct. See options in details.}
 
@@ -73,7 +73,7 @@ For structural corrections or when checking, \code{x} should already contain a c
 because of the missing stand metric. A special case occurs for correction following basal area (see details).}
 }
 \value{
-Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
+Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.
 Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 }
 \description{
@@ -109,7 +109,7 @@ Locations where the metric value in the map is missing are left unmodified. The 
 for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area,
 DBH values will be set to minDBH, and correction of basal area will be performed.
 
-Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
+Function \code{check_forest()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. The function does not modify the data.
 }
 \examples{

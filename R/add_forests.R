@@ -1,9 +1,9 @@
 
 #' Add forests
 #'
-#' Creates and adds forest data to an \code{\link{sf}} object by reading from tree and shrub data tables
+#' Creates and adds forest data to an \code{\link[sf]{sf}} object by reading from tree and shrub data tables
 #' 
-#' @param x An object of class \code{\link{sf}} with a valid CRS definition, and a column called 'id'. 
+#' @param x An object of class \code{\link[sf]{sf}} with a valid CRS definition, and a column called 'id'. 
 #' @param tree_table A data frame with tree records in rows and attributes in columns. Tree records can correspond to individual trees or groups of trees with an associated density.
 #' @param tree_mapping  A named character vector to specify mappings of columns in \code{tree_table} into attributes of \code{treeData}. Accepted names (and the corresponding specifications for the columns in \code{tree_table}) are:
 #' \itemize{

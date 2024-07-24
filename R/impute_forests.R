@@ -47,10 +47,10 @@
 #' for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area, 
 #' DBH values will be set to minDBH, and correction of basal area will be performed.
 #' 
-#' Function \code{check_forest()} checks first that \code{\link{forest}} objects are defined in "wildland" locations. Then, it looks for missing
+#' Function \code{check_forest()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 #' data in tree or shrub attributes required for simulations. The function does not modify the data.
 #' 
-#' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link{sf}}.
+#' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.
 #'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
@@ -222,7 +222,7 @@ impute_forests <-function(x, sf_fi, dem,
 
 
 #' @rdname forest_parametrization
-#' @param structure_map An object of class \code{\link{rast}} or \code{\link{vect}} with a forest structural variable map
+#' @param structure_map An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with a forest structural variable map
 #' @param variable Structural variable to correct. See options in details.
 #' @param map_var Variable name or index containing structural variable in 'structure_map'. If missing the first column is taken.
 #' @param minDBH Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected

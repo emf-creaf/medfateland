@@ -11,7 +11,7 @@ Mario Beltrán & Míriam Piqué. Forest Science and Technology Centre of Catalon
 Default management prescriptions by species, defined according current practices in Catalonia (NE Spain)
 }
 \details{
-A data frame with 27 species (or species groups) in rows and management parameters in columns (defined in \code{\link{defaultManagementArguments}})
+A data frame with 27 species (or species groups) in rows and management parameters in columns (defined in \code{\link[medfate]{defaultManagementArguments}})
 }
 \seealso{
 \code{\link{create_management_scenario}}, \code{\link[medfate]{defaultManagementArguments}},
