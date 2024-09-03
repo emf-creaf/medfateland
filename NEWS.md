@@ -1,3 +1,5 @@
+# medfateland 2.4.6
+
 # medfateland 2.4.5
 - New helper function parse_forestable()
 - Soil domains set to "single" by default

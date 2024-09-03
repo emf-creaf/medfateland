@@ -126,7 +126,7 @@ dispersal <- function(sf, SpParams,
   if(progress) cli::cli_progress_step(paste0("Seed bank mortality"))
   for(i in 1:n) { 
     forest <- sf$forest[[i]]
-    if(!is.null(forest))  {
+    if(!is.null(forest) && inherits(forest, "forest"))  {
       seedBank <- forest$seedBank
       seedBank <- medfate::regeneration_seedmortality(seedBank, SpParams, min_percent)
       seedbank_list[[i]] <- seedBank
@@ -136,7 +136,7 @@ dispersal <- function(sf, SpParams,
   if(progress) cli::cli_progress_step(paste0("Seed production"))
   for(i in 1:n) { 
     forest <- sf$forest[[i]]
-    if(!is.null(forest))  {
+    if(!is.null(forest) && inherits(forest, "forest"))  {
       seed_production[[i]] <- medfate::regeneration_seedproduction(forest, SpParams, local_control)
     } else {
       seed_production[[i]] <- character(0)
