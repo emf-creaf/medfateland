@@ -1,4 +1,5 @@
 # medfateland 2.4.6
+- Numerical species codes allowed as input for fordyn_land()
 
 # medfateland 2.4.5
 - New helper function parse_forestable()

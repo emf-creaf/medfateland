@@ -1452,6 +1452,8 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
 
   if(progress) cli::cli_progress_step(paste0("Checking 'sf' data"))
   .check_sf_input(sf)
+  
+  
   if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("'dates' has to be of class 'Date'.")
   if(!("snowpack" %in% names(sf))) cli::cli_abort("'snowpack' has to be defined in 'sf'.")
   represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
@@ -1520,14 +1522,20 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   }
   # Init growth 
   if(progress) cli::cli_h3(paste0("Initialisation"))
-  if(local_control$allowRecruitment) {
-    for(i in 1:nCells) { 
-      if(sf$land_cover_type[i] == "wildland")  {
-        forest <- sf$forest[[i]]
+  for(i in 1:nCells) { 
+    if(sf$land_cover_type[i] == "wildland")  {
+      forest <- sf$forest[[i]]
+      if(is.numeric(forest$treeData$Species)) {
+        forest$treeData$Species <- medfate:::.speciesCharacterParameterFromSpIndex(forest$treeData$Species, SpParams, "Name")
+      }
+      if(is.numeric(forest$shrubData$Species)) {
+        forest$shrubData$Species <- medfate:::.speciesCharacterParameterFromSpIndex(forest$shrubData$Species, SpParams, "Name")
+      }
+      if(local_control$allowRecruitment) {
         forest$treeData <- forest$treeData[,c("Species","DBH", "Height","N","Z50","Z95")]
         forest$shrubData <- forest$shrubData[,c("Species","Height","Cover", "Z50","Z95")]
-        sf$forest[[i]] <- forest
       }
+      sf$forest[[i]] <- forest
     }
   }
   sf <- initialize_landscape(sf, SpParams, local_control = local_control, model = "growth", progress = progress)
