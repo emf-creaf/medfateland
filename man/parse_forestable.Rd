@@ -7,6 +7,7 @@
 parse_forestable(
   x,
   keepSpeciesCodes = TRUE,
+  filterMissingSpecies = TRUE,
   filterDeadTrees = TRUE,
   filterCutTrees = TRUE,
   minimumTreeDBH = 0.1,
@@ -17,6 +18,8 @@ parse_forestable(
 \item{x}{A data frame or sf object issued from package forestables.}
 
 \item{keepSpeciesCodes}{Keeps forest inventory species codes.}
+
+\item{filterMissingSpecies}{If TRUE, filters out records where species is missing.}
 
 \item{filterDeadTrees}{If TRUE, filters out dead trees (Spanish forest inventory IFN3 or IFN4).}
 
@@ -39,6 +42,7 @@ This function retrieves the following information from the forestables object:
 \item{Id unique code, survey year, non-unique plot code and country.}
 \item{Plot location. Output geometry is always points in WGS 84. Note that exact coordinates are not normally given in forest inventory data.}
 \item{Elevation, slope and aspect, whenever available}
-\item{Tree and understory data. The function will create a column \code{forest} with this information.}
+\item{Tree and understory data. The function will create a column \code{forest} with this information. If both tree and understory data are
+missing for a given row, the corresponding \code{forest} will be empty.}
 }
 }

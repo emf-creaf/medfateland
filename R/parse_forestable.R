@@ -1,8 +1,10 @@
 .parse_forest <- function(tree, understory, country, version = NA, 
                           keepSpeciesCodes = TRUE,
+                          filterMissingSpecies = TRUE,
                           filterDeadTrees = TRUE,
                           filterCutTrees = TRUE,
                           minimumTreeDBH = 0.1) {
+  f <- emptyforest()
   is_shrub <- FALSE
   if(!is.null(understory)) {
     if((!is.null(understory$shrub)) && (length(understory$shrub)==1)) {
@@ -11,7 +13,6 @@
   }
   is_tree <- (!is.null(tree)) && (nrow(tree)>0) 
   if(is_tree || is_shrub) {
-    f <- emptyforest()
     if(is_tree) {
       f$treeData <- tree |>
         dplyr::select(.data$sp_name, .data$sp_code, .data$dbh, .data$height, .data$density_factor) |>
@@ -47,6 +48,10 @@
             f$treeData <- f$treeData[!(f$treeData$tree_ifn4 %in% cut_codes_ifn), , drop = FALSE]
           }
         }
+      } 
+      if(filterMissingSpecies) {
+        f$treeData <- f$treeData |>
+            dplyr::filter(!is.na(.data$Species))
       }
       f$treeData <- f$treeData |>
         dplyr::filter(.data$DBH >= minimumTreeDBH)
@@ -67,16 +72,18 @@
                       Cover = as.numeric(.data$Cover),
                       Z50 = as.numeric(NA),
                       Z95 = as.numeric(NA))
-      
+      if(filterMissingSpecies) {
+        f$shrubData <- f$shrubData |>
+          dplyr::filter(!is.na(.data$Species))
+      }
       if(!keepSpeciesCodes) {
         f$shrubData <- f$shrubData |>
           dplyr::select(-.data$SpeciesCode)
       }
       
     }
-    return(f)
   }
-  return(NULL)
+  return(f)
 }
 
 #' Parse forestable
@@ -86,6 +93,7 @@
 #'
 #' @param x A data frame or sf object issued from package forestables.
 #' @param keepSpeciesCodes Keeps forest inventory species codes.
+#' @param filterMissingSpecies If TRUE, filters out records where species is missing.
 #' @param filterDeadTrees If TRUE, filters out dead trees (Spanish forest inventory IFN3 or IFN4).
 #' @param filterCutTrees If TRUE, filters out cut trees (Spanish forest inventory IFN3 or IFN4).
 #' @param minimumTreeDBH Minimum DBH for keeping a tree record.
@@ -97,7 +105,8 @@
 #'   \item{Id unique code, survey year, non-unique plot code and country.}
 #'   \item{Plot location. Output geometry is always points in WGS 84. Note that exact coordinates are not normally given in forest inventory data.}
 #'   \item{Elevation, slope and aspect, whenever available}
-#'   \item{Tree and understory data. The function will create a column \code{forest} with this information.}
+#'   \item{Tree and understory data. The function will create a column \code{forest} with this information. If both tree and understory data are
+#'         missing for a given row, the corresponding \code{forest} will be empty.}
 #' }
 #' 
 #' @return An sf object including a 'forest' column
@@ -105,6 +114,7 @@
 #'
 parse_forestable <- function(x, 
                              keepSpeciesCodes = TRUE,
+                             filterMissingSpecies = TRUE,
                              filterDeadTrees = TRUE, 
                              filterCutTrees = TRUE,
                              minimumTreeDBH = 0.1,
@@ -139,6 +149,7 @@ parse_forestable <- function(x,
     f <- .parse_forest(x$tree[[i]], x$understory[[i]], x$country[[i]], 
                        version = x$version[[i]],
                        keepSpeciesCodes = keepSpeciesCodes,
+                       filterMissingSpecies = filterMissingSpecies,
                        filterDeadTrees = filterDeadTrees,
                        filterCutTrees = filterCutTrees,
                        minimumTreeDBH = minimumTreeDBH)
