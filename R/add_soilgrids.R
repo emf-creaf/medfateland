@@ -186,7 +186,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
   orimaxdepth = sum(soildf$widths)
   # print(cbind(soildf$widths, oridepths, findepths))
   # Modify total soil depth according to bedrock
-  if(!is.na(depth_to_bedrock)) {
+  if(!is.na(depth_to_bedrock) && (depth_to_bedrock>0)) {
     if(depth_to_bedrock < orimaxdepth) {
       to_remove <- (oridepths >= depth_to_bedrock)
       soildf <- soildf[!to_remove,,drop = FALSE]
@@ -198,7 +198,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     }
   }
   # Modify soil depth
-  if(!is.na(soil_depth)) {
+  if(!is.na(soil_depth) && (soil_depth > 0)) {
     if(full_rock_filling) {
       for(l in 1:nl) {
         mid_point <- oridepths[l] + soildf$widths[l]/2
