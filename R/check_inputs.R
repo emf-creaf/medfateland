@@ -6,6 +6,7 @@
 #' @param default_values Vector of default values for locations with missing data.
 #' @param missing_action Action to perform for missing values, either "no_action" (for checks), "filter" (filter missing data), "default" (impute default values)
 #' @param verbose Logical flag to indicate extra console output.
+#' @param progress A logical flag to print information about progress.
 #'
 #' @details
 #' Function \code{check_topography()} checks that columns \code{"elevation"}, \code{"slope"} and \code{"aspect"} do not contain missing values.

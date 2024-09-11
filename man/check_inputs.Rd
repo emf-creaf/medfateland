@@ -50,6 +50,8 @@ check_soils(
 
 \item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
+\item{progress}{A logical flag to print information about progress.}
+
 \item{check_equal_layers}{Logical flag to test whether soils have the same number of layers.}
 }
 \value{
