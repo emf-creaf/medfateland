@@ -11,7 +11,7 @@ Function check_soils verifies that soil data does not contain missing values for
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,14 +74,6 @@ Function <code>check_soils</code> verifies that soil data does not contain missi
 <span>  regolith_rfc <span class="op">=</span> <span class="fl">97.5</span>,</span>
 <span>  full_rock_filling <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">check_soils</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  check_equal_layers <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  fill_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  default_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>clay <span class="op">=</span> <span class="fl">25</span>, sand <span class="op">=</span> <span class="fl">25</span>, bd <span class="op">=</span> <span class="fl">1.5</span>, rfc <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,18 +117,6 @@ cover types only. Otherwise, soils are retrieved for all locations. For function
 <dt id="arg-full-rock-filling">full_rock_filling<a class="anchor" aria-label="anchor" href="#arg-full-rock-filling"></a></dt>
 <dd><p>Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.</p></dd>
 
-
-<dt id="arg-check-equal-layers">check_equal_layers<a class="anchor" aria-label="anchor" href="#arg-check-equal-layers"></a></dt>
-<dd><p>Logical flag to test whether soils have the same number of layers.</p></dd>
-
-
-<dt id="arg-fill-missing">fill_missing<a class="anchor" aria-label="anchor" href="#arg-fill-missing"></a></dt>
-<dd><p>Logical flag to fill missing values in key parameters with defaults.</p></dd>
-
-
-<dt id="arg-default-values">default_values<a class="anchor" aria-label="anchor" href="#arg-default-values"></a></dt>
-<dd><p>Vector of default values for locations with missing data.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -178,14 +158,13 @@ If regional maps of soil depth are not available, users are recommended to resor
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span>   <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</span>
 <span class="r-in"><span>   <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.6333</span>, <span class="fl">42.6667</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>   <span class="va">x_soil</span> <span class="op">&lt;-</span> <span class="fu">add_soilgrids</span><span class="op">(</span><span class="va">x</span>, widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">700</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Defining new column 'soil'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Defining new column 'soil' <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Defining new column 'soil' <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Querying 1 points to rest.isric.org:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Querying 1 points to rest.isric.org: <span style="color: #B2B2B2;">[18ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Querying 1 points to rest.isric.org: <span style="color: #B2B2B2;">[13ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span>   <span class="va">x_soil</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 1 field</span>

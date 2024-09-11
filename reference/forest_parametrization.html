@@ -17,7 +17,7 @@ check_forests() checks that forests are defined and do not contain missing value
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ check_forests() checks that forests are defined and do not contain missing value
     <div class="ref-description section level2">
     <p>Utility functions to define forest inputs in a landscape:</p><ul><li><p><code>impute_forests()</code> performs imputation of forest objects from a forest inventory using a forest map to match forest types and topography as covariates.</p></li>
 <li><p><code>modify_forest_structure()</code> uses forest structure rasters supplied by the user to correct forest structure metrics.</p></li>
-<li><p><code>check_forests()</code> checks that forests are defined and do not contain missing values in key tree/shrub attributes.</p></li>
+<li><p><code><a href="check_inputs.html">check_forests()</a></code> checks that forests are defined and do not contain missing values in key tree/shrub attributes.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -88,9 +88,7 @@ check_forests() checks that forests are defined and do not contain missing value
 <span>  ratio_limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  minDBH <span class="op">=</span> <span class="fl">7.5</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">check_forests</span><span class="op">(</span><span class="va">x</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -171,7 +169,7 @@ because of the missing stand metric. A special case occurs for correction follow
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Functions <code>impute_forests()</code> and <code>modify_forest_structure()</code> return a modified object of class <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code>.
-Function <code>check_forests()</code> returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.</p>
+Function <code><a href="check_inputs.html">check_forests()</a></code> returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -194,8 +192,6 @@ and the input map in the target location. Options for structural variables are t
 </ul><p>Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
 for correction of basal area. In that case, if there are no trees larger than <code>minDBH</code> but structural map indicates positive values of basal area,
 DBH values will be set to minDBH, and correction of basal area will be performed.</p>
-<p>Function <code>check_forest()</code> checks first that <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects are defined in "wildland" locations. Then, it looks for missing
-data in tree or shrub attributes required for simulations. The function does not modify the data.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

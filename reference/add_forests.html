@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -204,10 +204,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> PAR ground (%): NA  SWR ground (%): NA </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Check forests (height is missing!)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="forest_parametrization.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 3 non-null 'forest' elements out of 3 wildland locations (100%).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No wildland locations with NULL values in column 'forest'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All objects in column 'forest' have the right class.</span>
+<span class="r-in"><span><span class="fu"><a href="check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing tree height values detected for 3 wildland locations (100%).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate tree height using general allometric</span></span></span>
@@ -226,11 +225,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> PAR ground (%): NA  SWR ground (%): NA </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Final check</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="forest_parametrization.html">check_forests</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 3 non-null 'forest' elements out of 3 wildland locations (100%).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No wildland locations with NULL values in column 'forest'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All objects in column 'forest' have the right class.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No missing values detected in key tree/shrub attributes of 'forest' objects.</span>
+<span class="r-in"><span><span class="fu"><a href="check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No missing/wrong values detected in key tree/shrub attributes of 'forest' objects.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

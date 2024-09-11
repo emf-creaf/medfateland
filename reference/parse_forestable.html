@@ -9,7 +9,7 @@ for simulations with medfateland."><meta property="og:image" content="https://em
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,7 @@ for simulations with medfateland.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parse_forestable</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  keepSpeciesCodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  filterMissingSpecies <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  filterDeadTrees <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  filterCutTrees <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  minimumTreeDBH <span class="op">=</span> <span class="fl">0.1</span>,</span>
@@ -76,6 +77,10 @@ for simulations with medfateland.</p>
 
 <dt id="arg-keepspeciescodes">keepSpeciesCodes<a class="anchor" aria-label="anchor" href="#arg-keepspeciescodes"></a></dt>
 <dd><p>Keeps forest inventory species codes.</p></dd>
+
+
+<dt id="arg-filtermissingspecies">filterMissingSpecies<a class="anchor" aria-label="anchor" href="#arg-filtermissingspecies"></a></dt>
+<dd><p>If TRUE, filters out records where species is missing.</p></dd>
 
 
 <dt id="arg-filterdeadtrees">filterDeadTrees<a class="anchor" aria-label="anchor" href="#arg-filterdeadtrees"></a></dt>
@@ -103,7 +108,8 @@ for simulations with medfateland.</p>
     <p>This function retrieves the following information from the forestables object:</p><ul><li><p>Id unique code, survey year, non-unique plot code and country.</p></li>
 <li><p>Plot location. Output geometry is always points in WGS 84. Note that exact coordinates are not normally given in forest inventory data.</p></li>
 <li><p>Elevation, slope and aspect, whenever available</p></li>
-<li><p>Tree and understory data. The function will create a column <code>forest</code> with this information.</p></li>
+<li><p>Tree and understory data. The function will create a column <code>forest</code> with this information. If both tree and understory data are
+missing for a given row, the corresponding <code>forest</code> will be empty.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
