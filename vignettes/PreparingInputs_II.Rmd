@@ -492,7 +492,7 @@ y_6$soil[[1]]
 During data retrieval, there might be some locations where SoilGrids 2.0 data was missing. We can use function `check_soils()` to detect those cases and fill them with default values:
 
 ```{r}
-y_7 <- check_soils(y_6, fill_missing = TRUE)
+y_7 <- check_soils(y_6, missing_action = "default")
 ```
 
 
