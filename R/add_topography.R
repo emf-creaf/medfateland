@@ -26,7 +26,7 @@
 #'           \item{\code{land_cover_type}: Land cover type.}
 #'        }
 #'        
-#' @seealso [impute_forests()], [add_soilgrids()]
+#' @seealso [check_topography()], [check_land_cover()]
 #' @export
 #' 
 #' @name add_topography
@@ -84,47 +84,3 @@ add_land_cover<-function(x, land_cover_map,
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
-#' @export
-#' @param filter_missing Boolean flag to filter locations with missing data
-#' @rdname add_topography
-check_topography<-function(x, 
-                           filter_missing = FALSE) {
-  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
-  if(!("elevation" %in% names(x))) cli::cli_abort("Column 'elevation' must be defined.")
-  if(!("slope" %in% names(x))) cli::cli_abort("Column 'slope' must be defined.")
-  if(!("aspect" %in% names(x))) cli::cli_abort("Column 'aspect' must be defined.")
-  mis_elevation <- is.na(x$elevation)
-  mis_slope <- is.na(x$slope)
-  mis_aspect <- is.na(x$aspect)
-  mis_any <- mis_elevation | mis_slope | mis_aspect
-  if(any(mis_elevation)) cli::cli_alert_warning(paste0("Found ", sum(mis_elevation), " locations with missing elevation."))
-  if(any(mis_slope)) cli::cli_alert_warning(paste0("Found ", sum(mis_slope), " locations with missing slope."))
-  if(any(mis_aspect)) cli::cli_alert_warning("Found ", paste0(sum(mis_aspect), " locations with missing aspect."))
-  if(!any(mis_any)) {
-    cli::cli_alert_success("No missing values in topography.")
-  } else if(filter_missing) {
-    cli::cli_alert_info(paste0("Filtering ", sum(mis_any), " locations with missing topography."))
-    x <- x[!mis_any,,drop =FALSE]
-  }
-  return(invisible(x))
-}
-
-#' @export
-#' @rdname add_topography
-check_land_cover<-function(x, 
-                           filter_missing = FALSE) {
-  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
-  if(!("land_cover_type" %in% names(x))) cli::cli_abort("Column 'land_cover_type' must be defined.")
-  mis_land_cover <- is.na(x$land_cover_type)
-  if(!any(mis_land_cover)) {
-    cli::cli_alert_success("No missing values in land cover.")
-  } else {
-    if(filter_missing) {
-      cli::cli_alert_info(paste0("Filtering ", sum(mis_land_cover), " locations with missing land cover."))
-      x <- x[!mis_land_cover,,drop =FALSE]
-    } else {
-      cli::cli_alert_warning(paste0("Found ", sum(mis_land_cover), " locations with missing land cover."))
-    }
-  }
-  invisible(x)
-}

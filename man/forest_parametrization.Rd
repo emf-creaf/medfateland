@@ -4,7 +4,6 @@
 \alias{forest_parametrization}
 \alias{impute_forests}
 \alias{modify_forest_structure}
-\alias{check_forests}
 \title{Landscape forest parametrization}
 \usage{
 impute_forests(
@@ -31,8 +30,6 @@ modify_forest_structure(
   minDBH = 7.5,
   progress = TRUE
 )
-
-check_forests(x, progress = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{\link[sf]{sf}}. If it contains a column named 'land_cover_type', imputation
@@ -108,9 +105,6 @@ and the input map in the target location. Options for structural variables are t
 Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
 for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area,
 DBH values will be set to minDBH, and correction of basal area will be performed.
-
-Function \code{check_forest()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
-data in tree or shrub attributes required for simulations. The function does not modify the data.
 }
 \examples{
 # See package vignettes 'Preparing inputs'

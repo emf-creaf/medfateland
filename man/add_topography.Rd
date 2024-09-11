@@ -3,8 +3,6 @@
 \name{add_topography}
 \alias{add_topography}
 \alias{add_land_cover}
-\alias{check_topography}
-\alias{check_land_cover}
 \title{Add topography and land cover}
 \usage{
 add_topography(x, dem, progress = TRUE)
@@ -19,10 +17,6 @@ add_land_cover(
   water = NULL,
   progress = TRUE
 )
-
-check_topography(x, filter_missing = FALSE)
-
-check_land_cover(x, filter_missing = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{\link[sf]{sf}}}
@@ -34,8 +28,6 @@ check_land_cover(x, filter_missing = FALSE)
 \item{land_cover_map}{An object of class \code{\link[terra]{SpatRaster}} of land cover type. If missing, all locations are considered 'wildland'.}
 
 \item{wildland, agriculture, rock, artificial, water}{Strings indicating the mapping from the legend of land_cover_map.}
-
-\item{filter_missing}{Boolean flag to filter locations with missing data}
 }
 \value{
 Function \code{add_topography()} returns a modified object of class \code{\link[sf]{sf}} with columns:
@@ -63,5 +55,5 @@ used in medfateland.
 # See package vignettes 'Preparing inputs'
 }
 \seealso{
-\code{\link[=impute_forests]{impute_forests()}}, \code{\link[=add_soilgrids]{add_soilgrids()}}
+\code{\link[=check_topography]{check_topography()}}, \code{\link[=check_land_cover]{check_land_cover()}}
 }

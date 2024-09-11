@@ -5,7 +5,6 @@
 \alias{soil_parametrization}
 \alias{add_soilgrids}
 \alias{modify_soils}
-\alias{check_soils}
 \title{Landscape soil parametrization}
 \usage{
 add_soilgrids(
@@ -23,14 +22,6 @@ modify_soils(
   regolith_rfc = 97.5,
   full_rock_filling = TRUE,
   progress = TRUE
-)
-
-check_soils(
-  x,
-  check_equal_layers = FALSE,
-  fill_missing = FALSE,
-  default_values = c(clay = 25, sand = 25, bd = 1.5, rfc = 25),
-  progress = FALSE
 )
 }
 \arguments{
@@ -52,12 +43,6 @@ cover types only. Otherwise, soils are retrieved for all locations. For function
 \item{regolith_rfc}{Rock fragment content, in percent volume, between soil depth and 200cm depth (or lower depths, if modified via \code{widths}).}
 
 \item{full_rock_filling}{Logical flag to modify rock fragment content in all soil layers with according to distance to soil depth.}
-
-\item{check_equal_layers}{Logical flag to test whether soils have the same number of layers.}
-
-\item{fill_missing}{Logical flag to fill missing values in key parameters with defaults.}
-
-\item{default_values}{Vector of default values for locations with missing data.}
 }
 \value{
 A modified object of class \code{\link[sf]{sf}} with column 'soil'.

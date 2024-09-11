@@ -47,9 +47,6 @@
 #' for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area, 
 #' DBH values will be set to minDBH, and correction of basal area will be performed.
 #' 
-#' Function \code{check_forest()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
-#' data in tree or shrub attributes required for simulations. The function does not modify the data.
-#' 
 #' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.
 #'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
 #' 
@@ -319,85 +316,3 @@ modify_forest_structure<-function(x, structure_map, variable,
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
-#' @rdname forest_parametrization
-#' @export
-check_forests <-function(x, 
-                         progress = FALSE) {
-  if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
-  if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
-  npoints <- nrow(x)
-  land_cover_type <- rep("wildland", nrow(x))
-  if("land_cover_type" %in% names(x)) land_cover_type <- x$land_cover_type 
-  is_wildland <- land_cover_type %in% c("wildland")
-  nwildland <- sum(is_wildland) 
-  is_forest <- !unlist(lapply(x$forest, is.null))
-  # cli::cli_alert_info(paste0(sum(is_forest), " non-null 'forest' elements out of ", npoints," locations (",round(100*sum(is_forest)/npoints,1),"%)."))
-  cli::cli_alert_info(paste0(sum(is_forest & is_wildland), " non-null 'forest' elements out of ", nwildland," wildland locations (", round(100*sum(is_forest & is_wildland)/nwildland,1),"%)."))
-  if(progress) {
-    cli::cli_progress_step("Checking forest list")
-    cli::cli_progress_bar("Locations", total = nrow(x))
-  }
-  mis_forest <- rep(FALSE, npoints)
-  wrong_class <- rep(FALSE, npoints)
-  mis_tree_N <- rep(FALSE, npoints)
-  mis_tree_DBH <- rep(FALSE, npoints)
-  mis_tree_height <- rep(FALSE, npoints)
-  mis_tree_species <- rep(FALSE, npoints)
-  mis_shrub_cover <- rep(FALSE, npoints)
-  mis_shrub_height <- rep(FALSE, npoints)
-  mis_shrub_species <- rep(FALSE, npoints)
-  for(i in 1:npoints) {
-    if(progress) cli::cli_progress_update()
-    if(land_cover_type[i] == "wildland") {
-      f <- x$forest[[i]]
-      if(!is.null(f)) {
-        if(inherits(f, "forest")) {
-          if(nrow(f$treeData)>0) {
-            mis_tree_N[i] <- any(is.na(f$treeData$N))
-            mis_tree_DBH[i] <- any(is.na(f$treeData$DBH))
-            mis_tree_height[i] <- any(is.na(f$treeData$Height))
-            mis_tree_species[i] <- any(is.na(f$treeData$Species))
-          }
-          if(nrow(f$shrubData)>0) {
-            mis_shrub_cover[i] <- any(is.na(f$shrubData$Cover))
-            mis_shrub_height[i] <- any(is.na(f$shrubData$Height))
-            mis_shrub_species[i] <- any(is.na(f$shrubData$Species))
-          }
-        } else {
-          wrong_class[i] <- TRUE
-        }
-      } else {
-        mis_forest[i] <- TRUE
-      }
-    }
-  }
-  if(progress) {
-    cli::cli_progress_done()
-  }
-  if(sum(mis_forest)>0) cli::cli_alert_warning(paste0("Missing 'forest' data in ", sum(mis_forest), " wildland locations (", round(100*sum(mis_forest)/nwildland ,1) ,"%)."))
-  else cli::cli_alert_info("No wildland locations with NULL values in column 'forest'.")
-  if(sum(wrong_class)>0) cli::cli_alert_warning(paste0("Wrong class in 'forest' column for ", sum(wrong_class), " wildland locations (", round(100*sum(wrong_class)/nwildland ,1) ,"%)."))
-  else cli::cli_alert_info("All objects in column 'forest' have the right class.")
-  if(sum(mis_tree_species)>0) cli::cli_alert_warning(paste0("Missing tree species detected for ", sum(mis_tree_species), " wildland locations (", round(100*sum(mis_tree_species)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_N)>0) cli::cli_alert_warning(paste0("Missing tree density values detected for ", sum(mis_tree_N), " wildland locations (", round(100*sum(mis_tree_N)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_height)>0) cli::cli_alert_warning(paste0("Missing tree height values detected for ", sum(mis_tree_height), " wildland locations (", round(100*sum(mis_tree_height)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_DBH)>0) cli::cli_alert_warning(paste0("Missing tree dbh values detected for ", sum(mis_tree_DBH), " wildland locations (", round(100*sum(mis_tree_DBH)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_species)>0) cli::cli_alert_warning(paste0("Missing shrub species detected for ", sum(mis_shrub_species), " wildland locations (", round(100*sum(mis_shrub_species)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_cover)>0) cli::cli_alert_warning(paste0("Missing shrub cover values detected for ", sum(mis_shrub_cover), " wildland locations (", round(100*sum(mis_shrub_cover)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_height)>0) cli::cli_alert_warning(paste0("Missing shrub height values detected for ", sum(mis_shrub_height), " wildland locations (", round(100*sum(mis_shrub_height)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_species)==0 && sum(mis_tree_N)==0 && 
-     sum(mis_tree_height) ==0 && sum(mis_tree_DBH)==0 &&
-     sum(mis_shrub_height) ==0 && sum(mis_shrub_cover)==0 &&
-     sum(mis_shrub_species) ==0) cli::cli_alert_info("No missing values detected in key tree/shrub attributes of 'forest' objects.")
-  
-  out <- data.frame(missing_forest = mis_forest,
-                    wrong_forest_class = wrong_class,
-                    tree_species = mis_tree_species,
-                    tree_dbh = mis_tree_DBH,
-                    tree_height = mis_tree_height,
-                    tree_density = mis_tree_N,
-                    shrub_species = mis_shrub_species,
-                    shrub_cover = mis_shrub_cover,
-                    shrub_height = mis_shrub_height)
-  return(invisible(tibble::as_tibble(out)))
-}
