@@ -56,12 +56,12 @@ check_topography<-function(x,
     return(invisible(tibble::as_tibble(out)))
   } else if(missing_action=="filter") {
     if(!any(mis_any)){
-      if(verbose) cli::cli_alert_info(paste0("Filtering out ", sum(mis_any), " locations with missing topography."))
+      if(verbose) cli::cli_alert_info(paste0("Filtering out ", sum(mis_any), " locations (",round(100*sum(mis_any)/nrow(x),1),"%) with missing topography."))
       x <- x[!mis_any,,drop =FALSE]
     }
   } else if(missing_action =="default") {
     if(any(mis_any)){
-      if(verbose) cli::cli_alert_info(paste0("Filling ", sum(mis_any), " locations with default topography."))
+      if(verbose) cli::cli_alert_info(paste0("Filling ", sum(mis_any), " locations (",round(100*sum(mis_any)/nrow(x),1),"%) with default topography."))
       x$elevation[mis_elevation] <- default_values["elevation"]
       x$slope[mis_slope] <- default_values["slope"]
       x$aspect[mis_aspect] <- default_values["aspect"]
@@ -90,12 +90,12 @@ check_land_cover<-function(x,
     return(invisible(tibble::as_tibble(out)))
   } else if(missing_action=="filter") {
     if(!any(mis_land_cover)) {
-      if(verbose) cli::cli_alert_info(paste0("Filtering out ", sum(mis_land_cover), " locations with missing land cover."))
+      if(verbose) cli::cli_alert_info(paste0("Filtering out ", sum(mis_land_cover), " locations (",round(100*sum(mis_land_cover)/nrow(x),1),"%) with missing land cover."))
       x <- x[!mis_land_cover,,drop =FALSE]
     }
   } else if(missing_action =="default") {
     if(!any(mis_land_cover)) {
-      if(verbose) cli::cli_alert_info(paste0("Filling ", sum(mis_land_cover), " locations with default land cover."))
+      if(verbose) cli::cli_alert_info(paste0("Filling ", sum(mis_land_cover), " locations (",round(100*sum(mis_land_cover)/nrow(x),1),"%) with default land cover."))
       x$land_cover_type[mis_land_cover] <- default_values
     }
   }
@@ -139,6 +139,18 @@ check_forests <-function(x, SpParams = NULL,
   mis_shrub_height <- rep(FALSE, npoints)
   mis_shrub_species <- rep(FALSE, npoints)
   wrong_shrub_species <- rep(FALSE, npoints)
+  
+  nr_tree <- 0
+  nr_mis_tree_height <- 0
+  nr_mis_tree_species <- 0
+  nr_wrong_tree_species <- 0
+  nr_mis_tree_N <- 0
+  nr_mis_tree_DBH <- 0
+  nr_shrub <- 0
+  nr_mis_shrub_cover <- 0
+  nr_mis_shrub_height <- 0
+  nr_mis_shrub_species <- 0
+  nr_wrong_shrub_species <- 0
   for(i in 1:npoints) {
     if(progress) cli::cli_progress_update()
     if(land_cover_type[i] == "wildland") {
@@ -146,20 +158,33 @@ check_forests <-function(x, SpParams = NULL,
       if(!is.null(f)) {
         if(inherits(f, "forest")) {
           if(nrow(f$treeData)>0) {
+            nr_tree <- nr_tree + nrow(f$treeData)
+            nr_mis_tree_N <- nr_mis_tree_N + sum(is.na(f$treeData$N))
             mis_tree_N[i] <- any(is.na(f$treeData$N))
+            nr_mis_tree_DBH <- nr_mis_tree_DBH + sum(is.na(f$treeData$DBH))
             mis_tree_DBH[i] <- any(is.na(f$treeData$DBH))
+            nr_mis_tree_height <- nr_mis_tree_height+ sum(is.na(f$treeData$Height))
             mis_tree_height[i] <- any(is.na(f$treeData$Height))
+            nr_mis_tree_species <- nr_mis_tree_species + sum(is.na(f$treeData$Species))
             mis_tree_species[i] <- any(is.na(f$treeData$Species))
             if(!is.null(accepted_names)) {
-              wrong_tree_species[i] <- any(!(f$treeData$Species[!is.na(f$treeData$Species)] %in% accepted_names))
+              wrong_spp  <- !(f$treeData$Species[!is.na(f$treeData$Species)] %in% accepted_names)
+              nr_wrong_tree_species <- nr_wrong_tree_species + sum(wrong_spp)
+              wrong_tree_species[i] <- any(wrong_spp)
             }
           }
           if(nrow(f$shrubData)>0) {
+            nr_shrub <- nr_shrub + nrow(f$shrubData)
+            nr_mis_shrub_cover <- nr_mis_shrub_cover + sum(is.na(f$shrubData$Cover))
             mis_shrub_cover[i] <- any(is.na(f$shrubData$Cover))
+            nr_mis_shrub_height <- nr_mis_shrub_height + sum(is.na(f$shrubData$Height))
             mis_shrub_height[i] <- any(is.na(f$shrubData$Height))
+            nr_mis_shrub_species <- nr_mis_shrub_species + sum(is.na(f$shrubData$Species))
             mis_shrub_species[i] <- any(is.na(f$shrubData$Species))
             if(!is.null(accepted_names)) {
-              wrong_shrub_species[i] <- any(!(f$shrubData$Species[!is.na(f$shrubData$Species)] %in% accepted_names))
+              wrong_spp <- !(f$shrubData$Species[!is.na(f$shrubData$Species)] %in% accepted_names)
+              nr_wrong_shrub_species <- nr_wrong_shrub_species + sum(wrong_spp)
+              wrong_shrub_species[i] <- any(wrong_spp)
             }
           }
         } else {
@@ -177,23 +202,20 @@ check_forests <-function(x, SpParams = NULL,
   else if(verbose) cli::cli_alert_success("No wildland locations with NULL values in column 'forest'.")
   if(sum(wrong_class)>0) cli::cli_alert_warning(paste0("Wrong class in 'forest' column for ", sum(wrong_class), " wildland locations (", round(100*sum(wrong_class)/nwildland ,1) ,"%)."))
   else if(verbose) cli::cli_alert_success("All objects in column 'forest' have the right class.")
-  if(sum(mis_tree_species)>0) cli::cli_alert_warning(paste0("Missing tree species detected for ", sum(mis_tree_species), " wildland locations (", round(100*sum(mis_tree_species)/nwildland ,1) ,"%)."))
-  if(sum(wrong_tree_species)>0) cli::cli_alert_warning(paste0("Wrong tree species names detected for ", sum(wrong_tree_species), " wildland locations (", round(100*sum(wrong_tree_species)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_N)>0) cli::cli_alert_warning(paste0("Missing tree density values detected for ", sum(mis_tree_N), " wildland locations (", round(100*sum(mis_tree_N)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_height)>0) cli::cli_alert_warning(paste0("Missing tree height values detected for ", sum(mis_tree_height), " wildland locations (", round(100*sum(mis_tree_height)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_DBH)>0) cli::cli_alert_warning(paste0("Missing tree dbh values detected for ", sum(mis_tree_DBH), " wildland locations (", round(100*sum(mis_tree_DBH)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_species)>0) cli::cli_alert_warning(paste0("Missing shrub species detected for ", sum(mis_shrub_species), " wildland locations (", round(100*sum(mis_shrub_species)/nwildland ,1) ,"%)."))
-  if(sum(wrong_shrub_species)>0) cli::cli_alert_warning(paste0("Wrong shrub species names detected for ", sum(wrong_shrub_species), " wildland locations (", round(100*sum(wrong_shrub_species)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_cover)>0) cli::cli_alert_warning(paste0("Missing shrub cover values detected for ", sum(mis_shrub_cover), " wildland locations (", round(100*sum(mis_shrub_cover)/nwildland ,1) ,"%)."))
-  if(sum(mis_shrub_height)>0) cli::cli_alert_warning(paste0("Missing shrub height values detected for ", sum(mis_shrub_height), " wildland locations (", round(100*sum(mis_shrub_height)/nwildland ,1) ,"%)."))
-  if(sum(mis_tree_species)==0 && sum(mis_tree_N)==0 && 
-     sum(mis_tree_height) ==0 && sum(mis_tree_DBH)==0 &&
-     sum(mis_shrub_height) ==0 && sum(mis_shrub_cover)==0 &&
-     sum(mis_shrub_species) ==0) if(verbose) cli::cli_alert_success("No missing/wrong values detected in key tree/shrub attributes of 'forest' objects.")
+  if(sum(mis_tree_species)>0) cli::cli_alert_warning(paste0("Missing tree species detected for ", nr_mis_tree_species, " records (", round(100*nr_mis_tree_species/nr_tree,1) ,"%) in ", sum(mis_tree_species), " wildland locations (", round(100*sum(mis_tree_species)/nwildland ,1) ,"%)."))
+  if(sum(wrong_tree_species)>0) cli::cli_alert_warning(paste0("Wrong tree species names detected for ", nr_wrong_tree_species, " records (", round(100*nr_wrong_tree_species/nr_tree,1) ,"%) in ", sum(wrong_tree_species), " wildland locations (", round(100*sum(wrong_tree_species)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_N)>0) cli::cli_alert_warning(paste0("Missing tree density values detected for ", nr_mis_tree_N, " records (", round(100*nr_mis_tree_N/nr_tree,1) ,"%) in ", sum(mis_tree_N), " wildland locations (", round(100*sum(mis_tree_N)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_height)>0) cli::cli_alert_warning(paste0("Missing tree height values detected for ", nr_mis_tree_height, " (", round(100*nr_mis_tree_height/nr_tree,1) ,"%) in ", sum(mis_tree_height), " wildland locations (", round(100*sum(mis_tree_height)/nwildland ,1) ,"%)."))
+  if(sum(mis_tree_DBH)>0) cli::cli_alert_warning(paste0("Missing tree dbh values detected for ", nr_mis_tree_DBH, " records (", round(100*nr_mis_tree_DBH/nr_tree,1) ,"%) in ", sum(mis_tree_DBH), " wildland locations (", round(100*sum(mis_tree_DBH)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_species)>0) cli::cli_alert_warning(paste0("Missing shrub species detected for ", nr_mis_shrub_species, " records (", round(100*nr_mis_shrub_species/nr_shrub,1) ,"%) in ", sum(mis_shrub_species), " wildland locations (", round(100*sum(mis_shrub_species)/nwildland ,1) ,"%)."))
+  if(sum(wrong_shrub_species)>0) cli::cli_alert_warning(paste0("Wrong shrub species names detected for ", nr_wrong_shrub_species, " records (", round(100*nr_wrong_shrub_species/nr_shrub,1) ,"%) in ", sum(wrong_shrub_species), " wildland locations (", round(100*sum(wrong_shrub_species)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_cover)>0) cli::cli_alert_warning(paste0("Missing shrub cover values detected for ", nr_mis_shrub_cover, " records (", round(100*nr_mis_shrub_cover/nr_shrub,1) ,"%) in ", sum(mis_shrub_cover), " wildland locations (", round(100*sum(mis_shrub_cover)/nwildland ,1) ,"%)."))
+  if(sum(mis_shrub_height)>0) cli::cli_alert_warning(paste0("Missing shrub height values detected for ", nr_mis_shrub_height, " records (", round(100*nr_mis_shrub_height/nr_shrub,1) ,"%) in ", sum(mis_shrub_height), " wildland locations (", round(100*sum(mis_shrub_height)/nwildland ,1) ,"%)."))
   
   mis_tree_any  <- mis_tree_species | mis_tree_DBH | mis_tree_height | mis_tree_N
   mis_shrub_any  <- mis_shrub_species | mis_shrub_height | mis_shrub_cover
   error_any <- mis_tree_any | wrong_tree_species | mis_shrub_any | wrong_shrub_species
+  if(sum(error_any)==0) if(verbose) cli::cli_alert_success("No missing/wrong values detected in key tree/shrub attributes of 'forest' objects.")
   
   if(missing_action=="no_action") {
     out <- data.frame(missing_forest = mis_forest,
@@ -210,7 +232,7 @@ check_forests <-function(x, SpParams = NULL,
     return(invisible(tibble::as_tibble(out)))
   } else if(missing_action=="filter") {
     if(any(error_any)) {
-      if(verbose) cli::cli_alert_info(paste0("Filtering out problematic tree/shrub records in ", sum(error_any), " locations with missing/wrong forest data."))
+      if(verbose) cli::cli_alert_info(paste0("Filtering out problematic tree/shrub records in ", sum(error_any), " locations (",round(100*sum(error_any)/npoints,1),"%) with missing/wrong forest data."))
       if(progress) {
         cli::cli_progress_bar("Locations", total = nrow(x))
       }
