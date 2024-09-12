@@ -55,7 +55,7 @@ check_soils(
 \item{check_equal_layers}{Logical flag to test whether soils have the same number of layers.}
 }
 \value{
-Functions return a modified \code{\link[sf]{sf}} object if \code{missing_action} is either \code{"filter"} or \code{"default"}. Otherwise,
+All functions return a modified \code{\link[sf]{sf}} object if \code{missing_action} is either \code{"filter"} or \code{"default"}. Otherwise,
 they return an invisible tibble with logical columns indicating where missing information is.
 }
 \description{
@@ -66,9 +66,12 @@ Function \code{check_topography()} checks that columns \code{"elevation"}, \code
 
 Function \code{check_land_cover()} checks that column \code{"land_cover_type"} does not contain missing values.
 
-Function \code{check_forest()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
+Function \code{check_forests()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. If \code{SpParams} is provided, the function also checks
 whether species names are within the taxa represented in \code{SpParams}.
+
+Function \code{check_soils()} checks first that "wildland" and "agriculture" locations have a defined soil object. Then it looks for missing data in required
+soil physical parameters.
 }
 \examples{
 data(example_ifn)
