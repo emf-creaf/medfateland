@@ -49,7 +49,7 @@ closely developed with another package:
 - Package [**traits4models**](https://emf-creaf.github.io/traits4models)
   provides functions to help creating species parameter inputs for
   process-based models such as those in for **medfate** and
-  **medfateland** functions \[*under development*\].
+  **medfateland** functions.
 
 Two other R packages complete the simulation framework, but can be used
 for many other purposes beyond forest modelling:
