@@ -36,6 +36,7 @@ articles:
   
 - title: Model performance evaluation
   desc: Model benchmark evaluation at regional level
+  contents:
   - evaluation/RegionalLevelEvaluation
   
 reference:
