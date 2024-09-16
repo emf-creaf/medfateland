@@ -2,14 +2,11 @@
 title: "Spatially-uncoupled simulations"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
+description: >
+   Learn how to conduct simulations over multiple sites without spatial processes
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Spatially-uncoupled simulations}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignettePackage{medfateland}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +26,7 @@ The aim of this vignette is to illustrate how to use **medfateland** (v. `r pack
 
 The fundamental input structure in **medfateland** is an object of class **sf**, i.e. a simple feature collection where geometries (normally points) are described with attributes. In the case of **medfateland**, spatial attributes correspond to model inputs for each of the spatial units represented. We begin by loading an example data set of 100 forest stands distributed on points in the landscape:
 
-```{r, fig.align='center', fig.width=7}
+```{r}
 data("example_ifn")
 example_ifn
 ```
@@ -59,7 +56,7 @@ example_ifn$soil[[3]]
 
 Using `plot_variable()` functions for spatial landscape objects, we can draw maps of some variables using:
 
-```{r, fig.align='center', fig.width=7}
+```{r, fig.align='center', fig.width=7, fig.alt = "Basal area of forest stands"}
 plot_variable(example_ifn, "basal_area")
 ```
 
@@ -121,7 +118,7 @@ Column `geometry` contains the geometry given as input to simulations, column `i
 ### Temporal summaries, plots and maps
 
 The structure of the output of `spwb_spatial()` allows querying information for the simulation of any particular forest stand. For example, we may use function `plot.spwb()`, from package **medfate**, to display the simulation results on a particular plot:
-```{r, fig.width=7}
+```{r, fig.width=7, fig.alt = "Evapotranspiration of the first forest stand"}
 plot(res$result[[1]], "Evapotranspiration")
 ```
 
@@ -147,7 +144,7 @@ res_sum$summary[[1]]
 ```
 
 Summary objects are handy because their `plot_summary()` function allows us to display maps of summaries for specific dates:
-```{r, fig.align='center', fig.width=7}
+```{r, fig.align='center', fig.width=7, fig.alt = "Maps of transpiration for different dates"}
 plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
 plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
@@ -179,7 +176,7 @@ res_2$summary[[1]]
 ```
 
 And one can produce maps with summary results directly from the output of the simulation function:
-```{r, fig.align='center', fig.width=7}
+```{r, fig.align='center', fig.width=7, fig.alt = "Map of transpiration for a specific date"}
 plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
@@ -216,7 +213,7 @@ names(example_ifn_mod)
 
 Note that a new column `state` appears in now in the **sf** object. We can check the effect by drawing the soil water potential:
 
-```{r, fig.align='center', fig.width=7}
+```{r, fig.align='center', fig.width=7, fig.alt = "Map of soil water potential"}
 plot_variable(example_ifn_mod, "soil_psi_curr")
 ```
 
@@ -232,7 +229,7 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
 And display a map with the resulting month transpiration:
 
-```{r, fig.align='center', fig.width=7}
+```{r, fig.align='center', fig.width=7, fig.alt = "Map of month transpiration"}
 plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
 ```
 

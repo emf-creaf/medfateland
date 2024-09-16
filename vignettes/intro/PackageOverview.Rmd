@@ -2,14 +2,11 @@
 title: "Package overview"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
+description: >
+  An introduction to the package and its main functions
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Package overview}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignettePackage{medfateland}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +39,7 @@ Five kinds of land cover are recognized in **medfateland**, which determine the 
 
 The figure below provides an overview of simulation functions in **medfateland** and the processes available for each of them. Colored squares below each simulation function indicate the processes included.
 
-```{r, out.width='70%', fig.align="center", echo=FALSE}
+```{r, out.width='70%', fig.align="center", echo=FALSE, fig.alt="Overview of processes and simulation functions of package medfateland"}
 knitr::include_graphics("Package_design_medfateland.png")
 ```
 

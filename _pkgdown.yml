@@ -34,7 +34,10 @@ articles:
   contents:
   - modelanalysis/TetisWatershedParameters
   
-
+- title: Model performance evaluation
+  desc: Model benchmark evaluation at regional level
+  - evaluation/RegionalLevelEvaluation
+  
 reference:
 - title: Input preparation
   desc: Functions to help preparing spatial inputs

@@ -2,14 +2,11 @@
 title: "Preparing inputs I: forest inventory plots"
 author: "Miquel De Cáceres / Adriana Tovar / Víctor Granda"
 date: "`r Sys.Date()`"
+description: >
+   Instructions to create model inputs from forest inventory data
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Preparing inputs I: forest inventory plots}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +39,7 @@ library(forestables)
 
 The functions introduced in this procedure are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
 
-```{r, out.width='80%', fig.align="center", echo=FALSE}
+```{r, out.width='80%', fig.align="center", echo=FALSE, fig.alt="Initialization workflow for forest inventory data"}
 knitr::include_graphics("forest_inventory_init_workflow.png")
 ```
 

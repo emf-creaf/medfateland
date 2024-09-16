@@ -2,14 +2,11 @@
 title: "Sensitivity to watershed parameters"
 author: "Miquel De Cáceres / María González"
 date: "`r Sys.Date()`"
+description: >
+  Explore the sensitivity of TETIS watershed parameters on watershed simulation outputs
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Sensitivity to watershed parameters}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignettePackage{medfateland}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

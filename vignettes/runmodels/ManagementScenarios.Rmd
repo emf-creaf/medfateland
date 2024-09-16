@@ -2,14 +2,11 @@
 title: "Management scenarios"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
+description: >
+   Learn how to conduct simulations of forest dynamics over a region using management scenarios
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Management scenarios}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignettePackage{medfateland}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

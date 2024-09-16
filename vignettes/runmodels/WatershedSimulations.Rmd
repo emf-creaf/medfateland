@@ -2,14 +2,11 @@
 title: "Watershed simulations"
 author: "Miquel De Caceres"
 date: "`r Sys.Date()`"
+description: >
+   Learn how to conduct simulations over a watershed with lateral water flows
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Watershed simulations}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignettePackage{medfateland}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

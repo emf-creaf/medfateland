@@ -2,14 +2,11 @@
 title: "Preparing inputs II: arbitrary locations"
 author: "Miquel De Cáceres / Núria Aquilué / Paula Martín / María González"
 date: "`r Sys.Date()`"
+description: >
+   Instructions to create model inputs in a set of arbitrary locations
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: TRUE
-vignette: >
-  %\VignetteIndexEntry{Preparing inputs II: arbitrary locations}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting **from a set of coordinates** corresponding to **arbitrary locations**. The functions introduced in this document are meant to be executed sequentially to progressively add spatial information, as illustrated in the workflow below, but users are free to use them in the most convenient way.
 
-```{r, out.width='90%', fig.align="center", echo=FALSE}
+```{r, out.width='90%', fig.align="center", echo=FALSE, fig.alt = "Initialisation workflow for continuous landscapes"}
 knitr::include_graphics("Landscape_init_workflow.png")
 ```
 
@@ -50,7 +47,7 @@ watershed
 
 We can draw a map with the location of the watershed within Catalonia using:
 
-```{r, fig.width=5, fig.height=5, fig.align="center"}
+```{r, fig.width=5, fig.height=5, fig.align="center", fig.alt="Location of the watershed within Catalonia"}
 dataset_path <- "~/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Sources/Catalunya/Comarques/comarques.shp"))
 ggplot()+
@@ -117,7 +114,7 @@ check_topography(y_0)
 
 We can now examine the elevation of the area, using the raster `r` to draw cells instead of points:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+```{r, echo = FALSE, fig.width=6, fig.height=4.5, fig.alt = "Elevation map"}
 plot_variable(y_0, "elevation", r = r)+
   scale_fill_distiller("m", palette="Spectral", na.value = NA)+
   theme_bw()
@@ -169,7 +166,7 @@ gc()
 
 We can examine the land cover types in our target area using:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+```{r, echo = FALSE, fig.width=6, fig.height=4.5, fig.alt = "Land cover map"}
 plot_variable(y_1, "land_cover_type", r = r, name = "")
 ```
 ```{r, include = FALSE}
@@ -309,7 +306,7 @@ gc()
 ```
 
 Mean tree height data has the following distribution:
-```{r, fig.width=6, fig.height=4}
+```{r, fig.width=6, fig.height=4, fig.alt="Tree height map derived from LiDAR"}
 names(height_map_40)<- "height"
 ggplot()+
   geom_spatraster(aes(fill=height), data=height_map_40)+
@@ -355,7 +352,7 @@ gc()
 
 Basal area geographic distribution looks as follows:
 
-```{r, fig.width=6, fig.height=4}
+```{r, fig.width=6, fig.height=4, fig.alt = "Basal area map derived from LiDAR"}
 names(basal_area_map_40)<- "basal_area"
 ggplot()+
   geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
@@ -380,7 +377,7 @@ y_5$forest[[1]]
 
 To finish this section, we will show the effect of imputation and correction on structural variables, compared with the LiDAR data. 
 
-```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE}
+```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE, fig.alt="Effect of imputation, height correction and basal area correction on basal area over the study area"}
 p1 <- plot_variable(y_3, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
@@ -414,7 +411,7 @@ cor.test(ba_5, x_vect$basal_area)
 
 We can also see the effect of the imputation and correction on mean tree height:
 
-```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE}
+```{r, echo = TRUE, fig.width=8, fig.height=12, warning = FALSE, message = TRUE, fig.alt = "Effect of imputation, mean tree height correction and basal area correction on mean tree height"}
 p1 <- plot_variable(y_3, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -551,7 +548,7 @@ y_8$soil[[1]]
 We can compare the effect of the correction on the soil water capacity (in mm) by inspecting the following plots (note the change in magnitude and spatial pattern):
 
 
-```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8}
+```{r, echo = TRUE, warning = FALSE, message = FALSE, fig.width=7, fig.height=8, fig.alt = "Extractable soil water volume before and after correcting SoilGrids data"}
 p1 <- plot_variable(y_7, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
@@ -600,7 +597,7 @@ gc()
 
 Crops in the target watershed, occupy valley bottoms as expected:
 
-```{r, fig.width=6, fig.height=4}
+```{r, fig.width=6, fig.height=4, fig.alt="Crop distribution in the study area"}
 ggplot()+
   geom_spatvector(aes(fill=Cultiu), data=crop_map)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -670,7 +667,7 @@ y_8$depth_to_bedrock <-terra::extract(depth_to_bedrock_mm, x_vect)[,2, drop = TR
 
 which we can plot using:
 
-```{r, echo = FALSE, fig.width=6, fig.height=4.5}
+```{r, echo = FALSE, fig.width=6, fig.height=4.5, fig.alt="Depth to bedrock from GLHYMPS 2.0"}
 plot_variable(y_8, "depth_to_bedrock", r = r)
 ```
 
@@ -703,7 +700,7 @@ y_8$bedrock_porosity <- x_glhymps[,"Porosity_x", drop = TRUE]/100
 
 Its geographic distribution is quite simple:
 
-```{r, fig.width=6, fig.height=4.5}
+```{r, fig.width=6, fig.height=4.5, fig.alt="Bedrock porosity from GLHYMPS 2.0"}
 plot_variable(y_8, "bedrock_porosity", r = r)
 ```
 
@@ -732,7 +729,7 @@ y_8$bedrock_conductivity <- K_day
 
 Its geographic distribution is very simple, again:
 
-```{r, fig.width=6, fig.height=4.5}
+```{r, fig.width=6, fig.height=4.5, fig.alt ="Bedrock conductivity from GLHYMPS 2.0"}
 plot_variable(y_8, "bedrock_conductivity", r = r)
 ```
 
