@@ -2,14 +2,14 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  ManagementScenarios: ManagementScenarios.html
-  PackageOverview: PackageOverview.html
-  PreparingInputs_I: PreparingInputs_I.html
-  PreparingInputs_II: PreparingInputs_II.html
-  SpatiallyUncoupledSimulations: SpatiallyUncoupledSimulations.html
-  TetisWatershedParameters: TetisWatershedParameters.html
-  WatershedSimulations: WatershedSimulations.html
-last_built: 2024-09-15T14:55Z
+  runmodels/ManagementScenarios: runmodels/ManagementScenarios.html
+  intro/PackageOverview: intro/PackageOverview.html
+  intro/PreparingInputs_I: intro/PreparingInputs_I.html
+  intro/PreparingInputs_II: intro/PreparingInputs_II.html
+  runmodels/SpatiallyUncoupledSimulations: runmodels/SpatiallyUncoupledSimulations.html
+  modelanalysis/TetisWatershedParameters: modelanalysis/TetisWatershedParameters.html
+  runmodels/WatershedSimulations: runmodels/WatershedSimulations.html
+last_built: 2024-09-16T12:32Z
 urls:
   reference: https://emf-creaf.github.io/medfateland/reference
   article: https://emf-creaf.github.io/medfateland/articles
