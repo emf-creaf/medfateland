@@ -12,30 +12,28 @@ home:
   - text: Reference book
     href: https://emf-creaf.github.io/medfatebook/index.html
 
-navbar:
-  components:
-    articles:
-      text: Articles
-      menu:
-      - text: Introduction
-      - text: Package overview
-        href: articles/PackageOverview.html
-      - text: "Preparing inputs I: forest inventory plots"
-        href: articles/PreparingInputs_I.html
-      - text: "Preparing inputs II: arbitrary locations"
-        href: articles/PreparingInputs_II.html
-      - text: -------
-      - text: Running simulation models
-      - text: Spatially-uncoupled simulations
-        href: articles/SpatiallyUncoupledSimulations.html
-      - text: Watershed simulations
-        href: articles/WatershedSimulations.html
-      - text: Management scenarios
-        href: articles/ManagementScenarios.html
-      - text: -------
-      - text: Model analysis and parametrization
-      - text: Sensitivity to watershed parameters
-        href: articles/TetisWatershedParameters.html      
+articles:
+- title: Introduction
+  navbar: Introduction
+  desc: Package overview and model inputs
+  contents:
+  - intro/PackageOverview
+  - intro/PreparingInputs_I
+  - intro/PreparingInputs_II
+
+- title: Running simulation models
+  navbar: Running simulations
+  desc: Learn how to conduct simulations
+  contents:
+  - runmodels/SpatiallyUncoupledSimulations
+  - runmodels/WatershedSimulations
+  - runmodels/ManagementScenarios
+
+- title: Model analysis
+  desc: Articles explaining advanced modelling tasks
+  contents:
+  - modelanalysis/TetisWatershedParameters
+  
 
 reference:
 - title: Input preparation

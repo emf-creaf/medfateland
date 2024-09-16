@@ -10,6 +10,10 @@
 ^_pkgdown\.yml$
 ^\.github$
 ^vignettes/*$
+^vignettes/intro/*$
+^vignettes/evaluation/*$
+^vignettes/modelanalysis/*$
+^vignettes/runmodels/*$
 ^figures/*$
 ^pkgdown$
 ^man/figures/*$
