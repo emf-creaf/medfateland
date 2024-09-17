@@ -30,12 +30,12 @@ evalDIR = "~/OneDrive/mcaceres_work/model_development/medfate_evaluation/Regiona
 
 ```{r, echo = FALSE}
 ver <- "2.9.3" # packageVersion("medfate")
-files <- c(paste0(evalDIR, "/Rdata/IFNeval_results_granier_IFN23_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/IFNeval_results_sperry_IFN23_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/IFNeval_results_granier_IFN34_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/IFNeval_results_sperry_IFN34_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/IFNeval_results_granier_IFN24_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/IFNeval_results_sperry_IFN24_v", ver, ".rds"))
+files <- c(paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN23_v", ver, ".rds"),
+           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN23_v", ver, ".rds"),
+           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN34_v", ver, ".rds"),
+           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN34_v", ver, ".rds"),
+           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN24_v", ver, ".rds"),
+           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN24_v", ver, ".rds"))
 n <- length(files)
 dfdbh_vec <- vector("list", n)
 dfh_vec <- vector("list", n)
