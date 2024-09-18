@@ -96,6 +96,7 @@
 #' @param filterMissingSpecies If TRUE, filters out records where species is missing.
 #' @param filterDeadTrees If TRUE, filters out dead trees (Spanish forest inventory IFN3 or IFN4).
 #' @param filterCutTrees If TRUE, filters out cut trees (Spanish forest inventory IFN3 or IFN4).
+#' @param keepUnfilteredCopy If TRUE, an additional column is given where dead/cut trees have not been filtered.
 #' @param minimumTreeDBH Minimum DBH for keeping a tree record.
 #' @param progress A logical flag to include a progress bar while processing the data.
 #'
@@ -109,7 +110,7 @@
 #'         missing for a given row, the corresponding \code{forest} will be empty.}
 #' }
 #' 
-#' @return An sf object including a 'forest' column
+#' @return An sf object including a 'forest' column. If \code{keepUnfilteredCopy=TRUE} an additional column 'forest_unfiltered' is also given.
 #' @export
 #'
 parse_forestable <- function(x, 
@@ -117,6 +118,7 @@ parse_forestable <- function(x,
                              filterMissingSpecies = TRUE,
                              filterDeadTrees = TRUE, 
                              filterCutTrees = TRUE,
+                             keepUnfilteredCopy = FALSE,
                              minimumTreeDBH = 0.1,
                              progress = FALSE) {
   
@@ -144,6 +146,9 @@ parse_forestable <- function(x,
   x <- x[, forestables_vars]
   if(!("version" %in% names(x))) x[["version"]] <- NA 
   x[["forest"]] <- vector("list", nrow(x)) 
+  if(keepUnfilteredCopy) {
+    x[["forest_unfiltered"]] <- vector("list", nrow(x)) 
+  }
   if(progress) cli::cli_progress_bar("Parsing plots", total = nrow(x))
   for(i in 1:nrow(x)) {
     f <- .parse_forest(x$tree[[i]], x$understory[[i]], x$country[[i]], 
@@ -154,6 +159,16 @@ parse_forestable <- function(x,
                        filterCutTrees = filterCutTrees,
                        minimumTreeDBH = minimumTreeDBH)
     if(!is.null(f)) x$forest[[i]] <- f
+    if(keepUnfilteredCopy) {
+      f_unfiltered <- .parse_forest(x$tree[[i]], x$understory[[i]], x$country[[i]], 
+                                    version = x$version[[i]],
+                                    keepSpeciesCodes = keepSpeciesCodes,
+                                    filterMissingSpecies = FALSE,
+                                    filterDeadTrees = FALSE,
+                                    filterCutTrees = FALSE,
+                                    minimumTreeDBH = 0.0)
+      if(!is.null(f)) x$forest_unfiltered[[i]] <- f_unfiltered
+    }
     if(progress) cli::cli_progress_update()
   }
   if(progress) cli::cli_progress_done()
@@ -163,6 +178,7 @@ parse_forestable <- function(x,
     dplyr::select(-.data$tree, -.data$understory) |>
     dplyr::relocate(.data$forest, .before = .data$geometry) |>
     dplyr::relocate(.data$geometry, .after = .data$id)
+  if(keepUnfilteredCopy) x <- x |> dplyr::relocate(.data$forest_unfiltered, .after = .data$forest)
   if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = .data$elev)
   if("version" %in% names(x)) x <- x |> dplyr::relocate(.data$version, .after = .data$country)
   return(x)

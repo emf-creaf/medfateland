@@ -1,6 +1,7 @@
 # medfateland 2.4.6
 - Numerical species codes allowed as input for fordyn_land()
 - Added filterMissingSpecies in parse_forestable()
+- Added keepUnfilteredCopy in parse_forestable()
 - Revision of input checks
 
 # medfateland 2.4.5
