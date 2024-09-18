@@ -15,12 +15,12 @@
   if(is_tree || is_shrub) {
     if(is_tree) {
       f$treeData <- tree |>
-        dplyr::select(.data$sp_name, .data$sp_code, .data$dbh, .data$height, .data$density_factor) |>
-        dplyr::rename(Species = .data$sp_name,
-                      SpeciesCode = .data$sp_code,
-                      DBH = .data$dbh,
-                      Height = .data$height,
-                      N = .data$density_factor) |>
+        dplyr::select("sp_name", "sp_code", "dbh", "height", "density_factor") |>
+        dplyr::rename(Species = "sp_name",
+                      SpeciesCode = "sp_code",
+                      DBH = "dbh",
+                      Height = "height",
+                      N = "density_factor") |>
         dplyr::mutate(DBH = as.numeric(.data$DBH),
                       Height = as.numeric(.data$Height)*100,
                       N = as.numeric(.data$N)) |>
@@ -57,17 +57,17 @@
         dplyr::filter(.data$DBH >= minimumTreeDBH)
       if(!keepSpeciesCodes) {
         f$treeData <- f$treeData |>
-          dplyr::select(-.data$SpeciesCode)
+          dplyr::select(-"SpeciesCode")
       }
     }
     if(is_shrub) {
       shrub <- understory$shrub[[1]]
       f$shrubData <- shrub |>
-        dplyr::select(.data$sp_name, .data$sp_code, .data$height, .data$cover) |>
-        dplyr::rename(Species = .data$sp_name,
-                      SpeciesCode = .data$sp_code,
-                      Height = .data$height,
-                      Cover = .data$cover) |>
+        dplyr::select("sp_name", "sp_code", "height", "cover") |>
+        dplyr::rename(Species = "sp_name",
+                      SpeciesCode = "sp_code",
+                      Height = "height",
+                      Cover = "cover") |>
         dplyr::mutate(Height = as.numeric(.data$Height),
                       Cover = as.numeric(.data$Cover),
                       Z50 = as.numeric(NA),
@@ -78,7 +78,7 @@
       }
       if(!keepSpeciesCodes) {
         f$shrubData <- f$shrubData |>
-          dplyr::select(-.data$SpeciesCode)
+          dplyr::select(-"SpeciesCode")
       }
       
     }
@@ -174,12 +174,12 @@ parse_forestable <- function(x,
   if(progress) cli::cli_progress_done()
   
   x <- x |>
-    dplyr::rename(id = .data$id_unique_code) |>
-    dplyr::select(-.data$tree, -.data$understory) |>
-    dplyr::relocate(.data$forest, .before = .data$geometry) |>
-    dplyr::relocate(.data$geometry, .after = .data$id)
-  if(keepUnfilteredCopy) x <- x |> dplyr::relocate(.data$forest_unfiltered, .after = .data$forest)
-  if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = .data$elev)
-  if("version" %in% names(x)) x <- x |> dplyr::relocate(.data$version, .after = .data$country)
+    dplyr::rename(id = "id_unique_code") |>
+    dplyr::select(-"tree", -"understory") |>
+    dplyr::relocate("forest", .before = "geometry") |>
+    dplyr::relocate("geometry", .after = "id")
+  if(keepUnfilteredCopy) x <- x |> dplyr::relocate("forest_unfiltered", .after = "forest")
+  if("elev" %in% names(x)) x <- x |> dplyr::rename(elevation = "elev")
+  if("version" %in% names(x)) x <- x |> dplyr::relocate("version", .after = "country")
   return(x)
 }
