@@ -114,11 +114,13 @@ check_forests <-function(x, SpParams = NULL,
                          verbose = TRUE) {
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   match.arg(missing_action, c("no_action", "filter"))
-  accepted_names <- NULL
+  accepted_tree_names <- NULL
+  accepted_shrub_names <- NULL
   if(!is.null(SpParams)) {
     if(!inherits(SpParams, "data.frame")) cli::cli_abort("'SpParams' should be a data frame with species parameters")
     if(!("Name" %in% names(SpParams))) cli::cli_abort("'SpParams' should contain a column 'Name'")
-    accepted_names <- SpParams$Name
+    accepted_tree_names <- SpParams$Name[SpParams$GrowthForm %in% c("Tree", "Tree/Shrub")]
+    accepted_shrub_names <- SpParams$Name[SpParams$GrowthForm %in% c("Shrub", "Tree/Shrub")]
   }
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   npoints <- nrow(x)
@@ -170,8 +172,8 @@ check_forests <-function(x, SpParams = NULL,
             mis_tree_height[i] <- any(is.na(f$treeData$Height))
             nr_mis_tree_species <- nr_mis_tree_species + sum(is.na(f$treeData$Species))
             mis_tree_species[i] <- any(is.na(f$treeData$Species))
-            if(!is.null(accepted_names)) {
-              wrong_spp  <- !(f$treeData$Species[!is.na(f$treeData$Species)] %in% accepted_names)
+            if(!is.null(accepted_tree_names)) {
+              wrong_spp  <- !(f$treeData$Species[!is.na(f$treeData$Species)] %in% accepted_tree_names)
               nr_wrong_tree_species <- nr_wrong_tree_species + sum(wrong_spp)
               wrong_tree_species[i] <- any(wrong_spp)
             }
@@ -184,8 +186,8 @@ check_forests <-function(x, SpParams = NULL,
             mis_shrub_height[i] <- any(is.na(f$shrubData$Height))
             nr_mis_shrub_species <- nr_mis_shrub_species + sum(is.na(f$shrubData$Species))
             mis_shrub_species[i] <- any(is.na(f$shrubData$Species))
-            if(!is.null(accepted_names)) {
-              wrong_spp <- !(f$shrubData$Species[!is.na(f$shrubData$Species)] %in% accepted_names)
+            if(!is.null(accepted_shrub_names)) {
+              wrong_spp <- !(f$shrubData$Species[!is.na(f$shrubData$Species)] %in% accepted_shrub_names)
               nr_wrong_shrub_species <- nr_wrong_shrub_species + sum(wrong_spp)
               wrong_shrub_species[i] <- any(wrong_spp)
             }
@@ -256,11 +258,11 @@ check_forests <-function(x, SpParams = NULL,
               }
               if(wrong_tree_species[i]) {
                 f$treeData <- f$treeData |>
-                  dplyr::filter(.data$Species %in% accepted_names)
+                  dplyr::filter(.data$Species %in% accepted_tree_names)
               }
               if(wrong_shrub_species[i]) {
                 f$shrubData <- f$shrubData |>
-                  dplyr::filter(.data$Species %in% accepted_names)
+                  dplyr::filter(.data$Species %in% accepted_shrub_names)
               }
               x$forest[[i]] <- f
             }

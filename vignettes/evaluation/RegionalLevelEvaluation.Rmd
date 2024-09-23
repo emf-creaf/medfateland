@@ -94,6 +94,26 @@ for(i in 1:n) {
   if(i %in% 1:2) IDs <- IDs_23
   else if(i %in% 3:4) IDs <- IDs_34
   else if(i %in% 5:6) IDs <- IDs_24
+  dfdbh_vec[[i]]$version <- as.character(dfdbh_vec[[i]]$version)
+  dfh_vec[[i]]$version <- as.character(dfh_vec[[i]]$version)
+  dfbai_sp_vec[[i]]$version <- as.character(dfbai_sp_vec[[i]]$version)
+  dfbai_plot_vec[[i]]$version <- as.character(dfbai_plot_vec[[i]]$version)
+  dfbadead_sp_vec[[i]]$version <- as.character(dfbadead_sp_vec[[i]]$version)
+  dfbadead_plot_vec[[i]]$version <- as.character(dfbadead_plot_vec[[i]]$version)
+  dfbarecr_sp_vec[[i]]$version <- as.character(dfbarecr_sp_vec[[i]]$version)
+  dfbarecr_plot_vec[[i]]$version <- as.character(dfbarecr_plot_vec[[i]]$version)
+  dfbatot_sp_vec[[i]]$version <- as.character(dfbatot_sp_vec[[i]]$version)
+  dfbatot_plot_vec[[i]]$version <- as.character(dfbatot_plot_vec[[i]]$version)
+  dfNdead_sp_vec[[i]]$version <- as.character(dfNdead_sp_vec[[i]]$version)
+  dfNdead_plot_vec[[i]]$version <- as.character(dfNdead_plot_vec[[i]]$version)
+  dfNrecr_sp_vec[[i]]$version <- as.character(dfNrecr_sp_vec[[i]]$version)
+  dfNrecr_plot_vec[[i]]$version <- as.character(dfNrecr_plot_vec[[i]]$version)
+  dfNtot_sp_vec[[i]]$version <- as.character(dfNtot_sp_vec[[i]]$version)
+  dfNtot_plot_vec[[i]]$version <- as.character(dfNtot_plot_vec[[i]]$version)
+  dfshcov_plot_vec[[i]]$version <- as.character(dfshcov_plot_vec[[i]]$version)
+  dfshheight_plot_vec[[i]]$version <- as.character(dfshheight_plot_vec[[i]]$version)
+  dflai_allom_plot_vec[[i]]$version <- as.character(dflai_allom_plot_vec[[i]]$version)
+  dflai_state_plot_vec[[i]]$version <- as.character(dflai_state_plot_vec[[i]]$version)
   
   dfdbh_vec[[i]] <- dfdbh_vec[[i]] |> filter(id %in% IDs)
   dfh_vec[[i]] <- dfh_vec[[i]] |> filter(id %in% IDs)
