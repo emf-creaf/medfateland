@@ -1,4 +1,5 @@
-.parse_forest <- function(tree, understory, country, version = NA, 
+.parse_forest <- function(tree, understory, regen,
+                          country, version = NA, 
                           keepSpeciesCodes = TRUE,
                           filterMissingSpecies = TRUE,
                           filterDeadTrees = TRUE,
@@ -6,13 +7,17 @@
                           minimumTreeDBH = 0.1) {
   f <- emptyforest()
   is_shrub <- FALSE
+  is_regen <- FALSE
   if(!is.null(understory)) {
     if((!is.null(understory$shrub)) && (length(understory$shrub)==1)) {
       is_shrub <- (nrow(understory$shrub[[1]]) > 0)
     }
   }
+  if(!is.null(regen)) {
+    is_regen <- (nrow(regen) > 0)
+  }
   is_tree <- (!is.null(tree)) && (nrow(tree)>0) 
-  if(is_tree || is_shrub) {
+  if(is_tree || is_shrub || is_regen) {
     if(is_tree) {
       f$treeData <- tree |>
         dplyr::select("sp_name", "sp_code", "dbh", "height", "density_factor") |>
@@ -59,6 +64,35 @@
         f$treeData <- f$treeData |>
           dplyr::select(-"SpeciesCode")
       }
+    }
+    if(is_regen) {
+      df_regen <- regen |>
+        dplyr::select("sp_name", "sp_code", "dbh", "height", "n") |>
+        dplyr::rename(Species = "sp_name",
+                      SpeciesCode = "sp_code",
+                      DBH = "dbh",
+                      Height = "height",
+                      N = "n") |>
+        dplyr::mutate(DBH = as.numeric(.data$DBH),
+                      Height = as.numeric(.data$Height),
+                      N = as.numeric(.data$N)) |>
+        dplyr::mutate(Z50 = as.numeric(NA),
+                      Z95 = as.numeric(NA))
+      if(filterMissingSpecies) {
+        df_regen <- df_regen |>
+          dplyr::filter(!is.na(.data$Species))
+      }
+      df_regen <- df_regen |>
+        dplyr::filter(.data$DBH >= minimumTreeDBH)
+      if(!keepSpeciesCodes) {
+        df_regen <- df_regen |>
+          dplyr::select(-"SpeciesCode")
+      }
+
+      if(nrow(df_regen)>0) {
+        f$treeData <- f$treeData |>
+          dplyr::bind_rows(df_regen)
+      }      
     }
     if(is_shrub) {
       shrub <- understory$shrub[[1]]
@@ -122,7 +156,7 @@ parse_forestable <- function(x,
                              minimumTreeDBH = 0.1,
                              progress = FALSE) {
   
-  forestables_vars <- c("id_unique_code", "year", "plot", "country", "tree", "understory")
+  forestables_vars <- c("id_unique_code", "year", "plot", "country", "tree", "understory", "regen")
   if("version" %in% names(x)) forestables_vars <- c(forestables_vars, "version")
   if("elev" %in% names(x)) forestables_vars <- c(forestables_vars, "elev")
   if("slope" %in% names(x)) forestables_vars <- c(forestables_vars, "slope")
@@ -151,7 +185,8 @@ parse_forestable <- function(x,
   }
   if(progress) cli::cli_progress_bar("Parsing plots", total = nrow(x))
   for(i in 1:nrow(x)) {
-    f <- .parse_forest(x$tree[[i]], x$understory[[i]], x$country[[i]], 
+    f <- .parse_forest(x$tree[[i]], x$understory[[i]], x$regen[[i]],
+                       x$country[[i]], 
                        version = x$version[[i]],
                        keepSpeciesCodes = keepSpeciesCodes,
                        filterMissingSpecies = filterMissingSpecies,
@@ -160,7 +195,8 @@ parse_forestable <- function(x,
                        minimumTreeDBH = minimumTreeDBH)
     if(!is.null(f)) x$forest[[i]] <- f
     if(keepUnfilteredCopy) {
-      f_unfiltered <- .parse_forest(x$tree[[i]], x$understory[[i]], x$country[[i]], 
+      f_unfiltered <- .parse_forest(x$tree[[i]], x$understory[[i]], x$regen[[i]],
+                                    x$country[[i]], 
                                     version = x$version[[i]],
                                     keepSpeciesCodes = keepSpeciesCodes,
                                     filterMissingSpecies = FALSE,
