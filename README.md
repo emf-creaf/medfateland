@@ -23,9 +23,16 @@ Since both packages evolve together, installing **medfateland** normally
 requires an up-to-date version of
 [**medfate**](https://emf-creaf.github.io/medfate/).
 
-The package is not available from CRAN because it is still under active
-development. Beta versions of package **medfateland** can be installed
-from GitHub as follows:
+Package **medfateland** can be found at
+[CRAN](https://CRAN.R-project.org/package=medfateland), where it is
+updated every few months. Installation from CRAN can be done via:
+
+``` r
+install.packages("medfateland")
+```
+
+Users can also download and install the latest stable versions GitHub as
+follows (required package `remotes` should be installed/updated first):
 
 ``` r
 remotes::install_github("emf-creaf/medfateland")
