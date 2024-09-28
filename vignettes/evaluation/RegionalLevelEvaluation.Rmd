@@ -30,12 +30,12 @@ evalDIR = "~/OneDrive/mcaceres_work/model_development/medfate_evaluation/Regiona
 
 ```{r, echo = FALSE}
 ver <- "2.9.3" # packageVersion("medfate")
-files <- c(paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN23_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN23_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN34_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN34_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_granier_IFN24_v", ver, ".rds"),
-           paste0(evalDIR, "/Rdata/Output/", ver, "/IFNeval_results_sperry_IFN24_v", ver, ".rds"))
+files <- c(paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_granier_IFN23_v", ver, ".rds"),
+           paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_sperry_IFN23_v", ver, ".rds"),
+           paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_granier_IFN34_v", ver, ".rds"),
+           paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_sperry_IFN34_v", ver, ".rds"),
+           paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_granier_IFN24_v", ver, ".rds"),
+           paste0(evalDIR, "/data/output/Catalunya/", ver, "/IFNeval_results_sperry_IFN24_v", ver, ".rds"))
 n <- length(files)
 dfdbh_vec <- vector("list", n)
 dfh_vec <- vector("list", n)
@@ -689,7 +689,7 @@ p2
 
 ```{r, echo = FALSE}
 p0<-cowplot::plot_grid(p1,p2, nrow=2, rel_heights = c(0.33,0.66))
-ggsave(paste0(evalDIR,"/Plots/BAtot_eval.png"),p0, width = 8, height=12)
+ggsave(paste0(evalDIR,"/plots/BAtot_eval.png"),p0, width = 8, height=12)
 ```
 
 Spatial distribution of errors (IFN2 - IFN4):
@@ -699,7 +699,7 @@ p1<-bai_error_map(dftot_bas)+labs(title="Basic sub-model")
 p2<-bai_error_map(dftot_adv)+labs(title="Advanced sub-model")
 pm<-plot_grid(p1+theme(legend.position = "none"),p2+theme(legend.position = "none"),
           get_legend(p1),nrow=1, rel_widths = c(1,1,0.25))
-ggsave(paste0(evalDIR,"/Plots/BAtot_error_map.png"),pm, width = 13, height=6, bg="white")
+ggsave(paste0(evalDIR,"/plots/BAtot_error_map.png"),pm, width = 13, height=6, bg="white")
 pm
 ```
 

@@ -242,33 +242,36 @@ check_forests <-function(x, SpParams = NULL,
         cli::cli_progress_bar("Locations", total = nrow(x))
       }
       for(i in 1:npoints) {
-        if(progress) cli::cli_progress_update()
-        if(land_cover_type[i] == "wildland") {
-          f <- x$forest[[i]]
-          if(!is.null(f)) {
-            if(wrong_class[i]) {
-              x$forest[[i]] <- list(NULL)
-            } else {
-              if(mis_tree_any [i]) {
-                f$treeData <- f$treeData |>
-                  dplyr::filter(is.na(.data$Species) & is.na(.data$DBH) & is.na(.data$Height) & is.na(.data$N))
-              } else if(mis_shrub_any [i]) {
-                f$shrubData <- f$shrubData |>
-                  dplyr::filter(is.na(.data$Species) & is.na(.data$Cover) & is.na(.data$Height))
+        if(error_any[i]) {
+          if(progress) cli::cli_progress_update()
+          if(land_cover_type[i] == "wildland") {
+            f <- x$forest[[i]]
+            if(!is.null(f)) {
+              if(wrong_class[i]) {
+                x$forest[[i]] <- list(NULL)
+              } else {
+                if(mis_tree_any [i]) {
+                  f$treeData <- f$treeData |>
+                    dplyr::filter(is.na(.data$Species) & is.na(.data$DBH) & is.na(.data$Height) & is.na(.data$N))
+                } else if(mis_shrub_any [i]) {
+                  f$shrubData <- f$shrubData |>
+                    dplyr::filter(is.na(.data$Species) & is.na(.data$Cover) & is.na(.data$Height))
+                }
+                if(wrong_tree_species[i]) {
+                  f$treeData <- f$treeData |>
+                    dplyr::filter(.data$Species %in% accepted_tree_names)
+                }
+                if(wrong_shrub_species[i]) {
+                  f$shrubData <- f$shrubData |>
+                    dplyr::filter(.data$Species %in% accepted_shrub_names)
+                }
+                x$forest[[i]] <- f
               }
-              if(wrong_tree_species[i]) {
-                f$treeData <- f$treeData |>
-                  dplyr::filter(.data$Species %in% accepted_tree_names)
-              }
-              if(wrong_shrub_species[i]) {
-                f$shrubData <- f$shrubData |>
-                  dplyr::filter(.data$Species %in% accepted_shrub_names)
-              }
-              x$forest[[i]] <- f
             }
           }
         }
       }
+      if(progress) cli::cli_progress_done()
     }
   } 
   return(x)
