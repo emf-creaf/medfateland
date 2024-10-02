@@ -34,7 +34,9 @@
       if(country == "ES") {
         dead_codes_ifn = c("888", "999")
         cut_codes_ifn = "000"
-        if(version =="ifn3") {
+        if(version =="ifn2") {
+          f$treeData$tree_ifn2 <- tree$tree_id
+        } else if(version =="ifn3") {
           f$treeData$tree_ifn2 <- tree$tree_ifn2
           f$treeData$tree_ifn3 <- tree$tree_ifn3
           if(filterDeadTrees) {
