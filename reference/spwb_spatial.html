@@ -60,7 +60,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  keep_results <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -77,7 +77,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -95,7 +95,7 @@ No spatial processes are simulated.</p>
 <span>  <span class="va">sf</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO2ByYear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  fire_regime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -255,13 +255,13 @@ with fire regimes assumes all forest stands share the same period of simulation,
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[12ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[18ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 2 input objects for model 'spwb'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 2 input objects for model 'spwb' <span style="color: #B2B2B2;">[106ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 2 input objects for model 'spwb' <span style="color: #B2B2B2;">[60ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'spwb' simulations on 2 locations</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'spwb' simulations on 2 locations <span style="color: #B2B2B2;">[6ms]</span></span>
@@ -273,15 +273,15 @@ with fire regimes assumes all forest stands share the same period of simulation,
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'fordyn'</span> <span style="color: #00BBBB;">────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[11ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing 'fordyn' simulations on 2 locations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 2 locations <span style="color: #B2B2B2;">[13ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Performing 'fordyn' simulations on 2 locations <span style="color: #B2B2B2;">[10ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  9s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span></span></span>
@@ -298,7 +298,7 @@ with fire regimes assumes all forest stands share the same period of simulation,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

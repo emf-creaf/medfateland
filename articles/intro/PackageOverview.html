@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-09-23</h4>
+            <h4 data-toc-skip class="date">2024-10-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PackageOverview.Rmd" class="external-link"><code>vignettes/intro/PackageOverview.Rmd</code></a></small>
       <div class="d-none name"><code>PackageOverview.Rmd</code></div>
@@ -198,14 +198,14 @@ simulations</a>.</p>
 <p>In package <strong>medfate</strong>, the local soil water balance of
 a forest is primarily used to predict forest water flows and plant
 drought stress; and the main simulation function is called
-<code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code>. Package <strong>medfateland</strong> extends the
+<code>spwb()</code>. Package <strong>medfateland</strong> extends the
 former function by allowing the simulation of soil water balance for
 multiple stands distributed spatially over a given time period using
 function <code><a href="../../reference/spwb_spatial.html">spwb_spatial()</a></code>, which makes internal calls to
-<code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> on elements the spatial classes introduced above.
+<code>spwb()</code> on elements the spatial classes introduced above.
 Function <code><a href="../../reference/spwb_spatial_day.html">spwb_spatial_day()</a></code> is analogous to the former, but
 is used for the simulation of a single day, using internal calls to
-function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day()</a></code> of <strong>medfate</strong>. Function
+function <code>spwb_day()</code> of <strong>medfate</strong>. Function
 <code><a href="../../reference/spwb_spatial.html">spwb_spatial()</a></code> and its one-day counterpart may be used
 to:</p>
 <ol style="list-style-type: decimal">
@@ -240,13 +240,13 @@ Leaf area of plants can be severely decreased by drought stress, causing
 an increase in dead leaf area and affecting carbon and water fluxes.</p>
 <p>Package <strong>medfate</strong> allows simulating carbon balance,
 growth and mortality of a set of plant cohorts (competing for light and
-water) in a single forest stand using function <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code>.
+water) in a single forest stand using function <code>growth()</code>.
 Package <strong>medfateland</strong> extends the former function by
 providing function <code><a href="../../reference/spwb_spatial.html">growth_spatial()</a></code>, which operates on
 spatial classes and makes internal calls to function
-<code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code>. Function <code><a href="../../reference/spwb_spatial_day.html">growth_spatial_day()</a></code> is
+<code>growth()</code>. Function <code><a href="../../reference/spwb_spatial_day.html">growth_spatial_day()</a></code> is
 analogous to the former, but are used for the simulation of a single
-day, using internal calls to function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day()</a></code> of
+day, using internal calls to function <code>growth_day()</code> of
 <strong>medfate</strong>. Function <code><a href="../../reference/spwb_spatial.html">growth_spatial()</a></code> and its
 one-day counterpart may be used to:</p>
 <ol style="list-style-type: decimal">
@@ -270,11 +270,11 @@ of natural demographic processes (growth, mortality and recruitment) and
 natural or anthropogenic disturbances, including the effects of forest
 management.</p>
 <p>Package <strong>medfate</strong> includes function
-<code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn()</a></code>, which allows simulating these processes at yearly
+<code>fordyn()</code>, which allows simulating these processes at yearly
 time steps on a given forest stand, building on previous models. Package
 <strong>medfateland</strong> extends the former function by providing
 function <code><a href="../../reference/spwb_spatial.html">fordyn_spatial()</a></code>, which operates on spatial
-classes and make internal calls to function <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn()</a></code>.</p>
+classes and make internal calls to function <code>fordyn()</code>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -348,7 +348,7 @@ river streams.</li>
 </ol>
 <p>Function <code><a href="../../reference/spwb_land.html">fordyn_land()</a></code> includes seed dispersal as an
 additional landscape process. Similarly to the relationship between
-<code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn()</a></code> and <code><a href="https://emf-creaf.github.io/medfate/reference/growth.html" class="external-link">growth()</a></code>,
+<code>fordyn()</code> and <code>growth()</code>,
 <code><a href="../../reference/spwb_land.html">fordyn_land()</a></code> makes a call, once a year, to
 <code><a href="../../reference/spwb_land.html">growth_land()</a></code>, which deals with all daily processes. After
 that, dispersal, regeneration and forest management are simulated at the
@@ -373,7 +373,7 @@ simulations</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
