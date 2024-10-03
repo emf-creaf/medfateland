@@ -198,8 +198,8 @@ forest_map
 
 Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the [Fourth Spanish Forest Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html) for Catalonia (5509 forest plots):
 ```{r}
-nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN/"
-sf_nfi <- readRDS(paste0(nfi_path, "Products/SpParamsMED/IFN4/Catalunya/IFN4_cat_final_ETRS89H31.rds"))
+nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
+sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsMED/IFN4/Catalunya/IFN4_cat_final_ETRS89H31.rds"))
 sf_nfi
 ```
 Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
