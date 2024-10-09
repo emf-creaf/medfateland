@@ -362,6 +362,15 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// finishSerghei
+void finishSerghei();
+RcppExport SEXP _medfateland_finishSerghei() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    finishSerghei();
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
@@ -390,6 +399,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 9},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
+    {"_medfateland_finishSerghei", (DL_FUNC) &_medfateland_finishSerghei, 0},
     {NULL, NULL, 0}
 };
 

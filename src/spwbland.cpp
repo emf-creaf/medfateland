@@ -592,7 +592,8 @@ void callSergheiDay(CharacterVector lct, List xList,
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       NumericVector vup = Rcpp::as<Rcpp::NumericVector>(uptakeSerghei[sf2cell[i] - 1]); //indices in R
       // Rcout<<".";
-      List res_i = localResults[i];
+      List loc_res_i = localResults[i];
+      List res_i = loc_res_i["simulation_results"];
       NumericVector DB = res_i["WaterBalance"];
       DataFrame SB = Rcpp::as<Rcpp::DataFrame>(res_i["Soil"]);
       //Copy throughfall
@@ -656,3 +657,7 @@ void callSergheiDay(CharacterVector lct, List xList,
   }
 }
 
+// [[Rcpp::export(".finishSerghei")]]
+void finishSerghei() {
+  
+}

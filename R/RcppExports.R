@@ -105,3 +105,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell, serghei_interface))
 }
 
+.finishSerghei <- function() {
+    invisible(.Call(`_medfateland_finishSerghei`))
+}
+
