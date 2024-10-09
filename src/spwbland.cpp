@@ -3,6 +3,7 @@
 #include <Rcpp.h>
 #include <meteoland.h>
 #include <medfate.h>
+#include "/home/miquel/serghei-master/src/MedFateLand_Serghei.h"
 using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
@@ -561,15 +562,18 @@ List initSerghei(NumericVector limits, int nrow, int ncol,
         uptake[sf2cell[i] - 1] = vup; //indices in R
       }
     }
-  }
+  }  
   // Initialize SERGHEI (call to interface function)
+#if SERGHEI_COUPLING
+  MedFateLand_Serghei::start();
+#endif
   // Use input_dir and output_dir
-  // initializeSerghei(soilListSerghei, uptake, throughfall);
   List serghei_interface = List::create(_["limits"] = limits,
                                         _["dim"] = IntegerVector::create(nrow,ncol),
                                         _["soilList"] = soilListSerghei,
                                         _["throughfall"] = throughfall,
                                         _["uptake"] = uptake);
+  
   return(serghei_interface);
 }
 
@@ -621,7 +625,9 @@ void callSergheiDay(CharacterVector lct, List xList,
   }
   
   // CALL SERGHEI (call to interface function)
-  
+#if SERGHEI_COUPLING
+  MedFateLand_Serghei::compute_daily_step();
+#endif
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between 
   //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
   for(int i=0;i<nX;i++) {
@@ -659,5 +665,7 @@ void callSergheiDay(CharacterVector lct, List xList,
 
 // [[Rcpp::export(".finishSerghei")]]
 void finishSerghei() {
-  
+#if SERGHEI_COUPLING
+  MedFateLand_Serghei::finalise();
+#endif
 }

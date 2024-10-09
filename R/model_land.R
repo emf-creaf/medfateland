@@ -833,7 +833,7 @@
                  "SoilEvaporation", "Transpiration")
     varsMean <- c( "MinTemperature", "MaxTemperature")
     varsState <- c("SWE", "RWC", "SoilVol")
-    LandscapeBalance <- data.frame(dates = levels(date.factor)[1:nDays],
+    LandscapeBalance <- data.frame(dates = dates,
                                    Precipitation = rep(0, nDays),
                                    Snow = rep(0, nDays),
                                    Snowmelt = rep(0, nDays),
