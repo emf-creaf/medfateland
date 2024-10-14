@@ -765,6 +765,16 @@
   y <- initialize_landscape(y, SpParams = SpParams, local_control = local_control, 
                             model = local_model, replace = FALSE, progress = progress)
 
+  # Add communication structures
+  for(i in 1:nCells) {
+    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
+      x_i <- y$state[[i]]
+      if(!("internalCommunication" %in% names(x_i))) {
+        x_i$internalCommunication <- vector("list",0)
+        y$state[[i]] <- x_i
+      }
+    }
+  }
   #Output matrices
   if(watershed_model =="tetis") {
     OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlets))
@@ -1146,7 +1156,7 @@
   sf$state <- y$state
   # Clear communication structures
   for(i in 1:nCells) {
-    if((y$land_cover_type[i] %in% c("wildland", "agriculture")) && (!is.null(y$state[[i]]))) {
+    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
       x_i <- sf$state[[i]]
       x_i$internalCommunication <- vector("list",0)
       sf$state[[i]] <- x_i
@@ -1797,6 +1807,9 @@ cell_neighbors<-function(sf, r) {
                              parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                              progress = TRUE, header_footer = progress) {
   
+  # Disables clearing internal communication structures
+  local_control$clearCommunications = FALSE
+  
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land_day", "growth_land_day"))
   if(land_model == "spwb_land_day") local_model <- "spwb"
@@ -1855,7 +1868,7 @@ cell_neighbors<-function(sf, r) {
   } else {
     result_cell <- rep(FALSE, nrow(y))
   }
-  
+
   datesMeteo <- .get_dates_meteo(y, meteo)
   datesStarsList <- .get_dates_stars_list(meteo)
   
@@ -1871,6 +1884,7 @@ cell_neighbors<-function(sf, r) {
   nWater <- sum(y$land_cover_type %in% c("water"))
   # Do not allow results on cells that are wildland/agriculture
   result_cell[!isSoilCell] <- FALSE
+  
   
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
@@ -1935,6 +1949,13 @@ cell_neighbors<-function(sf, r) {
       else if(local_model=="growth") y$state[[i]] <- medfate::growthInput(f, s, SpParams, local_control_i)
       initialized_cells <- initialized_cells + 1
     } 
+    else if((y$land_cover_type[i] == "wildland") && (!is.null(y$state[[i]]))) {
+      x_i <- y$state[[i]]
+      if(!("internalCommunication" %in% names(x_i))) {
+        x_i$internalCommunication <- vector("list",0)
+        y$state[[i]] <- x_i
+      }
+    }
     else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
       s <- y$soil[[i]]
       cf <- y$crop_factor[i]
@@ -1993,6 +2014,15 @@ cell_neighbors<-function(sf, r) {
   
   res <- sf::st_sf(geometry=sf::st_geometry(y))
   res$state = y$state
+  # Clear communication structures
+  for(i in 1:nCells) {
+    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
+      x_i <- res$state[[i]]
+      x_i$internalCommunication <- vector("list",0)
+      res$state[[i]] <- x_i
+    }
+  }
+  
   if(watershed_model=="tetis") res$aquifer <- y$aquifer
   res$snowpack <- y$snowpack
   res$result <- list(NULL)
@@ -2120,7 +2150,7 @@ cell_neighbors<-function(sf, r) {
 #' @name spwb_land_day
 #' @export
 spwb_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
-                        local_control = medfate::defaultControl(),
+                        local_control = medfate::defaultControl(soilDomains = "single"),
                         watershed_control = default_watershed_control(),
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                         progress = TRUE) {
@@ -2134,7 +2164,7 @@ spwb_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
 #' @rdname spwb_land_day
 #' @export
 growth_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
-                          local_control = medfate::defaultControl(),
+                          local_control = medfate::defaultControl(soilDomains = "single"),
                           watershed_control = default_watershed_control(),
                           parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
                           progress = TRUE) {
