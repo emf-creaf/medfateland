@@ -618,6 +618,9 @@
                          parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                          progress = TRUE, header_footer = progress) {
 
+  # Disables clearing internal communication structures
+  local_control$clearCommunications = FALSE
+
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land", "growth_land", "fordyn_land"))
   if(land_model == "spwb_land") local_model <- "spwb"
@@ -1141,6 +1144,14 @@
   
   sf <- sf::st_sf(geometry=sf::st_geometry(y))
   sf$state <- y$state
+  # Clear communication structures
+  for(i in 1:nCells) {
+    if((y$land_cover_type[i] %in% c("wildland", "agriculture")) && (!is.null(y$state[[i]]))) {
+      x_i <- sf$state[[i]]
+      x_i$internalCommunication <- vector("list",0)
+      sf$state[[i]] <- x_i
+    }
+  }
   if(watershed_model=="tetis") sf$aquifer <- y$aquifer
   sf$snowpack <- y$snowpack
   sf$summary <- summarylist
