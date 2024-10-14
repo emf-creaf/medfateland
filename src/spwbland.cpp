@@ -3,7 +3,9 @@
 #include <Rcpp.h>
 #include <meteoland.h>
 #include <medfate.h>
-#include "/home/miquel/serghei-master/src/MedFateLand_Serghei.h"
+#if SERGHEI_COUPLING
+  #include "/home/miquel/serghei-master/src/MedFateLand_Serghei.h"
+#endif
 using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
