@@ -35,9 +35,10 @@ articles:
   - modelanalysis/TetisWatershedParameters
   
 - title: Model performance evaluation
-  desc: Model benchmark evaluation at regional level
+  desc: Model benchmark evaluation
   contents:
   - evaluation/RegionalLevelEvaluation
+  - evaluation/WatershedLevelEvaluation
   
 reference:
 - title: Input preparation
