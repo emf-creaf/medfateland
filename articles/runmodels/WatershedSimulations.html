@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-10-03</h4>
+            <h4 data-toc-skip class="date">2024-10-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/runmodels/WatershedSimulations.Rmd" class="external-link"><code>vignettes/runmodels/WatershedSimulations.Rmd</code></a></small>
       <div class="d-none name"><code>WatershedSimulations.Rmd</code></div>
@@ -93,7 +93,7 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> (v. 2.4.6) to carry out simulations of
+<strong>medfateland</strong> (v. 2.4.7) to carry out simulations of
 forest function and dynamics on a set of forest stands while including
 lateral water transfer processes. This is done using functions
 <code><a href="../../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../../reference/spwb_land.html">growth_land()</a></code> and
@@ -225,7 +225,7 @@ follows:</p>
 <code class="sourceCode R"><span><span class="va">example_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span>
 <span>                                     local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[23ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_init</span></span></code></pre></div>
@@ -267,7 +267,7 @@ structure to the dominant species (see function
 <span>                                           local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                                           simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_simplified</span></span></code></pre></div>
@@ -335,16 +335,16 @@ analogous to those of functions <code>*_spatial()</code>:</p>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 7</span></span></span>
 <span><span class="co">##            geometry state           aquifer snowpack summary  result outlet</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span> 127.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span> 109.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    0.308     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span>   2.19      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span>   9.72      2.54 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span> 153.        2.57 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  881.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  418.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span>   0.261     2.53 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [18]&gt;</span>   1.45      2.81 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    6.01      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   2.16      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   9.14      2.54 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span> 134.        2.57 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  840.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  381.        3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.261     2.53 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   1.45      2.81 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    5.94      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span></code></pre>
 <p>Columns <code>state</code>, <code>aquifer</code> and
 <code>snowpack</code> contain state variables, whereas
@@ -370,30 +370,30 @@ in mm in the last column.</p>
 <span><span class="co">## 1     4.093687         0.00000000         0.000000 0.00000000   0.000000</span></span>
 <span><span class="co">## 2     1.889229         0.00000000         0.000000 0.00000000   0.000000</span></span>
 <span><span class="co">## 3     0.000000         0.00000000         0.000000 0.00000000   0.000000</span></span>
-<span><span class="co">## 4     5.024594         0.00000000         5.444417 0.00000000   5.444417</span></span>
-<span><span class="co">## 5     1.403519         0.00000000         8.489464 0.00000000   8.489464</span></span>
-<span><span class="co">## 6    12.498401         0.05090607        14.760132 0.05090607  14.811038</span></span>
+<span><span class="co">## 4     5.024594         0.00000000         5.628442 0.00000000   5.628442</span></span>
+<span><span class="co">## 5     1.403519         0.00000000         8.825158 0.00000000   8.825158</span></span>
+<span><span class="co">## 6    12.498401         0.05090607        14.343230 0.05090607  14.394136</span></span>
 <span><span class="co">##   DeepDrainage CapillarityRise DeepAquiferLoss SoilEvaporation Transpiration</span></span>
-<span><span class="co">## 1     2.886206               0               0       0.3874890     0.2674045</span></span>
-<span><span class="co">## 2     1.772650               0               0       0.4675914     0.4740524</span></span>
-<span><span class="co">## 3     1.920179               0               0       0.3502989     0.3980494</span></span>
-<span><span class="co">## 4     2.284280               0               0       0.2030115     0.1785337</span></span>
-<span><span class="co">## 5     2.187179               0               0       0.2901821     0.4733695</span></span>
-<span><span class="co">## 6     2.332561               0               0       0.1858648     0.3389691</span></span>
+<span><span class="co">## 1     2.894230               0               0       0.3874890     0.2610943</span></span>
+<span><span class="co">## 2     1.775952               0               0       0.4675914     0.4628309</span></span>
+<span><span class="co">## 3     1.924136               0               0       0.3515809     0.3885928</span></span>
+<span><span class="co">## 4     2.286856               0               0       0.2026608     0.1745782</span></span>
+<span><span class="co">## 5     2.193371               0               0       0.2906036     0.4598243</span></span>
+<span><span class="co">## 6     2.324955               0               0       0.1850668     0.3299094</span></span>
 <span><span class="co">##   HerbTranspiration InterflowBalance BaseflowBalance AquiferExfiltration</span></span>
 <span><span class="co">## 1                 0     0.000000e+00    0.000000e+00                   0</span></span>
-<span><span class="co">## 2                 0     1.549686e-16    1.682156e-17                   0</span></span>
-<span><span class="co">## 3                 0     3.229740e-16    1.682156e-18                   0</span></span>
-<span><span class="co">## 4                 0     1.222086e-15   -2.691450e-17                   0</span></span>
-<span><span class="co">## 5                 0     1.248160e-15    4.457714e-17                   0</span></span>
-<span><span class="co">## 6                 0     6.149963e-15   -1.118634e-16                   0</span></span>
+<span><span class="co">## 2                 0    -2.562134e-16    1.682156e-17                   0</span></span>
+<span><span class="co">## 3                 0    -1.167416e-15    4.289498e-17                   0</span></span>
+<span><span class="co">## 4                 0     2.285209e-15    5.719331e-17                   0</span></span>
+<span><span class="co">## 5                 0     4.491357e-16    3.448420e-17                   0</span></span>
+<span><span class="co">## 6                 0     3.673829e-15   -7.864080e-17                   0</span></span>
 <span><span class="co">##   WatershedExport</span></span>
 <span><span class="co">## 1        0.000000</span></span>
 <span><span class="co">## 2        0.000000</span></span>
 <span><span class="co">## 3        0.000000</span></span>
-<span><span class="co">## 4        5.444417</span></span>
-<span><span class="co">## 5        8.489464</span></span>
-<span><span class="co">## 6       14.760132</span></span></code></pre>
+<span><span class="co">## 4        5.628442</span></span>
+<span><span class="co">## 5        8.825158</span></span>
+<span><span class="co">## 6       14.343230</span></span></code></pre>
 <p>Values of this output data frame are averages across cells in the
 landscape. Data frame <code>watershed_soil_balance</code> is similar to
 <code>watershed_balance</code> but focusing on cells that have a soil
@@ -406,9 +406,9 @@ cell per day:</p>
 <span><span class="co">## 2001-01-01 0.00000000</span></span>
 <span><span class="co">## 2001-01-02 0.00000000</span></span>
 <span><span class="co">## 2001-01-03 0.00000000</span></span>
-<span><span class="co">## 2001-01-04 0.04161278</span></span>
-<span><span class="co">## 2001-01-05 0.06488668</span></span>
-<span><span class="co">## 2001-01-06 0.11281466</span></span></code></pre>
+<span><span class="co">## 2001-01-04 0.04301931</span></span>
+<span><span class="co">## 2001-01-05 0.06745246</span></span>
+<span><span class="co">## 2001-01-06 0.10962820</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="accessing-and-plotting-cell-summaries">Accessing and plotting cell summaries<a class="anchor" aria-label="anchor" href="#accessing-and-plotting-cell-summaries"></a>
@@ -425,15 +425,15 @@ summaries for a given landscape cell using:</p>
 <span><span class="co">##            Interception  NetRain Infiltration InfiltrationExcess</span></span>
 <span><span class="co">## 2001-01-01     23.59187 34.50697     47.59998                  0</span></span>
 <span><span class="co">##            SaturationExcess Runon Runoff DeepDrainage CapillarityRise</span></span>
-<span><span class="co">## 2001-01-01                0     0      0     55.47062               0</span></span>
+<span><span class="co">## 2001-01-01                0     0      0     49.22973               0</span></span>
 <span><span class="co">##            DeepAquiferLoss SoilEvaporation Transpiration HerbTranspiration</span></span>
-<span><span class="co">## 2001-01-01               0        2.800879      8.122293                 0</span></span>
+<span><span class="co">## 2001-01-01               0        2.800097      7.300163                 0</span></span>
 <span><span class="co">##            InterflowInput InterflowOutput InterflowBalance BaseflowInput</span></span>
-<span><span class="co">## 2001-01-01       1018.919        1058.198        -39.27953      244.7828</span></span>
+<span><span class="co">## 2001-01-01        889.186        943.9716         -54.7856      225.8494</span></span>
 <span><span class="co">##            BaseflowOutput BaseflowBalance AquiferExfiltration      SWE  SoilVol</span></span>
-<span><span class="co">## 2001-01-01        173.674        71.10882                   0 1.699603 530.0152</span></span>
+<span><span class="co">## 2001-01-01       165.7364          60.113                   0 1.699603 522.0923</span></span>
 <span><span class="co">##                 RWC WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01 98.48726  NA 14.32454</span></span></code></pre>
+<span><span class="co">## 2001-01-01 97.01501  NA 14.42952</span></span></code></pre>
 <p>Several plots can be drawn from the result of function
 <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> in a similar way as done for
 <code><a href="../../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of the
@@ -535,37 +535,37 @@ importance:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##         before     after</span></span>
-<span><span class="co">## 1   0.00000000 0.3249293</span></span>
-<span><span class="co">## 2   0.00000000 0.3376147</span></span>
-<span><span class="co">## 3   0.00000000 0.3228411</span></span>
-<span><span class="co">## 4   5.44441730 0.3784904</span></span>
-<span><span class="co">## 5   8.48946361 0.4111213</span></span>
-<span><span class="co">## 6  14.76013205 0.5208537</span></span>
-<span><span class="co">## 7   9.27504829 0.6090359</span></span>
-<span><span class="co">## 8  16.94746528 0.6531119</span></span>
-<span><span class="co">## 9  13.00739821 0.6934947</span></span>
-<span><span class="co">## 10  5.87227031 0.8083027</span></span>
-<span><span class="co">## 11  6.41493571 0.9808580</span></span>
-<span><span class="co">## 12  9.97172944 1.1531175</span></span>
-<span><span class="co">## 13  4.70750203 1.2915209</span></span>
-<span><span class="co">## 14  9.66834973 1.3947241</span></span>
-<span><span class="co">## 15  3.98526577 1.4807966</span></span>
-<span><span class="co">## 16  5.88640987 1.5376073</span></span>
-<span><span class="co">## 17  6.72712637 1.5562480</span></span>
-<span><span class="co">## 18  3.58879440 1.5430720</span></span>
-<span><span class="co">## 19  2.30639871 1.5111457</span></span>
-<span><span class="co">## 20  1.71190444 1.4620253</span></span>
-<span><span class="co">## 21  0.84919688 1.4781929</span></span>
-<span><span class="co">## 22  0.42534409 1.5510157</span></span>
-<span><span class="co">## 23  0.30258099 1.5844164</span></span>
-<span><span class="co">## 24  0.30649964 1.6011865</span></span>
-<span><span class="co">## 25  1.14397881 1.6172725</span></span>
-<span><span class="co">## 26  0.22224069 1.6321882</span></span>
-<span><span class="co">## 27  0.21004685 1.6320297</span></span>
-<span><span class="co">## 28  0.18858979 1.6273212</span></span>
-<span><span class="co">## 29  0.09432456 1.5946971</span></span>
-<span><span class="co">## 30  0.02082499 1.5351619</span></span>
-<span><span class="co">## 31  0.00000000 1.4815320</span></span></code></pre>
+<span><span class="co">## 1   0.00000000 0.1195004</span></span>
+<span><span class="co">## 2   0.00000000 0.1174818</span></span>
+<span><span class="co">## 3   0.00000000 0.1155392</span></span>
+<span><span class="co">## 4   5.62844189 0.1136624</span></span>
+<span><span class="co">## 5   8.82515836 0.1118501</span></span>
+<span><span class="co">## 6  14.34323043 0.1101030</span></span>
+<span><span class="co">## 7   9.37247243 0.1084211</span></span>
+<span><span class="co">## 8  16.24146385 0.1068039</span></span>
+<span><span class="co">## 9  14.45101080 0.1080115</span></span>
+<span><span class="co">## 10  6.38050994 0.1109616</span></span>
+<span><span class="co">## 11  4.05802900 0.1202281</span></span>
+<span><span class="co">## 12 11.33882721 5.2282235</span></span>
+<span><span class="co">## 13  5.41033717 1.9962644</span></span>
+<span><span class="co">## 14  8.47791086 1.8711448</span></span>
+<span><span class="co">## 15  5.98946030 0.8929917</span></span>
+<span><span class="co">## 16  3.63205523 0.4940271</span></span>
+<span><span class="co">## 17  2.10643222 0.3311595</span></span>
+<span><span class="co">## 18  0.85705118 0.2681319</span></span>
+<span><span class="co">## 19  0.41971339 0.2325316</span></span>
+<span><span class="co">## 20  2.52184275 0.2310390</span></span>
+<span><span class="co">## 21  2.11624452 0.2486403</span></span>
+<span><span class="co">## 22  0.85787976 0.2628833</span></span>
+<span><span class="co">## 23  0.38522425 0.2158229</span></span>
+<span><span class="co">## 24  0.33912076 0.2118429</span></span>
+<span><span class="co">## 25  0.31555199 0.2083491</span></span>
+<span><span class="co">## 26  0.26868604 0.2051928</span></span>
+<span><span class="co">## 27  0.25223079 0.2023646</span></span>
+<span><span class="co">## 28  0.22702280 0.1998174</span></span>
+<span><span class="co">## 29  0.20183354 0.1974923</span></span>
+<span><span class="co">## 30  0.17197216 0.1953632</span></span>
+<span><span class="co">## 31  0.09900619 0.1935177</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>

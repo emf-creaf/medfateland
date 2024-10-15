@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,16 +140,16 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-in"><span><span class="co"># Estimate seed production and dispersal over the watershed</span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span> <span class="op">&lt;-</span> <span class="fu">dispersal</span><span class="op">(</span><span class="va">example_watershed_utm31</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed bank mortality</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed bank mortality <span style="color: #B2B2B2;">[21ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed production</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[18ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[28ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[937ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[4.1s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[3.8s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -177,7 +177,7 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21           Populus spp.  1.779891</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 22      Quercus coccifera 34.397097</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 23        Quercus faginea 21.551717</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24           Quercus ilex  8.188401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24           Quercus ilex  6.274062</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 25           Rhamnus spp.  2.452979</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 26             Ribes spp. 10.298544</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 27              Rosa spp. 20.060708</span>
@@ -185,8 +185,7 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-out co"><span class="r-pr">#&gt;</span> 29             Salix spp.  1.779891</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30      Salvia rosmarinus 48.519881</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31              Ulex spp.  2.434644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32             Ulmus spp.  1.779891</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33          Viburnum spp. 19.875410</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32          Viburnum spp. 19.875410</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Transform to UTM31</span></span></span>
 <span class="r-in"><span><span class="va">example_ifn_utm31</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">example_ifn</span>, crs <span class="op">=</span> <span class="fl">32631</span><span class="op">)</span></span></span>
@@ -200,10 +199,10 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed production <span style="color: #B2B2B2;">[22ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Kernel estimation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1.3s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Kernel estimation <span style="color: #B2B2B2;">[1.2s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Seed dispersal</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[17.3s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Seed dispersal <span style="color: #B2B2B2;">[15.2s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">seedbank_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -232,7 +231,7 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-out co"><span class="r-pr">#&gt;</span> 22           Populus spp.  2.991203</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 23      Quercus coccifera 77.907326</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 24        Quercus faginea 73.178480</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25           Quercus ilex  5.885623</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25           Quercus ilex  4.735768</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 26           Rhamnus spp.  4.758933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 27             Ribes spp. 64.087529</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 28              Rosa spp. 73.242211</span>
@@ -241,8 +240,7 @@ A maximum value of 100% seed bank refill is attained for species with seed produ
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31      Salvia rosmarinus 14.565035</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 32             Tilia spp.  1.506741</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 33              Ulex spp.  2.847994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34             Ulmus spp.  2.423577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35          Viburnum spp. 76.993421</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34          Viburnum spp. 76.993421</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
