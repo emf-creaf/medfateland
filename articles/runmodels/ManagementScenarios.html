@@ -200,7 +200,7 @@ prescription parameters for a set of species. This is loaded using:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"defaultPrescriptionsBySpecies"</span><span class="op">)</span></span></code></pre></div>
 <p>The columns of this data frame are the same as the parameter names
-required by function <code>defaultManagementFunction()</code> of package
+required by function <code><a href="https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html" class="external-link">defaultManagementFunction()</a></code> of package
 <strong>medfate</strong>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">defaultPrescriptionsBySpecies</span><span class="op">)</span></span></code></pre></div>
@@ -360,7 +360,7 @@ simulations.</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of a management/fire scenario with fordyn</span> <span style="color: #00BBBB;">────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
@@ -392,13 +392,13 @@ simulations.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[19.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[21s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[25ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <pre><code><span><span class="co">## • Final volume: 64209 m3</span></span></code></pre>
@@ -417,16 +417,16 @@ simulations.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[13.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[14.3s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[20ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 62493 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 62494 m3</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Arranging output</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -450,7 +450,7 @@ the actual simulation results, whereas the last two elements are used
 for subsequent simulations (see next section).</p>
 <p>Stand-level results are available in element <code>result_sf</code>.
 The column names of this <code>sf</code> object should be easy to
-interpret if you have experience with functions <code>fordyn()</code> or
+interpret if you have experience with functions <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn()</a></code> or
 <code><a href="../../reference/spwb_spatial.html">fordyn_spatial()</a></code>:</p>
 <div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_sf</span></span></code></pre></div>
@@ -462,16 +462,16 @@ interpret if you have experience with functions <code>fordyn()</code> or
 <span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 9</span></span></span>
 <span><span class="co">##               geometry id        tree_table         shrub_table dead_tree_table</span></span>
 <span><span class="co">##            <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (1.901727 41.96974) 081047_A1 <span style="color: #949494;">&lt;tibble [51 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (1.901727 41.96974) 081047_A1 <span style="color: #949494;">&lt;tibble [50 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (1.925861 41.96997) 081048_A1 <span style="color: #949494;">&lt;tibble [45 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (1.937928 41.97008) 081049_A1 <span style="color: #949494;">&lt;tibble [15 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (1.949995 41.97019) 081050_A1 <span style="color: #949494;">&lt;tibble [47 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  (1.962062 41.9703) 081051_A1 <span style="color: #949494;">&lt;tibble [35 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (1.974129 41.97041) 081052_A1 <span style="color: #949494;">&lt;tibble [56 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (1.986197 41.97052) 081053_A1 <span style="color: #949494;">&lt;tibble [61 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (1.998264 41.97062) 081054_A1 <span style="color: #949494;">&lt;tibble [71 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (1.986197 41.97052) 081053_A1 <span style="color: #949494;">&lt;tibble [63 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (1.998264 41.97062) 081054_A1 <span style="color: #949494;">&lt;tibble [73 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (2.010331 41.97073) 081055_A1 <span style="color: #949494;">&lt;tibble [39 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (2.022399 41.97083) 081056_A1 <span style="color: #949494;">&lt;tibble [64 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (2.022399 41.97083) 081056_A1 <span style="color: #949494;">&lt;tibble [65 × 11]&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>    <span style="color: #949494;">&lt;tibble&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: dead_shrub_table &lt;list&gt;, cut_tree_table &lt;list&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   cut_shrub_table &lt;list&gt;, summary &lt;list&gt;</span></span></span></code></pre>
 <p>Another important element of the results is
@@ -486,7 +486,7 @@ wood:</p>
 <span><span class="co">##    Year initial growth mortality extracted  final cumulative_growth</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001  <span style="text-decoration: underline;">66</span>449.  <span style="text-decoration: underline;">1</span>004.      52.0     <span style="text-decoration: underline;">3</span>191. <span style="text-decoration: underline;">64</span>209.             <span style="text-decoration: underline;">1</span>004.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002  <span style="text-decoration: underline;">64</span>209.   945.      48.3     <span style="text-decoration: underline;">2</span>614. <span style="text-decoration: underline;">62</span>493.             <span style="text-decoration: underline;">1</span>949.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002  <span style="text-decoration: underline;">64</span>209.   945.      48.4     <span style="text-decoration: underline;">2</span>613. <span style="text-decoration: underline;">62</span>494.             <span style="text-decoration: underline;">1</span>949.</span></span></code></pre>
 <p>The same figures can be inspected, but corresponding to those species
 for which demand has been defined:</p>
 <div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
@@ -495,7 +495,7 @@ for which demand has been defined:</p>
 <span><span class="co">##    Year cumulative_extraction initial_target growth_target mortality_target</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001                 <span style="text-decoration: underline;">3</span>191.         <span style="text-decoration: underline;">62</span>682.          978.             47.7</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002                 <span style="text-decoration: underline;">5</span>805.         <span style="text-decoration: underline;">62</span>775.          929.             47.3</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002                 <span style="text-decoration: underline;">5</span>804.         <span style="text-decoration: underline;">62</span>775.          929.             47.3</span></span></code></pre>
 <p>Finally, we can display for each step what was the nominal demand
 (according to the input), the actual demand (once the offset of previous
 years was included), as well as the cumulative nominal demand and
@@ -509,7 +509,7 @@ the required demand in the long term.</p>
 <span><span class="co">##    Year extracted_target final_target nominal_demand demand_offset actual_demand</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>001             838.       <span style="text-decoration: underline;">64</span>209.           <span style="text-decoration: underline;">1</span>800            0          <span style="text-decoration: underline;">1</span>800 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002            <span style="text-decoration: underline;">2</span>614.       <span style="text-decoration: underline;">62</span>493.           <span style="text-decoration: underline;">1</span>800          962.         <span style="text-decoration: underline;">2</span>762.</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>002            <span style="text-decoration: underline;">2</span>613.       <span style="text-decoration: underline;">62</span>494.           <span style="text-decoration: underline;">1</span>800          962.         <span style="text-decoration: underline;">2</span>762.</span></span></code></pre>
 <div class="section level3">
 <h3 id="continuing-a-previous-simulation">Continuing a previous simulation<a class="anchor" aria-label="anchor" href="#continuing-a-previous-simulation"></a>
 </h3>
@@ -547,10 +547,10 @@ offsets that need to be carried on to the next simulations:</p>
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">next_demand</span></span></code></pre></div>
 <pre><code><span><span class="co">## $offset</span></span>
 <span><span class="co">## Pinus nigra/Pinus sylvestris             Pinus halepensis </span></span>
-<span><span class="co">##                    -45.65293                    193.76022 </span></span>
+<span><span class="co">##                    -44.74227                    193.83258 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $last_growth</span></span>
-<span><span class="co">## [1] 928.7273</span></span></code></pre>
+<span><span class="co">## [1] 928.7626</span></span></code></pre>
 <p>In addition to the demand offset for each species or species group,
 note that <code>next_demand</code> also contains information about the
 last growth. This is necessary for scenarios where demand is modulated
@@ -572,7 +572,7 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Scenario parameters</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -581,15 +581,15 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## • Number of years: 1</span></span></code></pre>
 <pre><code><span><span class="co">## • Management scenario type: input_demand</span></span></code></pre>
 <pre><code><span><span class="co">## • Default volume function</span></span></code></pre>
-<pre><code><span><span class="co">## • Initial volume: 62493 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Initial volume: 62494 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Seed dispersal process included.</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Simulation</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ──  [ Year 2003 (1/1) ]</span></span></code></pre>
-<pre><code><span><span class="co">## • Demand (incl. offset): 1948 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Demand (incl. offset): 1949 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Determining available volumes and final cuts</span></span></code></pre>
-<pre><code><span><span class="co">## • Demand (after final cuts): 1948 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Demand (after final cuts): 1949 m3</span></span></code></pre>
 <pre><code><span><span class="co">## • Determining thinning operations</span></span></code></pre>
 <pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
@@ -597,19 +597,19 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[16.6s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 2) <span style="color: #B2B2B2;">[14.1s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[24ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
-<pre><code><span><span class="co">## • Final volume: 63373 m3</span></span></code></pre>
+<pre><code><span><span class="co">## • Final volume: 63371 m3</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Arranging output</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
