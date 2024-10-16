@@ -17,9 +17,9 @@
 <script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Evaluation of watershed-level runoff with river gauge data">
-<meta name="description" content="Benchmark evaluation at watershed level using gauge data from Aiguadora watershed
+<meta name="description" content="Benchmark evaluation at watershed level using river gauge data
 ">
-<meta property="og:description" content="Benchmark evaluation at watershed level using gauge data from Aiguadora watershed
+<meta property="og:description" content="Benchmark evaluation at watershed level using river gauge data
 ">
 <meta property="og:image" content="https://emf-creaf.github.io/medfateland/logo.png">
 </head>
@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / María González</h4>
             
-            <h4 data-toc-skip class="date">2024-10-15</h4>
+            <h4 data-toc-skip class="date">2024-10-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/evaluation/WatershedLevelEvaluation.Rmd" class="external-link"><code>vignettes/evaluation/WatershedLevelEvaluation.Rmd</code></a></small>
       <div class="d-none name"><code>WatershedLevelEvaluation.Rmd</code></div>
@@ -96,34 +96,31 @@ Cáceres / María González</h4>
 <h3 id="goal">Goal<a class="anchor" aria-label="anchor" href="#goal"></a>
 </h3>
 <p>The aim of this article is to provide an assessment of the
-performance of <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> for the prediction of forest
-dynamics in Catalonia (NE of Spain). To this aim, we simulate forest
-dynamics between surveys of the Spanish National Forest Inventory and
-compare the model predictions of forest development against inventory
-data for a set of permanent plots. The evaluation focuses first on the
-growth (in diameter and height) of surviving trees, then turning the
-attention to the basal area of dead trees and overall changes in terms
-of basal area and density. Then, we evaluate changes in stand leaf area
-index and, finally, changes in shrub cover and mean shrub height.</p>
+performance of <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> for the prediction of watershed
+outflow. To this aim, we simulate hydrological processes in a set of
+benchmark watersheds and compare the model predictions of watershed
+outflow against measurements obtained using river gauges at watershed
+outlets.</p>
 </div>
 <div class="section level3">
 <h3 id="simulation-procedure">Simulation procedure<a class="anchor" aria-label="anchor" href="#simulation-procedure"></a>
 </h3>
-</div>
-</div>
-<div class="section level2">
-<h2 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a>
-</h2>
-<div class="section level3">
-<h3 id="graphical-evaluation">Graphical evaluation<a class="anchor" aria-label="anchor" href="#graphical-evaluation"></a>
-</h3>
-<p><img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-2-1.png" width="768"></p>
-<p><img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
+<p>For each watershed, the following procedure has been conducted:</p>
+<ol style="list-style-type: decimal">
+<li>Initial warm-up simulation for a specified number of years</li>
+<li>Simulation for the period with observed data <strong>before</strong>
+calibrating watershed parameters</li>
+<li>Manual calibration of watershed parameters (to be replaced with
+automatized calibration)</li>
+<li>Final simulation for the period with observed data
+<strong>after</strong> calibrating watershed parameters.</li>
+</ol>
 </div>
 <div class="section level3">
 <h3 id="goodness-of-fit-statistics">Goodness-of-fit statistics<a class="anchor" aria-label="anchor" href="#goodness-of-fit-statistics"></a>
 </h3>
-<p>The following indices are calculated using package hydroGOF:</p>
+<p>The following goodness of fit statistics are calculated using package
+<code>hydroGOF</code>:</p>
 <ul>
 <li>Nash-Sutcliffe Efficiency (NSE): This coefficient is sensitive to
 extreme values and might yield sub-optimal results when the dataset
@@ -142,6 +139,154 @@ Winston (2008) to circumvent some of the NSE flaws. VE values are also
 bounded [0, 1] and represent the fraction of water delivered at the
 proper time</li>
 </ul>
+</div>
+<div class="section level3">
+<h3 id="hydrological-analysis">Hydrological analysis<a class="anchor" aria-label="anchor" href="#hydrological-analysis"></a>
+</h3>
+</div>
+</div>
+<div class="section level2">
+<h2 id="watershed-tetis-parameters">Watershed (TETIS) parameters<a class="anchor" aria-label="anchor" href="#watershed-tetis-parameters"></a>
+</h2>
+<p>The following table contains the set of TETIS parameters employed in
+<code><a href="../../reference/spwb_land.html">spwb_land()</a></code> simulations on all watersheds, before and after
+calibration:</p>
+<table class="table table" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;">
+version
+</th>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+watershed
+</th>
+<th style="text-align:left;">
+Calibration
+</th>
+<th style="text-align:right;">
+R_localflow
+</th>
+<th style="text-align:right;">
+R_interflow
+</th>
+<th style="text-align:right;">
+R_baseflow
+</th>
+<th style="text-align:right;">
+n_interflow
+</th>
+<th style="text-align:right;">
+n_baseflow
+</th>
+<th style="text-align:right;">
+num_daily_substeps
+</th>
+<th style="text-align:right;">
+rock_max_infiltration
+</th>
+<th style="text-align:right;">
+deep_aquifer_loss
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2.4.6
+</td>
+<td style="text-align:left;">
+tetis
+</td>
+<td style="text-align:left;">
+aiguadora
+</td>
+<td style="text-align:left;">
+before
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.4.6
+</td>
+<td style="text-align:left;">
+tetis
+</td>
+<td style="text-align:left;">
+aiguadora
+</td>
+<td style="text-align:left;">
+after
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+0.7
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="evaluation-results">Evaluation results<a class="anchor" aria-label="anchor" href="#evaluation-results"></a>
+</h2>
+<div class="section level3">
+<h3 id="aiguadora-watershed-with-tetis-and-version-2-4-6">AIGUADORA watershed with TETIS and version 2.4.6<a class="anchor" aria-label="anchor" href="#aiguadora-watershed-with-tetis-and-version-2-4-6"></a>
+</h3>
+<div class="section level4">
+<h4 id="graphical-evaluation">Graphical evaluation<a class="anchor" aria-label="anchor" href="#graphical-evaluation"></a>
+</h4>
+<p><em>Daily</em>
+<img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-8-1.png" width="768"></p>
+<p><em>Monthly</em>
+<img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-9-1.png" width="768"></p>
+</div>
+<div class="section level4">
+<h4 id="goodness-of-fit">Goodness-of-fit<a class="anchor" aria-label="anchor" href="#goodness-of-fit"></a>
+</h4>
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">
@@ -262,10 +407,10 @@ After
 </tbody>
 </table>
 </div>
-<div class="section level3">
-<h3 id="hydrological-analysis">Hydrological analysis<a class="anchor" aria-label="anchor" href="#hydrological-analysis"></a>
-</h3>
-<p>TO BE DONE</p>
+<div class="section level4">
+<h4 id="hydrological-analysis-1">Hydrological analysis<a class="anchor" aria-label="anchor" href="#hydrological-analysis-1"></a>
+</h4>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
