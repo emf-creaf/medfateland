@@ -1,5 +1,5 @@
 ---
-title: "Evaluation of watershed-level runoff with river gauge data"
+title: "Evaluation of watershed-level runoff against river gauge data"
 author: "Miquel De Cáceres / María González"
 date: "`r Sys.Date()`"
 description: >
@@ -74,7 +74,8 @@ The following goodness of fit statistics are calculated using package `hydroGOF`
 + Nash-Sutcliffe Efficiency (NSE): This coefficient is sensitive to extreme values and might yield sub-optimal results when the dataset contains large outliers.
 + Kling–Gupta efficiency (KGE): Provides a decomposition of the Nash-Sutcliffe efficiency, which facilitates the analysis of the importance of different components (bias, correlation and variability).
 + Index of agreement (d): Initially proposed by Willmott (1981) to overcome the drawbacks of the R2, such as the differences in observed and predicted means and variances (Legates and McCabe, 1999). d is also dimensionless and bounded between 0 and 1 and can be interpreted similarly to R2.
-+ Volumetric efficiency index (VE): Originally proposed by Criss and Winston (2008) to circumvent some of the NSE flaws. VE values are also bounded [0, 1] and represent the fraction of water delivered at the proper time
++ Volumetric efficiency index (VE): Originally proposed by Criss and Winston (2008) to circumvent some of the NSE flaws. VE values are also bounded [0, 1] and represent the fraction of water delivered at the proper time.
++ Root mean squared error (RMSE): The usual estimation of average model error (i.e. the square root of mean squared errors).
 
 ### Hydrological analysis
 

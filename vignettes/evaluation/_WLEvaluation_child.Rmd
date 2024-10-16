@@ -94,30 +94,30 @@ validation_coefficients<- data.frame(Scale = c("Daily", "Daily", "Monthly", "Mon
                                      VE = NA,
                                      RMSE = NA)
 
-validation_coefficients$NSE[1]<-nse_daily_unc
-validation_coefficients$NSE[2]<-nse_daily_cal
-validation_coefficients$NSE[3]<-nse_monthly_unc
-validation_coefficients$NSE[4]<-nse_monthly_cal
+validation_coefficients$NSE[1]<-round(nse_daily_unc,3)
+validation_coefficients$NSE[2]<-round(nse_daily_cal,3)
+validation_coefficients$NSE[3]<-round(nse_monthly_unc,3)
+validation_coefficients$NSE[4]<-round(nse_monthly_cal,3)
 
-validation_coefficients$KGE[1]<-KGE_daily_unc[["KGE.value"]]
-validation_coefficients$KGE[2]<-KGE_daily_cal[["KGE.value"]]
-validation_coefficients$KGE[3]<-KGE_monthly_unc[["KGE.value"]]
-validation_coefficients$KGE[4]<-KGE_monthly_cal[["KGE.value"]]
+validation_coefficients$KGE[1]<-round(KGE_daily_unc[["KGE.value"]],3)
+validation_coefficients$KGE[2]<-round(KGE_daily_cal[["KGE.value"]],3)
+validation_coefficients$KGE[3]<-round(KGE_monthly_unc[["KGE.value"]],3)
+validation_coefficients$KGE[4]<-round(KGE_monthly_cal[["KGE.value"]],3)
 
-validation_coefficients$d[1]<-d_daily_unc
-validation_coefficients$d[2]<-d_daily_cal
-validation_coefficients$d[3]<-d_monthly_unc
-validation_coefficients$d[4]<-d_monthly_cal
+validation_coefficients$d[1]<-round(d_daily_unc,3)
+validation_coefficients$d[2]<-round(d_daily_cal,3)
+validation_coefficients$d[3]<-round(d_monthly_unc,3)
+validation_coefficients$d[4]<-round(d_monthly_cal,3)
 
-validation_coefficients$VE[1]<-ve_daily_unc
-validation_coefficients$VE[2]<-ve_daily_cal
-validation_coefficients$VE[3]<-ve_monthly_unc
-validation_coefficients$VE[4]<-ve_monthly_cal
+validation_coefficients$VE[1]<-round(ve_daily_unc,3)
+validation_coefficients$VE[2]<-round(ve_daily_cal,3)
+validation_coefficients$VE[3]<-round(ve_monthly_unc,3)
+validation_coefficients$VE[4]<-round(ve_monthly_cal,3)
 
-validation_coefficients$RMSE[1]<-rmse_daily_unc
-validation_coefficients$RMSE[2]<-rmse_daily_cal
-validation_coefficients$RMSE[3]<-rmse_monthly_unc
-validation_coefficients$RMSE[4]<-rmse_monthly_cal
+validation_coefficients$RMSE[1]<-round(rmse_daily_unc,3)
+validation_coefficients$RMSE[2]<-round(rmse_daily_cal,3)
+validation_coefficients$RMSE[3]<-round(rmse_monthly_unc,3)
+validation_coefficients$RMSE[4]<-round(rmse_monthly_cal,3)
 
 validation_coefficients |> 
   kbl() |>
