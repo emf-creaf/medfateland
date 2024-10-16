@@ -22,15 +22,14 @@ evalDIR = "~/OneDrive/mcaceres_work/model_development/medfate_evaluation/Watersh
 ```
 
 ```{r, echo = FALSE}
-medfateland_versions <- list.files(file.path(evalDIR, "data"))
-medfateland_versions<-medfateland_versions[!(medfateland_versions %in% "observed")]
+medfateland_versions <- list.files(file.path(evalDIR, "data", "output"))
 version_vec <- character(0)
 model_vec <- character(0)
 watershed_vec <- character(0)
 for(medfateland_version in medfateland_versions) {
-  models <- list.files(file.path(evalDIR, "data", medfateland_version))
+  models <- list.files(file.path(evalDIR, "data", "output", medfateland_version))
   for(model in models) {
-    watersheds <- list.files(file.path(evalDIR, "data", medfateland_version, model))
+    watersheds <- list.files(file.path(evalDIR, "data", "output", medfateland_version, model))
     for(watershed in watersheds) {
       version_vec <- c(version_vec, medfateland_version)
       model_vec <- c(model_vec, models)
@@ -43,11 +42,11 @@ df$before <- vector("list", nrow(df))
 df$after <- vector("list", nrow(df))
 df$Q_daily <- vector("list", nrow(df))
 df$Q_monthly <- vector("list", nrow(df))
-for(r in nrow(df)) {
-  df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", df$version[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
-  df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", df$version[r], df$model[r], df$watershed[r], "calibrated.yaml"))
-  df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", df$version[r], df$model[r], df$watershed[r], "Q_daily.csv"))
-  df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", df$version[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
+for(r in 1:nrow(df)) {
+  df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
+  df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "calibrated.yaml"))
+  df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "Q_daily.csv"))
+  df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
 }
 ```
 
