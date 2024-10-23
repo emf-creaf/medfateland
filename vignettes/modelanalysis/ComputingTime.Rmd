@@ -1,0 +1,115 @@
+---
+title: "Computing time estimates"
+author: "Miquel De Cáceres (EMF-CREAF)"
+date: "`r Sys.Date()`"
+description: >
+   Estimates of approximate computing time
+output: 
+  rmarkdown::html_document:
+    toc: FALSE
+params:
+  complete_rebuild: FALSE
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About this vignette
+
+The aim of this vignette is to provide users with a rough estimation of computing times for simulation models included in package **medfateland**.
+
+The results presented here were obtained using **1 year of simulation** with the **example data sets** on a laptop (16 GiB memory and 11th Gen Inter Core I5 processor @ 2.40 GHz x 8) with Ubuntu Linux OS. 
+
+```{r, include = FALSE, echo = FALSE}
+medfate_ver <- packageVersion("medfate")
+```
+
+
+
+```{r, echo = FALSE, include=FALSE}
+library(medfateland)
+library(kableExtra)
+library(knitr)
+```
+
+```{r, echo = FALSE, include=FALSE}
+file_out <- paste0("computing_times/ct_", medfate_ver, ".csv")
+if(!file.exists(file_out)) {
+  data("example_watershed")
+  # Set crop factor 
+  example_watershed$crop_factor <- NA
+  example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] <- 0.75
+  # Get bounding box to determine limits
+  b <- sf::st_bbox(example_watershed)
+
+  # Define a raster topology, using terra package, 
+  # with the same CRS as the watershed. In this example cells have 100 m side.
+  # Coordinates in the 'sf' object are assumed to be cell centers
+  r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+                nrow = 8, ncol = 15, crs = "epsg:32631")
+
+  data("examplemeteo")
+  data("SpParamsMED")
+  # Set simulation period
+  dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
+  # Watershed control parameters (TETIS model; Frances et al. 2007)
+  ws_control <- default_watershed_control("tetis")
+
+  #spwb
+  df_res_spwb <- data.frame(model = "spwb",
+                       transpirationMode = c(rep("Granier", 3)),
+                       soilDomains = rep(c("buckets", "single", "dual"),1),
+                       Elapsed_time_sec = NA)
+  for(i in 1:nrow(df_res_spwb)) {
+    control <- defaultControl(df_res_spwb$transpirationMode[i], df_res_spwb$soilDomains[i])
+    control$verbose <- FALSE
+    st <- system.time({spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
+                       dates = dates, summary_frequency = "month",
+                       watershed_control = ws_control, local_control = control, 
+                       progress = FALSE)})
+    df_res_spwb$Elapsed_time_sec[i] <- st[[3]]
+  }
+  #growth
+  df_res_growth <- data.frame(model = "growth",
+                       transpirationMode = c(rep("Granier", 3)),
+                       soilDomains = rep(c("buckets", "single", "dual"),1),
+                       Elapsed_time_sec = NA)
+  for(i in 1:nrow(df_res_growth)) {
+    control <- defaultControl(df_res_growth$transpirationMode[i], df_res_growth$soilDomains[i])
+    control$verbose <- FALSE
+    st <- system.time({growth_land(r, example_watershed, SpParamsMED, examplemeteo, 
+                       dates = dates, summary_frequency = "month",
+                       watershed_control = ws_control, local_control = control, 
+                       progress = FALSE)})
+    df_res_growth$Elapsed_time_sec[i] <- st[[3]]
+  }
+  df_res <- dplyr::bind_rows(df_res_spwb, df_res_growth)
+  names(df_res)[4] <- as.character(medfate_ver)
+  write.csv2(df_res, file = file_out, row.names = FALSE)
+}
+```
+
+## Table of computational times
+
+Computational times were estimated using `system.time()`, are in **seconds** and are shown by **medfate** package version.
+
+```{r, echo = FALSE}
+files <- list.files("computing_times/", full.names = TRUE)
+df_res <- NULL
+for(i in 1:length(files)) {
+  df_res_i <- read.csv2(files[i])
+  names(df_res_i)[4] <- substr(names(df_res_i)[4], 2, nchar(names(df_res_i)[4]))
+  if(is.null(df_res)) {
+    df_res <- df_res_i
+  } else {
+    df_res <- df_res |>
+      dplyr::left_join(df_res_i, by = c("model", "transpirationMode", "soilDomains"))
+  }
+}
+df_res |>
+  dplyr::rename("function" = "model") |>
+  kbl() |>
+  kable_styling()
+```
+

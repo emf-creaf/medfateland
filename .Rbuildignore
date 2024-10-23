@@ -13,6 +13,7 @@
 ^vignettes/intro/*$
 ^vignettes/evaluation/*$
 ^vignettes/modelanalysis/*$
+^vignettes/modelanalysis/computing_times/*$
 ^vignettes/runmodels/*$
 ^figures/*$
 ^pkgdown$

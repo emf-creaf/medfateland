@@ -32,6 +32,7 @@ articles:
 - title: Model analysis
   desc: Articles explaining advanced modelling tasks
   contents:
+  - modelanalysis/ComputingTime
   - modelanalysis/TetisWatershedParameters
   
 - title: Model performance evaluation
