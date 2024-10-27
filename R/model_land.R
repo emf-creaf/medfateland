@@ -445,12 +445,9 @@
         DeepDrainage[i] = DeepDrainage[i] - CapillarityRise[i]
         CapillarityRise[i]  = 0.0
       }
+      Transpiration[i] <- DB["Transpiration"]
       if(y$land_cover_type[i]=="wildland") {
-        PL <- s[["Plants"]]
-        Transpiration[i] <- sum(PL["Transpiration"])
         HerbTranspiration[i] <- DB["HerbTranspiration"]
-      } else {
-        Transpiration[i] <- DB["Transpiration"]
       }
     } 
   }
@@ -710,6 +707,21 @@
     result_cell <- rep(FALSE, nrow(y))
   }
   
+  # Set local control if not existing
+  if(!("local_control" %in% names(y))) {
+    y$local_control <- vector("list", nrow(y))
+  }
+  default_non_result_control <- local_control
+  default_non_result_control$standResults <- FALSE
+  default_non_result_control$plantResults <- FALSE
+  default_non_result_control$soilResults <- FALSE
+  default_non_result_control$fireHazardResults <- FALSE
+  for(i in 1:nrow(y)) {
+    if(is.null(y$local_control[[i]]) && !result_cell[i]) {
+      y$local_control[[i]] <- default_non_result_control
+    } 
+  }
+  
   datesMeteo <- .get_dates_meteo(y, meteo)
   datesStarsList <- .get_dates_stars_list(meteo)
   if(is.null(dates)) {
@@ -785,6 +797,7 @@
 
   y <- initialize_landscape(y, SpParams = SpParams, local_control = local_control, 
                             model = local_model, replace = FALSE, progress = progress)
+
 
   # Define communication structures
   internalCommunication <- .defineInternalCommunication(y)
