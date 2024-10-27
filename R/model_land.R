@@ -69,11 +69,11 @@
 
 
 
-.f_landunit_day<-function(xi, model, date){
+.f_landunit_day<-function(xi, model, date, internalCommunication){
   out <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      res <- medfate::spwb_day(xi$x, date, xi$meteovec,
+      res <- medfate:::.spwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                              modifyInput = TRUE)
@@ -87,7 +87,7 @@
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      res<-medfate::growth_day(xi$x, date, xi$meteovec,
+      res<-medfate:::.growth_day_inner(internalCommunication, xi$x, date, xi$meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
@@ -266,7 +266,27 @@
   return(gridMeteo)
 }
 
-.watershedDayTetis<- function(local_model,
+# Define communication structures
+.defineInternalCommunication <- function(y) {
+  max_num_cohorts <- 1
+  max_num_soil_layers <- 1
+  max_num_canopy_layers <-1
+  max_num_timesteps <- 24
+  for(i in 1:nrow(y)) {
+    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
+      xi <- y$state[[i]]
+      max_num_cohorts <- max(max_num_cohorts, nrow(xi$cohorts))
+      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
+      max_num_canopy_layers <- max(max_num_canopy_layers, nrow(xi$canopy))
+      max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
+    }
+  }
+  internalCommunication <- medfate:::.generalCommunicationStructures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps);
+  return(internalCommunication)
+}
+
+.watershedDayTetis<- function(internalCommunication,
+                              local_model,
                               y,
                               waterOrder, queenNeigh, waterQ,
                               watershed_control,
@@ -368,8 +388,9 @@
       Runon[i] <- nonsoilResults$Runon[i]
       wtd = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])
       if(wtd<0.0) cli::cli_alert_warning(paste0("Negative WTD in ", i,"\n"))
+      xi <- y$state[[i]]
       XI[[i]] <- list(i = i, 
-                      x = y$state[[i]],
+                      x = xi,
                       meteovec = meteovec,
                       latitude = latitude[i], 
                       elevation = y$elevation[i], 
@@ -385,6 +406,7 @@
     cl<-parallel::makeCluster(num_cores)
     localResults <- parallel::parLapplyLB(cl, XI, .f_landunit_day, 
                                           date = date, model = local_model,
+                                          internalCommunication = internalCommunication,
                                           chunk.size = chunk_size)
     parallel::stopCluster(cl)
     .copyStateFromResults(y, localResults)
@@ -392,7 +414,8 @@
     localResults <- vector("list", nX)
     for(i in 1:nX) {
       if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
-        localResults[[i]] <- .f_landunit_day(XI[[i]], date = date, model = local_model)
+        localResults[[i]] <- .f_landunit_day(XI[[i]], date = date, model = local_model, 
+                                             internalCommunication = internalCommunication)
       }
     }
   }
@@ -618,8 +641,6 @@
                          parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                          progress = TRUE, header_footer = progress) {
 
-  # Disables clearing internal communication structures
-  local_control$clearCommunications = FALSE
 
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land", "growth_land", "fordyn_land"))
@@ -765,16 +786,9 @@
   y <- initialize_landscape(y, SpParams = SpParams, local_control = local_control, 
                             model = local_model, replace = FALSE, progress = progress)
 
-  # Add communication structures
-  for(i in 1:nCells) {
-    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
-      x_i <- y$state[[i]]
-      if(!("internalCommunication" %in% names(x_i))) {
-        x_i$internalCommunication <- vector("list",0)
-        y$state[[i]] <- x_i
-      }
-    }
-  }
+  # Define communication structures
+  internalCommunication <- .defineInternalCommunication(y)
+  
   #Output matrices
   if(watershed_model =="tetis") {
     OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlets))
@@ -947,8 +961,9 @@
                                        CO2ByYear)
     
     if(watershed_model=="tetis") {
-      ws_day <- .watershedDayTetis(local_model = local_model,
-                                   y,
+      ws_day <- .watershedDayTetis(internalCommunication = internalCommunication,
+                                   local_model = local_model,
+                                   y = y,
                                    waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
                                    watershed_control = watershed_control,
                                    date = datechar,
@@ -1154,14 +1169,6 @@
   
   sf <- sf::st_sf(geometry=sf::st_geometry(y))
   sf$state <- y$state
-  # Clear communication structures
-  for(i in 1:nCells) {
-    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
-      x_i <- sf$state[[i]]
-      x_i$internalCommunication <- vector("list",0)
-      sf$state[[i]] <- x_i
-    }
-  }
   if(watershed_model=="tetis") sf$aquifer <- y$aquifer
   sf$snowpack <- y$snowpack
   sf$summary <- summarylist
@@ -1807,9 +1814,6 @@ cell_neighbors<-function(sf, r) {
                              parallelize = parallelize, num_cores = num_cores, chunk_size = chunk_size,
                              progress = TRUE, header_footer = progress) {
   
-  # Disables clearing internal communication structures
-  local_control$clearCommunications = FALSE
-  
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land_day", "growth_land_day"))
   if(land_model == "spwb_land_day") local_model <- "spwb"
@@ -1951,10 +1955,6 @@ cell_neighbors<-function(sf, r) {
     } 
     else if((y$land_cover_type[i] == "wildland") && (!is.null(y$state[[i]]))) {
       x_i <- y$state[[i]]
-      if(!("internalCommunication" %in% names(x_i))) {
-        x_i$internalCommunication <- vector("list",0)
-        y$state[[i]] <- x_i
-      }
     }
     else if((y$land_cover_type[i] == "agriculture") && (is.null(y$state[[i]]))) {
       s <- y$soil[[i]]
@@ -1968,6 +1968,9 @@ cell_neighbors<-function(sf, r) {
     cli::cli_progress_step(paste0( initialized_cells, " cells needed initialization"))
   }
 
+  # Define communication structures
+  internalCommunication <- .defineInternalCommunication(y)
+  
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
     serghei_parameters <- watershed_control[["serghei_parameters"]]
@@ -1988,7 +1991,8 @@ cell_neighbors<-function(sf, r) {
                                      datesStarsList)
 
   if(watershed_model=="tetis") {
-    ws_day <- .watershedDayTetis(local_model = local_model,
+    ws_day <- .watershedDayTetis(internalCommunication = internalCommunication,
+                                 local_model = local_model,
                                  y,
                                  waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
                                  watershed_control = watershed_control,
@@ -2014,15 +2018,7 @@ cell_neighbors<-function(sf, r) {
   
   res <- sf::st_sf(geometry=sf::st_geometry(y))
   res$state = y$state
-  # Clear communication structures
-  for(i in 1:nCells) {
-    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
-      x_i <- res$state[[i]]
-      x_i$internalCommunication <- vector("list",0)
-      res$state[[i]] <- x_i
-    }
-  }
-  
+
   if(watershed_model=="tetis") res$aquifer <- y$aquifer
   res$snowpack <- y$snowpack
   res$result <- list(NULL)

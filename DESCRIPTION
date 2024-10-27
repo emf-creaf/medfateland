@@ -1,8 +1,8 @@
 Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Simulation
-Version: 2.4.7
-Date: 2024-10-20
+Version: 2.5.0
+Date: 2024-10-26
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -19,7 +19,7 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/, https://github.com/emf-creaf/medfateland
 BugReports: https://github.com/emf-creaf/medfateland/issues
 LazyLoad: yes
-Depends: R (>= 3.4.0), medfate (>= 4.4.0)
+Depends: R (>= 3.4.0), medfate (>= 4.7.0)
 Imports: 
     cli,
     ggplot2,
