@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2024-10-21</h4>
+            <h4 data-toc-skip class="date">2024-10-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/runmodels/WatershedSimulations.Rmd" class="external-link"><code>vignettes/runmodels/WatershedSimulations.Rmd</code></a></small>
       <div class="d-none name"><code>WatershedSimulations.Rmd</code></div>
@@ -93,7 +93,7 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> (v. 2.4.7) to carry out simulations of
+<strong>medfateland</strong> (v. 2.5.0) to carry out simulations of
 forest function and dynamics on a set of forest stands while including
 lateral water transfer processes. This is done using functions
 <code><a href="../../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../../reference/spwb_land.html">growth_land()</a></code> and
@@ -225,7 +225,7 @@ follows:</p>
 <code class="sourceCode R"><span><span class="va">example_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span>
 <span>                                     local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_init</span></span></code></pre></div>
@@ -534,38 +534,38 @@ importance:</p>
 <span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##         before     after</span></span>
-<span><span class="co">## 1   0.00000000 0.1195004</span></span>
-<span><span class="co">## 2   0.00000000 0.1174818</span></span>
-<span><span class="co">## 3   0.00000000 0.1155392</span></span>
-<span><span class="co">## 4   5.39954370 0.1136624</span></span>
-<span><span class="co">## 5   8.62034607 0.1118501</span></span>
-<span><span class="co">## 6  14.33281111 0.1101030</span></span>
-<span><span class="co">## 7   9.72970344 0.1084211</span></span>
-<span><span class="co">## 8  17.12959233 0.1068039</span></span>
-<span><span class="co">## 9  12.80189935 0.1080115</span></span>
-<span><span class="co">## 10  5.86754069 0.1109616</span></span>
-<span><span class="co">## 11  6.85004331 0.1202281</span></span>
-<span><span class="co">## 12 10.04891979 5.2282235</span></span>
-<span><span class="co">## 13  7.92767125 1.9962644</span></span>
-<span><span class="co">## 14  7.90721531 1.8711448</span></span>
-<span><span class="co">## 15  5.75790391 0.8929917</span></span>
-<span><span class="co">## 16  3.90833523 0.4940271</span></span>
-<span><span class="co">## 17  3.01041130 0.3311595</span></span>
-<span><span class="co">## 18  2.89642554 0.2681319</span></span>
-<span><span class="co">## 19  2.09476284 0.2325316</span></span>
-<span><span class="co">## 20  4.78444693 0.2310390</span></span>
-<span><span class="co">## 21  1.66854021 0.2486403</span></span>
-<span><span class="co">## 22  0.76462819 0.2628833</span></span>
-<span><span class="co">## 23  0.35263182 0.2158229</span></span>
-<span><span class="co">## 24  0.44476490 0.2118429</span></span>
-<span><span class="co">## 25  0.28943777 0.2083491</span></span>
-<span><span class="co">## 26  0.24380897 0.2051928</span></span>
-<span><span class="co">## 27  0.22966862 0.2023646</span></span>
-<span><span class="co">## 28  0.20649455 0.1998174</span></span>
-<span><span class="co">## 29  0.18310116 0.1974923</span></span>
-<span><span class="co">## 30  0.08320216 0.1953632</span></span>
-<span><span class="co">## 31  0.03666808 0.1935177</span></span></code></pre>
+<pre><code><span><span class="co">##         before      after</span></span>
+<span><span class="co">## 1   0.00000000 0.09798985</span></span>
+<span><span class="co">## 2   0.00000000 0.09650657</span></span>
+<span><span class="co">## 3   0.00000000 0.09592939</span></span>
+<span><span class="co">## 4   5.39954370 0.09555589</span></span>
+<span><span class="co">## 5   8.62034607 0.09459699</span></span>
+<span><span class="co">## 6  14.33281111 0.09469628</span></span>
+<span><span class="co">## 7   9.72970344 0.09423899</span></span>
+<span><span class="co">## 8  17.12959233 0.09402957</span></span>
+<span><span class="co">## 9  12.80189935 0.09503280</span></span>
+<span><span class="co">## 10  5.86754069 0.10051038</span></span>
+<span><span class="co">## 11  6.85004331 0.10256739</span></span>
+<span><span class="co">## 12 10.04891979 0.10906381</span></span>
+<span><span class="co">## 13  7.92767125 0.11632381</span></span>
+<span><span class="co">## 14  7.90721531 0.12063961</span></span>
+<span><span class="co">## 15  5.75790391 0.12002380</span></span>
+<span><span class="co">## 16  3.90833523 3.04502260</span></span>
+<span><span class="co">## 17  3.01041130 3.00683826</span></span>
+<span><span class="co">## 18  2.89642554 2.33187488</span></span>
+<span><span class="co">## 19  2.09476284 0.82091581</span></span>
+<span><span class="co">## 20  4.78444693 0.22336267</span></span>
+<span><span class="co">## 21  1.66854021 0.26273885</span></span>
+<span><span class="co">## 22  0.76462819 0.22293633</span></span>
+<span><span class="co">## 23  0.35263182 0.17877625</span></span>
+<span><span class="co">## 24  0.44476490 0.17760578</span></span>
+<span><span class="co">## 25  0.28943777 0.17680596</span></span>
+<span><span class="co">## 26  0.24380897 0.17536251</span></span>
+<span><span class="co">## 27  0.22966862 0.17350546</span></span>
+<span><span class="co">## 28  0.20649455 0.17141156</span></span>
+<span><span class="co">## 29  0.18310116 0.16901969</span></span>
+<span><span class="co">## 30  0.08320216 0.16650239</span></span>
+<span><span class="co">## 31  0.03666808 0.16395547</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>

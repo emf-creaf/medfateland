@@ -2,6 +2,7 @@ pandoc: '3.2'
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
+  modelanalysis/ComputingTime: modelanalysis/ComputingTime.html
   runmodels/ManagementScenarios: runmodels/ManagementScenarios.html
   intro/PackageOverview: intro/PackageOverview.html
   intro/PreparingInputs_I: intro/PreparingInputs_I.html
@@ -11,7 +12,7 @@ articles:
   modelanalysis/TetisWatershedParameters: modelanalysis/TetisWatershedParameters.html
   evaluation/WatershedLevelEvaluation: evaluation/WatershedLevelEvaluation.html
   runmodels/WatershedSimulations: runmodels/WatershedSimulations.html
-last_built: 2024-10-21T07:55Z
+last_built: 2024-10-27T20:17Z
 urls:
   reference: https://emf-creaf.github.io/medfateland/reference
   article: https://emf-creaf.github.io/medfateland/articles
