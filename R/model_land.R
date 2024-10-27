@@ -79,7 +79,7 @@
                              modifyInput = TRUE)
       out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      res <- medfate:::.aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                         modifyInput = TRUE)
@@ -93,7 +93,7 @@
                                modifyInput = TRUE)
       out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, xi$meteovec,
+      res <- medfate:::.aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
                                 latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                 runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                 modifyInput = TRUE)
@@ -716,6 +716,11 @@
   default_non_result_control$plantResults <- FALSE
   default_non_result_control$soilResults <- FALSE
   default_non_result_control$fireHazardResults <- FALSE
+  default_non_result_control$temperatureResults <- FALSE
+  default_non_result_control$leafResults <- FALSE
+  default_non_result_control$plantLabileCarbonBalanceResults  <- FALSE
+  default_non_result_control$plantStructureResults  <- FALSE
+  default_non_result_control$growthMortalityResults  <- FALSE
   for(i in 1:nrow(y)) {
     if(is.null(y$local_control[[i]]) && !result_cell[i]) {
       y$local_control[[i]] <- default_non_result_control
