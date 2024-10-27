@@ -37,7 +37,7 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-12-31"), by="day")
 ws_control <- default_watershed_control("tetis")
 example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                     local_control = defaultControl(soilDomains = "single"),
+                                     local_control = defaultControl(),
                                      simplify = TRUE)
 # first year
 res1 <- spwb_land(r, example_init, SpParamsMED, examplemeteo, 
@@ -51,18 +51,18 @@ res2 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
                  watershed_control = ws_control)
 example_watershed_burnin <- update_landscape(example_watershed_burnin, res2)
 plot(res2$watershed_balance$WatershedExport, type="l")
-# # third year
-# res3 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-#                   dates = dates, summary_frequency = "month",
-#                   watershed_control = ws_control)
-# example_watershed_burnin <- update_landscape(example_watershed_burnin, res3)
-# plot(res3$watershed_balance$WatershedExport, type="l")
-# # fourth year
-# res4 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-#                   dates = dates, summary_frequency = "month",
-#                   watershed_control = ws_control)
-# example_watershed_burnin <- update_landscape(example_watershed_burnin, res4)
-# plot(res4$watershed_balance$WatershedExport, type="l")
+# third year
+res3 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
+                  dates = dates, summary_frequency = "month",
+                  watershed_control = ws_control)
+example_watershed_burnin <- update_landscape(example_watershed_burnin, res3)
+plot(res3$watershed_balance$WatershedExport, type="l")
+# fourth year
+res4 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
+                  dates = dates, summary_frequency = "month",
+                  watershed_control = ws_control)
+example_watershed_burnin <- update_landscape(example_watershed_burnin, res4)
+plot(res4$watershed_balance$WatershedExport, type="l")
 
 
 #Example sf from IFN3 (original coordinates)
