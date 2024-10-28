@@ -73,10 +73,11 @@
   out <- NA
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      res <- medfate:::.spwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
-                             latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                             runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
-                             modifyInput = TRUE)
+      medfate:::.spwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
+                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
+                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
+                                modifyInput = TRUE)
+      res <- medfate:::.copySPWBOutput(internalCommunication, xi$x)
       out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate:::.aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
@@ -87,10 +88,11 @@
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      res<-medfate:::.growth_day_inner(internalCommunication, xi$x, date, xi$meteovec,
+      medfate:::.growth_day_inner(internalCommunication, xi$x, date, xi$meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
                                modifyInput = TRUE)
+      res <- medfate:::.copyGROWTHOutput(internalCommunication, xi$x)
       out <- list("final_state" = xi$x, "simulation_results" = res)
     } else if(inherits(xi$x, "aspwbInput")) {
       res <- medfate:::.aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
@@ -267,7 +269,7 @@
 }
 
 # Define communication structures
-.defineInternalCommunication <- function(y) {
+.defineInternalCommunication <- function(y, local_model) {
   max_num_cohorts <- 1
   max_num_soil_layers <- 1
   max_num_canopy_layers <-1
@@ -281,7 +283,8 @@
       max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
     }
   }
-  internalCommunication <- medfate:::.generalCommunicationStructures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps);
+  internalCommunication <- medfate:::.generalCommunicationStructures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,
+                                                                     local_model);
   return(internalCommunication)
 }
 
@@ -805,7 +808,7 @@
 
 
   # Define communication structures
-  internalCommunication <- .defineInternalCommunication(y)
+  internalCommunication <- .defineInternalCommunication(y, local_model)
   
   #Output matrices
   if(watershed_model =="tetis") {
@@ -1987,7 +1990,7 @@ cell_neighbors<-function(sf, r) {
   }
 
   # Define communication structures
-  internalCommunication <- .defineInternalCommunication(y)
+  internalCommunication <- .defineInternalCommunication(y, local_model)
   
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
