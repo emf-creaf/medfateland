@@ -77,35 +77,47 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
 }
 
+.createDayOutput <- function(nX) {
+    .Call(`_medfateland_createDayOutput`, nX)
+}
+
+.fcpp_landunit_day <- function(xi, model, date, internalCommunication) {
+    .Call(`_medfateland_fcpp_landunit_day`, xi, model, date, internalCommunication)
+}
+
 .tetisModifyKsat <- function(y, watershed_control, reverse) {
     invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
 }
 
-.tetisInterFlow <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    .Call(`_medfateland_tetisInterFlow`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
+.tetisInterFlow <- function(interflowInput, interflowOutput, interflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisInterFlow`, interflowInput, interflowOutput, interflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisBaseFlow <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    .Call(`_medfateland_tetisBaseFlow`, y, waterO, queenNeigh, waterQ, watershed_control, patchsize)
+.tetisBaseFlow <- function(baseflowInput, baseflowOutput, baseflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisBaseFlow`, baseflowInput, baseflowOutput, baseflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisApplyBaseflowChangesToAquifer <- function(y, baseflowBalance, patchsize) {
-    .Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, y, baseflowBalance, patchsize)
+.tetisApplyBaseflowChangesToAquifer <- function(AquiferExfiltration, y, baseflowBalance, patchsize) {
+    invisible(.Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, AquiferExfiltration, y, baseflowBalance, patchsize))
 }
 
 .tetisApplyLocalFlowsToAquifer <- function(y, CapillarityRise, DeepDrainage) {
     invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, CapillarityRise, DeepDrainage))
 }
 
-.tetisApplyDeepAquiferLossToAquifer <- function(y, watershed_control) {
-    .Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, y, watershed_control)
+.tetisApplyDeepAquiferLossToAquifer <- function(DeepAquiferLoss, y, watershed_control) {
+    invisible(.Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, DeepAquiferLoss, y, watershed_control))
 }
 
-.tetisOverlandFlows <- function(Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ) {
-    .Call(`_medfateland_tetisOverlandFlows`, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ)
+.tetisOverlandFlows <- function(RunoffExport, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ) {
+    invisible(.Call(`_medfateland_tetisOverlandFlows`, RunoffExport, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ))
 }
 
-.tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control) {
-    .Call(`_medfateland_tetisSimulationNonSoilCells`, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control)
+.tetisSimulationNonSoilCells <- function(Rain, NetRain, Runoff, Infiltration, InfiltrationExcess, DeepDrainage, Snow, Snowmelt, Runon, WatershedExport, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control) {
+    invisible(.Call(`_medfateland_tetisSimulationNonSoilCells`, Rain, NetRain, Runoff, Infiltration, InfiltrationExcess, DeepDrainage, Snow, Snowmelt, Runon, WatershedExport, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control))
+}
+
+.watershedDayTetis_inner <- function(output, internalCommunication, local_model, y, waterOrder, queenNeigh, waterQ, watershed_control, date, gridMeteo, latitude, parallelize, num_cores, chunk_size, patchsize) {
+    invisible(.Call(`_medfateland_tetisWatershedDay_inner`, output, internalCommunication, local_model, y, waterOrder, queenNeigh, waterQ, watershed_control, date, gridMeteo, latitude, parallelize, num_cores, chunk_size, patchsize))
 }
 

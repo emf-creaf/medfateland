@@ -283,7 +283,7 @@
       max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
     }
   }
-  internalCommunication <- medfate:::.generalCommunicationStructures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,
+  internalCommunication <- medfate::general_communication_structures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,
                                                                      local_model);
   return(internalCommunication)
 }
@@ -319,23 +319,31 @@
   SoilEvaporation <- rep(0, nX)
   Transpiration <- rep(0, nX)
   HerbTranspiration <- rep(0, nX)
+  InterflowInput <- rep(0, nX)
+  InterflowOutput <- rep(0, nX)
+  InterflowBalance <- rep(0, nX)
+  BaseflowInput <- rep(0, nX)
+  BaseflowOutput <- rep(0, nX)
+  BaseflowBalance <- rep(0, nX)
+  AquiferExfiltration <- rep(0, nX)
+  WatershedExport <- rep(0, nX)
+  DeepAquiferLoss <- rep(0, nX)
 
-  
   # A. Landscape interflow and baseflow
-  inter_flow <- .tetisInterFlow(y,
-                                waterOrder, queenNeigh, waterQ,
-                                watershed_control,
-                                patchsize)
-  InterflowInput <- inter_flow[["InterflowInput"]]
-  InterflowOutput <- inter_flow[["InterflowOutput"]]
-  InterflowBalance <- inter_flow[["InterflowBalance"]]
-  base_flow <- .tetisBaseFlow(y,
-                               waterOrder, queenNeigh, waterQ,
-                               watershed_control,
-                               patchsize)
-  BaseflowInput <- base_flow[["BaseflowInput"]]
-  BaseflowOutput <- base_flow[["BaseflowOutput"]]
-  BaseflowBalance <- base_flow[["BaseflowBalance"]]
+  .tetisInterFlow(InterflowInput,
+                  InterflowOutput,
+                  InterflowBalance, 
+                  y,
+                  waterOrder, queenNeigh, waterQ,
+                  watershed_control,
+                  patchsize)
+  .tetisBaseFlow(BaseflowInput,
+                 BaseflowOutput,
+                 BaseflowBalance,
+                 y,
+                 waterOrder, queenNeigh, waterQ,
+                 watershed_control,
+                 patchsize)
 
   # A3a. Estimate lateral interflow per layer
   lateralFlows <- vector("list", nX)
@@ -351,9 +359,10 @@
   }
   
   # A3b. Apply changes in aquifer to each cell
-  AquiferExfiltration <- .tetisApplyBaseflowChangesToAquifer(y,
-                                                             BaseflowBalance,
-                                                             patchsize)
+  .tetisApplyBaseflowChangesToAquifer(AquiferExfiltration,
+                                      y,
+                                      BaseflowBalance,
+                                      patchsize)
   
   
   # B1. Weather and local flows
@@ -369,10 +378,20 @@
   C02Vec <- gridMeteo[["CO2"]]
   
   # B2. Simulation of non-soil cells
-  nonsoilResults <- .tetisSimulationNonSoilCells(y,
-                                                 tminVec, tmaxVec, precVec, radVec,
-                                                 waterOrder, queenNeigh, waterQ,
-                                                 watershed_control)
+  .tetisSimulationNonSoilCells( Rain, 
+                                NetRain,
+                                Runoff,
+                                Infiltration,
+                                InfiltrationExcess,
+                                DeepDrainage,
+                                Snow,
+                                Snowmelt,
+                                Runon,
+                                WatershedExport,
+                               y,
+                               tminVec, tmaxVec, precVec, radVec,
+                               waterOrder, queenNeigh, waterQ,
+                               watershed_control)
   
   # B3. Simulation of soil cells
   XI <- vector("list", nX)
@@ -388,7 +407,6 @@
         "WindSpeed" = wsVec[i],
         "CO2" = C02Vec[i]
       )
-      Runon[i] <- nonsoilResults$Runon[i]
       wtd = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])
       if(wtd<0.0) cli::cli_alert_warning(paste0("Negative WTD in ", i,"\n"))
       xi <- y$state[[i]]
@@ -417,8 +435,8 @@
     localResults <- vector("list", nX)
     for(i in 1:nX) {
       if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
-        localResults[[i]] <- .f_landunit_day(XI[[i]], date = date, model = local_model, 
-                                             internalCommunication = internalCommunication)
+        localResults[[i]] <- .fcpp_landunit_day(XI[[i]], date = date, model = local_model, 
+                                                internalCommunication = internalCommunication)
       }
     }
   }
@@ -456,23 +474,10 @@
   }
 
   #C2. Overland surface runoff from soil cells diverted to outlets
-  WatershedExport = .tetisOverlandFlows(Runoff, AquiferExfiltration,
-                                        waterOrder, queenNeigh, waterQ)
+  .tetisOverlandFlows(WatershedExport,
+                      Runoff, AquiferExfiltration,
+                      waterOrder, queenNeigh, waterQ)
   
-  #C3. Process results from non-soil cells
-  for(i in 1:nX) {
-    if((y$land_cover_type[i]!="wildland") && (y$land_cover_type[i]!="agriculture")) {
-      Rain[i] <- nonsoilResults$Rain[i]
-      NetRain[i] <- Rain[i]
-      Snow[i] <- nonsoilResults$Snow[i]
-      Snowmelt[i] <- nonsoilResults$Snowmelt[i]
-      Infiltration[i] <- nonsoilResults$Infiltration[i]
-      InfiltrationExcess[i] <- nonsoilResults$InfiltrationExcess[i]
-      Runoff[i] <- nonsoilResults$Runoff[i]
-      DeepDrainage[i] <- nonsoilResults$DeepDrainage[i]
-      WatershedExport[i] <- nonsoilResults$WatershedExport[i]
-    }
-  }
   
   #D. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
@@ -480,7 +485,8 @@
                                  DeepDrainage)
 
   #E. Applies drainage from aquifer to a deeper aquifer
-  DeepAquiferLoss <- .tetisApplyDeepAquiferLossToAquifer(y, watershed_control)
+  .tetisApplyDeepAquiferLossToAquifer(DeepAquiferLoss, 
+                                      y, watershed_control)
   
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
                              "MaxTemperature" = MaxTemperature, 
@@ -809,7 +815,8 @@
 
   # Define communication structures
   internalCommunication <- .defineInternalCommunication(y, local_model)
-  
+  ws_day  <- .createDayOutput(nCells)
+
   #Output matrices
   if(watershed_model =="tetis") {
     OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlets))
@@ -982,16 +989,20 @@
                                        CO2ByYear)
     
     if(watershed_model=="tetis") {
-      ws_day <- .watershedDayTetis(internalCommunication = internalCommunication,
-                                   local_model = local_model,
-                                   y = y,
-                                   waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
-                                   watershed_control = watershed_control,
-                                   date = datechar,
-                                   gridMeteo = gridMeteo,
-                                   latitude = latitude,
-                                   parallelize = parallelize, num_cores = detectCores()-1, chunk_size = NULL,
-                                   patchsize = patchsize, progress = FALSE)
+      .watershedDayTetis_inner(output = ws_day, 
+                               internalCommunication = internalCommunication,
+                               local_model = local_model,
+                               y = y,
+                               waterOrder = waterOrder, 
+                               queenNeigh = queenNeigh, 
+                               waterQ = waterQ,
+                               watershed_control = watershed_control,
+                               date = datechar,
+                               gridMeteo = gridMeteo,
+                               latitude = latitude,
+                               parallelize = parallelize, num_cores = parallel::detectCores()-1, 
+                               chunk_size = 0,
+                               patchsize = patchsize)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
                                      lct = y$land_cover_type, xList = y$state,
@@ -1030,7 +1041,10 @@
     }
     
     ifactor <- df.int[day]
-
+    # print(names(res_day))
+    # print(varsSum)
+    # print(varsMean)
+    
     if(watershed_model=="tetis") DTAday <- (y$depth_to_bedrock/1000.0) - (y$aquifer/y$bedrock_porosity)/1000.0
     for(i in 1:nCells) {
       for(v in varsSum) {
@@ -1473,7 +1487,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         watershed_control = default_watershed_control(),
                         dispersal_control = default_dispersal_control(),
                         management_function = NULL,
-                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                        parallelize = FALSE, num_cores = parallel::detectCores()-1, chunk_size = NULL, 
                         progress = TRUE) {
   
   #watershed model
@@ -2011,17 +2025,23 @@ cell_neighbors<-function(sf, r) {
                                      meteo_mapping,
                                      datesStarsList)
 
+  ws_day  <- .createDayOutput(nCells)
+  
   if(watershed_model=="tetis") {
-    ws_day <- .watershedDayTetis(internalCommunication = internalCommunication,
-                                 local_model = local_model,
-                                 y,
-                                 waterOrder = waterOrder, queenNeigh = queenNeigh, waterQ = waterQ,
-                                 watershed_control = watershed_control,
-                                 date = datechar,
-                                 gridMeteo = gridMeteo,
-                                 latitude = latitude,
-                                 parallelize = parallelize, num_cores = detectCores()-1, chunk_size = NULL,
-                                 patchsize = patchsize, progress = FALSE)
+    .watershedDayTetis_inner(output = ws_day, 
+                             internalCommunication = internalCommunication,
+                             local_model = local_model,
+                             y = y,
+                             waterOrder = waterOrder, 
+                             queenNeigh = queenNeigh, 
+                             waterQ = waterQ,
+                             watershed_control = watershed_control,
+                             date = datechar,
+                             gridMeteo = gridMeteo,
+                             latitude = latitude,
+                             parallelize = parallelize, num_cores = parallel::detectCores()-1, 
+                             chunk_size = 0,
+                             patchsize = patchsize)
   } else if(watershed_model=="serghei") {
     ws_day <- .watershedDaySerghei(local_model = local_model,
                                    lct = y$land_cover_type, xList = y$state,
@@ -2169,7 +2189,7 @@ cell_neighbors<-function(sf, r) {
 spwb_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
                         local_control = medfate::defaultControl(soilDomains = "single"),
                         watershed_control = default_watershed_control(),
-                        parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                        parallelize = FALSE, num_cores = parallel::detectCores()-1, chunk_size = NULL, 
                         progress = TRUE) {
   return(.simulate_land_day("spwb_land_day",
                             r = r, y = sf, SpParams = SpParams, meteo = meteo, date = date,
@@ -2183,7 +2203,7 @@ spwb_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
 growth_land_day<-function(r, sf, SpParams, meteo= NULL, date = NULL,
                           local_control = medfate::defaultControl(soilDomains = "single"),
                           watershed_control = default_watershed_control(),
-                          parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL, 
+                          parallelize = FALSE, num_cores = parallel::detectCores()-1, chunk_size = NULL, 
                           progress = TRUE) {
   return(.simulate_land_day("growth_land_day",
                             r = r, y = sf, SpParams = SpParams, meteo = meteo, date = date,

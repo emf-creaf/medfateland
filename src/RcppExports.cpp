@@ -256,6 +256,31 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// createDayOutput
+List createDayOutput(int nX);
+RcppExport SEXP _medfateland_createDayOutput(SEXP nXSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type nX(nXSEXP);
+    rcpp_result_gen = Rcpp::wrap(createDayOutput(nX));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fcpp_landunit_day
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication);
+RcppExport SEXP _medfateland_fcpp_landunit_day(SEXP xiSEXP, SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< String >::type model(modelSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
+    Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
+    rcpp_result_gen = Rcpp::wrap(fcpp_landunit_day(xi, model, date, internalCommunication));
+    return rcpp_result_gen;
+END_RCPP
+}
 // tetisModifyKsat
 void tetisModifyKsat(List y, List watershed_control, bool reverse);
 RcppExport SEXP _medfateland_tetisModifyKsat(SEXP ySEXP, SEXP watershed_controlSEXP, SEXP reverseSEXP) {
@@ -269,48 +294,52 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisInterFlow
-DataFrame tetisInterFlow(List y, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control, double patchsize);
-RcppExport SEXP _medfateland_tetisInterFlow(SEXP ySEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
+void tetisInterFlow(NumericVector interflowInput, NumericVector interflowOutput, NumericVector interflowBalance, List y, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control, double patchsize);
+RcppExport SEXP _medfateland_tetisInterFlow(SEXP interflowInputSEXP, SEXP interflowOutputSEXP, SEXP interflowBalanceSEXP, SEXP ySEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type interflowInput(interflowInputSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type interflowOutput(interflowOutputSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type interflowBalance(interflowBalanceSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisInterFlow(y, waterO, queenNeigh, waterQ, watershed_control, patchsize));
-    return rcpp_result_gen;
+    tetisInterFlow(interflowInput, interflowOutput, interflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize);
+    return R_NilValue;
 END_RCPP
 }
 // tetisBaseFlow
-DataFrame tetisBaseFlow(List y, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control, double patchsize);
-RcppExport SEXP _medfateland_tetisBaseFlow(SEXP ySEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
+void tetisBaseFlow(NumericVector baseflowInput, NumericVector baseflowOutput, NumericVector baseflowBalance, List y, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control, double patchsize);
+RcppExport SEXP _medfateland_tetisBaseFlow(SEXP baseflowInputSEXP, SEXP baseflowOutputSEXP, SEXP baseflowBalanceSEXP, SEXP ySEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type baseflowInput(baseflowInputSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type baseflowOutput(baseflowOutputSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type baseflowBalance(baseflowBalanceSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisBaseFlow(y, waterO, queenNeigh, waterQ, watershed_control, patchsize));
-    return rcpp_result_gen;
+    tetisBaseFlow(baseflowInput, baseflowOutput, baseflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize);
+    return R_NilValue;
 END_RCPP
 }
 // tetisApplyBaseflowChangesToAquifer
-NumericVector tetisApplyBaseflowChangesToAquifer(List y, NumericVector baseflowBalance, double patchsize);
-RcppExport SEXP _medfateland_tetisApplyBaseflowChangesToAquifer(SEXP ySEXP, SEXP baseflowBalanceSEXP, SEXP patchsizeSEXP) {
+void tetisApplyBaseflowChangesToAquifer(NumericVector AquiferExfiltration, List y, NumericVector baseflowBalance, double patchsize);
+RcppExport SEXP _medfateland_tetisApplyBaseflowChangesToAquifer(SEXP AquiferExfiltrationSEXP, SEXP ySEXP, SEXP baseflowBalanceSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type AquiferExfiltration(AquiferExfiltrationSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type baseflowBalance(baseflowBalanceSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisApplyBaseflowChangesToAquifer(y, baseflowBalance, patchsize));
-    return rcpp_result_gen;
+    tetisApplyBaseflowChangesToAquifer(AquiferExfiltration, y, baseflowBalance, patchsize);
+    return R_NilValue;
 END_RCPP
 }
 // tetisApplyLocalFlowsToAquifer
@@ -326,49 +355,82 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisApplyDeepAquiferLossToAquifer
-NumericVector tetisApplyDeepAquiferLossToAquifer(List y, List watershed_control);
-RcppExport SEXP _medfateland_tetisApplyDeepAquiferLossToAquifer(SEXP ySEXP, SEXP watershed_controlSEXP) {
+void tetisApplyDeepAquiferLossToAquifer(NumericVector DeepAquiferLoss, List y, List watershed_control);
+RcppExport SEXP _medfateland_tetisApplyDeepAquiferLossToAquifer(SEXP DeepAquiferLossSEXP, SEXP ySEXP, SEXP watershed_controlSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type DeepAquiferLoss(DeepAquiferLossSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisApplyDeepAquiferLossToAquifer(y, watershed_control));
-    return rcpp_result_gen;
+    tetisApplyDeepAquiferLossToAquifer(DeepAquiferLoss, y, watershed_control);
+    return R_NilValue;
 END_RCPP
 }
 // tetisOverlandFlows
-NumericVector tetisOverlandFlows(NumericVector Runoff, NumericVector AquiferExfiltration, NumericVector waterO, List queenNeigh, List waterQ);
-RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffSEXP, SEXP AquiferExfiltrationSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
+void tetisOverlandFlows(NumericVector RunoffExport, NumericVector Runoff, NumericVector AquiferExfiltration, IntegerVector waterO, List queenNeigh, List waterQ);
+RcppExport SEXP _medfateland_tetisOverlandFlows(SEXP RunoffExportSEXP, SEXP RunoffSEXP, SEXP AquiferExfiltrationSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type RunoffExport(RunoffExportSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type Runoff(RunoffSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type AquiferExfiltration(AquiferExfiltrationSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type waterO(waterOSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisOverlandFlows(Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ));
-    return rcpp_result_gen;
+    tetisOverlandFlows(RunoffExport, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ);
+    return R_NilValue;
 END_RCPP
 }
 // tetisSimulationNonSoilCells
-DataFrame tetisSimulationNonSoilCells(List y, NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec, NumericVector waterO, List queenNeigh, List waterQ, List watershed_control);
-RcppExport SEXP _medfateland_tetisSimulationNonSoilCells(SEXP ySEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP) {
+void tetisSimulationNonSoilCells(NumericVector Rain, NumericVector NetRain, NumericVector Runoff, NumericVector Infiltration, NumericVector InfiltrationExcess, NumericVector DeepDrainage, NumericVector Snow, NumericVector Snowmelt, NumericVector Runon, NumericVector WatershedExport, List y, NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec, IntegerVector waterO, List queenNeigh, List waterQ, List watershed_control);
+RcppExport SEXP _medfateland_tetisSimulationNonSoilCells(SEXP RainSEXP, SEXP NetRainSEXP, SEXP RunoffSEXP, SEXP InfiltrationSEXP, SEXP InfiltrationExcessSEXP, SEXP DeepDrainageSEXP, SEXP SnowSEXP, SEXP SnowmeltSEXP, SEXP RunonSEXP, SEXP WatershedExportSEXP, SEXP ySEXP, SEXP tminVecSEXP, SEXP tmaxVecSEXP, SEXP precVecSEXP, SEXP radVecSEXP, SEXP waterOSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Rain(RainSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type NetRain(NetRainSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Runoff(RunoffSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Infiltration(InfiltrationSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type InfiltrationExcess(InfiltrationExcessSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type DeepDrainage(DeepDrainageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Snow(SnowSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Snowmelt(SnowmeltSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Runon(RunonSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type WatershedExport(WatershedExportSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tminVec(tminVecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tmaxVec(tmaxVecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type precVec(precVecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type radVec(radVecSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type waterO(waterOSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type waterO(waterOSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
-    rcpp_result_gen = Rcpp::wrap(tetisSimulationNonSoilCells(y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control));
-    return rcpp_result_gen;
+    tetisSimulationNonSoilCells(Rain, NetRain, Runoff, Infiltration, InfiltrationExcess, DeepDrainage, Snow, Snowmelt, Runon, WatershedExport, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control);
+    return R_NilValue;
+END_RCPP
+}
+// tetisWatershedDay_inner
+void tetisWatershedDay_inner(List output, List internalCommunication, String local_model, List y, IntegerVector waterOrder, List queenNeigh, List waterQ, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, bool parallelize, int num_cores, int chunk_size, double patchsize);
+RcppExport SEXP _medfateland_tetisWatershedDay_inner(SEXP outputSEXP, SEXP internalCommunicationSEXP, SEXP local_modelSEXP, SEXP ySEXP, SEXP waterOrderSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP parallelizeSEXP, SEXP num_coresSEXP, SEXP chunk_sizeSEXP, SEXP patchsizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type output(outputSEXP);
+    Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
+    Rcpp::traits::input_parameter< String >::type local_model(local_modelSEXP);
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type waterOrder(waterOrderSEXP);
+    Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
+    Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latitude(latitudeSEXP);
+    Rcpp::traits::input_parameter< bool >::type parallelize(parallelizeSEXP);
+    Rcpp::traits::input_parameter< int >::type num_cores(num_coresSEXP);
+    Rcpp::traits::input_parameter< int >::type chunk_size(chunk_sizeSEXP);
+    Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
+    tetisWatershedDay_inner(output, internalCommunication, local_model, y, waterOrder, queenNeigh, waterQ, watershed_control, date, gridMeteo, latitude, parallelize, num_cores, chunk_size, patchsize);
+    return R_NilValue;
 END_RCPP
 }
 
@@ -392,14 +454,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_copyStateFromResults", (DL_FUNC) &_medfateland_copyStateFromResults, 2},
+    {"_medfateland_createDayOutput", (DL_FUNC) &_medfateland_createDayOutput, 1},
+    {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 4},
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
-    {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 6},
-    {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 6},
-    {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
+    {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 9},
+    {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 9},
+    {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 4},
     {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 3},
-    {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 2},
-    {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
-    {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 9},
+    {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 3},
+    {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 6},
+    {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 19},
+    {"_medfateland_tetisWatershedDay_inner", (DL_FUNC) &_medfateland_tetisWatershedDay_inner, 15},
     {NULL, NULL, 0}
 };
 

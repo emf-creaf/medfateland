@@ -14,7 +14,7 @@ spwb_land_day(
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
-  num_cores = detectCores() - 1,
+  num_cores = parallel::detectCores() - 1,
   chunk_size = NULL,
   progress = TRUE
 )
@@ -28,7 +28,7 @@ growth_land_day(
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
-  num_cores = detectCores() - 1,
+  num_cores = parallel::detectCores() - 1,
   chunk_size = NULL,
   progress = TRUE
 )

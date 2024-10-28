@@ -53,7 +53,7 @@ fordyn_land(
   dispersal_control = default_dispersal_control(),
   management_function = NULL,
   parallelize = FALSE,
-  num_cores = detectCores() - 1,
+  num_cores = parallel::detectCores() - 1,
   chunk_size = NULL,
   progress = TRUE
 )

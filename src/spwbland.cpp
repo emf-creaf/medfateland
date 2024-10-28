@@ -7,6 +7,34 @@ using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
 
+const int WBCOM_MinTemperature = 0;
+const int WBCOM_MaxTemperature = 1;
+const int WBCOM_PET = 2;
+const int WBCOM_Precipitation = 3;
+const int WBCOM_Rain = 4;
+const int WBCOM_Snow = 5;
+const int WBCOM_Snowmelt = 6;
+const int WBCOM_NetRain = 7;
+const int WBCOM_Infiltration = 8;
+const int WBCOM_Runoff = 9;
+const int WBCOM_Runon = 10;
+const int WBCOM_InfiltrationExcess = 11;
+const int WBCOM_SaturationExcess = 12;
+const int WBCOM_DeepDrainage = 13;
+const int WBCOM_CapillarityRise = 14;
+const int WBCOM_SoilEvaporation = 15;
+const int WBCOM_Transpiration = 16;
+const int WBCOM_HerbTranspiration = 17;
+const int WBCOM_AquiferExfiltration = 18;
+const int WBCOM_DeepAquiferLoss = 19;
+const int WBCOM_InterflowInput = 20;
+const int WBCOM_InterflowOutput = 21;
+const int WBCOM_InterflowBalance = 22;
+const int WBCOM_BaseflowInput = 23;
+const int WBCOM_BaseflowOutput = 24;
+const int WBCOM_BaseflowBalance = 25;
+const int WBCOM_WatershedExport = 26;
+const int WBCOM_Interception = 27;
 
 // [[Rcpp::export("drainageCells")]]
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
@@ -112,5 +140,97 @@ void copyStateFromResults(List y, List localResults) {
       xList[i] = resList["final_state"];
     }
   }
+}
+
+// [[Rcpp::export(".createDayOutput")]]
+List createDayOutput(int nX) {
+
+  List localResults(nX);
+  
+
+  int ncol = 28;
+  List out(ncol);
+  CharacterVector colnames(ncol);
+  for(int i = 0; i<ncol; i++) out[i] = NumericVector(nX, 0.0);
+  colnames[WBCOM_MinTemperature] = "MinTemperature";
+  colnames[WBCOM_MaxTemperature] = "MaxTemperature";
+  colnames[WBCOM_PET] = "PET";
+  colnames[WBCOM_Precipitation] = "Precipitation";
+  colnames[WBCOM_Rain] = "Rain";
+  colnames[WBCOM_Snow] = "Snow";
+  colnames[WBCOM_Snowmelt] = "Snowmelt";
+  colnames[WBCOM_Interception] = "Interception";
+  colnames[WBCOM_NetRain] = "NetRain";
+  colnames[WBCOM_Infiltration] = "Infiltration";
+  colnames[WBCOM_Runoff] = "Runoff";
+  colnames[WBCOM_Runon] = "Runon";
+  colnames[WBCOM_InfiltrationExcess] = "InfiltrationExcess";
+  colnames[WBCOM_SaturationExcess] = "SaturationExcess";
+  colnames[WBCOM_DeepDrainage] = "DeepDrainage";
+  colnames[WBCOM_CapillarityRise] = "CapillarityRise";
+  colnames[WBCOM_SoilEvaporation] = "SoilEvaporation";
+  colnames[WBCOM_Transpiration] = "Transpiration";
+  colnames[WBCOM_HerbTranspiration] = "HerbTranspiration";
+  colnames[WBCOM_AquiferExfiltration] = "AquiferExfiltration";
+  colnames[WBCOM_DeepAquiferLoss] = "DeepAquiferLoss";
+  colnames[WBCOM_InterflowInput] = "InterflowInput";
+  colnames[WBCOM_InterflowOutput] = "InterflowOutput";
+  colnames[WBCOM_InterflowBalance] = "InterflowBalance";
+  colnames[WBCOM_BaseflowInput] = "BaseflowInput";
+  colnames[WBCOM_BaseflowOutput] = "BaseflowOutput";
+  colnames[WBCOM_BaseflowBalance] = "BaseflowBalance";
+  colnames[WBCOM_WatershedExport] = "WatershedExport";
+
+  out.attr("names") = colnames;
+
+  DataFrame waterBalance(out);
+  return(List::create(_["WatershedWaterBalance"] = waterBalance,
+                      _["LocalResults"] = localResults));
+}
+
+// [[Rcpp::export(".fcpp_landunit_day")]]
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication) {
+  List res;
+  List x = xi["x"];
+  CharacterVector classString = x.attr("class");
+  NumericVector meteovec = xi["meteovec"];
+  double latitude = xi["latitude"];
+  NumericVector lateralFlows = xi["lateralFlows"];
+  double waterTableDepth = xi["waterTableDepth"];
+  double runon = xi["runon"];
+  double elevation = xi["elevation"];
+  double slope = xi["slope"];
+  double aspect = xi["aspect"];
+  if(model=="spwb") {
+    if(Rf_inherits(x,"spwbInput")){
+      medfate::spwb_day_inner(internalCommunication, x, date, meteovec,
+                              latitude, elevation, slope, aspect, 
+                              runon, lateralFlows, waterTableDepth, 
+                              true);
+      res = medfate::copy_model_output(internalCommunication, x, "spwb");
+      
+    } else if(Rf_inherits(x, "aspwbInput")) {
+      res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
+                                     latitude, elevation, slope, aspect, 
+                                     runon, lateralFlows, waterTableDepth, 
+                                     true);
+    }
+  } else if(model=="growth") {
+    if(Rf_inherits(x, "growthInput")) {
+      medfate::growth_day_inner(internalCommunication, x, date, meteovec,
+                                latitude, elevation, slope, aspect, 
+                                runon, lateralFlows, waterTableDepth, 
+                                true);
+      res = medfate::copy_model_output(internalCommunication, x, "growth");
+    } else if(Rf_inherits(x, "aspwbInput")) {
+      res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
+                                     latitude, elevation, slope, aspect, 
+                                     runon, lateralFlows, waterTableDepth, 
+                                     true);
+    }
+  } 
+  List out = List::create(_["final_state"] = x, 
+                          _["simulation_results"] = res);
+  return(out);
 }
 
