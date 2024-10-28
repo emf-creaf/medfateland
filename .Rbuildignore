@@ -23,3 +23,4 @@ cran-comments.md
 ^CRAN-SUBMISSION$
 metadata.yml
 featured.png
+Rprof.out
