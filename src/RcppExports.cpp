@@ -145,6 +145,47 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// initSerghei
+List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
+RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type limits(limitsSEXP);
+    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
+    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
+    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
+    Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
+    Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
+    rcpp_result_gen = Rcpp::wrap(initSerghei(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir));
+    return rcpp_result_gen;
+END_RCPP
+}
+// callSergheiDay
+void callSergheiDay(CharacterVector lct, List xList, DataFrame gridMeteo, List localResults, IntegerVector sf2cell, List serghei_interface);
+RcppExport SEXP _medfateland_callSergheiDay(SEXP lctSEXP, SEXP xListSEXP, SEXP gridMeteoSEXP, SEXP localResultsSEXP, SEXP sf2cellSEXP, SEXP serghei_interfaceSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
+    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
+    Rcpp::traits::input_parameter< List >::type localResults(localResultsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
+    Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
+    callSergheiDay(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface);
+    return R_NilValue;
+END_RCPP
+}
+// finishSerghei
+void finishSerghei();
+RcppExport SEXP _medfateland_finishSerghei() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    finishSerghei();
+    return R_NilValue;
+END_RCPP
+}
 // drainageCells
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell);
 RcppExport SEXP _medfateland_drainageCells(SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP iCellSEXP) {
@@ -194,18 +235,6 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// tetisModifyKsat
-void tetisModifyKsat(List y, List watershed_control, bool reverse);
-RcppExport SEXP _medfateland_tetisModifyKsat(SEXP ySEXP, SEXP watershed_controlSEXP, SEXP reverseSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type y(ySEXP);
-    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
-    Rcpp::traits::input_parameter< bool >::type reverse(reverseSEXP);
-    tetisModifyKsat(y, watershed_control, reverse);
-    return R_NilValue;
-END_RCPP
-}
 // copySnowpackFromSoil
 void copySnowpackFromSoil(List y);
 RcppExport SEXP _medfateland_copySnowpackFromSoil(SEXP ySEXP) {
@@ -224,6 +253,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< List >::type localResults(localResultsSEXP);
     copyStateFromResults(y, localResults);
+    return R_NilValue;
+END_RCPP
+}
+// tetisModifyKsat
+void tetisModifyKsat(List y, List watershed_control, bool reverse);
+RcppExport SEXP _medfateland_tetisModifyKsat(SEXP ySEXP, SEXP watershed_controlSEXP, SEXP reverseSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
+    Rcpp::traits::input_parameter< bool >::type reverse(reverseSEXP);
+    tetisModifyKsat(y, watershed_control, reverse);
     return R_NilValue;
 END_RCPP
 }
@@ -330,47 +371,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// initSerghei
-List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
-RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type limits(limitsSEXP);
-    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
-    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
-    Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
-    Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
-    rcpp_result_gen = Rcpp::wrap(initSerghei(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir));
-    return rcpp_result_gen;
-END_RCPP
-}
-// callSergheiDay
-void callSergheiDay(CharacterVector lct, List xList, DataFrame gridMeteo, List localResults, IntegerVector sf2cell, List serghei_interface);
-RcppExport SEXP _medfateland_callSergheiDay(SEXP lctSEXP, SEXP xListSEXP, SEXP gridMeteoSEXP, SEXP localResultsSEXP, SEXP sf2cellSEXP, SEXP serghei_interfaceSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
-    Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
-    Rcpp::traits::input_parameter< List >::type localResults(localResultsSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
-    Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
-    callSergheiDay(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface);
-    return R_NilValue;
-END_RCPP
-}
-// finishSerghei
-void finishSerghei();
-RcppExport SEXP _medfateland_finishSerghei() {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    finishSerghei();
-    return R_NilValue;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
@@ -383,13 +383,16 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_willBurnWhenHitFloor", (DL_FUNC) &_medfateland_willBurnWhenHitFloor, 2},
     {"_medfateland_fireBrandBurningTimeFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandBurningTimeFromCanopyStructure, 1},
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
+    {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
+    {"_medfateland_finishSerghei", (DL_FUNC) &_medfateland_finishSerghei, 0},
     {"_medfateland_drainageCells", (DL_FUNC) &_medfateland_drainageCells, 3},
     {"_medfateland_getTrackSpeciesTranspiration", (DL_FUNC) &_medfateland_getTrackSpeciesTranspiration, 3},
     {"_medfateland_getTrackSpeciesDDS", (DL_FUNC) &_medfateland_getTrackSpeciesDDS, 3},
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
-    {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_copyStateFromResults", (DL_FUNC) &_medfateland_copyStateFromResults, 2},
+    {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 6},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 6},
     {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
@@ -397,9 +400,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 2},
     {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
     {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 9},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
-    {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
-    {"_medfateland_finishSerghei", (DL_FUNC) &_medfateland_finishSerghei, 0},
     {NULL, NULL, 0}
 };
 

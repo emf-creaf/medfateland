@@ -41,6 +41,18 @@
     .Call(`_medfateland_fireBrandFlameHeightFromCanopyStructure`, crownLength, LAIc)
 }
 
+.initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
+    .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
+}
+
+.callSergheiDay <- function(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface) {
+    invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell, serghei_interface))
+}
+
+.finishSerghei <- function() {
+    invisible(.Call(`_medfateland_finishSerghei`))
+}
+
 drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_drainageCells`, queenNeigh, waterQ, iCell)
 }
@@ -57,16 +69,16 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copySnowpackToSoil`, y))
 }
 
-.tetisModifyKsat <- function(y, watershed_control, reverse) {
-    invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
-}
-
 .copySnowpackFromSoil <- function(y) {
     invisible(.Call(`_medfateland_copySnowpackFromSoil`, y))
 }
 
 .copyStateFromResults <- function(y, localResults) {
     invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
+}
+
+.tetisModifyKsat <- function(y, watershed_control, reverse) {
+    invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
 }
 
 .tetisInterFlow <- function(y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
@@ -95,17 +107,5 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
 
 .tetisSimulationNonSoilCells <- function(y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control) {
     .Call(`_medfateland_tetisSimulationNonSoilCells`, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control)
-}
-
-.initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
-    .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
-}
-
-.callSergheiDay <- function(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface) {
-    invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell, serghei_interface))
-}
-
-.finishSerghei <- function() {
-    invisible(.Call(`_medfateland_finishSerghei`))
 }
 
