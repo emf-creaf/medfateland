@@ -23,7 +23,7 @@ evalDIR = "~/OneDrive/mcaceres_work/model_development/medfate_evaluation/Watersh
 
 ```{r, echo = FALSE}
 medfateland_versions <- list.files(file.path(evalDIR, "data", "output"))
-version_vec <- character(0)
+medfateland_version_vec <- character(0)
 model_vec <- character(0)
 watershed_vec <- character(0)
 for(medfateland_version in medfateland_versions) {
@@ -31,22 +31,24 @@ for(medfateland_version in medfateland_versions) {
   for(model in models) {
     watersheds <- list.files(file.path(evalDIR, "data", "output", medfateland_version, model))
     for(watershed in watersheds) {
-      version_vec <- c(version_vec, medfateland_version)
+      medfateland_version_vec <- c(medfateland_version_vec, medfateland_version)
       model_vec <- c(model_vec, models)
       watershed_vec <- c(watershed_vec, watershed)
     }
   }
 }
-df <- tibble::tibble(version = version_vec, model = model_vec, watershed = watershed_vec) 
+df <- tibble::tibble(medfateland = medfateland_version_vec, 
+                     medfate = NA,
+                     model = model_vec, watershed = watershed_vec) 
 df$before <- vector("list", nrow(df))
 df$after <- vector("list", nrow(df))
 df$Q_daily <- vector("list", nrow(df))
 df$Q_monthly <- vector("list", nrow(df))
 for(r in 1:nrow(df)) {
-  df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
-  df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "calibrated.yaml"))
-  df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "Q_daily.csv"))
-  df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$version[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
+  df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
+  df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibrated.yaml"))
+  df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_daily.csv"))
+  df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
 }
 ```
 
@@ -96,6 +98,8 @@ df_params$num_daily_substeps <- NA
 df_params$rock_max_infiltration <- NA
 df_params$deep_aquifer_loss <- NA
 for(i in 1:nrow(df_params)) {
+  df_params$medfateland[i] <- df_params$Params[[i]]$medfateland_version
+  df_params$medfate[i] <- df_params$Params[[i]]$medfate_version
   df_params$R_localflow[i] <- df_params$Params[[i]]$tetis_parameters$R_localflow
   df_params$R_interflow[i] <- df_params$Params[[i]]$tetis_parameters$R_interflow
   df_params$R_baseflow[i] <- df_params$Params[[i]]$tetis_parameters$R_baseflow
@@ -116,7 +120,7 @@ df_params |>
 
 ```{r, results='asis', warning = FALSE, message=FALSE, echo = FALSE}
 for(i in 1:nrow(df)) {
-   medfateland_version <- df$version[i] 
+   medfateland_version <- df$medfateland[i] 
    model <- df$model[i]
    watershed <- df$watershed[i]
    Q_daily <- df$Q_daily[[i]] |>
