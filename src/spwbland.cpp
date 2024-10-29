@@ -188,12 +188,25 @@ List createDayOutput(int nX) {
                       _["LocalResults"] = localResults));
 }
 
+// [[Rcpp::export(".resetWaterBalanceDayOutput")]]
+void resetWaterBalanceDayOutput(DataFrame outWB) {
+  int nc = outWB.ncol();
+  int nr = outWB.nrow();
+  for(int i=0;i<nc;i++) {
+    NumericVector v = outWB[i];
+    for(int j=0;j<nr;j++) v[j] = 0.0;
+  }
+}
+
 // [[Rcpp::export(".fcpp_landunit_day")]]
 List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication) {
   List res;
   List x = xi["x"];
+  List control  = x["control"];
+  String transpirationMode = control["transpirationMode"];
   CharacterVector classString = x.attr("class");
   NumericVector meteovec = xi["meteovec"];
+  bool result_cell = xi["result_cell"];
   double latitude = xi["latitude"];
   NumericVector lateralFlows = xi["lateralFlows"];
   double waterTableDepth = xi["waterTableDepth"];
@@ -201,34 +214,34 @@ List fcpp_landunit_day(List xi, String model, CharacterVector date, List interna
   double elevation = xi["elevation"];
   double slope = xi["slope"];
   double aspect = xi["aspect"];
-  if(model=="spwb") {
-    if(Rf_inherits(x,"spwbInput")){
+  if(Rf_inherits(x, "aspwbInput")) {
+    res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
+                                   latitude, elevation, slope, aspect, 
+                                   runon, lateralFlows, waterTableDepth, 
+                                   true);
+  } else {
+    if(model=="spwb") {
       medfate::spwb_day_inner(internalCommunication, x, date, meteovec,
                               latitude, elevation, slope, aspect, 
                               runon, lateralFlows, waterTableDepth, 
                               true);
-      res = medfate::copy_model_output(internalCommunication, x, "spwb");
-      
-    } else if(Rf_inherits(x, "aspwbInput")) {
-      res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
-                                     latitude, elevation, slope, aspect, 
-                                     runon, lateralFlows, waterTableDepth, 
-                                     true);
-    }
-  } else if(model=="growth") {
-    if(Rf_inherits(x, "growthInput")) {
+    } else if(model=="growth") {
       medfate::growth_day_inner(internalCommunication, x, date, meteovec,
-                                latitude, elevation, slope, aspect, 
-                                runon, lateralFlows, waterTableDepth, 
-                                true);
-      res = medfate::copy_model_output(internalCommunication, x, "growth");
-    } else if(Rf_inherits(x, "aspwbInput")) {
-      res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
-                                     latitude, elevation, slope, aspect, 
-                                     runon, lateralFlows, waterTableDepth, 
-                                     true);
+                                  latitude, elevation, slope, aspect, 
+                                  runon, lateralFlows, waterTableDepth, 
+                                  true);
+    } 
+    if(result_cell) {
+      res = medfate::copy_model_output(internalCommunication, x, "spwb");
+    } else if (transpirationMode=="Granier"){
+      List spwbOut = internalCommunication["basicSPWBOutput"];
+      res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
+    } else {
+      List spwbOut = internalCommunication["advancedSPWBOutput"];
+      res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
     }
-  } 
+  }
+
   List out = List::create(_["final_state"] = x, 
                           _["simulation_results"] = res);
   return(out);

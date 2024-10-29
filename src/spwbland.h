@@ -37,5 +37,6 @@ const int WBCOM_Interception = 27;
 
 void copySnowpackToSoil(List y);
 void copySnowpackFromSoil(List y);
+void resetWaterBalanceDayOutput(DataFrame outWB);
 List createDayOutput(List y);
 List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication);

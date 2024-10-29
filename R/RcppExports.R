@@ -81,6 +81,10 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     .Call(`_medfateland_createDayOutput`, nX)
 }
 
+.resetWaterBalanceDayOutput <- function(outWB) {
+    invisible(.Call(`_medfateland_resetWaterBalanceDayOutput`, outWB))
+}
+
 .fcpp_landunit_day <- function(xi, model, date, internalCommunication) {
     .Call(`_medfateland_fcpp_landunit_day`, xi, model, date, internalCommunication)
 }
@@ -89,35 +93,35 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
 }
 
-.tetisInterFlow <- function(interflowInput, interflowOutput, interflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisInterFlow`, interflowInput, interflowOutput, interflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
+.tetisInterFlow <- function(outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisInterFlow`, outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisBaseFlow <- function(baseflowInput, baseflowOutput, baseflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisBaseFlow`, baseflowInput, baseflowOutput, baseflowBalance, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
+.tetisBaseFlow <- function(outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisApplyBaseflowChangesToAquifer <- function(AquiferExfiltration, y, baseflowBalance, patchsize) {
-    invisible(.Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, AquiferExfiltration, y, baseflowBalance, patchsize))
+.tetisApplyBaseflowChangesToAquifer <- function(outWB, y, patchsize) {
+    invisible(.Call(`_medfateland_tetisApplyBaseflowChangesToAquifer`, outWB, y, patchsize))
 }
 
-.tetisApplyLocalFlowsToAquifer <- function(y, CapillarityRise, DeepDrainage) {
-    invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, CapillarityRise, DeepDrainage))
+.tetisApplyLocalFlowsToAquifer <- function(y, outWB) {
+    invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, outWB))
 }
 
-.tetisApplyDeepAquiferLossToAquifer <- function(DeepAquiferLoss, y, watershed_control) {
-    invisible(.Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, DeepAquiferLoss, y, watershed_control))
+.tetisApplyDeepAquiferLossToAquifer <- function(outWB, y, watershed_control) {
+    invisible(.Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, outWB, y, watershed_control))
 }
 
-.tetisOverlandFlows <- function(RunoffExport, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ) {
-    invisible(.Call(`_medfateland_tetisOverlandFlows`, RunoffExport, Runoff, AquiferExfiltration, waterO, queenNeigh, waterQ))
+.tetisOverlandFlows <- function(outWB, waterO, queenNeigh, waterQ) {
+    invisible(.Call(`_medfateland_tetisOverlandFlows`, outWB, waterO, queenNeigh, waterQ))
 }
 
-.tetisSimulationNonSoilCells <- function(Rain, NetRain, Runoff, Infiltration, InfiltrationExcess, DeepDrainage, Snow, Snowmelt, Runon, WatershedExport, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control) {
-    invisible(.Call(`_medfateland_tetisSimulationNonSoilCells`, Rain, NetRain, Runoff, Infiltration, InfiltrationExcess, DeepDrainage, Snow, Snowmelt, Runon, WatershedExport, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control))
+.tetisSimulationNonSoilCells <- function(outWB, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control) {
+    invisible(.Call(`_medfateland_tetisSimulationNonSoilCells`, outWB, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, watershed_control))
 }
 
-.watershedDayTetis_inner <- function(output, internalCommunication, local_model, y, waterOrder, queenNeigh, waterQ, watershed_control, date, gridMeteo, latitude, parallelize, num_cores, chunk_size, patchsize) {
-    invisible(.Call(`_medfateland_tetisWatershedDay_inner`, output, internalCommunication, local_model, y, waterOrder, queenNeigh, waterQ, watershed_control, date, gridMeteo, latitude, parallelize, num_cores, chunk_size, patchsize))
+.tetisCopySoilResultsToOutput <- function(y, soilCellResults, output, tminVec, tmaxVec) {
+    invisible(.Call(`_medfateland_tetisCopySoilResultsToOutput`, y, soilCellResults, output, tminVec, tmaxVec))
 }
 
