@@ -1,5 +1,6 @@
 # medfateland 2.5.0
 - Compliance with medfate 4.8.0: internal communication structures
+- Bug correction: input column regen is no longer kept in parse_forestable()
 
 # medfateland 2.4.6
 - Numerical species codes allowed as input for fordyn_land()

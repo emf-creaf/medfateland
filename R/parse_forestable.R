@@ -213,7 +213,7 @@ parse_forestable <- function(x,
   
   x <- x |>
     dplyr::rename(id = "id_unique_code") |>
-    dplyr::select(-"tree", -"understory") |>
+    dplyr::select(-"tree", -"understory", -"regen") |>
     dplyr::relocate("forest", .before = "geometry") |>
     dplyr::relocate("geometry", .after = "id")
   if(keepUnfilteredCopy) x <- x |> dplyr::relocate("forest_unfiltered", .after = "forest")
