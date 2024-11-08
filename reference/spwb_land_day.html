@@ -77,7 +77,7 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>  watershed_control <span class="op">=</span> <span class="fu"><a href="default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  num_cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -91,7 +91,7 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>  watershed_control <span class="op">=</span> <span class="fu"><a href="default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  num_cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -239,13 +239,13 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed for day '2001-03-01'</span> <span style="color: #00BBBB;">────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking topology</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[14ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[12ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[29ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[21ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[20ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[15ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Hydrological model: TETIS</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of grid cells: 120 Number of target cells: 66</span>
@@ -255,10 +255,10 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of cells with daily model results requested: 3</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of outlet cells: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building spwb input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[8ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[167ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[69ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

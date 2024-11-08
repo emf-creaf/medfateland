@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Adriana Tovar / Víctor Granda</h4>
             
-            <h4 data-toc-skip class="date">2024-10-28</h4>
+            <h4 data-toc-skip class="date">2024-11-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_I.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_I.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_I.Rmd</code></div>
@@ -555,26 +555,26 @@ transform the first 100 rows:</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/parse_forestable.html">parse_forestable</a></span><span class="op">(</span><span class="va">ifn4_example</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">y_1</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 100 features and 10 fields</span></span>
+<pre><code><span><span class="co">## Simple feature collection with 100 features and 9 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 1.689586 ymin: 42.14464 xmax: 2.041201 ymax: 42.29968</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 11</span></span></span>
-<span><span class="co">##    id                        geometry  year plot  country version regen   </span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> 08_0001_NN_A1… (1.809047 42.29746)  <span style="text-decoration: underline;">2</span>015 0001  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 08_0002_NN_A1… (1.784613 42.28934)  <span style="text-decoration: underline;">2</span>014 0002  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 08_0003_NN_A1… (1.796776 42.28951)  <span style="text-decoration: underline;">2</span>015 0003  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 08_0004_NN_A1… (1.808972 42.28922)  <span style="text-decoration: underline;">2</span>014 0004  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 08_0005_NN_A1… (1.785068 42.27957)  <span style="text-decoration: underline;">2</span>014 0005  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 08_0006_NN_A1… (1.749024 42.27098)  <span style="text-decoration: underline;">2</span>014 0006  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 08_0009_xx_xx…  (1.809254 42.2717)  <span style="text-decoration: underline;">2</span>016 0009  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 08_0014_NN_A1… (1.761286 42.26156)  <span style="text-decoration: underline;">2</span>015 0014  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 08_0016_xx_xx… (1.700602 42.25217)  <span style="text-decoration: underline;">2</span>014 0016  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> 08_0020_NN_A1… (1.760414 42.25344)  <span style="text-decoration: underline;">2</span>015 0020  ES      ifn4    <span style="color: #949494;">&lt;tibble&gt;</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 10</span></span></span>
+<span><span class="co">##    id                 geometry  year plot  country version elevation slope</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> 08_000… (1.809047 42.29746)  <span style="text-decoration: underline;">2</span>015 0001  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 08_000… (1.784613 42.28934)  <span style="text-decoration: underline;">2</span>014 0002  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 08_000… (1.796776 42.28951)  <span style="text-decoration: underline;">2</span>015 0003  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 08_000… (1.808972 42.28922)  <span style="text-decoration: underline;">2</span>014 0004  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 08_000… (1.785068 42.27957)  <span style="text-decoration: underline;">2</span>014 0005  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 08_000… (1.749024 42.27098)  <span style="text-decoration: underline;">2</span>014 0006  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 08_000…  (1.809254 42.2717)  <span style="text-decoration: underline;">2</span>016 0009  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 08_001… (1.761286 42.26156)  <span style="text-decoration: underline;">2</span>015 0014  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 08_001… (1.700602 42.25217)  <span style="text-decoration: underline;">2</span>014 0016  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> 08_002… (1.760414 42.25344)  <span style="text-decoration: underline;">2</span>015 0020  ES      ifn4           <span style="color: #BB0000;">NA</span>    40</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: elevation &lt;dbl&gt;, slope &lt;dbl&gt;, aspect &lt;dbl&gt;, forest &lt;list&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: aspect &lt;dbl&gt;, forest &lt;list&gt;</span></span></span></code></pre>
 <p>As can be seen from the output, the function parsed plot ids, plot
 coordinates, and topography. Importantly, it defined a new column called
 <code>forest</code> and parsed tree and shrub data into it.</p>
