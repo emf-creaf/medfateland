@@ -37,7 +37,7 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-12-31"), by="day")
 ws_control <- default_watershed_control("tetis")
 example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                     local_control = defaultControl(),
+                                     local_control = defaultControl(soilDomains = "dual"),
                                      simplify = TRUE)
 # first year
 res1 <- spwb_land(r, example_init, SpParamsMED, examplemeteo, 

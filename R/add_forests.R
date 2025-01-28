@@ -106,13 +106,15 @@ add_forests<-function(x,
   ids<- character(0)
   if(!is.null(tree_table)) {
     if(!inherits(tree_table, "data.frame"))  cli::cli_abort("Object 'tree_table' has to be of class 'data.frame'.")
-    if(is.null(tree_mapping)) stop("You need to specify a mapping for 'tree_table'")
+    if(is.null(tree_mapping)) cli::cli_abort("You need to specify a mapping for 'tree_table'")
+    if(!(tree_mapping[["id"]] %in% names(tree_table))) cli::cli_abort(paste0("Variable '", tree_mapping[["id"]],"' not found in tree table."))
     ids <- sort(unique(c(ids, tree_table[[tree_mapping[["id"]]]])), decreasing = FALSE)
     if("plot.size" %in% names(tree_mapping)) tree_mapping <- c(tree_mapping, "plot_size_x" = tree_mapping[["plot.size"]])
   }  
   if(!is.null(shrub_table)) {
     if(!inherits(shrub_table, "data.frame"))  cli::cli_abort("Object 'shrub_table' has to be of class 'data.frame'.")
-    if(is.null(shrub_mapping)) stop("You need to specify a mapping for 'shrub_table'.")
+    if(is.null(shrub_mapping)) cli::cli_abort("You need to specify a mapping for 'shrub_table'.")
+    if(!(shrub_mapping[["id"]] %in% names(shrub_table))) cli::cli_abort(paste0("Variable '", shrub_mapping[["id"]],"' not found in shrub table."))
     ids <- sort(unique(c(ids, shrub_table[[shrub_mapping[["id"]]]])), decreasing = FALSE)
     if("plot.size" %in% names(shrub_mapping)) shrub_mapping <- c(shrub_mapping, "plot_size_y" = shrub_mapping[["plot.size"]])
   }  
