@@ -1,5 +1,6 @@
 # medfateland 2.5.1
 - id mapping existence checked in add_forests
+- overland routing exported in spwb_land
 
 # medfateland 2.5.0
 - Compliance with medfate 4.8.0: internal communication structures

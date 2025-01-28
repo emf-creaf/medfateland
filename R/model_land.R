@@ -1119,6 +1119,9 @@
   if(watershed_model=="tetis") {
     l <- list(watershed_control = watershed_control,
               sf = sf::st_as_sf(tibble::as_tibble(sf)),
+              overland_routing = list(waterOrder = waterOrder,
+                                      queenNeigh = queenNeigh,
+                                      waterQ = waterQ),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
               outlet_export_m3s = OutletExport_m3s)
