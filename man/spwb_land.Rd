@@ -190,6 +190,13 @@ In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains addition
 \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 }
 }
+\item{\code{overland_routing}: A list with three items describing overland routing parameters:
+\itemize{
+\item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
+\item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
+\item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
+}
+}
 \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
 \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the

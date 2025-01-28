@@ -1251,6 +1251,13 @@
 #'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 #'     }
 #'   }
+#'   \item{\code{overland_routing}: A list with three items describing overland routing parameters:
+#'     \itemize{
+#'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
+#'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
+#'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
+#'     }
+#'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 #'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
 #'   \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the 
@@ -1514,6 +1521,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   SoilLandscapeBalance <- NULL
   OutletExport_m3s <- NULL
   cell_summary <- NULL
+  overland_routing <- NULL
   
   #initial tree/shrub tables
   if(progress) cli::cli_progress_step("Initializing 'fordyn' output tables")
@@ -1558,6 +1566,9 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     # Store snowpack and aquifer state
     sf$aquifer <- GL$sf$aquifer
     sf$snowpack <- GL$sf$snowpack
+    
+    # Store overland routing
+    if(!is.null(overland_routing)) overland_routing <- GL$overland_routing
     
     #Store landscape and cell summaries
     if(iYear==1) {
@@ -1728,6 +1739,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   out_sf$cut_shrub_table <- cutShrubTableVec
   l <- list(watershed_control = watershed_control,
             sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
+            overland_routing = overland_routing,
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
             outlet_export_m3s = OutletExport_m3s)
