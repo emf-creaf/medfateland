@@ -709,7 +709,7 @@
     cli::cli_li(paste0("Average cell area: ", round(patchsize),
                        " m2, Total area: ", round(sum(represented_area_m2, na.rm=TRUE)/10000),
                        " ha, Target area: ", round(sum(represented_area_m2[!is.na(cell2sf)], na.rm=TRUE)/10000)," ha"))
-    cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
+    cli::cli_li(paste0("Cell land use [wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater, "]"))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
     cli::cli_li(paste0("Number of days to simulate: ",nDays))
     cli::cli_li(paste0("Number of temporal cell summaries: ", nSummary))
@@ -1175,14 +1175,14 @@
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 #'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 #'   }
-#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 #'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
 #' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
-#'                      parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model.
+#'                      parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 #'                          for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.
 #' @param management_function A function that implements forest management actions (see \code{\link[medfate]{fordyn}}).
@@ -1265,7 +1265,8 @@
 #' }
 #' 
 #' @details
-#' The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+#' IMPORTANT: Simulation function will normally call the initialization of state variables via an internal call to \code{\link{initialize_landscape}}, using parameters \code{local_control} and \code{SpParams} in this call. The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+#' However, if object \code{sf} has been previously initialized, then the control parameters of this previous initialization will remain the same. In other words, parameters \code{local_control} and \code{SpParams} will have no effect in the call to the simulation routines if the \code{sf} has been previously initialized.
 #' 
 #' Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS" 
 #' (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).

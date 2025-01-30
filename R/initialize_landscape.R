@@ -23,7 +23,7 @@
 #' and returns the modified object of class 'sf'.
 #' 
 #' @details
-#' Initialization is dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
+#' Initialization is normally dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
 #' \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
 #' 
 #' Option \code{simplify} has been implemented to allow simplification of forests to tree/shrub dominant cohorts during watershed simulations 
@@ -89,7 +89,9 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
   } else {
     result_cell <- rep(FALSE, n)
   }
-  n = length(forestlist)
+  n <- length(forestlist)
+  transp_mode <- rep(NA, n)
+  soil_domains <- rep(NA, n)
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
@@ -100,8 +102,16 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
           init[i] = TRUE
           x_i = xlist[[i]]
           if(!replace) {
-            if(inherits(x_i,"spwbInput") && model=="spwb") init[i] = FALSE
-            if(inherits(x_i,"growthInput") && model=="growth") init[i] = FALSE
+            if(inherits(x_i,"spwbInput") && model=="spwb") {
+              init[i] = FALSE
+              soil_domains[i] <- x_i$control$soilDomains
+              transp_mode[i] <- x_i$control$transpirationMode
+            }
+            if(inherits(x_i,"growthInput") && model=="growth") {
+              init[i] = FALSE
+              soil_domains[i] <- x_i$control$soilDomains
+              transp_mode[i] <- x_i$control$transpirationMode
+            }
           }
         }
       } else if(landcover[i] == "agriculture") {
@@ -110,7 +120,11 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
           init[i] <- TRUE
           x_i = xlist[[i]]
           if(!replace) {
-            if(inherits(x_i,"aspwbInput")) init[i] = FALSE
+            if(inherits(x_i,"aspwbInput")) {
+              init[i] = FALSE
+              soil_domains[i] <- x_i$control$soilDomains
+              transp_mode[i] <- x_i$control$transpirationMode
+            }
           }
         }
       }
@@ -138,6 +152,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
         if(inherits(s, "data.frame")) {
           s <- soil(s, VG_PTF = local_control$VG_PTF)
         }
+        
         if(landcover[i] == "wildland") {
           f = forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
@@ -149,15 +164,27 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
             } else if(model=="growth") {
               xlist[[i]] = medfate::growthInput(f, s, SpParams, local_control_i)
             }
+            soil_domains[i] <- local_control_i$soilDomains
+            transp_mode[i] <- local_control_i$transpirationMode
           }
         } else if(landcover[i] == "agriculture") {
           xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control_i, soil = s)
+          soil_domains[i] <- local_control_i$soilDomains
+          transp_mode[i] <- local_control_i$transpirationMode
         }
         if(progress) cli::cli_progress_update()
       }
       if(progress) cli::cli_progress_done()
     } else {
       if(progress) cli::cli_alert_info(paste0("All state objects are already available for '", model, "'."))
+    }
+    if(progress) {
+      cli::cli_li(paste0("Transpiration mode [Granier: ", sum(transp_mode=="Granier", na.rm=TRUE), 
+                         ", Sperry: ", sum(transp_mode=="Sperry", na.rm=TRUE), 
+                         ", Sureau: " , sum(transp_mode=="Sureau", na.rm=TRUE),"]"))
+      cli::cli_li(paste0("Soil doimains [buckets: ", sum(soil_domains=="buckets", na.rm=TRUE), 
+                         ", single: ", sum(soil_domains=="single", na.rm=TRUE), 
+                         ", dual: " , sum(soil_domains=="dual", na.rm=TRUE),"]"))
     }
   } 
   x[["state"]] <- xlist

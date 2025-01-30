@@ -1,3 +1,6 @@
+# medfateland 2.5.2
+- information on soil domain and transpiration mode of initialized landscapes
+
 # medfateland 2.5.1
 - id mapping existence checked in add_forests
 - overland routing exported in spwb_land

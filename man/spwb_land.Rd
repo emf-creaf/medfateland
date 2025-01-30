@@ -96,7 +96,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 }}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}
 
 \item{meteo}{Input meteorological data (see \code{\link{spwb_spatial}} and details).}
 
@@ -108,7 +108,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
 \item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
-parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model.}
+parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
@@ -215,7 +215,8 @@ and resprouting.}
 }
 }
 \details{
-The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+IMPORTANT: Simulation function will normally call the initialization of state variables via an internal call to \code{\link{initialize_landscape}}, using parameters \code{local_control} and \code{SpParams} in this call. The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+However, if object \code{sf} has been previously initialized, then the control parameters of this previous initialization will remain the same. In other words, parameters \code{local_control} and \code{SpParams} will have no effect in the call to the simulation routines if the \code{sf} has been previously initialized.
 
 Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"
 (similar to \enc{Francés}{Frances} et al. 2007) or "SERGHEI" (\enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. 2023).

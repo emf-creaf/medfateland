@@ -46,7 +46,7 @@ and returns the modified object of class 'sf'.
 Initializes state for local models \code{\link[medfate]{spwb}} or \code{\link[medfate]{growth}}.
 }
 \details{
-Initialization is dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
+Initialization is normally dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
 \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
 
 Option \code{simplify} has been implemented to allow simplification of forests to tree/shrub dominant cohorts during watershed simulations
