@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +110,7 @@ and returns the modified object of class 'sf'.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Initialization is dealt automatically when calling simulation functions <code><a href="spwb_spatial.html">spwb_spatial</a></code>,  <code><a href="spwb_spatial.html">growth_spatial</a></code>,
+    <p>Initialization is normally dealt automatically when calling simulation functions <code><a href="spwb_spatial.html">spwb_spatial</a></code>,  <code><a href="spwb_spatial.html">growth_spatial</a></code>,
 <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code> or <code><a href="spwb_spatial_day.html">growth_spatial_day</a></code>. However, function <code>initialize_landscape</code>  allows separating initialization from model simulations.</p>
 <p>Option <code>simplify</code> has been implemented to allow simplification of forests to tree/shrub dominant cohorts during watershed simulations
 where focus is on runoff (e.g. calibration of watershed parameters or burnin periods). Elements identified as <code>result_cell</code> will not be simplified.</p>
@@ -146,8 +146,10 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 <span class="r-in"><span>                                         local_control <span class="op">=</span> <span class="va">local_control</span>, </span></span>
 <span class="r-in"><span>                                         model <span class="op">=</span> <span class="st">"spwb"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 100 state objects for model 'spwb'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[5ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Transpiration mode [Granier: 100, Sperry: 0, Sureau: 0]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil doimains [buckets: 100, single: 0, dual: 0]</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
