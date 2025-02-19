@@ -24,7 +24,9 @@ interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) 
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-01"), by="day")
 
-
+test_that("Overland routing can be estimated",{
+  expect_s3_class(overland_routing(r, yws_swpb[1:10,]), "sf")
+})
 test_that("Can simulate three days over landscape",{
   expect_s3_class(spwb_land(r, yws_swpb[1:10,], meteo = examplemeteo, dates = dates, summary_frequency = "month", 
                            SpParams = SpParamsMED, progress = FALSE), "spwb_land")

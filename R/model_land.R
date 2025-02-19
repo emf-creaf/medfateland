@@ -548,6 +548,73 @@
               "LocalResults" = localResults))
 }
 
+.raster_sf_matching<-function(r, sf) {
+  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
+  if(!inherits(sf, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
+  if(sf::st_crs(sf)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
+  sf_coords <- sf::st_coordinates(sf)
+  sf2cell <- terra::cellFromXY(r, sf_coords)
+  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
+  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  nrastercells <- prod(dim(r)[1:2])
+  cell2sf <- rep(NA, nrastercells)
+  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
+  return(list(sf_coords = sf_coords, sf2cell = sf2cell, cell2sf = cell2sf))
+}
+
+#' Overland routing for TETIS sub-model
+#' 
+#' Determines overland routing given a raster definition and a set of target locations for watershed simulations.
+#'
+#' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
+#' @param sf An object of class \code{\link[sf]{sf}} with the following columns:
+#'   \itemize{
+#'     \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
+#'     \item{\code{elevation}: Elevation above sea level (in m).}
+#'    }
+#'
+#' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
+#'     \itemize{
+#'       \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
+#'       \item{\code{elevation}: Elevation above sea level (in m).}
+#'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
+#'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
+#'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
+#'       \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'     }
+#' @export
+#'
+#' @examples
+#' # Load example watershed data
+#' data("example_watershed")
+#' 
+#' # Get bounding box to determine limits
+#' b <- sf::st_bbox(example_watershed)
+#' b
+#' 
+#' # Define a raster topology, using terra package, 
+#' # with the same CRS as the watershed. In this example cells have 100 m side.
+#' # Coordinates in the 'sf' object are assumed to be cell centers
+#' r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
+#'                 nrow = 8, ncol = 15, crs = "epsg:32631")
+#'                 
+#' # Generate overland routing
+#' overland_routing(r, example_watershed)
+overland_routing<-function(r, sf) {
+  raster_matching <- .raster_sf_matching(r, sf)
+  if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
+  sf_coords <-   raster_matching$sf_coords 
+  cell2sf <- raster_matching$cell2sf
+  waterOrder <- order(sf$elevation, decreasing=TRUE)
+  out <- sf::st_sf(geometry=sf::st_geometry(sf))
+  out$elevation <- sf$elevation
+  out$waterOrder <- waterOrder
+  out$queenNeigh <- .neighFun(r, raster_matching$sf2cell, raster_matching$cell2sf)
+  out$waterQ <- .waterQFun(out$queenNeigh, sf_coords, sf$elevation)
+  out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
+  return(sf::st_as_sf(tibble::as_tibble(out)))
+}
+
 .simulate_land<-function(land_model = "spwb_land", 
                          r, y, SpParams, meteo, dates = NULL,
                          CO2ByYear = numeric(0), 
@@ -573,15 +640,11 @@
   if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
   
   if(header_footer) cli::cli_progress_step(paste0("Checking raster topology"))
-  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
-  if(sf::st_crs(y)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
-  sf_coords <- sf::st_coordinates(y)
-  sf2cell <- terra::cellFromXY(r, sf_coords)
-  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
-  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  raster_matching <- .raster_sf_matching(r, y)
+  sf_coords <- raster_matching$sf_coords
+  sf2cell <- raster_matching$sf2cell
+  cell2sf <- raster_matching$cell2sf
   nrastercells <- prod(dim(r)[1:2])
-  cell2sf <- rep(NA, nrastercells)
-  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
   
   if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data columns"))
   .check_sf_input(y)
@@ -1119,9 +1182,6 @@
   if(watershed_model=="tetis") {
     l <- list(watershed_control = watershed_control,
               sf = sf::st_as_sf(tibble::as_tibble(sf)),
-              overland_routing = list(waterOrder = waterOrder,
-                                      queenNeigh = queenNeigh,
-                                      waterQ = waterQ),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
               outlet_export_m3s = OutletExport_m3s)
@@ -1249,13 +1309,6 @@
 #'        \item{\code{dead_shrub_table}: A list of data frames for each simulated stand, containing the dead shrub at each time step.}
 #'        \item{\code{cut_tree_table}: A list of data frames for each simulated stand, containing the cut trees at each time step.}
 #'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
-#'     }
-#'   }
-#'   \item{\code{overland_routing}: A list with three items describing overland routing parameters:
-#'     \itemize{
-#'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
-#'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
-#'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
 #'     }
 #'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
@@ -1416,17 +1469,11 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   #check input
   
   if(progress) cli::cli_progress_step(paste0("Checking topology"))
-  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
-  if(!inherits(sf, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
-  if(sf::st_crs(sf)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
-  sf_coords <- sf::st_coordinates(sf)
-  sf2cell <- terra::cellFromXY(r, sf_coords)
-  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
-  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  raster_matching <- .raster_sf_matching(r, sf)
+  sf_coords <- raster_matching$sf_coords
+  sf2cell <- raster_matching$sf2cell
+  cell2sf <- raster_matching$cell2sf
   nrastercells <- prod(dim(r)[1:2])
-  cell2sf <- rep(NA, nrastercells)
-  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
-  
 
   if(progress) cli::cli_progress_step(paste0("Checking 'sf' data"))
   .check_sf_input(sf)
@@ -1522,8 +1569,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   SoilLandscapeBalance <- NULL
   OutletExport_m3s <- NULL
   cell_summary <- NULL
-  overland_routing <- NULL
-  
+
   #initial tree/shrub tables
   if(progress) cli::cli_progress_step("Initializing 'fordyn' output tables")
   treeTableVec <- vector("list", nCells)
@@ -1567,9 +1613,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     # Store snowpack and aquifer state
     sf$aquifer <- GL$sf$aquifer
     sf$snowpack <- GL$sf$snowpack
-    
-    # Store overland routing
-    if(!is.null(overland_routing)) overland_routing <- GL$overland_routing
     
     #Store landscape and cell summaries
     if(iYear==1) {
@@ -1740,7 +1783,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   out_sf$cut_shrub_table <- cutShrubTableVec
   l <- list(watershed_control = watershed_control,
             sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
-            overland_routing = overland_routing,
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
             outlet_export_m3s = OutletExport_m3s)
@@ -1788,17 +1830,12 @@ cell_neighbors<-function(sf, r) {
   #check input
   
   if(header_footer) cli::cli_progress_step(paste0("Checking topology"))
-  if(!inherits(r, "SpatRaster")) cli::cli_abort("'r' has to be of class 'SpatRaster'.")
-  if(!inherits(y, "sf")) cli::cli_abort("'sf' has to be of class 'sf'.")
-  if(sf::st_crs(y)!=sf::st_crs(r)) cli::cli_abort("'sf' and 'r' need to have the same CRS.")
-  sf_coords <- sf::st_coordinates(y)
-  sf2cell <- terra::cellFromXY(r, sf_coords)
-  if(any(is.na(sf2cell))) cli::cli_abort("Some coordinates are outside the raster definition.")
-  if(length(sf2cell)!=length(unique(sf2cell))) cli::cli_abort("Only one element in 'sf' is allowed per cell in 'r'.")
+  raster_matching <- .raster_sf_matching(r, y)
+  sf_coords <- raster_matching$sf_coords
+  sf2cell <- raster_matching$sf2cell
+  cell2sf <- raster_matching$cell2sf
   nrastercells <- prod(dim(r)[1:2])
-  cell2sf <- rep(NA, nrastercells)
-  for(i in 1:length(sf2cell)) cell2sf[sf2cell[i]] <- i
-  
+
   if(header_footer) cli::cli_progress_step(paste0("Checking 'sf' data"))
   .check_sf_input(y)
   if(!("snowpack" %in% names(y))) cli::cli_abort("'snowpack' has to be defined in 'y'.")

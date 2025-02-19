@@ -1,5 +1,6 @@
 # medfateland 2.5.2
 - information on soil domain and transpiration mode of initialized landscapes
+- overland routing available in new function overland_routing()
 
 # medfateland 2.5.1
 - id mapping existence checked in add_forests
