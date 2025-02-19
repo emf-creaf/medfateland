@@ -25,21 +25,34 @@
   }
   return(soil_column)
 }
-.waterQFun <-function(queenNeigh, coords, elevation) {
+.waterQFun <-function(waterRank, queenNeigh, coords, elevation) {
   Q = vector("list", length(queenNeigh))
-  qfun<-function(xi, yi, zi, X, Y, Z) {
+  qfun<-function(ri, xi, yi, zi, X, Y, Z, R) {
     n = length(X)
     Li = sqrt((X-xi)^2+(Y-yi)^2+(Z-zi)^2)
     dZ = zi-Z #dif. in elevation
     dZLi = dZ/Li 
     dZLi[dZ<=0] = 0 #Set to zero for neighbour cells at higher or equal elevation
     if(sum(dZLi)>0) return(dZLi/sum(dZLi))
-    return(rep(0, n)) #In a flat area no discharge will be applied
+    # If on a flat area, divide equally among neighbours that are processed later
+    flat_later <- (dZ==0 & R > ri)
+    # print(ri)
+    # print(zi)
+    # print(dZ)
+    # print(R)
+    # print(which(flat_later))
+    if(sum(flat_later) > 0) {
+      q <- rep(0, n)
+      q[flat_later] <- 1/sum(flat_later)
+      # print(q)
+      return(q)
+    }
+    return(rep(0, n)) #If in a hole or no neighbours return as outlet
   }
   for(i in 1:length(queenNeigh)) {
     wne = queenNeigh[[i]]
-    Q[[i]] = qfun(xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
-                  X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne])
+    Q[[i]] = qfun(ri = waterRank[i], xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
+                  X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne], R = waterRank[wne])
   }  
   return(Q)
 }
@@ -577,7 +590,8 @@
 #'     \itemize{
 #'       \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 #'       \item{\code{elevation}: Elevation above sea level (in m).}
-#'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
+#'       \item{\code{waterRank}: Ranked elevation in decreasing order.}
+#'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 #'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 #'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
@@ -599,18 +613,30 @@
 #'                 nrow = 8, ncol = 15, crs = "epsg:32631")
 #'                 
 #' # Generate overland routing
-#' overland_routing(r, example_watershed)
+#' or <- overland_routing(r, example_watershed)
+#' 
+#' # Plot elevation
+#' plot(or["elevation"])
+#' 
+#' # Rank (decreasing elevation) for processing
+#' plot(or["waterRank"])
+#' 
+#' # Plot outlet cells
+#' plot(or["outlet"])
 overland_routing<-function(r, sf) {
   raster_matching <- .raster_sf_matching(r, sf)
   if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
   sf_coords <-   raster_matching$sf_coords 
   cell2sf <- raster_matching$cell2sf
-  waterOrder <- order(sf$elevation, decreasing=TRUE)
+  waterOrder <- order(sf$elevation, decreasing = TRUE)
+  waterRank <- order(waterOrder)
+  
   out <- sf::st_sf(geometry=sf::st_geometry(sf))
   out$elevation <- sf$elevation
+  out$waterRank <- waterRank
   out$waterOrder <- waterOrder
   out$queenNeigh <- .neighFun(r, raster_matching$sf2cell, raster_matching$cell2sf)
-  out$waterQ <- .waterQFun(out$queenNeigh, sf_coords, sf$elevation)
+  out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation)
   out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
   return(sf::st_as_sf(tibble::as_tibble(out)))
 }
@@ -740,9 +766,10 @@ overland_routing<-function(r, sf) {
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
 
-    waterOrder <- order(y$elevation, decreasing=TRUE)
+    waterOrder <- order(y$elevation, decreasing = TRUE)
+    waterRank <- order(waterOrder)
     queenNeigh <- .neighFun(r, sf2cell, cell2sf)
-    waterQ <- .waterQFun(queenNeigh, sf_coords, y$elevation)
+    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation)
     #Determine outlet cells (those without downhill neighbors)
     isOutlet <- (unlist(lapply(waterQ, sum))==0)
     outlets <- which(isOutlet)
@@ -1886,9 +1913,10 @@ cell_neighbors<-function(sf, r) {
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
     
-    waterOrder <- order(y$elevation, decreasing=TRUE)
+    waterOrder <- order(y$elevation, decreasing = TRUE)
+    waterRank <- order(waterOrder)
     queenNeigh <- .neighFun(r, sf2cell, cell2sf)
-    waterQ <- .waterQFun(queenNeigh, sf_coords, y$elevation)
+    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation)
     #Determine outlet cells (those without downhill neighbors)
     isOutlet <- (unlist(lapply(waterQ, sum))==0)
     outlets <- which(isOutlet)

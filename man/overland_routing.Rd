@@ -20,7 +20,8 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 \itemize{
 \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
-\item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation).}
+\item{\code{waterRank}: Ranked elevation in decreasing order.}
+\item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
@@ -44,5 +45,14 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
                 nrow = 8, ncol = 15, crs = "epsg:32631")
                 
 # Generate overland routing
-overland_routing(r, example_watershed)
+or <- overland_routing(r, example_watershed)
+
+# Plot elevation
+plot(or["elevation"])
+
+# Rank (decreasing elevation) for processing
+plot(or["waterRank"])
+
+# Plot outlet cells
+plot(or["outlet"])
 }
