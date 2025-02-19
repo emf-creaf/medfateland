@@ -2,6 +2,7 @@
 - information on soil domain and transpiration mode of initialized landscapes
 - overland routing available in new function overland_routing()
 - overland flow allowed in completely flat areas (according to processing order)
+- bug correction: management in fordyn_land()
 
 # medfateland 2.5.1
 - id mapping existence checked in add_forests

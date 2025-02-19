@@ -1566,6 +1566,11 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
     cli::cli_li(paste0("Number of years to simulate: ",nYears))
+    if(is.null(management_function)) {
+      cli::cli_li("Forest management process not considered.")
+    } else {
+      cli::cli_li("Forest management process included.")
+    }
     if(is.null(dispersal_control)) {
       cli::cli_li("Seed dispersal process not considered.")
     } else {
@@ -1713,8 +1718,8 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
         cutShrubTableYear <- NULL
         management_result <- NULL
         planted_forest <- emptyforest()
-        if(!is.null(management_function) && ("management_args" %in% names(sf))) {
-          management_args <- sf$management_args[[i]]
+        if(!is.null(management_function) && ("management_arguments" %in% names(sf))) {
+          management_args <- sf$management_arguments[[i]]
           if(!is.null(management_args)) {
             management_result <- do.call(management_function, list(x = forest, args= management_args, verbose = FALSE))
             # Update forest and xo objects
@@ -1745,7 +1750,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
             }
           
             # Store new management arguments (may have changed)
-            sf$management_args[[i]] <- management_result$management_args
+            sf$management_arguments[[i]] <- management_result$management_args
           }
         }
         # 3.1 Simulate species local recruitment
@@ -1801,7 +1806,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   out_sf$snowpack <- sf$snowpack
   out_sf$summary <- cell_summary
   out_sf$forest <- sf$forest
-  if("management_args" %in% names(sf)) out_sf$management_arguments <- sf$management_arguments
+  if("management_arguments" %in% names(sf)) out_sf$management_arguments <- sf$management_arguments
   out_sf$tree_table <- treeTableVec
   out_sf$shrub_table <- shrubTableVec
   out_sf$dead_tree_table <- deadTreeTableVec
