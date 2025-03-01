@@ -41,7 +41,7 @@
                                soil = xi$soil, 
                                SpParams = SpParams, 
                                control = local_control,
-                               meteo = meteo,
+                               meteo = met,
                                PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, max_rocks = max_rocks,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
   return(ro)

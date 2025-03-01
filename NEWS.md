@@ -1,3 +1,6 @@
+# medfateland 2.5.3
+- new function optimization_rock()
+
 # medfateland 2.5.2
 - information on soil domain and transpiration mode of initialized landscapes
 - overland routing available in new function overland_routing()
