@@ -1,7 +1,7 @@
 
 # Mediterranean landscape simulation <a href="https://emf-creaf.github.io/medfateland/"><img src="man/figures/logo.png" align="right" height="139" alt="medfateland website" /></a>
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/medfateland)](https://cran.r-project.org/package=medfateland)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/medfateland)](https://cran.r-project.org/package=medfateland)
 [![](https://cranlogs.r-pkg.org/badges/medfateland)](https://cran.rstudio.com/web/packages/medfateland/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/medfateland/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/emf-creaf/medfateland/actions)
 
