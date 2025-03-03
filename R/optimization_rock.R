@@ -1,6 +1,7 @@
 .f_optim_rock<-function(xi, meteo, dates, model,
                         SpParams, local_control, 
-                        PLCquantile = 0.9, qPLC_target = 12, qPLC_tol = 0.5, max_rocks = 99) {
+                        PLCquantile = 0.9, qPLC_target = 12, qPLC_tol = 0.5, 
+                        sew_min = 30, max_rocks = 99) {
 
   if(!is.null(meteo)) {
     if(inherits(meteo,"data.frame")) { # A data frame common for all locations
@@ -42,7 +43,8 @@
                                SpParams = SpParams, 
                                control = local_control,
                                meteo = met,
-                               PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, max_rocks = max_rocks,
+                               PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, 
+                               sew_min = sew_min, max_rocks = max_rocks,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect)
   return(ro)
 }
@@ -62,6 +64,7 @@
 #' @param PLCquantile Maximum PLC quantile to be calculated across years.
 #' @param qPLC_target Target PLC to be achieved (by default 12%).
 #' @param qPLC_tol Tolerance of PLC difference to target accepted when finding solution.
+#' @param sew_min Minimum soil extractable water (mm) for rock exploration.
 #' @param max_rocks Maximum content in coarse fragments allowed for any soil layer.
 #' @param progress Boolean flag to display progress information of simulations.
 #' 
@@ -86,7 +89,7 @@
 #' @export
 optimization_rock<-function(sf, SpParams, meteo = NULL, local_control = defaultControl(), dates = NULL,
                             parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
-                            PLCquantile = 0.9, qPLC_target = 12, qPLC_tol = 0.5, max_rocks = 99,
+                            PLCquantile = 0.9, qPLC_target = 12, qPLC_tol = 0.5, sew_min = 30, max_rocks = 99,
                             progress = TRUE) {
   
   
@@ -125,7 +128,8 @@ optimization_rock<-function(sf, SpParams, meteo = NULL, local_control = defaultC
     reslist <- parallel::parLapplyLB(cl, XI, .f_optim_rock, 
                                      meteo = meteo, dates = dates,
                                      SpParams = SpParams, local_control = local_control, 
-                                     PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, max_rocks = max_rocks)
+                                     PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, 
+                                     sew_min = sew_min, max_rocks = max_rocks)
     parallel::stopCluster(cl)
   } else {
     if(progress) {
@@ -142,7 +146,8 @@ optimization_rock<-function(sf, SpParams, meteo = NULL, local_control = defaultC
       reslist[[i]] <- .f_optim_rock(xi = xi, 
                            meteo = meteo, dates = dates, model = model,
                            SpParams = SpParams, local_control = local_control,
-                           PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, max_rocks = max_rocks)
+                           PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, 
+                           sew_min = sew_min, max_rocks = max_rocks)
       if(progress) cli::cli_progress_update()
     }
     if(progress) {
