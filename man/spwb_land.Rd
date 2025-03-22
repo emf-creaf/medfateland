@@ -94,6 +94,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \itemize{
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
+\item{\code{channel}: A logical (or binary) vector indicating overland channel routing.}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}

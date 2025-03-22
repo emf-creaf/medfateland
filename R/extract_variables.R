@@ -51,6 +51,7 @@
   if("bedrock_porosity" %in% names(obj)) vars <- c(vars, "Bedrock porosity" = "bedrock_porosity") 
   if("bedrock_conductivity" %in% names(obj)) vars <- c(vars, "Bedrock conductivity (m/day)" = "bedrock_conductivity") 
   if("snowpack" %in% names(obj)) vars <- c(vars, "Snowpack water equivalent (mm)" = "snowpack") 
+  if("channel" %in% names(obj)) vars <- c(vars, "Channel" = "channel") 
   if("aquifer" %in% names(obj)) {
     vars <- c(vars, "Aquifer volume (mm)" = "aquifer") 
     if("bedrock_porosity" %in% names(obj)) {
@@ -80,6 +81,8 @@
     varplot[RockPorosity==0.0] = elevation[RockPorosity==0.0]
   } else if(variable=="snowpack") {
     varplot = obj$snowpack
+  } else if(variable=="channel") {
+    varplot = obj$channel
   } else if(variable =="depth_to_aquifer") {
     DTB = obj$depth_to_bedrock
     aquifer = obj$aquifer

@@ -25,7 +25,7 @@
   }
   return(soil_column)
 }
-.waterQFun <-function(waterRank, queenNeigh, coords, elevation) {
+.waterQFun <-function(waterRank, queenNeigh, coords, elevation, channel = NULL) {
   Q = vector("list", length(queenNeigh))
   qfun<-function(ri, xi, yi, zi, X, Y, Z, R) {
     n = length(X)
@@ -54,6 +54,13 @@
     Q[[i]] = qfun(ri = waterRank[i], xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
                   X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne], R = waterRank[wne])
   }  
+  if(!is.null(channel)) {
+    # Set channel cells as outlet
+    for(i in which(as.logical(channel))) {
+      wne <- queenNeigh[[i]]
+      Q[[i]] <- rep(0, length(wne))
+    }
+  }
   return(Q)
 }
 .neighFun<-function(r, sf2cell, cell2sf) {
@@ -584,6 +591,7 @@
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
+#'     \item{\code{channel}: An optional logical (or binary) vector indicating overland channel routing.}
 #'    }
 #'
 #' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
@@ -594,8 +602,12 @@
 #'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 #'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 #'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
-#'       \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'       \item{\code{outlet}: A logical vector indicating outlet/channel cells.}
 #'     }
+#'     
+#' @details
+#' If \code{channel} is supplied, then all those cells are considered outlet for the sake of runoff routing.
+#' 
 #' @export
 #'
 #' @examples
@@ -636,7 +648,9 @@ overland_routing<-function(r, sf) {
   out$waterRank <- waterRank
   out$waterOrder <- waterOrder
   out$queenNeigh <- .neighFun(r, raster_matching$sf2cell, raster_matching$cell2sf)
-  out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation)
+  channel  <- NULL
+  if("channel" %in% names(sf)) channel <- sf$channel
+  out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation, channel)
   out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
   return(sf::st_as_sf(tibble::as_tibble(out)))
 }
@@ -769,7 +783,9 @@ overland_routing<-function(r, sf) {
     waterOrder <- order(y$elevation, decreasing = TRUE)
     waterRank <- order(waterOrder)
     queenNeigh <- .neighFun(r, sf2cell, cell2sf)
-    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation)
+    channel  <- NULL
+    if("channel" %in% names(y)) channel <- y$channel
+    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation, channel)
     #Determine outlet cells (those without downhill neighbors)
     isOutlet <- (unlist(lapply(waterQ, sum))==0)
     outlets <- which(isOutlet)
@@ -1261,6 +1277,7 @@ overland_routing<-function(r, sf) {
 #'   \itemize{
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 #'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
+#'     \item{\code{channel}: A logical (or binary) vector indicating overland channel routing.}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
@@ -1921,7 +1938,9 @@ cell_neighbors<-function(sf, r) {
     waterOrder <- order(y$elevation, decreasing = TRUE)
     waterRank <- order(waterOrder)
     queenNeigh <- .neighFun(r, sf2cell, cell2sf)
-    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation)
+    channel  <- NULL
+    if("channel" %in% names(y)) channel <- y$channel
+    waterQ <- .waterQFun(waterRank, queenNeigh, sf_coords, y$elevation, channel)
     #Determine outlet cells (those without downhill neighbors)
     isOutlet <- (unlist(lapply(waterQ, sum))==0)
     outlets <- which(isOutlet)

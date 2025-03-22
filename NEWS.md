@@ -1,5 +1,6 @@
 # medfateland 2.5.3
 - new function optimization_rock()
+- channel cells are now forced to be outlet in *_land simulations
 
 # medfateland 2.5.2
 - information on soil domain and transpiration mode of initialized landscapes
