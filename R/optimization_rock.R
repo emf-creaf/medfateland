@@ -1,4 +1,4 @@
-.f_optim_rock<-function(xi, meteo, dates, model,
+.f_optim_rock<-function(xi, meteo, dates, 
                         SpParams, local_control, 
                         PLCquantile = 0.9, qPLC_target = 12, qPLC_tol = 0.5, 
                         sew_min = 30, max_rocks = 99) {
@@ -144,7 +144,7 @@ optimization_rock<-function(sf, SpParams, meteo = NULL, local_control = defaultC
                 meteo = meteolist[[i]],
                 latitude = latitude[i], elevation = sf$elevation[i], slope= sf$slope[i], aspect = sf$aspect[i])
       reslist[[i]] <- .f_optim_rock(xi = xi, 
-                           meteo = meteo, dates = dates, model = model,
+                           meteo = meteo, dates = dates,
                            SpParams = SpParams, local_control = local_control,
                            PLCquantile = PLCquantile, qPLC_target = qPLC_target, qPLC_tol = qPLC_tol, 
                            sew_min = sew_min, max_rocks = max_rocks)
