@@ -33,8 +33,9 @@ const int WBCOM_InterflowBalance = 22;
 const int WBCOM_BaseflowInput = 23;
 const int WBCOM_BaseflowOutput = 24;
 const int WBCOM_BaseflowBalance = 25;
-const int WBCOM_WatershedExport = 26;
-const int WBCOM_Interception = 27;
+const int WBCOM_ChannelExport = 26;
+const int WBCOM_WatershedExport = 27;
+const int WBCOM_Interception = 28;
 
 // [[Rcpp::export("drainageCells")]]
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
@@ -148,7 +149,7 @@ List createDayOutput(int nX) {
   List localResults(nX);
   
 
-  int ncol = 28;
+  int ncol = 29;
   List out(ncol);
   CharacterVector colnames(ncol);
   for(int i = 0; i<ncol; i++) out[i] = NumericVector(nX, 0.0);
@@ -179,6 +180,7 @@ List createDayOutput(int nX) {
   colnames[WBCOM_BaseflowInput] = "BaseflowInput";
   colnames[WBCOM_BaseflowOutput] = "BaseflowOutput";
   colnames[WBCOM_BaseflowBalance] = "BaseflowBalance";
+  colnames[WBCOM_ChannelExport] = "ChannelExport";
   colnames[WBCOM_WatershedExport] = "WatershedExport";
 
   out.attr("names") = colnames;

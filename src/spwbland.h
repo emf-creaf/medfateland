@@ -32,8 +32,9 @@ const int WBCOM_InterflowBalance = 22;
 const int WBCOM_BaseflowInput = 23;
 const int WBCOM_BaseflowOutput = 24;
 const int WBCOM_BaseflowBalance = 25;
-const int WBCOM_WatershedExport = 26;
-const int WBCOM_Interception = 27;
+const int WBCOM_ChannelExport = 26;
+const int WBCOM_WatershedExport = 27;
+const int WBCOM_Interception = 28;
 
 void copySnowpackToSoil(List y);
 void copySnowpackFromSoil(List y);

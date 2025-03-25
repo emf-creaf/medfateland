@@ -290,8 +290,9 @@ void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y,
 
 // [[Rcpp::export(".tetisOverlandFlows")]]
 void tetisOverlandFlows(DataFrame outWB,
-                        IntegerVector waterO, List queenNeigh, List waterQ) {
+                        IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel) {
   
+  NumericVector ChannelExport=  outWB[WBCOM_ChannelExport];
   NumericVector WatershedExport=  outWB[WBCOM_WatershedExport];
   NumericVector Runoff=  outWB[WBCOM_Runoff];
   NumericVector AquiferExfiltration =  outWB[WBCOM_AquiferExfiltration];
@@ -322,7 +323,11 @@ void tetisOverlandFlows(DataFrame outWB,
         stop("Non-outlet cell with runoff export");
       }
       if(sum(qi)==0.0) { // outlet
-        WatershedExport[iCell] += ri;
+        if(isChannel[iCell]) {
+          ChannelExport[iCell] += ri;
+        } else {
+          WatershedExport[iCell] += ri;
+        }
       }
     }
   }
@@ -332,7 +337,7 @@ void tetisOverlandFlows(DataFrame outWB,
 void tetisSimulationNonSoilCells(DataFrame outWB,
                                  List y,
                                  NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec,
-                                 IntegerVector waterO, List queenNeigh, List waterQ,
+                                 IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel,
                                  List watershed_control) {
   
   NumericVector Rain = outWB[WBCOM_Rain];
@@ -345,6 +350,7 @@ void tetisSimulationNonSoilCells(DataFrame outWB,
   NumericVector Snow = outWB[WBCOM_Snow];
   NumericVector Snowmelt = outWB[WBCOM_Snowmelt];
   NumericVector Runon = outWB[WBCOM_Runon];
+  NumericVector ChannelExport = outWB[WBCOM_ChannelExport];
   NumericVector WatershedExport = outWB[WBCOM_WatershedExport];
   
   List tetis_parameters = watershed_control["tetis_parameters"];
@@ -414,7 +420,11 @@ void tetisSimulationNonSoilCells(DataFrame outWB,
           stop("Non-outlet cell with runoff export");
         }
         if(sum(qi)==0.0) { // outlet rock/artificial cell
-          WatershedExport[iCell] += ri;
+          if(isChannel[iCell]) {
+            ChannelExport[iCell] += ri;
+          } else {
+            WatershedExport[iCell] += ri;
+          }
         }
       }      
     }
@@ -491,6 +501,44 @@ void tetisCopySoilResultsToOutput(List y, List soilCellResults, List output,
       if(land_cover_type[i]=="wildland") {
         HerbTranspiration[i] = DB["HerbTranspiration"];
       }
+    }
+  }
+}
+
+
+// [[Rcpp::export(".tetisChannelRouting")]]
+void tetisChannelRouting(DataFrame outWB,
+                         LogicalVector isChannel, LogicalVector isOutlet, 
+                         IntegerVector target_outlet, IntegerVector distance_to_outlet, List outlet_backlog,
+                         List watershed_control, double patchsize) {
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double channel_flow_speed = tetis_parameters["channel_flow_speed"];
+  
+  NumericVector ChannelExport=  outWB[WBCOM_ChannelExport];
+  NumericVector WatershedExport=  outWB[WBCOM_WatershedExport];
+
+  int nX = ChannelExport.size();  
+  //Assign channel export to outlet's backlog
+  for(int i=0;i<nX;i++) {
+    if(isChannel[i]) {
+      int target = target_outlet[i] - 1; //Decrease index by one in C++
+      NumericVector backlog = Rcpp::as<Rcpp::NumericVector>(outlet_backlog[target]);
+      int pos = round((distance_to_outlet[i]*std::sqrt(patchsize)) / (3600.0*24.0*channel_flow_speed));
+      backlog[pos] += backlog[pos] + ChannelExport[i];
+      ChannelExport[i]  = 0.0;
+    }
+  }
+  //For each channel outlet, move backlog one day and generate watershed export
+  for(int i=0;i<nX;i++) {
+    if(isOutlet[i] && isChannel[i]) {
+      NumericVector backlog = Rcpp::as<Rcpp::NumericVector>(outlet_backlog[i]);
+      WatershedExport[i] = backlog[0];
+      if(backlog.size()>1) {
+        for(int j=1; j<backlog.size(); j++) {
+          backlog[j-1] = backlog[j];
+        }
+      }
+      backlog[backlog.size()-1] = 0.0;
     }
   }
 }

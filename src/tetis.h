@@ -17,4 +17,4 @@ void tetisApplyLocalFlowsToAquifer(List y,
                                    NumericVector CapillarityRise,
                                    NumericVector DeepDrainage);
 NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDischarge,
-                                  NumericVector waterO, List queenNeigh, List waterQ);
+                                  NumericVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel);

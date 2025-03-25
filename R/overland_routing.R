@@ -141,6 +141,9 @@
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh,  raster_matching$sf_coords, sf$elevation)
     out$channel <- rep(FALSE, nCells)
     out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
+    out$target_outlet <- rep(NA, nCells)
+    out$distance_to_outlet <- rep(NA, nCells)
+    out$outlet_backlog <- vector("list", nCells)
   }
   # Check
   for(i in 1:nCells) { 
@@ -173,7 +176,7 @@
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 #'    }
-#' @param channel_flow_speed Average flow speed in the channel.
+#' @param channel_flow_speed Average flow speed in the channel (in m/s).
 #' 
 #' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
 #'     \itemize{
@@ -185,13 +188,10 @@
 #'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
 #'       \item{\code{channel}: A logical vector indicating channel cells.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
-#'     } 
-#'     If \code{channel} is supplied, additional columns are returned:
-#'     \itemize{
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 #'       \item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
-#'     }
+#'     } 
 #'     
 #' @details
 #' If \code{channel} is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.

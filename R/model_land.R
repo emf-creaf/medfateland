@@ -264,6 +264,11 @@
   waterOrder <- sf_routing$waterOrder
   queenNeigh <- sf_routing$queenNeigh
   waterQ <- sf_routing$waterQ
+  isChannel <- sf_routing$channel
+  isOutlet <- sf_routing$outlet
+  target_outlet <- sf_routing$target_outlet
+  distance_to_outlet <- sf_routing$distance_to_outlet
+  outlet_backlog <- sf_routing$outlet_backlog
   
   # Reset from previous days
   .resetWaterBalanceDayOutput(output[["WatershedWaterBalance"]])
@@ -304,7 +309,7 @@
   .tetisSimulationNonSoilCells(output[["WatershedWaterBalance"]],
                                y,
                                tminVec, tmaxVec, precVec, radVec,
-                               waterOrder, queenNeigh, waterQ,
+                               waterOrder, queenNeigh, waterQ, isChannel,
                                watershed_control)
   
   # B3. Simulation of soil cells
@@ -370,8 +375,13 @@
 
   #C2. Overland surface runoff from soil cells diverted to outlets or channel
   .tetisOverlandFlows(output[["WatershedWaterBalance"]],
-                      waterOrder, queenNeigh, waterQ)
+                      waterOrder, queenNeigh, waterQ, isChannel)
   
+  #C3. Channel routing
+  .tetisChannelRouting(output[["WatershedWaterBalance"]], 
+                       isChannel, isOutlet, 
+                       target_outlet, distance_to_outlet, outlet_backlog,
+                       watershed_control, patchsize)
   
   #D. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
@@ -637,7 +647,10 @@
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and overland routing for TETIS"))
-    sf_routing <- .overland_routing_inner(r, y, raster_matching, 1.0, patchsize)
+    sf_routing <- .overland_routing_inner(r, y, 
+                                          raster_matching = raster_matching, 
+                                          channel_flow_speed = watershed_control$tetis_parameters$channel_flow_speed, 
+                                          patchsize = patchsize)
     outlets <- which(sf_routing$outlet)
   }
   if(header_footer) cli::cli_progress_done()
@@ -654,7 +667,10 @@
     cli::cli_li(paste0("Number of days to simulate: ",nDays))
     cli::cli_li(paste0("Number of temporal cell summaries: ", nSummary))
     cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(y$result_cell)))
-    if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
+    if(watershed_model=="tetis") {
+      cli::cli_li(paste0("Number of channel cells: ", sum(sf_routing$channel)))
+      cli::cli_li(paste0("Number of outlet cells: ", sum(sf_routing$outlet)))
+    }
     if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
   }
 
@@ -1751,7 +1767,10 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
-    sf_routing <- .overland_routing_inner(r, y, raster_matching, 1.0, patchsize)
+    sf_routing <- .overland_routing_inner(r, y, 
+                                          raster_matching = raster_matching, 
+                                          channel_flow_speed = watershed_control$tetis_parameters$channel_flow_speed, 
+                                          patchsize = patchsize)
     outlets <- which(sf_routing$outlet)
   }
   if(header_footer) cli::cli_progress_done()
@@ -1767,7 +1786,10 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     cli::cli_li(paste0("Cell land use wildland: ", nWild, " agriculture: ", nAgri, " artificial: ", nArti, " rock: ", nRock, " water: ", nWater))
     cli::cli_li(paste0("Cells with soil: ", nSoil))
     cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(y$result_cell)))
-    if(watershed_model=="tetis") cli::cli_li(paste0("Number of outlet cells: ", length(outlets)))
+    if(watershed_model=="tetis") {
+      cli::cli_li(paste0("Number of channel cells: ", sum(sf_routing$channel)))
+      cli::cli_li(paste0("Number of outlet cells: ", sum(sf_routing$outlet)))
+    }
     if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
   }
   
