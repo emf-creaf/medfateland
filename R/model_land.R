@@ -643,6 +643,17 @@
 #' 
 #' # Plot outlet cells
 #' plot(or["outlet"])
+#' 
+#' # Define 4-cell channel
+#' example_watershed$channel <- FALSE
+#' example_watershed$channel[c(6, 11, 12, 20)] <- TRUE
+#' 
+#' # Generate overland and channel routing
+#' or_channel <- overland_routing(r, example_watershed)
+#' 
+#' # Plot outlet and distance to outlet
+#' plot(or_channel["outlet"])
+#' plot(or_channel["outlet_distance"])
 overland_routing<-function(r, sf) {
   raster_matching <- .raster_sf_matching(r, sf)
   if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
@@ -660,7 +671,7 @@ overland_routing<-function(r, sf) {
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation, sf$channel)
     out$channel <- sf$channel
     out$outlet <- rep(FALSE, nrow(sf))
-    # Define outlets as channel cells in the domain limits and not having a neighbour channel at lower elevation
+    # Define outlets as channel cells in the domain limits and not having a neighbor channel at lower elevation
     for(i in 1:nrow(sf)) {
       if(sf$channel[i]) {
         wne <- out$queenNeigh[[i]]
@@ -668,10 +679,10 @@ overland_routing<-function(r, sf) {
         channel_ne <- sf$channel[wne]
         elev_ne <- sf$elevation[wne][channel_ne]
         if((length(wne) < 8)) {
-          if(length(elev_ne)==0) { # No channel neighbours
+          if(length(elev_ne)==0) { # No channel neighbors
             out$outlet[i] <- TRUE
           } else {
-            if(all(elev_i >= elev_ne)) {
+            if(all(elev_ne >= elev_i)) {
               out$outlet[i] <- TRUE
             }
           }

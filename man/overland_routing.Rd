@@ -68,4 +68,15 @@ plot(or["waterRank"])
 
 # Plot outlet cells
 plot(or["outlet"])
+
+# Define 4-cell channel
+example_watershed$channel <- FALSE
+example_watershed$channel[c(6, 11, 12, 20)] <- TRUE
+
+# Generate overland and channel routing
+or_channel <- overland_routing(r, example_watershed)
+
+# Plot outlet and distance to outlet
+plot(or_channel["outlet"])
+plot(or_channel["outlet_distance"])
 }
