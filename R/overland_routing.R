@@ -56,7 +56,7 @@
       # print(q)
       return(q)
     }
-    return(rep(0, n)) #If in a hole or no neighbours return as outlet
+    return(rep(0, n)) #If in a hole or no neighbors return as outlet
   }
   for(i in 1:length(queenNeigh)) {
     wne = queenNeigh[[i]]
@@ -72,7 +72,7 @@
   return(Q)
 }
 
-.overland_routing_inner<-function(r, sf, raster_matching) {
+.overland_routing_inner<-function(r, sf, raster_matching, channel_flow_speed, patchsize) {
   if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
   waterOrder <- order(sf$elevation, decreasing = TRUE)
   waterRank <- order(waterOrder)
@@ -86,9 +86,9 @@
   if("channel" %in% names(sf)) {
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh,  raster_matching$sf_coords, sf$elevation, sf$channel)
     out$channel <- sf$channel
-    out$outlet <- rep(FALSE, nrow(sf))
+    out$outlet <- rep(FALSE, nCells)
     # Define outlets as channel cells in the domain limits and not having a neighbor channel at lower elevation
-    for(i in 1:nrow(sf)) {
+    for(i in 1:nCells) {
       if(sf$channel[i]) {
         wne <- out$queenNeigh[[i]]
         elev_i <- sf$elevation[i]
@@ -104,13 +104,14 @@
           }
         }
       } else if(sum(out$waterQ[[i]])==0){ # Outlet cells may be outside the channel (e.g. holes in topography)
-        outlet[i] <- TRUE
+        out$outlet[i] <- TRUE
       }
     }
     out$target_outlet <- rep(NA, nCells)
     out$target_outlet[out$outlet] <- which(out$outlet)
-    out$outlet_distance <- rep(NA, nCells)
-    out$outlet_distance[sf$channel] <- 0
+    out$distance_to_outlet <- rep(NA, nCells)
+    out$distance_to_outlet[out$outlet] <- 0
+    out$distance_to_outlet[sf$channel] <- 0
     to_be_processed <- which(out$outlet)
     processed <- numeric(0)
     while(length(to_be_processed)>0) {
@@ -121,11 +122,20 @@
       wne <- wne[!(wne %in% which(out$outlet))] # avoid outlets
       if(length(wne)>0) {
         out$target_outlet[wne] <- out$target_outlet[origin]
-        out$outlet_distance[wne] <- out$outlet_distance[origin]+1
+        out$distance_to_outlet[wne] <- out$distance_to_outlet[origin]+1
         to_be_processed <- c(to_be_processed, wne)
       }
       processed <- c(processed, origin)
       to_be_processed <- to_be_processed[to_be_processed!=origin] # Remove processed to avoid infinite loop
+    }
+    out$outlet_backlog <- vector("list", nCells)
+    for(i in 1:nCells) {
+      if(out$outlet[i]) {
+        cell_dist <- out$distance_to_outlet[out$target_outlet == i]
+        max_dist <- max(cell_dist[!is.na(cell_dist)])
+        max_ndays <- max(1, ceiling((max_dist*sqrt(patchsize)) / (3600*24*channel_flow_speed)))
+        out$outlet_backlog[[i]] <- rep(0, max_ndays)
+      } 
     }
   } else {
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh,  raster_matching$sf_coords, sf$elevation)
@@ -163,7 +173,8 @@
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 #'    }
-#'
+#' @param channel_flow_speed Average flow speed in the channel.
+#' 
 #' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
 #'     \itemize{
 #'       \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
@@ -178,7 +189,8 @@
 #'     If \code{channel} is supplied, additional columns are returned:
 #'     \itemize{
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
-#'       \item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
+#'       \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
+#'       \item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
 #'     }
 #'     
 #' @details
@@ -223,12 +235,14 @@
 #' 
 #' # Plot outlet and distance to outlet
 #' plot(or_channel["outlet"])
-#' plot(or_channel["outlet_distance"])
+#' plot(or_channel["distance_to_outlet"])
 #' 
 #' @name overland_routing
-overland_routing<-function(r, sf) {
+overland_routing<-function(r, sf, channel_flow_speed = 1.0) {
+  represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
+  patchsize <- mean(represented_area_m2, na.rm=TRUE)
   raster_matching <- .raster_sf_matching(r, sf)
-  return(.overland_routing_inner(r, sf, raster_matching))
+  return(.overland_routing_inner(r, sf, raster_matching, channel_flow_speed = channel_flow_speed, patchsize = patchsize))
 }
 #' @rdname overland_routing
 #' @export

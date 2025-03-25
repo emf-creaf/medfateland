@@ -5,7 +5,7 @@
 \alias{cell_neighbors}
 \title{Overland routing for TETIS sub-model}
 \usage{
-overland_routing(r, sf)
+overland_routing(r, sf, channel_flow_speed = 1)
 
 cell_neighbors(r, sf)
 }
@@ -18,6 +18,8 @@ cell_neighbors(r, sf)
 \item{\code{elevation}: Elevation above sea level (in m).}
 \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 }}
+
+\item{channel_flow_speed}{Average flow speed in the channel.}
 }
 \value{
 An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
@@ -34,7 +36,8 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 If \code{channel} is supplied, additional columns are returned:
 \itemize{
 \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
-\item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
+\item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
+\item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
 }
 }
 \description{
@@ -81,6 +84,6 @@ or_channel <- overland_routing(r, example_watershed)
 
 # Plot outlet and distance to outlet
 plot(or_channel["outlet"])
-plot(or_channel["outlet_distance"])
+plot(or_channel["distance_to_outlet"])
 
 }

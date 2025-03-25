@@ -368,7 +368,7 @@
   .tetisCopySoilResultsToOutput(y, localResults, output,
                                 tminVec, tmaxVec)
 
-  #C2. Overland surface runoff from soil cells diverted to outlets
+  #C2. Overland surface runoff from soil cells diverted to outlets or channel
   .tetisOverlandFlows(output[["WatershedWaterBalance"]],
                       waterOrder, queenNeigh, waterQ)
   
@@ -637,7 +637,7 @@
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and overland routing for TETIS"))
-    sf_routing <- .overland_routing_inner(r, y, raster_matching)
+    sf_routing <- .overland_routing_inner(r, y, raster_matching, 1.0, patchsize)
     outlets <- which(sf_routing$outlet)
   }
   if(header_footer) cli::cli_progress_done()
@@ -1751,7 +1751,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   # TETIS: Build/check neighbours
   if(watershed_model=="tetis") {
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
-    sf_routing <- .overland_routing_inner(r, y, raster_matching)
+    sf_routing <- .overland_routing_inner(r, y, raster_matching, 1.0, patchsize)
     outlets <- which(sf_routing$outlet)
   }
   if(header_footer) cli::cli_progress_done()
