@@ -25,11 +25,11 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
+\item{\code{channel}: A logical vector indicating channel cells.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
 }
 If \code{channel} is supplied, additional columns are returned:
 \itemize{
-\item{\code{channel}: A logical vector indicating channel cells.}
 \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 \item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 }

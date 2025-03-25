@@ -602,11 +602,11 @@
 #'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 #'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 #'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
+#'       \item{\code{channel}: A logical vector indicating channel cells.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
 #'     } 
 #'     If \code{channel} is supplied, additional columns are returned:
 #'     \itemize{
-#'       \item{\code{channel}: A logical vector indicating channel cells.}
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 #'     }
@@ -661,6 +661,7 @@ overland_routing<-function(r, sf) {
   cell2sf <- raster_matching$cell2sf
   waterOrder <- order(sf$elevation, decreasing = TRUE)
   waterRank <- order(waterOrder)
+  nCells <- nrow(sf)
   
   out <- sf::st_sf(geometry=sf::st_geometry(sf))
   out$elevation <- sf$elevation
@@ -687,11 +688,13 @@ overland_routing<-function(r, sf) {
             }
           }
         }
+      } else if(sum(out$waterQ[[i]])==0){ # Outlet cells may be outside the channel (e.g. holes in topography)
+        outlet[i] <- TRUE
       }
     }
-    out$target_outlet <- rep(NA, nrow(sf))
+    out$target_outlet <- rep(NA, nCells)
     out$target_outlet[out$outlet] <- which(out$outlet)
-    out$outlet_distance <- rep(NA, nrow(sf))
+    out$outlet_distance <- rep(NA, nCells)
     out$outlet_distance[sf$channel] <- 0
     to_be_processed <- which(out$outlet)
     processed <- numeric(0)
@@ -711,7 +714,24 @@ overland_routing<-function(r, sf) {
     }
   } else {
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation)
+    out$channel <- rep(FALSE, nCells)
     out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
+  }
+  # Check
+  for(i in 1:nCells) { 
+    ni <- out$queenNeigh[[i]]
+    qi <- out$waterQ[[i]]
+    if(max(ni)>nCells || min(ni) < 1) {
+      cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
+    }
+    if(length(qi) != length(ni)) {
+      cli::cli_abort(paste0("Cell ", i, " has different number of neighbors in 'waterQ' than 'queenNeigh'"))
+    }
+    if((!out$outlet[i]) && (!out$channel[i])) {
+      if(abs(sum(qi) - 1) > 0.0001) {
+        cli::cli_abort(paste0("'waterQ' values for cell ", i, " do not add up to 1"))
+      }
+    }
   }
   return(sf::st_as_sf(tibble::as_tibble(out)))
 }
