@@ -4,7 +4,6 @@
 \alias{spwb_land}
 \alias{growth_land}
 \alias{fordyn_land}
-\alias{cell_neighbors}
 \alias{summary.spwb_land}
 \alias{summary.growth_land}
 \title{Watershed simulations}
@@ -57,8 +56,6 @@ fordyn_land(
   chunk_size = NULL,
   progress = TRUE
 )
-
-cell_neighbors(sf, r)
 
 \method{summary}{spwb_land}(object, ...)
 
