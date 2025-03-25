@@ -54,8 +54,7 @@
     Q[[i]] = qfun(ri = waterRank[i], xi = coords[i,1], yi=coords[i,2],zi = elevation[i],
                   X = coords[wne,1], Y = coords[wne,2], Z = elevation[wne], R = waterRank[wne])
   }  
-  if(!is.null(channel)) {
-    # Set channel cells as outlet
+  if(!is.null(channel)) { # Channel cells to not drain to other cells via runoff
     for(i in which(as.logical(channel))) {
       wne <- queenNeigh[[i]]
       Q[[i]] <- rep(0, length(wne))
@@ -584,14 +583,15 @@
 
 #' Overland routing for TETIS sub-model
 #' 
-#' Determines overland routing given a raster definition and a set of target locations for watershed simulations.
+#' Determines overland routing given a raster definition and a set of target locations for watershed simulations. If channel is supplied,
+#' it also determines channel routing.
 #'
 #' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' @param sf An object of class \code{\link[sf]{sf}} with the following columns:
 #'   \itemize{
 #'     \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
-#'     \item{\code{channel}: An optional logical (or binary) vector indicating overland channel routing.}
+#'     \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 #'    }
 #'
 #' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
@@ -602,11 +602,19 @@
 #'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 #'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 #'       \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
-#'       \item{\code{outlet}: A logical vector indicating outlet/channel cells.}
+#'       \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'     } 
+#'     If \code{channel} is supplied, additional columns are returned:
+#'     \itemize{
+#'       \item{\code{channel}: A logical vector indicating channel cells.}
+#'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
+#'       \item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 #'     }
 #'     
 #' @details
-#' If \code{channel} is supplied, then all those cells are considered outlet for the sake of runoff routing.
+#' If \code{channel} is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.
+#' If \code{channel} is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
+#' model simulations will include channel routing towards outlet cells.
 #' 
 #' @export
 #'
@@ -648,10 +656,52 @@ overland_routing<-function(r, sf) {
   out$waterRank <- waterRank
   out$waterOrder <- waterOrder
   out$queenNeigh <- .neighFun(r, raster_matching$sf2cell, raster_matching$cell2sf)
-  channel  <- NULL
-  if("channel" %in% names(sf)) channel <- sf$channel
-  out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation, channel)
-  out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
+  if("channel" %in% names(sf)) {
+    out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation, sf$channel)
+    out$channel <- sf$channel
+    out$outlet <- rep(FALSE, nrow(sf))
+    # Define outlets as channel cells in the domain limits and not having a neighbour channel at lower elevation
+    for(i in 1:nrow(sf)) {
+      if(sf$channel[i]) {
+        wne <- out$queenNeigh[[i]]
+        elev_i <- sf$elevation[i]
+        channel_ne <- sf$channel[wne]
+        elev_ne <- sf$elevation[wne][channel_ne]
+        if((length(wne) < 8)) {
+          if(length(elev_ne)==0) { # No channel neighbours
+            out$outlet[i] <- TRUE
+          } else {
+            if(all(elev_i >= elev_ne)) {
+              out$outlet[i] <- TRUE
+            }
+          }
+        }
+      }
+    }
+    out$target_outlet <- rep(NA, nrow(sf))
+    out$target_outlet[out$outlet] <- which(out$outlet)
+    out$outlet_distance <- rep(NA, nrow(sf))
+    out$outlet_distance[sf$channel] <- 0
+    to_be_processed <- which(out$outlet)
+    processed <- numeric(0)
+    while(length(to_be_processed)>0) {
+      origin <- to_be_processed[1] # get first
+      wne <- out$queenNeigh[[origin]]
+      wne <- wne[wne %in% which(sf$channel)] # restrict to channel cells
+      wne <- wne[!(wne %in% processed)] # avoid cells already processed
+      wne <- wne[!(wne %in% which(out$outlet))] # avoid outlets
+      if(length(wne)>0) {
+        out$target_outlet[wne] <- out$target_outlet[origin]
+        out$outlet_distance[wne] <- out$outlet_distance[origin]+1
+        to_be_processed <- c(to_be_processed, wne)
+      }
+      processed <- c(processed, origin)
+      to_be_processed <- to_be_processed[to_be_processed!=origin] # Remove processed to avoid infinite loop
+    }
+  } else {
+    out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh, sf_coords, sf$elevation)
+    out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
+  }
   return(sf::st_as_sf(tibble::as_tibble(out)))
 }
 

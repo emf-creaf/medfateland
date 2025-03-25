@@ -13,7 +13,7 @@ overland_routing(r, sf)
 \itemize{
 \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
-\item{\code{channel}: An optional logical (or binary) vector indicating overland channel routing.}
+\item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 }}
 }
 \value{
@@ -25,14 +25,23 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
 \item{\code{waterQ}: A list where, for each cell, a vector gives the proportion of overland flow to each neighbour.}
-\item{\code{outlet}: A logical vector indicating outlet/channel cells.}
+\item{\code{outlet}: A logical vector indicating outlet cells.}
+}
+If \code{channel} is supplied, additional columns are returned:
+\itemize{
+\item{\code{channel}: A logical vector indicating channel cells.}
+\item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
+\item{\code{outlet_distance}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 }
 }
 \description{
-Determines overland routing given a raster definition and a set of target locations for watershed simulations.
+Determines overland routing given a raster definition and a set of target locations for watershed simulations. If channel is supplied,
+it also determines channel routing.
 }
 \details{
-If \code{channel} is supplied, then all those cells are considered outlet for the sake of runoff routing.
+If \code{channel} is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.
+If \code{channel} is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
+model simulations will include channel routing towards outlet cells.
 }
 \examples{
 # Load example watershed data
