@@ -57,6 +57,7 @@ reference:
   - add_soilgrids
   - modify_soils
   - check_soils
+  - optimization_rock
   
 - title: Example data
   desc:  Example data sets for distributed stands and watershed
