@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@
 <li><p><code>n_interflow [= 1.0]</code>: Exponent for the determination of interflow.</p></li>
 <li><p><code>n_baseflow [= 1.0]</code>: Exponent for the determination of baseflow.</p></li>
 <li><p><code>num_daily_substeps [= 4]</code>: Number of daily sub-steps for interflow calculations.</p></li>
+<li><p><code>channel_flow_speed [= 1]</code>: Average flow speed in the channel (in m/s).</p></li>
 <li><p><code>rock_max_infiltration [= 10]</code>: Maximum infiltration rate (mm·day-1) for rock cells.</p></li>
 <li><p><code>deep_aquifer_loss [= 0]</code>: Daily loss rate from watershed aquifer towards a deeper aquifer not connected to outlets (mm·day-1).</p></li>
 </ul></li>
@@ -120,6 +121,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$num_daily_substeps</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$channel_flow_speed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$rock_max_infiltration</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
