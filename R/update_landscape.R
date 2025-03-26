@@ -36,6 +36,7 @@ update_landscape<-function(x, y) {
   if("management_arguments" %in% names(y)) x$management_arguments <- y$management_arguments
   if("aquifer" %in% names(y)) x$aquifer <- y$aquifer
   if("snowpack" %in% names(y)) x$snowpack <- y$snowpack
+  if("outlet_backlog" %in% names(y)) x$outlet_backlog <- y$outlet_backlog
   # place geometry in first position
   ns <- names(x)
   if("geom" %in% ns) {

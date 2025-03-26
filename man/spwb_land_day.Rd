@@ -66,6 +66,7 @@ Functions \code{spwb_land_day} and \code{spwb_land_day} return a sf object:
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
+\item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
 \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
 \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
 \item{\code{PET}: Potential evapotranspiration (in mm).}

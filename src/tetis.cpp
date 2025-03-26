@@ -521,11 +521,14 @@ void tetisChannelRouting(DataFrame outWB,
   //Assign channel export to outlet's backlog
   for(int i=0;i<nX;i++) {
     if(isChannel[i]) {
-      int target = target_outlet[i] - 1; //Decrease index by one in C++
-      NumericVector backlog = Rcpp::as<Rcpp::NumericVector>(outlet_backlog[target]);
-      int pos = round((distance_to_outlet[i]*std::sqrt(patchsize)) / (3600.0*24.0*channel_flow_speed));
-      backlog[pos] += backlog[pos] + ChannelExport[i];
-      ChannelExport[i]  = 0.0;
+      if(ChannelExport[i]>0.0) {
+        int target = target_outlet[i] - 1; //Decrease index by one in C++
+        NumericVector backlog = Rcpp::as<Rcpp::NumericVector>(outlet_backlog[target]);
+        int pos = round((distance_to_outlet[i]*std::sqrt(patchsize)) / (3600.0*24.0*channel_flow_speed));
+        backlog[pos] = (backlog[pos] + ChannelExport[i]);
+        // Rcout<< i << " outlet "<< target <<" pos " << pos << " channel export " << ChannelExport[i] <<" backlog: " << backlog[pos] << "\n";
+        ChannelExport[i]  = 0.0;
+      }
     }
   }
   //For each channel outlet, move backlog one day and generate watershed export
@@ -533,6 +536,7 @@ void tetisChannelRouting(DataFrame outWB,
     if(isOutlet[i] && isChannel[i]) {
       NumericVector backlog = Rcpp::as<Rcpp::NumericVector>(outlet_backlog[i]);
       WatershedExport[i] = backlog[0];
+      // Rcout << " outlet " << i << " backlog[0] " << backlog[0] <<"\n";
       if(backlog.size()>1) {
         for(int j=1; j<backlog.size(); j++) {
           backlog[j-1] = backlog[j];

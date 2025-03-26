@@ -92,6 +92,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 \item{\code{channel}: A logical (or binary) vector indicating overland channel routing.}
+\item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells from a previous simulation.}
 }}
 
 \item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}
@@ -175,6 +176,7 @@ with the following columns:
 }
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
+\item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
 }
 In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 \itemize{

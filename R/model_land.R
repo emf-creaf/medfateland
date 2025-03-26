@@ -652,6 +652,7 @@
                                           channel_flow_speed = watershed_control$tetis_parameters$channel_flow_speed, 
                                           patchsize = patchsize)
     outlets <- which(sf_routing$outlet)
+    channels <- which(sf_routing$channel)
   }
   if(header_footer) cli::cli_progress_done()
   
@@ -1034,6 +1035,8 @@
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
     SoilInterflowBalancesum <- sum(SoilLandscapeBalance$InterflowBalance , na.rm=T)
+    ChannelBacklogsum <- .get_backlog_sum(sf_routing)
+    
     soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowBalancesum)
     soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
     soil_wb <-  soil_input - soil_output
@@ -1050,7 +1053,7 @@
                          " fluxes (mm): ",round(aquifer_wb,2)))
     }
     
-    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum - DeepAquiferLosssum
+    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum + ChannelBacklogsum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum - DeepAquiferLosssum
     if(header_footer) {
       cli::cli_li(paste0("Watershed balance",
                          " content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),
@@ -1068,8 +1071,10 @@
   sf$snowpack <- y$snowpack
   sf$summary <- summarylist
   sf$result <- resultlist
-  if(watershed_model=="tetis") sf$outlet <- sf_routing$outlet
-  
+  if(watershed_model=="tetis") {
+    sf$outlet <- sf_routing$outlet
+    sf$outlet_backlog <- sf_routing$outlet_backlog
+  }
   if(watershed_model=="tetis") {
     l <- list(watershed_control = watershed_control,
               sf = sf::st_as_sf(tibble::as_tibble(sf)),
@@ -1126,6 +1131,7 @@
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 #'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 #'     \item{\code{channel}: A logical (or binary) vector indicating overland channel routing.}
+#'     \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells from a previous simulation.}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
@@ -1190,6 +1196,7 @@
 #'       }
 #'       \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'       \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
 #'     }
 #'     In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 #'     \itemize{
@@ -1889,7 +1896,10 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   for(i in 1:nCells) {
     if(y$result_cell[i]) res$result[[i]] <- ws_day$LocalResults[[i]]$simulation_results
   }
-  if(watershed_model=="tetis") res$outlet <- sf_routing$outlet
+  if(watershed_model=="tetis")  {
+    res$outlet <- sf_routing$outlet
+    res$outlet_backlog <- sf_routing$outlet_backlog
+  }
   wb <- ws_day$WatershedWaterBalance
   for(n in names(wb)) res[[n]] <- wb[[n]]
   return(sf::st_sf(tibble::as_tibble(res)))
@@ -1928,6 +1938,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
 #'    \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 #'    \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'    \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'    \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
 #'    \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
 #'    \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
 #'    \item{\code{PET}: Potential evapotranspiration (in mm).}

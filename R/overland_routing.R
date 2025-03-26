@@ -78,6 +78,8 @@
   waterRank <- order(waterOrder)
   nCells <- nrow(sf)
   
+  isInputBacklog <- ("outlet_backlog" %in% names(sf))
+  
   out <- sf::st_sf(geometry=sf::st_geometry(sf))
   out$elevation <- sf$elevation
   out$waterRank <- waterRank
@@ -135,6 +137,12 @@
         max_dist <- max(cell_dist[!is.na(cell_dist)])
         max_ndays <- max(1, ceiling((max_dist*sqrt(patchsize)) / (3600*24*channel_flow_speed)))
         out$outlet_backlog[[i]] <- rep(0, max_ndays)
+        if(isInputBacklog) {
+          sf_bl <- sf$outlet_backlog[[i]]
+          if(length(sf_bl)==max_ndays) {
+            out$outlet_backlog[[i]] <- sf_bl
+          }
+        }
       } 
     }
   } else {
@@ -162,6 +170,18 @@
     }
   }
   return(sf::st_as_sf(tibble::as_tibble(out)))
+}
+
+.get_backlog_sum <- function(sf_routing) {
+  nCells  <- nrow(sf_routing)
+  backlog_sum <- 0
+  for(i in 1:nCells) {
+    backlog_i <- sf_routing$outlet_backlog[[i]]
+    if(!is.null(backlog_i)) {
+      backlog_sum <- backlog_sum + sum(backlog_i, na.rm = TRUE) 
+    }
+  }
+  return(backlog_sum)
 }
 
 #' Overland routing for TETIS sub-model
