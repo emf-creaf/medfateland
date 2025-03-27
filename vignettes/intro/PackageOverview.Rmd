@@ -89,11 +89,12 @@ In addition to the former spatially-uncoupled simulation functions, **medfatelan
 
 When input data is in form of continuous spatial variation of forests over a landscape, typically a watershed, the **medfateland** package allows performing local process simulations while accounting for landscape processes. This is done using functions `spwb_land()`, `growth_land()` and `fordyn_land()`, which are analogous to `spwb_spatial()`, `growth_spatial()` and `fordyn_spatial()`, respectively. Similarly, functions `spwb_land_day()` and `growth_land_day()` are landscape counterparts of `spwb_spatial_day()` and `growth_spatial()`, respectively. 
 
-Importantly, all these functions allow simulating *lateral water transfer processes*, for which two alternative sub-models are possible. A first sub-model, similar to TETIS (Francés et al. 2007) is offered by default, which includes three lateral water flows that are solved in simple way:
+Importantly, all these functions allow simulating *lateral water transfer processes*, for which two alternative sub-models are possible. A first sub-model, similar to TETIS (Francés et al. 2007) is offered by default, which includes lateral water flows that are solved in simple way:
 
   a. Overland surface flows from upslope cells
   b. Lateral saturated soil flows (i.e. interflow) between adjacent cells
   c. Lateral groundwater flow (i.e. baseflow) between adjacent cells
+  d. Channel water routing (if a channel network is specified)
 
 Alternatively, the same water transfer processes can be simulated via a coupling with SERGHEI (Caviedes-Voullième et al. 2023), a physically-based distributed hydrologic model with much greater physical detail. In that case, SERGHEI outputs are generated as files and are not provided with the output to the function call. Hence, the user is responsible for accessing and post-processing those outputs.
 

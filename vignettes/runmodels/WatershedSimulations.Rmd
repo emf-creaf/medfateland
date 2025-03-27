@@ -58,6 +58,9 @@ example_watershed$crop_factor = NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
 ```
 
+**Channel network**
+
+In large watersheds, the hydrological behavior of the model may not be appropriate because water routing in the river channel is not considered. If a binary column called `channel` is included in the input, the model will use it to determine the river network, outlets and the time in days to reach them (see function `overland_routing` for a static analysis of channel routing).
 
 ### Grid topology
 
