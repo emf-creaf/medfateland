@@ -579,7 +579,7 @@ gc()
 
 ## Additional variables
 
-In this section we illustrate the estimation of additional variables that are needed in some occasions. At present, there are no specific functions in **medfateland** for these variables. 
+In this section we illustrate the estimation of additional variables that are needed in some occasions, particularly in watershed-level simulations. At present, there are no specific functions in **medfateland** for these variables. 
 
 ### Crop factors for agricultural areas
 
@@ -738,6 +738,36 @@ rm(x_glhymps)
 gc()
 ```
 
+### River network
+
+For large watersheds it is advisable to specify a river channel network, so that the model can include channel water routing explicitly. This is done by adding a logical column `channel` indicating cells that are part of the channel network. We start by loading the river network from Catalonia:
+
+```{r}
+rivers <-terra::vect(paste0(dataset_path, "Hydrography/Sources/Catalunya/Rius/Rius_CARACT.shp"))
+```
+
+Then, we rasterize it using the target area raster definition. We use the `is.na()` function to distinguish river from other cells, independently of the river order:
+```{r}
+rivers_rast <- !is.na(terra::rasterize(rivers, r, field = "OBJECTID"))
+```
+
+Once we have this raster, we perform the extraction to fill column `channel`:
+
+```{r}
+y_8$channel <- terra::extract(rivers_rast, y_8, ID = FALSE)$OBJECTID
+```
+
+Similarly to other variables, the river network can be visualized using:
+
+```{r, fig.width=6, fig.height=4.5, fig.alt ="River channel network"}
+plot_variable(y_8, "channel", r = r)
+```
+
+```{r, include = FALSE}
+rm(rivers)
+rm(rivers_rast)
+gc()
+```
 
 ### Other variables
 
