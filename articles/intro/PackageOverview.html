@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2025-03-26</h4>
+            <h4 data-toc-skip class="date">2025-03-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PackageOverview.Rmd" class="external-link"><code>vignettes/intro/PackageOverview.Rmd</code></a></small>
       <div class="d-none name"><code>PackageOverview.Rmd</code></div>
@@ -314,13 +314,14 @@ landscape counterparts of <code><a href="../../reference/spwb_spatial_day.html">
 <p>Importantly, all these functions allow simulating <em>lateral water
 transfer processes</em>, for which two alternative sub-models are
 possible. A first sub-model, similar to TETIS (Francés et al. 2007) is
-offered by default, which includes three lateral water flows that are
-solved in simple way:</p>
+offered by default, which includes lateral water flows that are solved
+in simple way:</p>
 <ol style="list-style-type: lower-alpha">
 <li>Overland surface flows from upslope cells</li>
 <li>Lateral saturated soil flows (i.e. interflow) between adjacent
 cells</li>
 <li>Lateral groundwater flow (i.e. baseflow) between adjacent cells</li>
+<li>Channel water routing (if a channel network is specified)</li>
 </ol>
 <p>Alternatively, the same water transfer processes can be simulated via
 a coupling with SERGHEI (Caviedes-Voullième et al. 2023), a
