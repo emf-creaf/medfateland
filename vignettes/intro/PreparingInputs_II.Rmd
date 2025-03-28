@@ -22,7 +22,7 @@ knitr::include_graphics("Landscape_init_workflow.png")
 ```
 
 
-Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html). 
+Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/intro/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/SpatiallyUncoupledSimulations.html) and [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/WatershedSimulations.html). 
 
 Let's first load necessary libraries:
 
@@ -740,7 +740,7 @@ gc()
 
 ### River network
 
-For large watersheds it is advisable to specify a river channel network, so that the model can include channel water routing explicitly. This is done by adding a logical column `channel` indicating cells that are part of the channel network. We start by loading the river network from Catalonia:
+For large watersheds it is advisable to specify a river channel network, so that the model can include channel water routing explicitly. This is done by adding a logical column `channel` indicating cells that are part of the channel network. We start by loading the river network from Catalonia (source: *Agència Catalana de l'Aigua*):
 
 ```{r}
 rivers <-terra::vect(paste0(dataset_path, "Hydrography/Sources/Catalunya/Rius/Rius_CARACT.shp"))
@@ -771,7 +771,7 @@ gc()
 
 ### Other variables
 
-Simulation of management scenarios requires defining additional variables in the `sf` object, concerning the area represented by each location and the management unit to which it belongs. This is illustrated in vignette [Management scenarios](https://emf-creaf.github.io/medfateland/articles/ManagementScenarios.html).
+Simulation of management scenarios requires defining additional variables in the `sf` object, concerning the area represented by each location and the management unit to which it belongs. This is illustrated in vignette [Management scenarios](https://emf-creaf.github.io/medfateland/articles/runmodels/ManagementScenarios.html).
 
 
 ## Storing 

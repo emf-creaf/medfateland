@@ -111,4 +111,4 @@ Function `fordyn_land()` includes seed dispersal as an additional landscape proc
 
 1. Determine the effect of forest management alternatives on the forest function, dynamics and the water production of forested watersheds.
 
-Examples of watershed simulations including landscape processes are given in vignette [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/WatershedSimulations.html).
+Examples of watershed simulations including landscape processes are given in vignette [Watershed simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/WatershedSimulations.html).

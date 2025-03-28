@@ -22,7 +22,7 @@ The aim of this vignette is to illustrate how to use **medfateland**  (v. `r pac
 
 ## Preparation
 
-Preparing inputs for watershed simulations can be tedious. Two main inputs need to be assembled, described in the following two sections.
+Preparing inputs for watershed simulations can be tedious. Two main inputs need to be assembled, described in the following two sections (see also [Preparing inputs II: arbitrary locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html])).
 
 ### Input sf objects
 

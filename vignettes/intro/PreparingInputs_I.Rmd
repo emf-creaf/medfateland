@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This vignette has been created to illustrate the creation of spatial inputs to be used in model simulations with the package, starting **from forest inventory plot data**. 
 
-Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupledSimulations.html). 
+Before reading this vignette, users should be familiar with *forest* and *soil* structures in package **medfate**. Moreover, a brief introduction to spatial structures used in **medfateland** package is given in  vignette [Package overview](https://emf-creaf.github.io/medfateland/articles/intro/PackageOverview.html) and examples are given in vignettes [Spatially-uncoupled simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/SpatiallyUncoupledSimulations.html). 
 
 Let's first load necessary libraries:
 
