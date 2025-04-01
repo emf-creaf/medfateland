@@ -349,7 +349,7 @@
     }
   }
   if(parallelize) {
-    if(is.null(chunk_size)) chunk_size <- floor(nX/num_cores)
+    if(is.null(chunk_size)) chunk_size <- ceiling(nX/num_cores)
     cl<-parallel::makeCluster(num_cores)
     localResults <- parallel::parLapplyLB(cl, XI, .f_landunit_day, 
                                           date = date, model = local_model,
@@ -455,7 +455,7 @@
   
   #A. Vertical and surface fluxes
   if(parallelize) {
-    if(is.null(chunk_size)) chunk_size <- floor(nX/num_cores)
+    if(is.null(chunk_size)) chunk_size <- ceiling(nX/num_cores)
     cl<-parallel::makeCluster(num_cores)
     localResults <- parallel::parLapplyLB(cl, XI, .f_landunit_day, 
                                           date = date, model = local_model,

@@ -5,7 +5,13 @@
 \alias{cell_neighbors}
 \title{Overland routing for TETIS sub-model}
 \usage{
-overland_routing(r, sf, channel_flow_speed = 1)
+overland_routing(
+  r,
+  sf,
+  channel_flow_speed = 1,
+  subwatersheds = FALSE,
+  max_overlap = 0.2
+)
 
 cell_neighbors(r, sf)
 }
@@ -20,6 +26,10 @@ cell_neighbors(r, sf)
 }}
 
 \item{channel_flow_speed}{Average flow speed in the channel (in m/s).}
+
+\item{subwatersheds}{A boolean flag to define watershed subunits.}
+
+\item{max_overlap}{Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.}
 }
 \value{
 An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
@@ -42,9 +52,7 @@ Determines overland routing given a raster definition and a set of target locati
 it also determines channel routing.
 }
 \details{
-If \code{channel} is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.
-If \code{channel} is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
-model simulations will include channel routing towards outlet cells.
+
 }
 \examples{
 # Load example watershed data

@@ -72,7 +72,138 @@
   return(Q)
 }
 
-.overland_routing_inner<-function(r, sf, raster_matching, channel_flow_speed, patchsize) {
+.directDraining <- function(queenNeigh, waterQ, target) {
+  ne <- queenNeigh[[target]]
+  direct <- numeric(0)
+  for(i in ne) {
+    p <- which(queenNeigh[[i]]==target)
+    if(waterQ[[i]][p] > 0.0) {
+      direct <- c(direct, i)
+    }
+  }
+  return(direct)
+}
+.findDrainageBasin<-function(queenNeigh, waterQ, target) {
+
+  drainage_new <- .directDraining(queenNeigh, waterQ, target)
+  basin <- c(target, drainage_new)
+  to_check <- drainage_new
+  while(length(to_check)>0) {
+    target <- to_check[1]
+    drainage <- .directDraining(queenNeigh, waterQ, target)
+    drainage_new  <- drainage[!(drainage %in% basin)]
+    basin <- c(basin, drainage_new)
+    to_check <- c(to_check[-1], drainage_new)
+  }
+  return(sort(basin))
+}
+
+.findLowOverlapDrainageBasins <- function(channel, outlet, queenNeigh, waterQ, max_overlap = 0.25) {
+  out_ch <- which(channel | outlet)
+  n <- length(channel)
+  db <- vector("list", length(out_ch))
+  names(db) <- out_ch
+  for(i in 1:length(out_ch)) {
+    db[[i]] <- .findDrainageBasin(queenNeigh, waterQ, out_ch[i])
+  }
+  checked <- rep(FALSE, length(db))
+  while(any(!checked)) {
+    # Determine next drainage basin to be checked
+    db_size <- unlist(lapply(db, length))
+    smallest_size <- min(db_size[!checked])
+    to_be_checked <- which((db_size == smallest_size) & (!checked))[1]
+    # cat(paste0("Checking ", to_be_checked, " out of ", length(db),"\n"))
+    # Determine if it has to be merged
+    merge_with <- NA
+    maxoverfound <- 0
+    for(j in ((1:length(db))[-to_be_checked])) {
+      overlap <- sum((db[[to_be_checked]] %in% db[[j]]))/length(db[[to_be_checked]])
+      if(overlap > maxoverfound) {
+        if(overlap > max_overlap) {
+          maxoverfound <- overlap
+          merge_with <- j
+        }
+      }
+    }  
+    # If it has to be merged, perform merging and reset "checked" and "db"
+    if(!is.na(merge_with)) {
+      db[[merge_with]] <- sort(c(db[[to_be_checked]], db[[merge_with]]))
+      new_name <- paste(names(db)[to_be_checked], names(db)[merge_with], sep = "_")
+      names(db)[merge_with] <- new_name
+      db <- db[-to_be_checked]
+      checked <- rep(FALSE, length(db))
+    } else {
+      checked[to_be_checked] <- TRUE
+    }
+  }
+  # Identify overlapping cells and keep largest drainage value
+  # cat(paste0("Identifying cell membership to basin \n"))
+  cells_to_basins <- vector("list", n)
+  for(i in 1:n) {
+    v <- numeric(0)
+    for(j in 1:length(db)) {
+      if(i %in% db[[j]]) {
+        v <- c(v, j)
+      }
+    }
+    cells_to_basins[[i]] <- v
+  }
+  # cat(paste0("Checking cells \n"))
+  to_be_checked <- 1:n
+  num_border_cells <- 0
+  while(length(to_be_checked)>0) {
+    target <- to_be_checked[1]
+    target_basins <- cells_to_basins[[target]]
+    if(length(target_basins)==1) {
+      # If only one basin, remove from vector
+      to_be_checked <- to_be_checked[-1]
+    } else {
+      ne <- queenNeigh[[target]]
+      q <- waterQ[[target]]
+      Q_basin <- rep(0, length(target_basins))
+      for(i in 1:length(ne)) {
+        if(q[i]>0.0) {
+          ne_basin  <- cells_to_basins[[ne[i]]]
+          for(j in 1:length(target_basins)) {
+            if(target_basins[j] %in% ne_basin) Q_basin[j] <- Q_basin[j] + q[i]
+          }
+        }
+      }
+      # print(Q_basin)
+      Q_max <- max(Q_basin)
+      maxQ_basins <- which(Q_basin == Q_max)
+      if(length(maxQ_basins)==1) {
+        num_border_cells <- num_border_cells + 1
+        true_basin <- target_basins[maxQ_basins]
+        false_basins <- target_basins[-maxQ_basins]
+        # cat(paste0("Moving cell: ", target, " to basin ", true_basin,"\n"))
+        # update list of membership
+        cells_to_basins[[target]] <- true_basin
+        # remove cell from false drainage basins
+        for(j in false_basins) {
+          db_j <- db[[j]]
+          db_j <- db_j[db_j != target]
+          db[[j]] <- db_j
+        }
+        # remove from vector to be checked
+        to_be_checked <- to_be_checked[-1]
+      } else {
+        # put in the back of the list
+        to_be_checked <- c(to_be_checked[-1], to_be_checked[1])
+      }
+    }
+  }
+  # cat(paste0("Number of cells re-arranged: ", num_border_cells,"\n"))
+
+  # Build drainage basin vector
+  drainage_basins <- rep(NA, length(channel))
+  for(i in 1:length(db)) {
+    drainage_basins[db[[i]]] <- i
+  }
+  return(drainage_basins)
+}
+.overland_routing_inner<-function(r, sf, raster_matching, channel_flow_speed, patchsize,
+                                  subwatersheds = FALSE, max_overlap = 0.2) {
   if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
   waterOrder <- order(sf$elevation, decreasing = TRUE)
   waterRank <- order(waterOrder)
@@ -153,6 +284,20 @@
     out$distance_to_outlet <- rep(NA, nCells)
     out$outlet_backlog <- vector("list", nCells)
   }
+  if(subwatersheds) {
+    out$subwatershed <- .findLowOverlapDrainageBasins(out$channel, out$outlet, out$queenNeigh, out$waterQ,
+                                                      max_overlap = max_overlap)
+    # Force that overland flow goes to the same watershed
+    for(i in 1:nCells) { 
+      ni <- out$queenNeigh[[i]]
+      qi <- out$waterQ[[i]]
+      ni_sub <- out$subwatershed[ni]
+      i_sub <- out$subwatershed[i]
+      qi[ni_sub!=i_sub] <- 0
+      qi <- qi/sum(qi, na.rm = TRUE)
+      out$waterQ[[i]] <- qi
+    }
+  }
   # Check
   for(i in 1:nCells) { 
     ni <- out$queenNeigh[[i]]
@@ -197,6 +342,8 @@
 #'     \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 #'    }
 #' @param channel_flow_speed Average flow speed in the channel (in m/s).
+#' @param subwatersheds A boolean flag to define watershed subunits.
+#' @param max_overlap Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.
 #' 
 #' @returns  An object of class \code{\link[sf]{sf}} describing overland routing parameters and outlet cells:
 #'     \itemize{
@@ -217,6 +364,9 @@
 #' If \code{channel} is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.
 #' If \code{channel} is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
 #' model simulations will include channel routing towards outlet cells.
+#' 
+#' If defining watershed subunits are required (i.e. if \code{subwatersheds = TRUE)), any given cell cannot belong to more than one subunit. 
+#' Therefore, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.
 #' 
 #' @export
 #'
@@ -258,11 +408,18 @@
 #' plot(or_channel["distance_to_outlet"])
 #' 
 #' @name overland_routing
-overland_routing<-function(r, sf, channel_flow_speed = 1.0) {
+overland_routing<-function(r, sf, 
+                           channel_flow_speed = 1.0,
+                           subwatersheds = FALSE, 
+                           max_overlap = 0.2) {
   represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
   patchsize <- mean(represented_area_m2, na.rm=TRUE)
   raster_matching <- .raster_sf_matching(r, sf)
-  return(.overland_routing_inner(r, sf, raster_matching, channel_flow_speed = channel_flow_speed, patchsize = patchsize))
+  return(.overland_routing_inner(r, sf, raster_matching, 
+                                 channel_flow_speed = channel_flow_speed, 
+                                 patchsize = patchsize, 
+                                 subwatersheds = subwatersheds,
+                                 max_overlap = max_overlap))
 }
 #' @rdname overland_routing
 #' @export
