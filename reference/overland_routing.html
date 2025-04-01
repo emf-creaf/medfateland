@@ -56,7 +56,13 @@ it also determines channel routing.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">overland_routing</span><span class="op">(</span><span class="va">r</span>, <span class="va">sf</span>, channel_flow_speed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">overland_routing</span><span class="op">(</span></span>
+<span>  <span class="va">r</span>,</span>
+<span>  <span class="va">sf</span>,</span>
+<span>  channel_flow_speed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  subwatersheds <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  max_overlap <span class="op">=</span> <span class="fl">0.2</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cell_neighbors</span><span class="op">(</span><span class="va">r</span>, <span class="va">sf</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -79,6 +85,14 @@ it also determines channel routing.</p>
 <dt id="arg-channel-flow-speed">channel_flow_speed<a class="anchor" aria-label="anchor" href="#arg-channel-flow-speed"></a></dt>
 <dd><p>Average flow speed in the channel (in m/s).</p></dd>
 
+
+<dt id="arg-subwatersheds">subwatersheds<a class="anchor" aria-label="anchor" href="#arg-subwatersheds"></a></dt>
+<dd><p>A boolean flag to define watershed subunits.</p></dd>
+
+
+<dt id="arg-max-overlap">max_overlap<a class="anchor" aria-label="anchor" href="#arg-max-overlap"></a></dt>
+<dd><p>Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -93,12 +107,15 @@ it also determines channel routing.</p>
 <li><p><code>target_outlet</code>: Index of the outlet cell to which the channel leads  (<code>NA</code> for non-channel cells).</p></li>
 <li><p><code>distance_to_outlet</code>: Distance to the target outlet in number of cells (<code>NA</code> for non-channel cells).</p></li>
 <li><p><code>outlet_backlog</code>: For each outlet, a backlog vector of watershed export (<code>NA</code> for non-outlet cells).</p></li>
+<li><p><code>subwatershed</code>: Integer vector indicating watershed subunits (<code>NA</code> if <code>subwatersheds = FALSE</code>).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>If <code>channel</code> is not supplied, then cells where all neighbors are at higher elevation are considered outlet cells.
 If <code>channel</code> is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
 model simulations will include channel routing towards outlet cells.</p>
+<p>If defining watershed subunits is requested (i.e. if <code>subwatersheds = TRUE</code>), subunits are defined first by determining the area draining to each channel or outlet cell. Then, those areas are progressively merged if one is nested into the other or when the proportion of overlapping cells is lower than
+a pre-specified threshold (i.e. larger than <code>max_overlap</code>). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.</p>
     </div>
 
     <div class="section level2">
