@@ -297,6 +297,8 @@
       qi <- qi/sum(qi, na.rm = TRUE)
       out$waterQ[[i]] <- qi
     }
+  } else {
+    out$subwatersheds <- rep(NA, nCells)
   }
   # Check
   for(i in 1:nCells) { 
@@ -358,7 +360,7 @@
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 #'       \item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
-#'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (if \code{subwatersheds = TRUE}).}
+#'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE}).}
 #'     } 
 #'     
 #' @details
