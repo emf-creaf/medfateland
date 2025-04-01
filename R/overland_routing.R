@@ -358,6 +358,7 @@
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
 #'       \item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
+#'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (if \code{subwatersheds = TRUE}).}
 #'     } 
 #'     
 #' @details
@@ -365,8 +366,8 @@
 #' If \code{channel} is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
 #' model simulations will include channel routing towards outlet cells.
 #' 
-#' If defining watershed subunits are required (i.e. if \code{subwatersheds = TRUE)), any given cell cannot belong to more than one subunit. 
-#' Therefore, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.
+#' If defining watershed subunits is requested (i.e. if \code{subwatersheds = TRUE}), subunits are defined first by determining the area draining to each channel or outlet cell. Then, those areas are progressively merged if one is nested into the other or when the proportion of overlapping cells is lower than 
+#' a pre-specified threshold (i.e. larger than \code{max_overlap}). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.
 #' 
 #' @export
 #'
