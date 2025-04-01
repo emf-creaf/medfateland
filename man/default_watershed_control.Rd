@@ -23,6 +23,8 @@ A list with the following items:
 \item{\code{n_baseflow [= 1.0]}: Exponent for the determination of baseflow.}
 \item{\code{num_daily_substeps [= 4]}: Number of daily sub-steps for interflow calculations.}
 \item{\code{channel_flow_speed [= 1]}: Average flow speed in the channel (in m/s).}
+\item{\code{subwatersheds [= FALSE]}: A boolean flag to define watershed subunits.}
+\item{\code{max_overlap [= 0.2]}: Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.}
 \item{\code{rock_max_infiltration [= 10]}: Maximum infiltration rate (mm·day-1) for rock cells.}
 \item{\code{deep_aquifer_loss [= 0]}: Daily loss rate from watershed aquifer towards a deeper aquifer not connected to outlets (mm·day-1).}
 }
