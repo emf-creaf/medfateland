@@ -125,7 +125,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisCopySoilResultsToOutput`, y, soilCellResults, output, tminVec, tmaxVec))
 }
 
-.tetisChannelRouting <- function(outWB, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisChannelRouting`, outWB, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize))
+.tetisChannelRouting <- function(ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisChannelRouting`, ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize))
 }
 

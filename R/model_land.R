@@ -361,15 +361,10 @@
   .tetisCopySoilResultsToOutput(y, localResults, output,
                                 tminVec, tmaxVec)
 
-  #C2. Overland surface runoff from soil cells diverted to outlets or channel
+  #C2. Overland surface runoff from cells diverted to outlets or channel
   .tetisOverlandFlows(output[["WatershedWaterBalance"]],
                       waterOrder, queenNeigh, waterQ, isChannel)
   
-  #C3. Channel routing
-  .tetisChannelRouting(output[["WatershedWaterBalance"]], 
-                       isChannel, isOutlet, 
-                       target_outlet, distance_to_outlet, outlet_backlog,
-                       watershed_control, patchsize)
   
   #D. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
@@ -556,15 +551,15 @@
   #Output matrices
   if(watershed_model =="tetis") {
     channel_cells <- which(sf_routing$channel)
-    outlet_cells <- which(sf_routing$outlet)
+    outlet_nonchannel_cells <- which(sf_routing$outlet & !sf_routing$channel)
 
-    OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlet_cells))
-    colnames(OutletExport_m3s) <- outlet_cells
-    rownames(OutletExport_m3s) <- as.character(dates)
+    WatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
+    colnames(WatershedExport) <- outlet_nonchannel_cells
+    rownames(WatershedExport) <- as.character(dates)
 
-    ChannelExport_m3s <- matrix(0,nrow = nDays, ncol = length(channel_cells))
-    colnames(ChannelExport_m3s) <- channel_cells
-    rownames(ChannelExport_m3s) <- as.character(dates)
+    ChannelExport <- matrix(0,nrow = nDays, ncol = length(channel_cells))
+    colnames(ChannelExport) <- channel_cells
+    rownames(ChannelExport) <- as.character(dates)
     
     vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow",
               "Snowmelt", "Interception", "NetRain",  
@@ -801,8 +796,8 @@
     
     ## Store watershed runoff reaching each outlet (m3s)
     if(watershed_model=="tetis") {
-      OutletExport_m3s[day,] <- (res_day$WatershedExport[outlet_cells]/1e3)*patchsize/(3600*24)
-      ChannelExport_m3s[day,] <- (res_day$WatershedExport[channel_cells]/1e3)*patchsize/(3600*24)
+      WatershedExport[day,] <- res_day$WatershedExport[outlet_nonchannel_cells]
+      ChannelExport[day,] <- res_day$ChannelExport[channel_cells]
     }
     
     #Landscape balance
@@ -887,7 +882,6 @@
     Transpirationsum <- sum(LandscapeBalance$Transpiration , na.rm=T)
     HerbTranspirationsum <- sum(LandscapeBalance$HerbTranspiration , na.rm=T)
     AquiferExfiltrationsum <- sum(LandscapeBalance$AquiferExfiltration , na.rm=T)
-    WatershedExportsum <- sum(LandscapeBalance$WatershedExport, na.rm=T)
     InterflowBalancesum <- sum(LandscapeBalance$InterflowBalance , na.rm=T)
     BaseflowBalancesum <- sum(LandscapeBalance$BaseflowBalance , na.rm=T)
     snowpack_wb <- Snowsum - Snowmeltsum
@@ -907,8 +901,9 @@
     SoilHerbTranspirationsum <- sum(SoilLandscapeBalance$HerbTranspiration , na.rm=T)
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
     SoilInterflowBalancesum <- sum(SoilLandscapeBalance$InterflowBalance , na.rm=T)
-    ChannelBacklogsum <- .get_backlog_sum(sf_routing)
-    
+    ChannelExportsum <- sum(ChannelExport, na.rm=T)/nCells
+    WatershedExportsum <- sum(WatershedExport, na.rm=T)/nCells
+
     soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowBalancesum)
     soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
     soil_wb <-  soil_input - soil_output
@@ -925,11 +920,17 @@
                          " fluxes (mm): ",round(aquifer_wb,2)))
     }
     
-    landscape_wb <- Precipitationsum + InterflowBalancesum + BaseflowBalancesum + ChannelBacklogsum - WatershedExportsum - SoilEvaporationsum - Transpirationsum - HerbTranspirationsum - Interceptionsum - DeepAquiferLosssum
+    landscape_etp <- SoilEvaporationsum + Transpirationsum + HerbTranspirationsum + Interceptionsum
+    landscape_wb <- Precipitationsum - ChannelExportsum - WatershedExportsum - landscape_etp - DeepAquiferLosssum
     if(header_footer) {
       cli::cli_li(paste0("Watershed balance",
                          " content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),
                          " fluxes (mm): ",round(landscape_wb,2)))
+      cli::cli_li(paste0("Watershed fluxes (mm)",
+                         " Precipitation: ", round(Precipitationsum,2),
+                         " Surface export: ",round(ChannelExportsum + WatershedExportsum,2),
+                         " Evapotransp.: ",round(landscape_etp,2),
+                         " Deep loss: ",round(DeepAquiferLosssum,2)))
     }
   }
   
@@ -940,16 +941,11 @@
   sf$summary <- summarylist
   sf$result <- resultlist
   if(watershed_model=="tetis") {
-    sf$outlet <- sf_routing$outlet
-    sf$outlet_backlog <- sf_routing$outlet_backlog
-  }
-  if(watershed_model=="tetis") {
-    l <- list(watershed_control = watershed_control,
-              sf = sf::st_as_sf(tibble::as_tibble(sf)),
+    l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
-              channel_export_m3s = ChannelExport_m3s,
-              outlet_export_m3s = OutletExport_m3s)
+              channel_export = ChannelExport,
+              watershed_export = WatershedExport)
   } else {
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance)
@@ -967,6 +963,8 @@
                          progress = TRUE, header_footer = progress) {
 
 
+  if(header_footer) cli::cli_h2("INPUT CHECKING")
+  
   #land (local) model
   land_model <- match.arg(land_model, c("spwb_land", "growth_land", "fordyn_land"))
   if(land_model == "spwb_land") local_model <- "spwb"
@@ -1097,22 +1095,26 @@
     cli::cli_li(paste0("Number of cells with daily model results requested: ", sum(y$result_cell)))
     cli::cli_li(paste0("Number of channel cells: ", sum(sf_routing$channel)))
     cli::cli_li(paste0("Number of outlet cells: ", sum(sf_routing$outlet)))
+    if(watershed_model =="tetis" && watershed_control$tetis_parameters$subwatersheds) cli::cli_li(paste0("Number of subwatersheds: ", length(unique(sf_routing$subwatershed))))
     if(!is.null(meteo)) if(inherits(meteo, "stars") || inherits(meteo, "list")) cli::cli_li(paste0("Weather interpolation factor: ", watershed_control[["weather_aggregation_factor"]]))
   }
 
+  if(header_footer) cli::cli_h2("INITIALISATION")
+  
   y <- initialize_landscape(y, SpParams = SpParams, local_control = local_control, 
                             model = local_model, replace = FALSE, progress = progress)
 
 
   if(watershed_model =="serghei") {
+    if(header_footer) cli::cli_h2("WHOLE-WATERSHED SIMULATION")
     # SIMULATE SERGHEI
-    res_inner <- .simulate_land_inner(local_model = local_model,
-                                      r = r, y = y, sf_routing = sf_routing, 
-                                      meteo = meteo, dates = dates,
-                                      CO2ByYear = CO2ByYear, 
-                                      summary_frequency = summary_frequency,
-                                      watershed_control = watershed_control,
-                                      progress = progress, header_footer = header_footer) 
+    res <- .simulate_land_inner(local_model = local_model,
+                                r = r, y = y, sf_routing = sf_routing, 
+                                meteo = meteo, dates = dates,
+                                CO2ByYear = CO2ByYear, 
+                                summary_frequency = summary_frequency,
+                                watershed_control = watershed_control,
+                                progress = progress, header_footer = header_footer) 
     if(header_footer) cli::cli_li("Water balance check not possible with SERGHEI")
   } else {
 
@@ -1126,11 +1128,22 @@
       sf$snowpack <- rep(NA, nCells)
       sf$summary <- vector("list", nCells)
       sf$result <- vector("list", nCells)
-      sf$outlet <- rep(NA, nCells)
-      sf$outlet_backlog <- vector("list", nCells)
+
+      channel_cells <- which(sf_routing$channel)
+      outlet_nonchannel_cells <- which(sf_routing$outlet & !sf_routing$channel)
+      
+      WatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
+      colnames(WatershedExport) <- outlet_nonchannel_cells
+      rownames(WatershedExport) <- as.character(dates)
+      
+      ChannelExport <- matrix(0,nrow = nDays, ncol = length(channel_cells))
+      colnames(ChannelExport) <- channel_cells
+      rownames(ChannelExport) <- as.character(dates)
+      
       for(i in subwatersheds) {
-        if(header_footer) cli::cli_h2(paste0("SIMULATING SUB-WATERSHED #", i))
         sel_subwatershed <- sf_routing$subwatershed==i
+        nCellsSub <- sum(sel_subwatershed)
+        if(header_footer) cli::cli_h2(paste0("SIMULATING SUB-WATERSHED #", i, " (", nCellsSub, " cells)"))
         res_inner_sub <- .simulate_land_inner(local_model = local_model,
                                              r = r, 
                                              y = y[sel_subwatershed, , drop = FALSE], 
@@ -1146,17 +1159,29 @@
         sf$snowpack[sel_subwatershed] <- sf_sub$snowpack
         sf$summary[sel_subwatershed] <- sf_sub$summary
         sf$result[sel_subwatershed] <- sf_sub$result
-        sf$outlet[sel_subwatershed] <- sf_sub$outlet
-        sf$outlet_backlog[sel_subwatershed] <- sf_sub$outlet_backlog
-        res_inner <- list(watershed_control = watershed_control,
-                          sf = sf::st_as_sf(tibble::as_tibble(sf)))
-        # l <- list(watershed_control = watershed_control,
-        #           sf = sf::st_as_sf(tibble::as_tibble(sf)),
-        #           watershed_balance = LandscapeBalance,
-        #           watershed_soil_balance = SoilLandscapeBalance,
-        #           channel_export_m3s = ChannelExport_m3s,
-        #           outlet_export_m3s = OutletExport_m3s)
+        
+        watershed_balance_sub <- res_inner_sub$watershed_balance
+        watershed_soil_balance_sub <- res_inner_sub$watershed_soil_balance
+        watershed_balance_sub[,-1] <- watershed_balance_sub[,-1]*(nCellsSub/nCells)
+        watershed_soil_balance_sub[,-1] <- watershed_soil_balance_sub[,-1]*(nCellsSub/nCells)
+        if(i==1) {
+          LandscapeBalance <- watershed_balance_sub
+          SoilLandscapeBalance <- watershed_soil_balance_sub
+        } else {
+          LandscapeBalance[,-1] <- LandscapeBalance[,-1] + watershed_balance_sub[,-1]
+          SoilLandscapeBalance[,-1] <- SoilLandscapeBalance[,-1] + watershed_soil_balance_sub[,-1]
+        }
+        channel_cells_sub <- channel_cells %in% which(sel_subwatershed)
+        outlet_nonchannel_cells_sub <- outlet_nonchannel_cells %in% which(sel_subwatershed)
+        ChannelExport[,channel_cells_sub] <- res_inner_sub$channel_export
+        WatershedExport[,outlet_nonchannel_cells_sub] <- res_inner_sub$watershed_export
       }
+      res_inner <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
+                        watershed_balance = LandscapeBalance,
+                        watershed_soil_balance = SoilLandscapeBalance,
+                        channel_export = ChannelExport,
+                        watershed_export = WatershedExport)
+      
     } else {
       if(header_footer) cli::cli_h2("WHOLE-WATERSHED SIMULATION")
       res_inner <- .simulate_land_inner(local_model = local_model,
@@ -1167,10 +1192,46 @@
                                         watershed_control = watershed_control,
                                         progress = progress, header_footer = header_footer) 
     }
+    
+    outlet_cells <- which(sf_routing$outlet)
+    channel_cells <- which(sf_routing$channel)
+    
+    outlet_non_channel <- !(outlet_cells %in% which(sf_routing$channel))
+
+    OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlet_cells))
+    colnames(OutletExport_m3s) <- outlet_cells
+    rownames(OutletExport_m3s) <- as.character(dates)
+    OutletExport_m3s[, outlet_non_channel] <- (res_inner$watershed_export/1e3)*patchsize/(3600*24)
+    
+    ChannelExport_m3s <- (res_inner$channel_export/1e3)*patchsize/(3600*24)
+    if(sum(sf_routing$channel)>0) {
+      if(header_footer) cli::cli_h2("CHANNEL ROUTING")
+      for(day in 1:nDays) {
+        ChannelExport_vector <- rep(0, nCells)
+        ChannelExport_vector[channel_cells] <- res_inner$channel_export[day,]
+        WatershedExport_vector <- rep(0, nCells)
+        .tetisChannelRouting(ChannelExport_vector, WatershedExport_vector,
+                             sf_routing$channel, sf_routing$outlet, 
+                             sf_routing$target_outlet, sf_routing$distance_to_outlet, sf_routing$outlet_backlog,
+                             watershed_control, patchsize)
+        OutletExport_m3s[day, which(!outlet_non_channel)] <- (WatershedExport_vector[outlet_cells[!outlet_non_channel]]/1e3)*patchsize/(3600*24)
+      }
+    }
+    
+    sf_out <- res_inner$sf
+    sf_out$outlet <- sf_routing$outlet
+    sf_out$outlet_backlog <- sf_routing$outlet_backlog
+
+    res <- list(watershed_control = watershed_control,
+                sf = sf_out,
+                watershed_balance = res_inner$watershed_balance,
+                watershed_soil_balance = res_inner$watershed_soil_balance,
+                channel_export_m3s = ChannelExport_m3s,
+                outlet_export_m3s = OutletExport_m3s)
   }
   
-  class(res_inner)<-c(land_model, "list")
-  return(res_inner)
+  class(res)<-c(land_model, "list")
+  return(res)
 }
 
 
@@ -1296,8 +1357,9 @@
 #'   }
 #'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 #'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-#'   \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the 
-#'                                   overall watershed export corresponds to the sum of row values.}
+#'   \item{\code{channel_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the channel cells of the landscape.}
+#'   \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells (sometimes including channel routing), so the 
+#'                                   daily overall watershed export corresponds to the sum of row values.}
 #' }
 #' 
 #' @details

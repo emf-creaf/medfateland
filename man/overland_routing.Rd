@@ -58,7 +58,8 @@ If \code{channel} is supplied, then outlets are channel cells in the domain limi
 model simulations will include channel routing towards outlet cells.
 
 If defining watershed subunits is requested (i.e. if \code{subwatersheds = TRUE}), subunits are defined first by determining the area draining to each channel or outlet cell. Then, those areas are progressively merged if one is nested into the other or when the proportion of overlapping cells is lower than
-a pre-specified threshold (i.e. larger than \code{max_overlap}). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.
+a pre-specified threshold (i.e. larger than \code{max_overlap}). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell. The neighbors and proportion of overland flow to neighbors are modified
+for cells in located in subunit boundaries.
 }
 \examples{
 # Load example watershed data

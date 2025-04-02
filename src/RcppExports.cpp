@@ -419,11 +419,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisChannelRouting
-void tetisChannelRouting(DataFrame outWB, LogicalVector isChannel, LogicalVector isOutlet, IntegerVector target_outlet, IntegerVector distance_to_outlet, List outlet_backlog, List watershed_control, double patchsize);
-RcppExport SEXP _medfateland_tetisChannelRouting(SEXP outWBSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP, SEXP target_outletSEXP, SEXP distance_to_outletSEXP, SEXP outlet_backlogSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
+void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExport, LogicalVector isChannel, LogicalVector isOutlet, IntegerVector target_outlet, IntegerVector distance_to_outlet, List outlet_backlog, List watershed_control, double patchsize);
+RcppExport SEXP _medfateland_tetisChannelRouting(SEXP ChannelExportSEXP, SEXP WatershedExportSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP, SEXP target_outletSEXP, SEXP distance_to_outletSEXP, SEXP outlet_backlogSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ChannelExport(ChannelExportSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type WatershedExport(WatershedExportSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type isOutlet(isOutletSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type target_outlet(target_outletSEXP);
@@ -431,7 +432,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type outlet_backlog(outlet_backlogSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    tetisChannelRouting(outWB, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize);
+    tetisChannelRouting(ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize);
     return R_NilValue;
 END_RCPP
 }
@@ -468,7 +469,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisOverlandFlows", (DL_FUNC) &_medfateland_tetisOverlandFlows, 5},
     {"_medfateland_tetisSimulationNonSoilCells", (DL_FUNC) &_medfateland_tetisSimulationNonSoilCells, 11},
     {"_medfateland_tetisCopySoilResultsToOutput", (DL_FUNC) &_medfateland_tetisCopySoilResultsToOutput, 5},
-    {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 8},
+    {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 9},
     {NULL, NULL, 0}
 };
 

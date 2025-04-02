@@ -287,15 +287,40 @@
   if(subwatersheds) {
     out$subwatershed <- .findLowOverlapDrainageBasins(out$channel, out$outlet, out$queenNeigh, out$waterQ,
                                                       max_overlap = max_overlap)
-    # Force that overland flow goes to the same watershed
+    shifts <- vector("list", length(unique(out$subwatershed)))
+    for(i in 1:length(shifts)) {
+      shifts[[i]] <- cumsum(out$subwatershed != i)
+    }
+    # print(shifts)
+    # Update neighbors, proportion of overland flow and target outlet
     for(i in 1:nCells) { 
       ni <- out$queenNeigh[[i]]
       qi <- out$waterQ[[i]]
       ni_sub <- out$subwatershed[ni]
       i_sub <- out$subwatershed[i]
-      qi[ni_sub!=i_sub] <- 0
-      qi <- qi/sum(qi, na.rm = TRUE)
+      i_sel <- (ni_sub==i_sub) 
+      ni <- ni[i_sel]
+      # Shift neighbor positions
+      if(length(ni)>0) {
+        for(j in 1:length(ni)) {
+          ni[j] <- ni[j] - shifts[[i_sub]][ni[j]]
+        }
+      }
+      qi <- qi[i_sel]
+      if(sum(qi, na.rm = TRUE) > 0) qi <- qi/sum(qi, na.rm = TRUE)
+      out$queenNeigh[[i]] <- ni
       out$waterQ[[i]] <- qi
+      
+      # Update target outlet (not needed if channel routing is done at the end)
+      # if(!is.na(out$target_outlet[i])) {
+      #   out$target_outlet[i] <- out$target_outlet[i] - shifts[[i_sub]][out$target_outlet[i]]
+      # } 
+    }
+    # update water order and water rank
+    for(i in unique(out$subwatershed)) {
+      sel_i <- (out$subwatershed == i)
+      out$waterOrder[sel_i] <- order(sf$elevation[sel_i], decreasing = TRUE)
+      out$waterRank[sel_i] <- order(out$waterOrder[sel_i])
     }
   } else {
     out$subwatersheds <- rep(NA, nCells)
@@ -304,8 +329,11 @@
   for(i in 1:nCells) { 
     ni <- out$queenNeigh[[i]]
     qi <- out$waterQ[[i]]
-    if(max(ni)>nCells || min(ni) < 1) {
-      cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
+    if(length(ni)>0) {
+      if(any(is.na(ni))) cli::cli_abort(paste0("NA neighbors in cell ", i))
+      if(max(ni)>nCells || min(ni) < 1) {
+        cli::cli_abort(paste0("Cell ", i, " pointed to non-existing neighbors"))
+      }
     }
     if(length(qi) != length(ni)) {
       cli::cli_abort(paste0("Cell ", i, " has different number of neighbors in 'waterQ' than 'queenNeigh'"))
@@ -369,7 +397,8 @@
 #' model simulations will include channel routing towards outlet cells.
 #' 
 #' If defining watershed subunits is requested (i.e. if \code{subwatersheds = TRUE}), subunits are defined first by determining the area draining to each channel or outlet cell. Then, those areas are progressively merged if one is nested into the other or when the proportion of overlapping cells is lower than 
-#' a pre-specified threshold (i.e. larger than \code{max_overlap}). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.
+#' a pre-specified threshold (i.e. larger than \code{max_overlap}). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell. The neighbors and proportion of overland flow to neighbors are modified 
+#' for cells in located in subunit boundaries.
 #' 
 #' @export
 #'

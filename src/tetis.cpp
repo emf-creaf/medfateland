@@ -291,18 +291,15 @@ void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y,
 // [[Rcpp::export(".tetisOverlandFlows")]]
 void tetisOverlandFlows(DataFrame outWB,
                         IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel) {
-  
+
   NumericVector ChannelExport=  outWB[WBCOM_ChannelExport];
   NumericVector WatershedExport=  outWB[WBCOM_WatershedExport];
   NumericVector Runoff=  outWB[WBCOM_Runoff];
+  NumericVector Runon=  outWB[WBCOM_Runon];
   NumericVector AquiferExfiltration =  outWB[WBCOM_AquiferExfiltration];
   
   int nX = Runoff.size();
-  // Here runon is an independent vector because runon from rock/artificial/water cells 
-  // has already taken into account previously. This is to process runoff from water balance
-  // and aquifer exfiltration
-  NumericVector Runon(nX,0.0);
-
+  
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterO[i]-1; //Decrease index!!!!
@@ -397,38 +394,6 @@ void tetisSimulationNonSoilCells(DataFrame outWB,
       // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
     }
   }
-  //Estimate Runon to wildland/agriculture cells
-  for(int i=0;i<nX;i++) {
-    //get next cell in order
-    int iCell = waterO[i]-1; //Decrease index!!!!
-    //Only distribute runoff if the cell is rock or artificial
-    if(lct[iCell]=="rock" || lct[iCell]=="artificial") {
-      //Assign runoff to runon of downhill neighbours
-      double ri_tot =  Runon[iCell] + Runoff[iCell];
-      if(ri_tot>0.0) {
-        double ri = ri_tot;
-        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
-        NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
-        if(ni.size()>0) {
-          for(int j=0;j<ni.size();j++)  {
-            Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
-            ri -= (qi[j]*ri_tot);
-          }
-        }
-        if((sum(qi)>0.0) && (ri > 0.00001)) {
-          Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
-          stop("Non-outlet cell with runoff export");
-        }
-        if(sum(qi)==0.0) { // outlet rock/artificial cell
-          if(isChannel[iCell]) {
-            ChannelExport[iCell] += ri;
-          } else {
-            WatershedExport[iCell] += ri;
-          }
-        }
-      }      
-    }
-  }
 }
 
 // [[Rcpp::export(".tetisCopySoilResultsToOutput")]]
@@ -507,16 +472,13 @@ void tetisCopySoilResultsToOutput(List y, List soilCellResults, List output,
 
 
 // [[Rcpp::export(".tetisChannelRouting")]]
-void tetisChannelRouting(DataFrame outWB,
+void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExport,
                          LogicalVector isChannel, LogicalVector isOutlet, 
                          IntegerVector target_outlet, IntegerVector distance_to_outlet, List outlet_backlog,
                          List watershed_control, double patchsize) {
   List tetis_parameters = watershed_control["tetis_parameters"];
   double channel_flow_speed = tetis_parameters["channel_flow_speed"];
   
-  NumericVector ChannelExport=  outWB[WBCOM_ChannelExport];
-  NumericVector WatershedExport=  outWB[WBCOM_WatershedExport];
-
   int nX = ChannelExport.size();  
   //Assign channel export to outlet's backlog
   for(int i=0;i<nX;i++) {

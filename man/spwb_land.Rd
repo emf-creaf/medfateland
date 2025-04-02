@@ -192,8 +192,9 @@ In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains addition
 }
 \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-\item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells, so the
-overall watershed export corresponds to the sum of row values.}
+\item{\code{channel_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the channel cells of the landscape.}
+\item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells (sometimes including channel routing), so the
+daily overall watershed export corresponds to the sum of row values.}
 }
 }
 \description{
