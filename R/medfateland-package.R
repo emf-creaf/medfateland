@@ -67,6 +67,7 @@
 #' @importFrom terra rast
 #' @importFrom terra rasterize
 #' @importFrom terra terrain
+#' @importFrom terra wrap
 #' @importFrom tidyterra geom_spatraster
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr unnest

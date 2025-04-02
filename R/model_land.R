@@ -823,24 +823,26 @@
       LandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance, na.rm=T)/nCells
       LandscapeBalance$BaseflowBalance[day] <- sum(res_day$BaseflowBalance, na.rm=T)/nCells
       
-      SoilLandscapeBalance$Rain[day] <- sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$Snow[day] <- sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$DeepDrainage[day] <- sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$DeepAquiferLoss[day] <- sum(res_day$DeepAquiferLoss, na.rm=T)/nSoil
-      SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$CellRunon[day] <- sum(res_day$Runon[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$Snowmelt[day] <- sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$NetRain[day] <- sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$Interception[day] <- (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
-      SoilLandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$SoilEvaporation[day] <- sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$Transpiration[day] <- sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
-      SoilLandscapeBalance$HerbTranspiration[day] <- sum(res_day$HerbTranspiration[isSoilCell], na.rm=T)/nSoil
+      if(nSoil>0) {
+        SoilLandscapeBalance$Rain[day] <- sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$Snow[day] <- sum(res_day$Snow[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$DeepDrainage[day] <- sum(res_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$InfiltrationExcess[day] <- sum(res_day$InfiltrationExcess[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$SaturationExcess[day] <- sum(res_day$SaturationExcess[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$CapillarityRise[day] <- sum(res_day$CapillarityRise[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$DeepAquiferLoss[day] <- sum(res_day$DeepAquiferLoss, na.rm=T)/nSoil
+        SoilLandscapeBalance$AquiferExfiltration[day] <- sum(res_day$AquiferExfiltration[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$CellRunoff[day] <- sum(res_day$Runoff[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$CellRunon[day] <- sum(res_day$Runon[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$Snowmelt[day] <- sum(res_day$Snowmelt[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$NetRain[day] <- sum(res_day$NetRain[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$Interception[day] <- (sum(res_day$Rain[isSoilCell], na.rm=T) - sum(res_day$NetRain[isSoilCell], na.rm=T))/nSoil
+        SoilLandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$SoilEvaporation[day] <- sum(res_day$SoilEvaporation[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$Transpiration[day] <- sum(res_day$Transpiration[isSoilCell], na.rm=T)/nSoil
+        SoilLandscapeBalance$HerbTranspiration[day] <- sum(res_day$HerbTranspiration[isSoilCell], na.rm=T)/nSoil
+      }
     }
     if(progress) cli::cli_progress_update()
   }
@@ -918,6 +920,11 @@
       cli::cli_li(paste0("Aquifer balance",
                          " content (mm): ", round(finalAquiferContent - initialAquiferContent,2),
                          " fluxes (mm): ",round(aquifer_wb,2)))
+      cli::cli_li(paste0("Aquifer fluxes (mm)",
+                         " Drainage input: ", round(DeepDrainagesum,2),
+                         " Exfiltration: ",round(AquiferExfiltrationsum,2),
+                         " Capillary rise: ",round(CapillarityRisesum,2),
+                         " Deep loss: ",round(DeepAquiferLosssum,2)))
     }
     
     landscape_etp <- SoilEvaporationsum + Transpirationsum + HerbTranspirationsum + Interceptionsum
@@ -951,6 +958,25 @@
               watershed_balance = LandscapeBalance)
   }
   return(l)
+}
+
+.f_subwatershed_inner<-function(xi, 
+                                raster_wrap,
+                                local_model, 
+                                meteo, dates,
+                                CO2ByYear, 
+                                summary_frequency,
+                                watershed_control,
+                                progress = FALSE, header_footer = progress) {
+  return(.simulate_land_inner(local_model = local_model,
+                              r = terra::unwrap(raster_wrap), 
+                              y = xi[["y"]], 
+                              sf_routing = xi[["sf_routing"]], 
+                              meteo = meteo, dates = dates,
+                              CO2ByYear = CO2ByYear, 
+                              summary_frequency = summary_frequency,
+                              watershed_control = watershed_control,
+                              progress = progress, header_footer = header_footer))
 }
 
 .simulate_land<-function(land_model = "spwb_land", 
@@ -1140,19 +1166,54 @@
       colnames(ChannelExport) <- channel_cells
       rownames(ChannelExport) <- as.character(dates)
       
+      XI <- vector("list", length(subwatersheds))
       for(i in subwatersheds) {
         sel_subwatershed <- sf_routing$subwatershed==i
+        XI[[i]] <- list("y" = y[sel_subwatershed, , drop = FALSE],
+                        "sf_routing" = sf_routing[sel_subwatershed, , drop = FALSE])
+      }
+      
+      if(parallelize) {
+        nc <- min(num_cores, length(subwatersheds))
+        if(header_footer) cli::cli_h2(paste0("PARALLEL SIMULATION of ", length(subwatersheds), " SUB-WATERSHEDS in ",nc, " NODES"))
+        
+        cl<-parallel::makeCluster(nc)
+        tryCatch({
+          res_inner_list <- parallel::clusterApply(cl = cl, 
+                                                   x = XI, 
+                                                   fun = .f_subwatershed_inner, 
+                                                   raster_wrap = terra::wrap(r),
+                                                   local_model = local_model,
+                                                   meteo = meteo, dates = dates,
+                                                   CO2ByYear = CO2ByYear, 
+                                                   summary_frequency = summary_frequency,
+                                                   watershed_control = watershed_control,
+                                                   progress = FALSE, header_footer = FALSE)
+        },
+        finally = {
+          parallel::stopCluster(cl)
+        })
+      } else {
+        res_inner_list <- vector("list", length(subwatersheds))
+        for(i in subwatersheds) {
+          sel_subwatershed <- sf_routing$subwatershed==i
+          nCellsSub <- sum(sel_subwatershed)
+          if(header_footer) cli::cli_h2(paste0("SIMULATION of SUB-WATERSHED #", i, " (", nCellsSub, " cells)"))
+          res_inner_list[[i]] <- .f_subwatershed_inner(XI[[i]],
+                                                       raster_wrap = terra::wrap(r),
+                                                       local_model = local_model,
+                                                       meteo = meteo, dates = dates,
+                                                       CO2ByYear = CO2ByYear, 
+                                                       summary_frequency = summary_frequency,
+                                                       watershed_control = watershed_control,
+                                                       progress = progress, header_footer = header_footer)
+        }
+      }
+
+      for(i in subwatersheds) {
+        res_inner_sub <- res_inner_list[[i]]
+        sel_subwatershed <- sf_routing$subwatershed==i
         nCellsSub <- sum(sel_subwatershed)
-        if(header_footer) cli::cli_h2(paste0("SIMULATING SUB-WATERSHED #", i, " (", nCellsSub, " cells)"))
-        res_inner_sub <- .simulate_land_inner(local_model = local_model,
-                                             r = r, 
-                                             y = y[sel_subwatershed, , drop = FALSE], 
-                                             sf_routing = sf_routing[sel_subwatershed, , drop = FALSE], 
-                                             meteo = meteo, dates = dates,
-                                             CO2ByYear = CO2ByYear, 
-                                             summary_frequency = summary_frequency,
-                                             watershed_control = watershed_control,
-                                             progress = progress, header_footer = header_footer)
         sf_sub <- res_inner_sub$sf
         sf$state[sel_subwatershed] <- sf_sub$state
         sf$aquifer[sel_subwatershed] <- sf_sub$aquifer

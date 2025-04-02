@@ -1,3 +1,7 @@
+# medfateland 2.6.0
+- *_land() functions can process subwatersheds
+- parallelization in *_land() for subwatersheds
+
 # medfateland 2.5.3
 - new function optimization_rock()
 - channel cells are now forced to be outlet in *_land simulations
