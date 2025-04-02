@@ -1678,6 +1678,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   
   LandscapeBalance <- NULL 
   SoilLandscapeBalance <- NULL
+  ChannelExport_m3s <- NULL
   OutletExport_m3s <- NULL
   cell_summary <- NULL
 
@@ -1727,11 +1728,13 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     
     #Store landscape and cell summaries
     if(iYear==1) {
+      ChannelExport_m3s <- GL$channel_export_m3s
       OutletExport_m3s <- GL$outlet_export_m3s
       LandscapeBalance <- GL$watershed_balance
       SoilLandscapeBalance <- GL$watershed_soil_balance
       cell_summary <- GL$sf$summary
     } else {
+      ChannelExport_m3s <- rbind(ChannelExport_m3s, GL$channel_export_m3s)
       OutletExport_m3s <- rbind(OutletExport_m3s, GL$outlet_export_m3s)
       LandscapeBalance <- rbind(LandscapeBalance, GL$watershed_balance)
       SoilLandscapeBalance <- rbind(SoilLandscapeBalance, GL$watershed_soil_balance)
@@ -1896,6 +1899,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
             sf = sf::st_as_sf(tibble::as_tibble(out_sf)),
             watershed_balance = LandscapeBalance,
             watershed_soil_balance = SoilLandscapeBalance,
+            channel_export_m3s = ChannelExport_m3s,
             outlet_export_m3s = OutletExport_m3s)
   class(l)<-c("fordyn_land", "list")
   return(l)
