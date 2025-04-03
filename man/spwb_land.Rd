@@ -19,8 +19,7 @@ spwb_land(
   local_control = defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
-  num_cores = detectCores() - 1,
-  chunk_size = NULL,
+  num_cores = parallel::detectCores() - 1,
   progress = TRUE
 )
 
@@ -35,8 +34,7 @@ growth_land(
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
-  num_cores = detectCores() - 1,
-  chunk_size = NULL,
+  num_cores = parallel::detectCores() - 1,
   progress = TRUE
 )
 
@@ -53,7 +51,6 @@ fordyn_land(
   management_function = NULL,
   parallelize = FALSE,
   num_cores = parallel::detectCores() - 1,
-  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -112,11 +109,9 @@ parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
 
-\item{parallelize}{Boolean flag to try parallelization (see details).}
+\item{parallelize}{Boolean flag to try parallelization (only works with subwatersheds, see details).}
 
 \item{num_cores}{Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).}
-
-\item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
 
 \item{progress}{Boolean flag to display progress information for simulations.}
 
@@ -176,7 +171,7 @@ with the following columns:
 }
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
-\item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
+\item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells (for subsequent simulations).}
 }
 In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 \itemize{
@@ -192,7 +187,7 @@ In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains addition
 }
 \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
 \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
-\item{\code{channel_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the channel cells of the landscape.}
+\item{\code{channel_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the channel cells of the landscape (useful for channel processing with an external model).}
 \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells (sometimes including channel routing), so the
 daily overall watershed export corresponds to the sum of row values.}
 }
@@ -221,9 +216,7 @@ distributed hydrological model.
 When running \code{fordyn_land}, the input 'sf' object has to be in a Universal Transverse Mercator (UTM) coordinate system (or any other projection using meters as length unit)
 for appropriate behavior of dispersal sub-model.
 
-Parallel computation is only recommended for watersheds with large number of grid cells (e.g. > 10,000 when using \code{transpirationMode = "granier"}).
-In watershed with a small number of cells, parallel computation can result in larger processing times than sequential computation, due
-to the communication overload.
+Due to the large communication overload, parallel computation is only allowed for TETIS in combination with definition of subwatersheds (see flag of TETIS parameters in \code{\link{default_watershed_control}}).
 
 When dealing with large data sets, weather data included in the 'sf' object will likely be very data hungry. In those cases, it is
 recommended to resort on weather interpolation (see \code{\link{spwb_spatial}}). Weather interpolation can be done using a coarser resolution

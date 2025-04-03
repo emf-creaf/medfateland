@@ -13,9 +13,6 @@ spwb_land_day(
   date = NULL,
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
-  parallelize = FALSE,
-  num_cores = parallel::detectCores() - 1,
-  chunk_size = NULL,
   progress = TRUE
 )
 
@@ -27,9 +24,6 @@ growth_land_day(
   date = NULL,
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
-  parallelize = FALSE,
-  num_cores = parallel::detectCores() - 1,
-  chunk_size = NULL,
   progress = TRUE
 )
 }
@@ -49,12 +43,6 @@ growth_land_day(
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
 
-\item{parallelize}{Boolean flag to try parallelization (see details).}
-
-\item{num_cores}{Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).}
-
-\item{chunk_size}{Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).}
-
 \item{progress}{Boolean flag to display progress information for simulations.}
 }
 \value{
@@ -65,7 +53,7 @@ Functions \code{spwb_land_day} and \code{spwb_land_day} return a sf object:
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
-\item{\code{outlet}: A logical vector indicating outlet cells.}
+\item{\code{outlet}: A logical vector indicating outlet cells (for subsequent simulations).}
 \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
 \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
 \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
@@ -103,7 +91,7 @@ provided by \code{\link[medfate]{growth_day}}.}
 }
 }
 \details{
-See details in \code{\link{spwb_land}}.
+See details in \code{\link{spwb_land}}. Subwatershed units and parallelization are not possible, at present, for single-day watershed simulations.
 }
 \examples{
 # Load example watershed data after burnin period

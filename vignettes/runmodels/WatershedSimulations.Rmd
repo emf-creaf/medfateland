@@ -94,7 +94,7 @@ Simulation model inputs need to be created for the target watershed before launc
 
 ```{r}
 example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                     local_control = defaultControl())
+                                     local_control = defaultControl(soilDomains = "buckets"))
 example_init
 ```
 
@@ -147,10 +147,10 @@ The next two elements of the simulation result list, namely `watershed_balance` 
 head(res_ws1$watershed_balance)
 ```
 
-Values of this output data frame are averages across cells in the landscape. Data frame `watershed_soil_balance` is similar to `watershed_balance` but focusing on cells that have a soil (i.e. excluding artificial, rock or water land cover). Finally, `outlet_export_m3` contains the volume reaching each outlet cell per day:
+Values of this output data frame are averages across cells in the landscape. Data frame `watershed_soil_balance` is similar to `watershed_balance` but focusing on cells that have a soil (i.e. excluding artificial, rock or water land cover). Finally, `outlet_export_m3s` contains the volume per second reaching each outlet cell:
 
 ```{r}
-head(res_ws1$outlet_export_m3)
+head(res_ws1$outlet_export_m3s)
 ```
 
 ### Accessing and plotting cell summaries
@@ -292,3 +292,68 @@ res_ws6 <- spwb_land(r, example_watershed_burnin, SpParamsMED,
                      watershed_control = ws_control, progress = FALSE)
 plot_summary(res_ws6$sf, variable = "MinTemperature", date = "2022-04-01", r = r)
 ```
+
+## Parallel simulations using subwatersheds
+
+Simulations can be rather slow even for moderately-sized watersheds. For these reason, **medfateland** now incorporates the possibility to perform parallel simulations in subwatersheds, and then aggregate the results. To illustrate this feature we will use  the data set of Bianya watershed  (see [Preparing inputs II: arbitrary locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html]); you can find the dataset in the **medfateland** GitHub repository). 
+
+We begin by loading the raster and `sf` inputs for Bianya:
+
+```{r}
+r <- terra::rast("../intro/bianya_raster.tif")
+sf <- readRDS("../intro/bianya.rds")
+```
+
+If we draw the elevation map, we will visually identify two subwatersheds:
+
+```{r, fig.align='center', fig.width=7}
+plot_variable(sf, variable = "elevation", r = r)
+```
+
+Package **medfateland** includes function `overland_routing()` to statically illustrate how overland runoff processes are dealt with (i.e. distribution of runoff among neighbors, channel routing, etc.). 
+
+```{r}
+or <- overland_routing(r, sf)
+head(or)
+```
+
+In this function we can specifically ask for sub-watersheds, as follows:
+
+```{r}
+or <- overland_routing(r, sf, subwatersheds = TRUE,
+                       max_overlap = 0.3)
+```
+
+In short, sub-watershed definition consists in: (a) finding the drainage basin of each outlet or channel cell; (b) aggregating drainage basins until the overlap is less than the specified parameter; and (c) deciding to which sub-watershed each border cell belongs to. This function identified three sub-watersheds, one of them being an isolated channel cell:
+
+```{r, fig.align='center', fig.width=7}
+plot(or[, "subwatershed"])
+```
+
+Let's now illustrate how to perform watershed simulations with parallelization and subwatersheds. We begin by initializing the input (here we used a `"buckets"` soil hydrology to speed up calculations, but `"single"` would be more appropriate).
+
+```{r}
+sf_init <- initialize_landscape(sf, SpParams = SpParamsMED,
+                                local_control = defaultControl(soilDomains = "buckets"),
+                                progress = FALSE)
+```
+
+Subwatershed definition is controlled via watershed control options as follows (simulation functions internally call `overland_routing()`):
+
+```{r}
+ws_control <- default_watershed_control("tetis")
+ws_control$tetis_parameters$subwatersheds <- TRUE
+ws_control$tetis_parameters$max_overlap <- 0.3
+```
+
+Now, we are ready to launch the watershed simulation with parallelization. This consists in performing simulations for each subwatershed independently, aggregating the results and, finally, performing channel routing. 
+
+For simplicity, we only simulate five days. We ask for console output to see what the model is doing:
+```{r, warning=FALSE}
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-05"), by="day")
+res_ws5 <- spwb_land(r, sf_init,
+                    SpParamsMED, examplemeteo, dates = dates,
+                    watershed_control = ws_control, progress = TRUE,
+                    parallelize = TRUE)
+```
+
