@@ -9,7 +9,7 @@ it also determines channel routing."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,8 @@ it also determines channel routing.</p>
 If <code>channel</code> is supplied, then outlets are channel cells in the domain limits and not having a neighbor channel at lower elevation. In this case,
 model simulations will include channel routing towards outlet cells.</p>
 <p>If defining watershed subunits is requested (i.e. if <code>subwatersheds = TRUE</code>), subunits are defined first by determining the area draining to each channel or outlet cell. Then, those areas are progressively merged if one is nested into the other or when the proportion of overlapping cells is lower than
-a pre-specified threshold (i.e. larger than <code>max_overlap</code>). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell, the proportion of overland flow to neighbors is modified for cells in located in subunit boundaries.</p>
+a pre-specified threshold (i.e. larger than <code>max_overlap</code>). A given cell cannot belong to more than one subunit. Therefore, the overlap between the final subwatersheds is eliminated by deciding the main subwatershed for each cell. The neighbors and proportion of overland flow to neighbors are modified
+for cells in located in subunit boundaries.</p>
     </div>
 
     <div class="section level2">

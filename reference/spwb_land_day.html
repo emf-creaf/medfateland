@@ -19,7 +19,7 @@ provided by growth_day.
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,9 +76,6 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 <span>  date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>  watershed_control <span class="op">=</span> <span class="fu"><a href="default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  num_cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -90,9 +87,6 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 <span>  date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  local_control <span class="op">=</span> <span class="fu">medfate</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>  watershed_control <span class="op">=</span> <span class="fu"><a href="default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  num_cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -130,18 +124,6 @@ provided by <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_da
 for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième et al. (2023) - is specified there.</p></dd>
 
 
-<dt id="arg-parallelize">parallelize<a class="anchor" aria-label="anchor" href="#arg-parallelize"></a></dt>
-<dd><p>Boolean flag to try parallelization (see details).</p></dd>
-
-
-<dt id="arg-num-cores">num_cores<a class="anchor" aria-label="anchor" href="#arg-num-cores"></a></dt>
-<dd><p>Integer with the number of cores to be used for parallel computation (by default it will use all clusters minus one).</p></dd>
-
-
-<dt id="arg-chunk-size">chunk_size<a class="anchor" aria-label="anchor" href="#arg-chunk-size"></a></dt>
-<dd><p>Integer indicating the size of chunks to be sent to different processes (by default, the number of spatial elements divided by the number of cores).</p></dd>
-
-
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
 <dd><p>Boolean flag to display progress information for simulations.</p></dd>
 
@@ -153,7 +135,7 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <li><p><code>aquifer</code>: A numeric vector with the water volume in the aquifer of each cell.</p></li>
 <li><p><code>snowpack</code>: A numeric vector with the snowpack water equivalent volume of each cell.</p></li>
 <li><p><code>result</code>: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.</p></li>
-<li><p><code>outlet</code>: A logical vector indicating outlet cells.</p></li>
+<li><p><code>outlet</code>: A logical vector indicating outlet cells (for subsequent simulations).</p></li>
 <li><p><code>outlet_backlog</code>: A list vector indicating channel backlog of outlet cells.</p></li>
 <li><p><code>MinTemperature</code>: Minimum temperature (degrees Celsius).</p></li>
 <li><p><code>MaxTemperature</code>: Maximum temperature (degrees Celsius).</p></li>
@@ -182,7 +164,7 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>See details in <code><a href="spwb_land.html">spwb_land</a></code>.</p>
+    <p>See details in <code><a href="spwb_land.html">spwb_land</a></code>. Subwatershed units and parallelization are not possible, at present, for single-day watershed simulations.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -240,13 +222,13 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed for day '2001-03-01'</span> <span style="color: #00BBBB;">────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking topology</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking topology <span style="color: #B2B2B2;">[15ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[20ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data <span style="color: #B2B2B2;">[28ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Determining neighbors and discharge for TETIS</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[15ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and discharge for TETIS <span style="color: #B2B2B2;">[18ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Hydrological model: TETIS</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of grid cells: 120 Number of target cells: 66</span>
@@ -257,10 +239,10 @@ for lateral water flows - either Francés et al. (2007) or Caviedes-Voullième e
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of channel cells: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of outlet cells: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building spwb input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building spwb input <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0 cells needed initialization</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[77ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 0 cells needed initialization <span style="color: #B2B2B2;">[68ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

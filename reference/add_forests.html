@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -174,8 +174,6 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Read tree data (warnings are raised)</span></span></span>
 <span class="r-in"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu">add_forests</span><span class="op">(</span><span class="va">x</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Taxon names that were not matched: Quercus humilis.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Taxon names that were not matched: Quercus humilis.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Correct scientific name for downy oak and repeat to avoid losing tree records</span></span></span>
 <span class="r-in"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">==</span><span class="st">"Quercus humilis"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Quercus pubescens"</span></span></span>
