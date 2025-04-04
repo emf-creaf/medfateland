@@ -337,6 +337,9 @@ void tetisSimulationNonSoilCells(DataFrame outWB,
                                  IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel,
                                  List watershed_control) {
   
+  NumericVector MinTemperature = outWB[WBCOM_MinTemperature];
+  NumericVector MaxTemperature = outWB[WBCOM_MaxTemperature];
+  NumericVector PET = outWB[WBCOM_PET];
   NumericVector Rain = outWB[WBCOM_Rain];
   NumericVector Interception = outWB[WBCOM_Interception];
   NumericVector NetRain = outWB[WBCOM_NetRain];
@@ -361,6 +364,9 @@ void tetisSimulationNonSoilCells(DataFrame outWB,
   
   for(int i=0;i<nX;i++){
     if(lct[i]=="rock" || lct[i]=="artificial" || lct[i]=="water") {
+      MinTemperature[i] = tminVec[i];
+      MaxTemperature[i] = tmaxVec[i];
+      PET[i] = NA_REAL;
       double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
       if(tday<0.0) {
         Snow[i] = precVec[i];
