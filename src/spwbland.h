@@ -36,8 +36,30 @@ const int WBCOM_ChannelExport = 26;
 const int WBCOM_WatershedExport = 27;
 const int WBCOM_Interception = 28;
 
+const int STCOM_LAI = 0;
+const int STCOM_LAIherb = 1;
+const int STCOM_LAIlive = 2;
+const int STCOM_LAIexpanded = 3;
+const int STCOM_LAIdead = 4;
+const int STCOM_Cm = 5;
+const int STCOM_LgroundPAR = 6;
+const int STCOM_LgroundSWR = 7;
+
+const int CBCOM_GrossPrimaryProduction = 0;
+const int CBCOM_MaintenanceRespiration = 1;
+const int CBCOM_SynthesisRespiration = 2;
+const int CBCOM_NetPrimaryProduction = 3;
+
+const int BBCOM_StructuralBalance = 0;
+const int BBCOM_LabileBalance = 1;
+const int BBCOM_PlantBalance = 2;
+const int BBCOM_MortalityLoss = 3;
+const int BBCOM_CohortBalance = 4;
+
 void copySnowpackToSoil(List y);
 void copySnowpackFromSoil(List y);
 void resetWaterBalanceDayOutput(DataFrame outWB);
-List createDayOutput(List y);
-List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication);
+List createDayOutput(int nX, 
+                     bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, 
+                       bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);

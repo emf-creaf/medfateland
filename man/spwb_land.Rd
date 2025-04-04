@@ -15,6 +15,7 @@ spwb_land(
   meteo = NULL,
   dates = NULL,
   CO2ByYear = numeric(0),
+  summary_blocks = NULL,
   summary_frequency = "years",
   local_control = defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
@@ -30,6 +31,7 @@ growth_land(
   meteo = NULL,
   dates = NULL,
   CO2ByYear = numeric(0),
+  summary_blocks = NULL,
   summary_frequency = "years",
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
@@ -100,6 +102,8 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
+\item{summary_blocks}{A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land}, "CarbonBalance" and "BiomassBalance" are also accepted.}
+
 \item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
 In \code{fordyn_land} summaries are always produced at monthly resolution.}
 
@@ -135,33 +139,13 @@ with the following columns:
 \item{\code{state}: A list of model input objects for each simulated stand.}
 \item{\code{aquifer}: A numeric vector with the water volume in the aquifer of each cell.}
 \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
-\item{\code{summary}: A list of cell summaries, containing the following variables:
+\item{\code{summary}: A list of cell summaries containing at least the following variables (additional variables are summarized using \code{summary_blocks}):
 \itemize{
 \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
 \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
 \item{\code{PET}: Potential evapotranspiration (in mm).}
 \item{\code{Rain}: Rainfall (in mm).}
 \item{\code{Snow}: Snowfall (in mm).}
-\item{\code{Snowmelt}: Snow melt (in mm).}
-\item{\code{Interception}: Rainfall interception (in mm).}
-\item{\code{NetRain}: Net rainfall, i.e. throughfall, (in mm).}
-\item{\code{Infiltration}: The amount of water infiltrating into the soil (in mm).}
-\item{\code{InfiltrationExcess}: The amount of water exceeding the soil infiltration capacity (in mm).}
-\item{\code{SaturationExcess}: The amount of water that reaches the soil surface because of soil saturation (in mm).}
-\item{\code{Runon}: The amount of water reaching the cell via surface runon (in mm).}
-\item{\code{Runoff}: The amount of water exported from the cell via surface runoff (in mm).}
-\item{\code{DeepDrainage}: The amount of water draining from soil to the aquifer via deep drainage (in mm).}
-\item{\code{CapillarityRise}: Water entering the soil via capillarity rise (mm) from the water table.}
-\item{\code{SoilEvaporation}: Bare soil evaporation (in mm).}
-\item{\code{Transpiration}: Woody plant transpiration (in mm).}
-\item{\code{HerbTranspiration}: Herbaceous transpiration (in mm).}
-\item{\code{InterflowInput}: The amount of water that reaches the soil of the cell from adjacent cells via subsurface flow (in mm).}
-\item{\code{InterflowOutput}: The amount of water that leaves the soil of the cell towards adjacent cells via subsurface flow (in mm).}
-\item{\code{InterflowBalance}: The balance of water circulating via subsurface flow (in mm).}
-\item{\code{BaseflowInput}: The amount of water that reaches the aquifer of the cell from adjacent cells via groundwater flow (in mm).}
-\item{\code{BaseflowOutput}: The amount of water that leaves the aquifer of the cell towards adjacent cells via groundwater flow (in mm).}
-\item{\code{BaseflowBalance}: The balance of water circulating via groundwater flow (in mm).}
-\item{\code{AquiferExfiltration}: The amount of water of the cell that generates surface runoff due to the aquifer reaching the soil surface (in mm).}
 \item{\code{SWE}: Snow water equivalent (in mm) of the snowpack.}
 \item{\code{RWC}: Soil relative water content with respect to field capacity (in percent).}
 \item{\code{SoilVol}: Soil water volume integrated across vertical layers (in mm).}

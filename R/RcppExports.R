@@ -77,16 +77,16 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
 }
 
-.createDayOutput <- function(nX) {
-    .Call(`_medfateland_createDayOutput`, nX)
+.createDayOutput <- function(nX, standSummary, carbonBalanceSummary, biomassBalanceSummary) {
+    .Call(`_medfateland_createDayOutput`, nX, standSummary, carbonBalanceSummary, biomassBalanceSummary)
 }
 
 .resetWaterBalanceDayOutput <- function(outWB) {
     invisible(.Call(`_medfateland_resetWaterBalanceDayOutput`, outWB))
 }
 
-.fcpp_landunit_day <- function(xi, model, date, internalCommunication) {
-    .Call(`_medfateland_fcpp_landunit_day`, xi, model, date, internalCommunication)
+.fcpp_landunit_day <- function(xi, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary) {
+    .Call(`_medfateland_fcpp_landunit_day`, xi, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary)
 }
 
 .tetisModifyKsat <- function(y, watershed_control, reverse) {

@@ -468,6 +468,73 @@ void tetisCopySoilResultsToOutput(List y, List soilCellResults, List output,
       }
     }
   }
+  
+  if(output.containsElementNamed("WatershedStand")) {
+    DataFrame outStand = as<DataFrame>(output["WatershedStand"]);
+    NumericVector LAI = outStand[STCOM_LAI];
+    NumericVector LAIherb = outStand[STCOM_LAIherb];
+    NumericVector LAIlive = outStand[STCOM_LAIlive];
+    NumericVector LAIexpanded = outStand[STCOM_LAIexpanded];
+    NumericVector LAIdead = outStand[STCOM_LAIdead];
+    NumericVector Cm = outStand[STCOM_Cm];
+    NumericVector LgroundPAR = outStand[STCOM_LgroundPAR];
+    NumericVector LgroundSWR = outStand[STCOM_LgroundSWR];
+    for(int i=0;i<nX;i++){
+      if(land_cover_type[i] == "wildland") {
+        List lr = soilCellResults[i];
+        List sr = lr["simulation_results"];
+        NumericVector Stand = sr["Stand"];
+        LAI[i] = Stand["LAI"];
+        LAIherb[i] = Stand["LAIherb"];
+        LAIlive[i] = Stand["LAIlive"];
+        LAIexpanded[i] = Stand["LAIexpanded"];
+        LAIdead[i] = Stand["LAIdead"];
+        Cm[i] = Stand["Cm"];
+        LgroundPAR[i] = Stand["LgroundPAR"];
+        LgroundSWR[i] = Stand["LgroundSWR"];
+      }
+    }
+  }
+  
+  if(output.containsElementNamed("WatershedCarbonBalance")) {
+    DataFrame outCB = as<DataFrame>(output["WatershedCarbonBalance"]);
+    NumericVector GrossPrimaryProduction = outCB[CBCOM_GrossPrimaryProduction];
+    NumericVector MaintenanceRespiration = outCB[CBCOM_MaintenanceRespiration];
+    NumericVector SynthesisRespiration = outCB[CBCOM_SynthesisRespiration];
+    NumericVector NetPrimaryProduction = outCB[CBCOM_NetPrimaryProduction];
+    for(int i=0;i<nX;i++){
+      if(land_cover_type[i] == "wildland") {
+        List lr = soilCellResults[i];
+        List sr = lr["simulation_results"];
+        NumericVector CarbonBalance = sr["CarbonBalance"];
+        GrossPrimaryProduction[i] = CarbonBalance["GrossPrimaryProduction"];
+        MaintenanceRespiration[i] = CarbonBalance["MaintenanceRespiration"];
+        SynthesisRespiration[i] = CarbonBalance["SynthesisRespiration"];
+        NetPrimaryProduction[i] = CarbonBalance["NetPrimaryProduction"];
+      }
+    }
+  }
+  
+  if(output.containsElementNamed("WatershedBiomassBalance")) {
+    DataFrame outBB = as<DataFrame>(output["WatershedBiomassBalance"]);
+    NumericVector StructuralBalance = outBB[BBCOM_StructuralBalance];
+    NumericVector LabileBalance = outBB[BBCOM_LabileBalance];
+    NumericVector PlantBalance = outBB[BBCOM_PlantBalance];
+    NumericVector MortalityLoss = outBB[BBCOM_MortalityLoss];
+    NumericVector CohortBalance = outBB[BBCOM_CohortBalance];
+    for(int i=0;i<nX;i++){
+      if(land_cover_type[i] == "wildland") {
+        List lr = soilCellResults[i];
+        List sr = lr["simulation_results"];
+        DataFrame pbb = Rcpp::as<Rcpp::DataFrame>(sr["PlantBiomassBalance"]);
+        StructuralBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["StructuralBiomassBalance"]));
+        LabileBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["LabileBiomassBalance"]));
+        PlantBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["PlantBiomassBalance"]));
+        MortalityLoss[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["MortalityBiomassLoss"]));
+        CohortBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["CohortBiomassBalance"]));
+      }
+    }
+  }
 }
 
 

@@ -257,13 +257,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // createDayOutput
-List createDayOutput(int nX);
-RcppExport SEXP _medfateland_createDayOutput(SEXP nXSEXP) {
+List createDayOutput(int nX, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
+RcppExport SEXP _medfateland_createDayOutput(SEXP nXSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type nX(nXSEXP);
-    rcpp_result_gen = Rcpp::wrap(createDayOutput(nX));
+    Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
+    rcpp_result_gen = Rcpp::wrap(createDayOutput(nX, standSummary, carbonBalanceSummary, biomassBalanceSummary));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -278,8 +281,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // fcpp_landunit_day
-List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication);
-RcppExport SEXP _medfateland_fcpp_landunit_day(SEXP xiSEXP, SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP) {
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
+RcppExport SEXP _medfateland_fcpp_landunit_day(SEXP xiSEXP, SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -287,7 +290,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< String >::type model(modelSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
     Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
-    rcpp_result_gen = Rcpp::wrap(fcpp_landunit_day(xi, model, date, internalCommunication));
+    Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
+    rcpp_result_gen = Rcpp::wrap(fcpp_landunit_day(xi, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -457,9 +463,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_copyStateFromResults", (DL_FUNC) &_medfateland_copyStateFromResults, 2},
-    {"_medfateland_createDayOutput", (DL_FUNC) &_medfateland_createDayOutput, 1},
+    {"_medfateland_createDayOutput", (DL_FUNC) &_medfateland_createDayOutput, 4},
     {"_medfateland_resetWaterBalanceDayOutput", (DL_FUNC) &_medfateland_resetWaterBalanceDayOutput, 1},
-    {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 4},
+    {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 7},
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 7},

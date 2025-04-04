@@ -37,6 +37,26 @@ const int WBCOM_ChannelExport = 26;
 const int WBCOM_WatershedExport = 27;
 const int WBCOM_Interception = 28;
 
+const int STCOM_LAI = 0;
+const int STCOM_LAIherb = 1;
+const int STCOM_LAIlive = 2;
+const int STCOM_LAIexpanded = 3;
+const int STCOM_LAIdead = 4;
+const int STCOM_Cm = 5;
+const int STCOM_LgroundPAR = 6;
+const int STCOM_LgroundSWR = 7;
+
+const int CBCOM_GrossPrimaryProduction = 0;
+const int CBCOM_MaintenanceRespiration = 1;
+const int CBCOM_SynthesisRespiration = 2;
+const int CBCOM_NetPrimaryProduction = 3;
+
+const int BBCOM_StructuralBalance = 0;
+const int BBCOM_LabileBalance = 1;
+const int BBCOM_PlantBalance = 2;
+const int BBCOM_MortalityLoss = 3;
+const int BBCOM_CohortBalance = 4;
+
 // [[Rcpp::export("drainageCells")]]
 IntegerVector drainageCells(List queenNeigh, List waterQ, int iCell) {
   IntegerVector cells = IntegerVector::create(iCell);
@@ -144,10 +164,8 @@ void copyStateFromResults(List y, List localResults) {
 }
 
 // [[Rcpp::export(".createDayOutput")]]
-List createDayOutput(int nX) {
-
-  List localResults(nX);
-  
+List createDayOutput(int nX, 
+                     bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
 
   int ncol = 29;
   List out(ncol);
@@ -186,8 +204,55 @@ List createDayOutput(int nX) {
   out.attr("names") = colnames;
 
   DataFrame waterBalance(out);
-  return(List::create(_["WatershedWaterBalance"] = waterBalance,
-                      _["LocalResults"] = localResults));
+  
+  List localResults(nX);
+  List l = List::create(_["LocalResults"] = localResults,
+                        _["WatershedWaterBalance"] = waterBalance);
+  if(standSummary) {
+    int ncol_stand = 8;
+    List out_stand(ncol_stand);
+    CharacterVector colnames_stand(ncol_stand);
+    for(int i = 0; i<ncol_stand; i++) out_stand[i] = NumericVector(nX, 0.0);
+    colnames_stand[STCOM_LAI] = "LAI";
+    colnames_stand[STCOM_LAIherb] = "LAIherb";
+    colnames_stand[STCOM_LAIlive] = "LAIlive";
+    colnames_stand[STCOM_LAIexpanded] = "LAIexpanded";
+    colnames_stand[STCOM_LAIdead] = "LAIdead";
+    colnames_stand[STCOM_Cm] = "Cm";
+    colnames_stand[STCOM_LgroundPAR] = "LgroundPAR";
+    colnames_stand[STCOM_LgroundSWR] = "LgroundSWR";
+    out_stand.attr("names") = colnames_stand;
+    DataFrame stand(out_stand);
+    l.push_back(stand, "WatershedStand");
+  }
+  if(carbonBalanceSummary) {
+    int ncol_cb = 4;
+    List out_cb(ncol_cb);
+    CharacterVector colnames_cb(ncol_cb);
+    for(int i = 0; i<ncol_cb; i++) out_cb[i] = NumericVector(nX, 0.0);
+    colnames_cb[CBCOM_GrossPrimaryProduction] = "GrossPrimaryProduction";
+    colnames_cb[CBCOM_MaintenanceRespiration] = "MaintenanceRespiration";
+    colnames_cb[CBCOM_SynthesisRespiration] = "SynthesisRespiration";
+    colnames_cb[CBCOM_NetPrimaryProduction] = "NetPrimaryProduction";
+    out_cb.attr("names") = colnames_cb;
+    DataFrame cb(out_cb);
+    l.push_back(cb, "WatershedCarbonBalance");
+  }
+  if(biomassBalanceSummary) {
+    int ncol_bb = 5;
+    List out_bb(ncol_bb);
+    CharacterVector colnames_bb(ncol_bb);
+    for(int i = 0; i<ncol_bb; i++) out_bb[i] = NumericVector(nX, 0.0);
+    colnames_bb[BBCOM_StructuralBalance] = "StructuralBalance";
+    colnames_bb[BBCOM_LabileBalance] = "LabileBalance";
+    colnames_bb[BBCOM_PlantBalance] = "PlantBalance";
+    colnames_bb[BBCOM_MortalityLoss] = "MortalityLoss";
+    colnames_bb[BBCOM_CohortBalance] = "CohortBalance";
+    out_bb.attr("names") = colnames_bb;
+    DataFrame bb(out_bb);
+    l.push_back(bb, "WatershedBiomassBalance");
+  }
+  return(l);
 }
 
 // [[Rcpp::export(".resetWaterBalanceDayOutput")]]
@@ -201,7 +266,8 @@ void resetWaterBalanceDayOutput(DataFrame outWB) {
 }
 
 // [[Rcpp::export(".fcpp_landunit_day")]]
-List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication) {
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, 
+                       bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
   List res;
   List x = xi["x"];
   List control  = x["control"];
@@ -239,12 +305,31 @@ List fcpp_landunit_day(List xi, String model, CharacterVector date, List interna
       } else if(model=="growth") {
         res = medfate::copy_model_output(internalCommunication, x, "growth");
       }
-    } else if (transpirationMode=="Granier"){
-      List spwbOut = internalCommunication["basicSPWBOutput"];
-      res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
     } else {
-      List spwbOut = internalCommunication["advancedSPWBOutput"];
+      List spwbOut;
+      if (transpirationMode=="Granier"){
+        spwbOut = internalCommunication["basicSPWBOutput"];
+      } else {
+        spwbOut = internalCommunication["advancedSPWBOutput"];
+      }
       res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
+      if(standSummary && spwbOut.containsElementNamed("Stand")) {
+        res.push_back(clone(as<NumericVector>(spwbOut["Stand"])),"Stand");
+      }
+      if(model=="growth") {
+        List growthOut;
+        if (transpirationMode=="Granier"){
+          growthOut = internalCommunication["basicGROWTHOutput"];
+        } else {
+          growthOut = internalCommunication["advancedGROWTHOutput"];
+        }
+        if(carbonBalanceSummary && growthOut.containsElementNamed("CarbonBalance")) {
+          res.push_back(clone(as<NumericVector>(growthOut["CarbonBalance"])),"CarbonBalance");
+        }
+        if(biomassBalanceSummary && growthOut.containsElementNamed("PlantBiomassBalance")) {
+          res.push_back(clone(as<DataFrame>(growthOut["PlantBiomassBalance"])),"PlantBiomassBalance");
+        }
+      }
     }
   }
 
