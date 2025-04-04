@@ -124,7 +124,7 @@ res_ws1 <- spwb_land(r, example_simplified,
                     watershed_control = ws_control, progress = FALSE)
 ```
 
-Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing results at coarser temporal scales, to reduce the amount of memory in spatial results. 
+Although simulations are performed using daily temporal steps, parameter `summary_frequency` allows storing cell-level results at coarser temporal scales, to reduce the amount of memory in spatial results (see also parameter `summary_blocks` to decide which outputs are to be kept in summaries).
 
 ### Structure of simulation outputs
 
@@ -139,7 +139,7 @@ Where `sf` is an object of class `sf`, analogous to those of functions `*_spatia
 ```{r}
 res_ws1$sf
 ```
-Columns `state`, `aquifer` and `snowpack` contain state variables, whereas `summary` contains temporal water balance summaries for all cells. Column `result` is empty in this case, but see below.
+Columns `state`, `aquifer` and `snowpack` contain state variables, whereas `summary` contains temporal  summaries for all cells. Column `result` is empty in this case, but see below.
 
 The next two elements of the simulation result list, namely `watershed_balance` and `watershed_soil_balance`, refer to watershed-level results. For example, `watershed_balance` contains the daily elements of the water balance at the watershed level, including the amount of water exported in mm in the last column.
 
@@ -147,7 +147,7 @@ The next two elements of the simulation result list, namely `watershed_balance` 
 head(res_ws1$watershed_balance)
 ```
 
-Values of this output data frame are averages across cells in the landscape. Data frame `watershed_soil_balance` is similar to `watershed_balance` but focusing on cells that have a soil (i.e. excluding artificial, rock or water land cover). Finally, `outlet_export_m3s` contains the volume per second reaching each outlet cell:
+Values of this output data frame are averages across cells in the landscape. Data frame `watershed_soil_balance` is similar to `watershed_balance` but focusing on cells that have a soil (i.e. excluding artificial, rock or water land cover). Finally, `channel_export_m3s` contains the average river flow reaching each channel cell each day and `outlet_export_m3s` contains the average river flow reaching each outlet cell each day (both in units of cubic meters per second):
 
 ```{r}
 head(res_ws1$outlet_export_m3s)
@@ -160,7 +160,9 @@ Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a poster
 res_ws1$sf$summary[[1]]
 ```
 
-Several plots can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of the average soil relative water content during the simulated month:
+Additional variables (water balance components, carbon balance components, etc.) can be added to summaries via parameter `summary_blocks`. Some of these summaries are temporal averages (e.g. state variables), while others are temporal sums (e.g. water or carbon balance components), depending on the variable.
+
+Maps of variable summaries can be drawn from the result of function `spwb_land()` in a similar way as done for `spwb_spatial()`. As an example we display a map of the average soil relative water content during the simulated month:
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
 plot_summary(res_ws1$sf, variable = "RWC", date = "2001-01-01", r = r)
@@ -350,10 +352,16 @@ Now, we are ready to launch the watershed simulation with parallelization. This 
 
 For simplicity, we only simulate five days. We ask for console output to see what the model is doing:
 ```{r, warning=FALSE}
-dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-05"), by="day")
-res_ws5 <- spwb_land(r, sf_init,
-                    SpParamsMED, examplemeteo, dates = dates,
+dates <- seq(as.Date("2022-04-01"), as.Date("2022-04-05"), by="day")
+res_ws7 <- spwb_land(r, sf_init,
+                    SpParamsMED, interpolator, dates = dates,
+                    summary_frequency = "day", summary_blocks = "WaterBalance",
                     watershed_control = ws_control, progress = TRUE,
                     parallelize = TRUE)
 ```
 
+As an example of the output, we show a map of woody plant transpiration (note that we asked for water balance components using `summary_blocks = "WaterBalance"`:
+
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
+```
