@@ -152,23 +152,6 @@ ggplot(df)+
   theme_bw()
 ```
 
-**Capillarity rise**
-
-```{r, fig.align='center', fig.width=7, height = 4}
-ggplot(df)+
-  geom_line(aes(x=dates, y =CapillarityRise, col = Scenario, linetype = Scenario))+
-  ylab("Capillarity rise (mm)")+
-  theme_bw()
-```
-
-**Saturation excess**
-
-```{r, fig.align='center', fig.width=7, height = 4}
-ggplot(df)+
-  geom_line(aes(x=dates, y =SaturationExcess, col = Scenario, linetype = Scenario))+
-  ylab("Saturation excess (mm)")+
-  theme_bw()
-```
 **Aquifer exfiltration**
 
 ```{r, fig.align='center', fig.width=7, height = 4}
@@ -178,14 +161,6 @@ ggplot(df)+
   theme_bw()
 ```
 
-**Watershed export**
-
-```{r, fig.align='center', fig.width=7, height = 4}
-ggplot(df)+
-  geom_line(aes(x=dates, y =WatershedExport, col = Scenario, linetype = Scenario))+
-  ylab("Watershed export (mm)")+
-  theme_bw()
-```
 
 ### Flux rate maps
 
@@ -198,14 +173,6 @@ g4 <- plot_summary(res_B5$sf, "DeepDrainage", date = "2001-01-01", r = r, limits
 cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 ```
 
-**Capillarity rise**
-```{r, fig.align='center', fig.width=7, fig.height=12}
-g1 <- plot_summary(res_0$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "Baseline")
-g2 <- plot_summary(res_L5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B5$sf, "CapillarityRise", date = "2001-03-01", r = r, limits = c(0, 5))+labs(title = "R_base x 5")
-cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
-```
 
 **Sub-surface balance**
 ```{r, fig.align='center', fig.width=7, fig.height=12, message = FALSE}

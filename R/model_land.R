@@ -1252,8 +1252,11 @@
     OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlet_cells))
     colnames(OutletExport_m3s) <- outlet_cells
     rownames(OutletExport_m3s) <- as.character(dates)
+    # From mm/day = L/m2/day to m3/s
+    # 1 L = 1 dm3 = 1e-3 m3
+    # 1 d = 24h = 24*3600 s
+    # Multiply by patch size to go from m3/m2 to m3 in the whole patch
     OutletExport_m3s[, outlet_non_channel] <- (res_inner$watershed_export/1e3)*patchsize/(3600*24)
-    
     ChannelExport_m3s <- (res_inner$channel_export/1e3)*patchsize/(3600*24)
     if(sum(sf_routing$channel)>0) {
       if(header_footer) cli::cli_h2("CHANNEL ROUTING")
