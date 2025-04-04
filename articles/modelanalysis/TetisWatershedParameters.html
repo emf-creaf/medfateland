@@ -216,7 +216,7 @@ for aquifer exfiltration, saturation excess and, finally, the sum of the
 two sources as export runoff.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                   dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                   dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>, summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
 <span>                   watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>In the following we compare these values to those issued from
 simulations with altered scaling factors.</p>
@@ -228,7 +228,7 @@ conductivity five times:</p>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">res_L5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
 <span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Increasing <code>R_localflow</code> has the effect of increasing the
 drainage from soils to the aquifer (hence, decreasing soil moisture). It
@@ -243,7 +243,7 @@ in upslope cells.</p>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">res_I5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
 <span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Increasing lateral conductivity for subsurface fluxes increases the
 rate of lateral exchange (i.e. the speed of the kinematic wave),
@@ -256,10 +256,10 @@ now perform a simulation with an increased groundwater conductivity:</p>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">res_B5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
-<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
+<span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
 <span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Increasing the speed of groundwater fluxes leads to a much shallower
-water table downslope, significantly increasing the amont of
+water table downslope, significantly increasing the amount of
 exfiltration.</p>
 </div>
 <div class="section level2">
