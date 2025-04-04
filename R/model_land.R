@@ -584,7 +584,9 @@
                                    HerbTranspiration = rep(0, nDays),
                                    InterflowBalance = rep(0, nDays),
                                    BaseflowBalance = rep(0, nDays),
-                                   AquiferExfiltration = rep(0, nDays))
+                                   AquiferExfiltration = rep(0, nDays),
+                                   ChannelExport = rep(0, nDays),
+                                   WatershedExport = rep(0, nDays))
     SoilLandscapeBalance <- data.frame(dates = dates,
                                        Precipitation = rep(0, nDays),
                                        Rain = rep(0, nDays),
@@ -784,7 +786,7 @@
       }
     }
     
-    ## Store watershed runoff reaching each outlet (m3s)
+    ## Store watershed runoff reaching each outlet and channel
     if(watershed_model=="tetis") {
       WatershedExport[day,] <- res_day$WatershedExport[outlet_nonchannel_cells]
       ChannelExport[day,] <- res_day$ChannelExport[channel_cells]
@@ -812,6 +814,8 @@
       LandscapeBalance$Infiltration[day] <- sum(res_day$Infiltration, na.rm=T)/nCells
       LandscapeBalance$InterflowBalance[day] <- sum(res_day$InterflowBalance, na.rm=T)/nCells
       LandscapeBalance$BaseflowBalance[day] <- sum(res_day$BaseflowBalance, na.rm=T)/nCells
+      LandscapeBalance$ChannelExport[day] <- sum(res_day$ChannelExport, na.rm=T)/nCells
+      LandscapeBalance$WatershedExport[day] <- sum(res_day$WatershedExport, na.rm=T)/nCells
       
       if(nSoil>0) {
         SoilLandscapeBalance$Rain[day] <- sum(res_day$Rain[isSoilCell], na.rm=T)/nSoil
@@ -1408,8 +1412,8 @@
 #'        \item{\code{cut_shrub_table}: A list of data frames for each simulated stand, containing the cut shrub at each time step.}
 #'     }
 #'   }
-#'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
-#'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are components of the water balance at the watershed level restricted to those cells with a soil definition.}
+#'   \item{\code{watershed_balance}: A data frame with as many rows as days and where columns are (spatially-averaged) components of the water balance at the watershed level (i.e., rain, snow, interception, infiltration, soil evaporation, plant transpiration, ...).}
+#'   \item{\code{watershed_soil_balance}: A data frame with as many rows as days and where columns are (spatially-averaged) components of the water balance at the watershed level restricted to those cells with a soil definition.}
 #'   \item{\code{channel_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the channel cells of the landscape (useful for channel processing with an external model).}
 #'   \item{\code{outlet_export_m3s}: A matrix with daily values of runoff (in m3/s) reaching each of the outlet cells of the landscape. Each outlet drains its own subset of cells (sometimes including channel routing), so the 
 #'                                   daily overall watershed export corresponds to the sum of row values.}

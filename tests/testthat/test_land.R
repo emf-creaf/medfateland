@@ -8,6 +8,9 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
  
 example_watershed$crop_factor = NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
+example_watershed$result_cell <- FALSE
+example_watershed$result_cell[c(3,6,9)] <- TRUE
+
 yws_swpb <- initialize_landscape(example_watershed, SpParams = SpParamsMED, local_control = defaultControl(),
                                  model = "spwb", progress = FALSE)
 yws_growth <- initialize_landscape(example_watershed, SpParams = SpParamsMED, local_control = defaultControl(),

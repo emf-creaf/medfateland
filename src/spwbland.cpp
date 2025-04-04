@@ -234,7 +234,11 @@ List fcpp_landunit_day(List xi, String model, CharacterVector date, List interna
                                   true);
     } 
     if(result_cell) {
-      res = medfate::copy_model_output(internalCommunication, x, "spwb");
+      if(model=="spwb") {
+        res = medfate::copy_model_output(internalCommunication, x, "spwb");
+      } else if(model=="growth") {
+        res = medfate::copy_model_output(internalCommunication, x, "growth");
+      }
     } else if (transpirationMode=="Granier"){
       List spwbOut = internalCommunication["basicSPWBOutput"];
       res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
