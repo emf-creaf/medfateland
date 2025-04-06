@@ -75,7 +75,7 @@ ws_control$tetis_parameters$R_baseflow <- 1
 Now we launch the simulation. Focus on the values (in mm) predicted for aquifer exfiltration, saturation excess and, finally, the sum of the two sources as export runoff. 
 ```{r}
 res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                   dates = dates, summary_frequency = "month",
+                   dates = dates, summary_frequency = "month", summary_blocks = "WaterBalance",
                    watershed_control = ws_control, progress = FALSE)
 ```
 
@@ -90,7 +90,7 @@ ws_control$tetis_parameters$R_localflow <- 5
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
 res_L5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",
+                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
                      watershed_control = ws_control, progress = FALSE)
 ```
 
@@ -105,7 +105,7 @@ ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 5
 ws_control$tetis_parameters$R_baseflow <- 1
 res_I5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",
+                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
                      watershed_control = ws_control, progress = FALSE)
 ```
 
@@ -119,11 +119,11 @@ ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 5
 res_B5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",
+                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
                      watershed_control = ws_control, progress = FALSE)
 ```
 
-Increasing the speed of groundwater fluxes leads to a much shallower water table downslope, significantly increasing the amont of exfiltration.
+Increasing the speed of groundwater fluxes leads to a much shallower water table downslope, significantly increasing the amount of exfiltration.
 
 
 

@@ -1322,7 +1322,9 @@
     channel_cells <- which(sf_routing$channel)
     
     outlet_non_channel <- !(outlet_cells %in% which(sf_routing$channel))
-
+    # print(sum(outlet_non_channel))
+    # print(length(outlet_cells))
+    
     OutletExport_m3s <- matrix(0,nrow = nDays, ncol = length(outlet_cells))
     colnames(OutletExport_m3s) <- outlet_cells
     rownames(OutletExport_m3s) <- as.character(dates)
@@ -1335,6 +1337,7 @@
     if(sum(sf_routing$channel)>0) {
       if(header_footer) cli::cli_h2("CHANNEL ROUTING")
       for(day in 1:nDays) {
+        # cat(paste0("day ", day,"\n"))
         ChannelExport_vector <- rep(0, nCells)
         ChannelExport_vector[channel_cells] <- res_inner$channel_export[day,]
         WatershedExport_vector <- rep(0, nCells)
@@ -1342,8 +1345,10 @@
                              sf_routing$channel, sf_routing$outlet, 
                              sf_routing$target_outlet, sf_routing$distance_to_outlet, sf_routing$outlet_backlog,
                              watershed_control, patchsize)
-        OutletExport_m3s[day, which(!outlet_non_channel)] <- (WatershedExport_vector[outlet_cells[!outlet_non_channel]]/1e3)*patchsize/(3600*24)
+        OutletExport_m3s[day, ] <- OutletExport_m3s[day,] + (WatershedExport_vector[outlet_cells]/1e3)*patchsize/(3600*24)
       }
+      backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
+      if(header_footer) cli::cli_li(paste0("Outlet backlog sum (m3): ", round(backlog_sum)))
     }
     
     sf_out <- res_inner$sf
@@ -1498,7 +1503,8 @@
 #' 
 #' Mario \enc{Morales-Hernández}{Morales-Hernandez}, Universidad de Zaragoza.
 #' 
-#' @seealso \code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{spwb_land_day}}, \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
+#' @seealso \code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{overland_routing}},
+#' \code{\link{spwb_land_day}}, \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
 #' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
 #' 
 #' @references 
