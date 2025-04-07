@@ -1334,8 +1334,14 @@
     # Multiply by patch size to go from m3/m2 to m3 in the whole patch
     OutletExport_m3s[, outlet_non_channel] <- (res_inner$watershed_export/1e3)*patchsize/(3600*24)
     ChannelExport_m3s <- (res_inner$channel_export/1e3)*patchsize/(3600*24)
+    initial_backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
+    initial_outlet_amount <- sum(OutletExport_m3s*(3600*24))
+    transport_target <- sum(ChannelExport_m3s*(3600*24))
     if(sum(sf_routing$channel)>0) {
-      if(header_footer) cli::cli_h2("CHANNEL ROUTING")
+      if(header_footer) {
+        cli::cli_h2("CHANNEL ROUTING")
+        cli::cli_li(paste0("Initial outlet backlog sum (m3): ", round(initial_backlog_sum)))
+      }
       for(day in 1:nDays) {
         # cat(paste0("day ", day,"\n"))
         ChannelExport_vector <- rep(0, nCells)
@@ -1347,8 +1353,12 @@
                              watershed_control, patchsize)
         OutletExport_m3s[day, ] <- OutletExport_m3s[day,] + (WatershedExport_vector[outlet_cells]/1e3)*patchsize/(3600*24)
       }
-      backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
-      if(header_footer) cli::cli_li(paste0("Outlet backlog sum (m3): ", round(backlog_sum)))
+      final_backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
+      final_outlet_amount <- sum(OutletExport_m3s*(3600*24))
+      if(header_footer) {
+        cli::cli_li(paste0("Channel balance target (m3): ", round(transport_target), " outlet change (m3): ", round(final_outlet_amount - initial_outlet_amount), " backlog change (m3): ", round(final_backlog_sum - initial_backlog_sum)))
+        cli::cli_li(paste0("Final outlet backlog sum (m3): ", round(final_backlog_sum)))
+      }
     }
     
     sf_out <- res_inner$sf
