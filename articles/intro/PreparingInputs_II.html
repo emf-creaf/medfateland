@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Núria Aquilué / Paula Martín / María González</h4>
             
-            <h4 data-toc-skip class="date">2025-04-04</h4>
+            <h4 data-toc-skip class="date">2025-04-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_II.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_II.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_II.Rmd</code></div>
@@ -185,8 +185,8 @@ object:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2113058 112.9    4306972 230.1  2596607 138.7</span></span>
-<span><span class="co">## Vcells 3552085  27.2   10146329  77.5 10144591  77.4</span></span></code></pre>
+<span><span class="co">## Ncells 2113205 112.9    4307151 230.1  2596754 138.7</span></span>
+<span><span class="co">## Vcells 3552229  27.2   10146329  77.5 10145751  77.5</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -216,13 +216,13 @@ and slope:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'id'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[7.4s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[6.2s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span></span></code></pre></div>
@@ -555,7 +555,7 @@ define a empty forest to be imputed in those
 <span>                      missing_class_imputation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                      missing_class_forest <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/emptyforest.html" class="external-link">emptyforest</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest imputed on 143 out of 143 target wildland locations (100%).</span></span></code></pre>
 <p>We call again function <code><a href="../../reference/check_inputs.html">check_forests()</a></code> to verify that
