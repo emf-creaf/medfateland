@@ -498,6 +498,68 @@
               "LocalResults" = localResults))
 }
 
+.vars_stand <- function(type = "all") {
+  varsStand <- c("LAI", "LAIherb", "LAIlive", "LAIexpanded", "LAIdead", "Cm", "LgroundPAR", "LgroundSWR")
+  if(type %in% c("mean", "all")) return(varsStand)
+  return(c())
+}
+.vars_waterbalance <- function(type = "all"){
+  varsWaterBalance <- c("Snowmelt", "Interception", "NetRain",  
+                        "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
+                        "DeepDrainage", "CapillarityRise", "DeepAquiferLoss",
+                        "SoilEvaporation", "Transpiration", "HerbTranspiration",
+                        "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration")
+  if(type %in% c("sum", "all")) return(varsWaterBalance)
+  return(c())
+}
+.vars_carbonbalance <- function(type = "all") {
+  varsCarbonBalance <- c("GrossPrimaryProduction","MaintenanceRespiration","SynthesisRespiration","NetPrimaryProduction")
+  if(type %in% c("sum", "all")) return(varsCarbonBalance)
+  return(c())
+}
+.vars_biomassbalance <- function(type = "all") {
+  varsBiomassBalance <- c("StructuralBalance", "LabileBalance", "PlantBalance", "MortalityLoss", "CohortBalance")
+  if(type %in% c("sum", "all")) return(varsBiomassBalance)
+  return(c())
+}
+.vars_summary <- function(type = "all",
+                          standSummary, waterBalanceSummary, carbonBalanceSummary, biomassBalanceSummary) {
+  if(type=="state") {
+    return(c("SWE", "RWC", "SoilVol","WTD"))
+  } else if(type=="all") {
+    vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow", "SWE", "RWC", "SoilVol","WTD","DTA")
+  } else if(type=="sum") {
+    vars <- c("PET","Rain", "Snow")
+  } else if(type=="mean") {
+    vars <- c("MinTemperature", "MaxTemperature")
+  }
+  if(waterBalanceSummary) vars <- c(vars, .vars_waterbalance(type))
+  if(standSummary) vars <- c(vars, .vars_stand(type))
+  if(carbonBalanceSummary) vars <- c(vars, .vars_carbonbalance(type))
+  if(biomassBalanceSummary) vars <- c(vars, .vars_biomassbalance(type))
+  return(vars)
+}
+
+.aggregate_summary_to_annual<-function(m, varsSum, varsMean, varsState) {
+  month_weights <- c(31,28,31,30,31,30,31,31,30,31,30,31)[1:nrow(m)]
+  month_weights <- month_weights/sum(month_weights)
+  coln <- colnames(m)
+  rown <- rownames(m)
+  year_string <- paste0(substr(rown[1], 1,4),"-01-01")
+  m_year <- matrix(NA, nrow=1, ncol = ncol(m), dimnames = list(year_string, coln))
+  for(j in 1:ncol(m)) {
+    if(coln[j] %in% varsSum) {
+      m_year[1,j] <- sum(m[,j], na.rm=TRUE)
+    } else if(coln[j] %in% varsMean) {
+      m_year[1,j] <- sum(m[,j]*month_weights, na.rm=TRUE)
+    } else if((coln[j] %in% varsState) || (coln[j] == "DTA")) {
+      m_year[1,j] <- sum(m[,j]*month_weights, na.rm=TRUE)
+    } else {
+      stop(paste0("variable name ", coln[j]," not found in summary variables for sums or means"))
+    }
+  }
+  return(m_year)
+}
 
 .simulate_land_inner <- function(local_model = "spwb", 
                                  r, y, sf_routing, 
@@ -561,40 +623,14 @@
     colnames(ChannelExport) <- channel_cells
     rownames(ChannelExport) <- as.character(dates)
     
-    varsStand <- c("LAI", "LAIherb", "LAIlive", "LAIexpanded", "LAIdead", "Cm", "LgroundPAR", "LgroundSWR")
-    varsCarbonBalance <- c("GrossPrimaryProduction","MaintenanceRespiration","SynthesisRespiration","NetPrimaryProduction")
-    varsBiomassBalance <- c("StructuralBalance", "LabileBalance", "PlantBalance", "MortalityLoss", "CohortBalance")
-    varsWaterBalance <- c("Snowmelt", "Interception", "NetRain",  
-              "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
-              "DeepDrainage", "CapillarityRise", "DeepAquiferLoss",
-              "SoilEvaporation", "Transpiration", "HerbTranspiration",
-              "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration", 
-              "SWE", "SoilVol","RWC", "WTD")
-    varsSumWaterBalance <- c("Runon","Runoff", "NetRain", "Interception", "Snowmelt",
-                             "Infiltration", "InfiltrationExcess","CapillarityRise", "DeepAquiferLoss", "DeepDrainage", "SaturationExcess",
-                             "AquiferExfiltration", "SoilEvaporation", "Transpiration", "HerbTranspiration",
-                             "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance")
-    vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow", "SWE", "RWC", "SoilVol","WTD","DTA")
-    varsSum <- c("PET","Rain", "Snow")
-    varsMean <- c("MinTemperature", "MaxTemperature")
-    varsState <- c("SWE", "RWC", "SoilVol","WTD")
-    if(waterBalanceSummary) {
-      vars <- c(vars, varsWaterBalance)
-      varsSum <- c(varsSum, varsSumWaterBalance)
-    }
-    if(standSummary) {
-      vars <- c(vars, varsStand)
-      varsMean <- c(varsMean, varsStand)
-    }
-    if(carbonBalanceSummary) {
-      vars <- c(vars, varsCarbonBalance)
-      varsSum <- c(varsSum, varsCarbonBalance)
-    }
-    if(biomassBalanceSummary) {
-      vars <- c(vars, varsBiomassBalance)
-      varsSum <- c(varsSum, varsBiomassBalance)
-    }
-    
+    vars <- .vars_summary("all", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsWaterBalance <- .vars_waterbalance("all")
+    varsCarbonBalance <- .vars_carbonbalance("all")
+    varsStand <- .vars_stand("all")
+    varsBiomassBalance <- .vars_biomassbalance("all")
     
     LandscapeBalance <- data.frame(dates = dates,
                                    Precipitation = rep(0, nDays),
@@ -1057,6 +1093,8 @@
   }
   else if(land_model=="fordyn_land") local_model <- "growth"
   
+  summary_frequency <- match.arg(summary_frequency, c("days", "weeks","months", "quarters","years"))
+  
   #watershed model
   watershed_model <- watershed_control$watershed_model
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
@@ -1425,9 +1463,9 @@
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
 #' @param dates A \code{\link{Date}} object describing the days of the period to be modeled.
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
-#' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
-#'                          In \code{fordyn_land} summaries are always produced at monthly resolution. 
-#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land}, "CarbonBalance" and "BiomassBalance" are also accepted.  
+#' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", "weeks", ...) (see \code{\link{cut.Date}}).
+#'                          In \code{fordyn_land} summary frequency can only be "months" or "years". 
+#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.  
 #' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
 #'                      parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
@@ -1624,6 +1662,8 @@ growth_land<-function(r, sf, SpParams, meteo = NULL, dates = NULL,
 #' @export
 fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                         CO2ByYear = numeric(0), 
+                        summary_blocks = NULL,
+                        summary_frequency = "years",
                         local_control = medfate::defaultControl(soilDomains = "single"),
                         watershed_control = default_watershed_control(),
                         dispersal_control = default_dispersal_control(),
@@ -1633,6 +1673,18 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   
   #watershed model
   watershed_model <- watershed_control$watershed_model
+  summary_frequency <- match.arg(summary_frequency, c("months", "years"))
+  
+  # Summary flags
+  waterBalanceSummary <- "WaterBalance" %in% summary_blocks
+  standSummary <- "Stand" %in% summary_blocks
+  carbonBalanceSummary <- "CarbonBalance" %in% summary_blocks
+  biomassBalanceSummary <- "BiomassBalance" %in% summary_blocks
+  
+  varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
   
   if(progress) cli::cli_h1(paste0("Simulation of model 'fordyn' over a watershed"))
@@ -1782,6 +1834,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                          r = r, y = sf, SpParams = SpParams, meteo = meteo, dates = datesYear,
                          CO2ByYear = CO2ByYear,
                          summary_frequency = "month", # Summary frequency to use statistics
+                         summary_blocks = summary_blocks,
                          local_control = local_control,
                          watershed_control = watershed_control, 
                          parallelize = parallelize, num_cores = num_cores, 
@@ -1792,19 +1845,27 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     sf$snowpack <- GL$sf$snowpack
     
     #Store landscape and cell summaries
+    cell_summary_i <- GL$sf$summary
+    
+    if(summary_frequency=="years") {
+      for(i in 1:nCells) {
+        cell_summary_i[[i]] <- .aggregate_summary_to_annual(cell_summary_i[[i]], 
+                                                            varsSum, varsMean, varsState)
+      }
+    }
     if(iYear==1) {
       ChannelExport_m3s <- GL$channel_export_m3s
       OutletExport_m3s <- GL$outlet_export_m3s
       LandscapeBalance <- GL$watershed_balance
       SoilLandscapeBalance <- GL$watershed_soil_balance
-      cell_summary <- GL$sf$summary
+      cell_summary <- cell_summary_i
     } else {
       ChannelExport_m3s <- rbind(ChannelExport_m3s, GL$channel_export_m3s)
       OutletExport_m3s <- rbind(OutletExport_m3s, GL$outlet_export_m3s)
       LandscapeBalance <- rbind(LandscapeBalance, GL$watershed_balance)
       SoilLandscapeBalance <- rbind(SoilLandscapeBalance, GL$watershed_soil_balance)
       for(i in 1:nCells) { 
-        cell_summary[[i]] <- rbind(cell_summary[[i]], GL$sf$summary[[i]])
+        cell_summary[[i]] <- rbind(cell_summary[[i]],cell_summary_i[[i]])
       }
     }
     

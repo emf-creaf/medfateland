@@ -47,6 +47,8 @@ fordyn_land(
   meteo = NULL,
   dates = NULL,
   CO2ByYear = numeric(0),
+  summary_blocks = NULL,
+  summary_frequency = "years",
   local_control = medfate::defaultControl(soilDomains = "single"),
   watershed_control = default_watershed_control(),
   dispersal_control = default_dispersal_control(),
@@ -102,10 +104,10 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 
 \item{CO2ByYear}{A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).}
 
-\item{summary_blocks}{A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land}, "CarbonBalance" and "BiomassBalance" are also accepted.}
+\item{summary_blocks}{A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.}
 
-\item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", ...) (see \code{\link{cut.Date}}).
-In \code{fordyn_land} summaries are always produced at monthly resolution.}
+\item{summary_frequency}{Frequency in which cell summary will be produced (e.g. "years", "months", "weeks", ...) (see \code{\link{cut.Date}}).
+In \code{fordyn_land} summary frequency can only be "months" or "years".}
 
 \item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
 parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}
