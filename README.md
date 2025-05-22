@@ -38,16 +38,21 @@ follows (required package `remotes` should be installed/updated first):
 remotes::install_github("emf-creaf/medfateland")
 ```
 
-## Documentation
+## Documentation and training
 
-A number of *vignettes* illustrate how to initialize inputs and run
-simulation models in **medfateland**. These can be found at the package
-[website](https://emf-creaf.github.io/medfateland/). The user is also
-advised to read the articles included in
-[**medfate**](https://emf-creaf.github.io/medfate/).
+- A number of *vignettes* illustrate how to initialize inputs and run
+  simulation models in **medfateland**. These can be found
+  [here](https://emf-creaf.github.io/medfateland/articles/). The user is
+  also advised to read the articles about package **medfate** included
+  [here](https://emf-creaf.github.io/medfate/articles/).
 
-A complete documentation of both packages, including a *reference book*,
-can be found at <https://emf-creaf.github.io/medfatebook/index.html>.
+- A complete documentation of both packages, including a *reference
+  book*, can be found at
+  <https://emf-creaf.github.io/medfatebook/index.html>.
+
+- Presentation slides for a course devoted to process-based forest
+  modelling using packages **medfate** and **medfateland** can be found
+  [here](https://emf.creaf.cat/training/medfate_course/).
 
 ## Companion R packages
 
