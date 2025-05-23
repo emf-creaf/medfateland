@@ -1,3 +1,6 @@
+# medfateland 2.6.1
+- Bug correction: subwatershed mergin in spwb_land
+
 # medfateland 2.6.0
 - *_land() functions can process subwatersheds
 - parallelization in *_land() for subwatersheds
