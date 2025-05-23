@@ -1246,7 +1246,7 @@
     # SIMULATION
     if(watershed_control$tetis_parameters$subwatersheds) {
       # print(names(sf_routing))
-      subwatersheds <- unique(sf_routing$subwatershed)
+      subwatersheds <- sort(unique(sf_routing$subwatershed))
       sf <- sf::st_sf(geometry=sf::st_geometry(y))
       sf$state <- vector("list", nCells)
       sf$aquifer <- rep(NA, nCells)
@@ -1321,17 +1321,16 @@
         sf$snowpack[sel_subwatershed] <- sf_sub$snowpack
         sf$summary[sel_subwatershed] <- sf_sub$summary
         sf$result[sel_subwatershed] <- sf_sub$result
-        
         watershed_balance_sub <- res_inner_sub$watershed_balance
         watershed_soil_balance_sub <- res_inner_sub$watershed_soil_balance
-        watershed_balance_sub[,-1] <- watershed_balance_sub[,-1]*(nCellsSub/nCells)
-        watershed_soil_balance_sub[,-1] <- watershed_soil_balance_sub[,-1]*(nCellsSub/nCells)
-        if(i==1) {
+        watershed_balance_sub[,-1] <- watershed_balance_sub[,-1, drop = FALSE]*(nCellsSub/nCells)
+        watershed_soil_balance_sub[,-1] <- watershed_soil_balance_sub[,-1, drop = FALSE]*(nCellsSub/nCells)
+        if(i == subwatersheds[1]) {
           LandscapeBalance <- watershed_balance_sub
           SoilLandscapeBalance <- watershed_soil_balance_sub
         } else {
-          LandscapeBalance[,-1] <- LandscapeBalance[,-1] + watershed_balance_sub[,-1]
-          SoilLandscapeBalance[,-1] <- SoilLandscapeBalance[,-1] + watershed_soil_balance_sub[,-1]
+          LandscapeBalance[,-1] <- LandscapeBalance[,-1, drop = FALSE] + watershed_balance_sub[,-1, drop = FALSE]
+          SoilLandscapeBalance[,-1] <- SoilLandscapeBalance[,-1, drop = FALSE] + watershed_soil_balance_sub[,-1, drop = FALSE]
         }
         channel_cells_sub <- channel_cells %in% which(sel_subwatershed)
         outlet_nonchannel_cells_sub <- outlet_nonchannel_cells %in% which(sel_subwatershed)
