@@ -9,7 +9,9 @@ initialize_landscape(
   SpParams,
   local_control,
   model = "spwb",
-  simplify = FALSE,
+  merge_trees = FALSE,
+  merge_shrubs = FALSE,
+  reduce_to_dominant = FALSE,
   replace = FALSE,
   progress = TRUE
 )
@@ -31,7 +33,11 @@ initialize_landscape(
 
 \item{model}{A string to indicate the model, either \code{"spwb"} or \code{"growth"}.}
 
-\item{simplify}{Boolean flag to simplify forest to the tree and shrub cohorts with largest leaf area index. The leaf area index of the whole tree (respectively, shrub) layer will be attributed to the selected cohort.
+\item{merge_trees}{A logical flag to simplify tree cohorts by merging tree records in DBH classes (see \code{\link[medfate]{forest_mergeTrees}}).}
+
+\item{merge_shrubs}{A logical flag to simplify shrub cohorts by merging shrub records in height classes (see \code{\link[medfate]{forest_mergeShrubs}}).}
+
+\item{reduce_to_dominant}{Boolean flag to simplify forest to the tree and shrub cohorts with largest leaf area index. The leaf area index of the whole tree (respectively, shrub) layer will be attributed to the selected cohort.
 See function \code{\link[medfate]{forest_reduceToDominant}}.}
 
 \item{replace}{Boolean flag to replace existing initialized states}
@@ -49,7 +55,7 @@ Initializes state for local models \code{\link[medfate]{spwb}} or \code{\link[me
 Initialization is normally dealt automatically when calling simulation functions \code{\link{spwb_spatial}},  \code{\link{growth_spatial}},
 \code{\link{spwb_spatial_day}} or \code{\link{growth_spatial_day}}. However, function \code{initialize_landscape}  allows separating initialization from model simulations.
 
-Option \code{simplify} has been implemented to allow simplification of forests to tree/shrub dominant cohorts during watershed simulations
+Options \code{merge_shrubs}, \code{merge_trees} and \code{reduce_to_dominant} have been implemented to allow simplification of forests during watershed simulations
 where focus is on runoff (e.g. calibration of watershed parameters or burnin periods). Elements identified as \code{result_cell} will not be simplified.
 }
 \examples{

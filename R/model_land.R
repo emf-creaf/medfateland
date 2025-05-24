@@ -1602,10 +1602,10 @@
 #' # Print a summary of water balance components
 #' summary(res)
 #' 
-#' # Option 'simplify = TRUE' in initialization, may be useful to speed up calculations
+#' # Option 'reduce_to_dominant = TRUE' in initialization, may be useful to speed up calculations
 #' example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
 #'                                            local_control = defaultControl(soilDomains = "single"), 
-#'                                            simplify = TRUE)
+#'                                            reduce_to_dominant = TRUE)
 #' 
 #' # Launch simulations over simplified landscape (should be considerably faster)
 #' res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo, 

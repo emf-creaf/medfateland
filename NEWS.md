@@ -1,6 +1,7 @@
 # medfateland 2.6.1
 - Bug correction: subwatershed mergin in spwb_land
 - Correction of tree density using maps of aboveground tree biomass
+- Option `simplify` in function initialize_landscape() replaced by `reduce_to_dominant`, `merge_trees` and `merge_shrubs`
 
 # medfateland 2.6.0
 - *_land() functions can process subwatersheds
