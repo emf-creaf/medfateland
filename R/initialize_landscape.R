@@ -68,8 +68,8 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
   if(!inherits(x, "sf")) cli::cli_abort("'x' has to be an object of class 'sf'.")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   if(!("soil" %in% names(x))) cli::cli_abort("Column 'soil' must be defined.")
-  forestlist = x$forest
-  soillist  = x$soil
+  forestlist <- x$forest
+  soillist <- x$soil
   # Set local control verbose to FALSE
   local_control$verbose = FALSE
   n <- length(forestlist)
@@ -100,10 +100,10 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
     init<-rep(FALSE, n)
     for(i in 1:n) {
       if(landcover[i] == "wildland") {
-        f = forestlist[[i]]
-        s = soillist[[i]]
+        f <- forestlist[[i]]
+        s <- soillist[[i]]
         if(inherits(f, "forest") && inherits(s, c("soil", "data.frame"))) {
-          init[i] = TRUE
+          init[i] <- TRUE
           x_i = xlist[[i]]
           if(!replace) {
             if(inherits(x_i,"spwbInput") && model=="spwb") {
@@ -112,17 +112,17 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
               transp_mode[i] <- x_i$control$transpirationMode
             }
             if(inherits(x_i,"growthInput") && model=="growth") {
-              init[i] = FALSE
+              init[i] <- FALSE
               soil_domains[i] <- x_i$control$soilDomains
               transp_mode[i] <- x_i$control$transpirationMode
             }
           }
         }
       } else if(landcover[i] == "agriculture") {
-        s = soillist[[i]]
+        s <- soillist[[i]]
         if(inherits(s, c("soil","data.frame"))) {
           init[i] <- TRUE
-          x_i = xlist[[i]]
+          x_i <- xlist[[i]]
           if(!replace) {
             if(inherits(x_i,"aspwbInput")) {
               init[i] = FALSE
@@ -158,17 +158,21 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
         }
         
         if(landcover[i] == "wildland") {
-          f = forestlist[[i]]
+          f <- forestlist[[i]]
           if(inherits(f, "forest") && inherits(s, "soil")) {
-            if(merge_trees && (!result_cell[i]))  f <- medfate::forest_mergeTrees(f)
-            if(merge_shrubs && (!result_cell[i]))  f <- medfate::forest_mergeShrubs(f)
+            if(merge_trees && (!result_cell[i]))  {
+              f <- medfate::forest_mergeTrees(f)
+            }
+            if(merge_shrubs && (!result_cell[i]))  {
+              f <- medfate::forest_mergeShrubs(f)
+            }
             if(reduce_to_dominant && (!result_cell[i])) {
-              f = medfate::forest_reduceToDominant(f, SpParams)
+              f <- medfate::forest_reduceToDominant(f, SpParams)
             }
             if(model=="spwb") {
-              xlist[[i]] = medfate::spwbInput(f, s, SpParams, local_control_i)
+              xlist[[i]] <- medfate::spwbInput(f, s, SpParams, local_control_i)
             } else if(model=="growth") {
-              xlist[[i]] = medfate::growthInput(f, s, SpParams, local_control_i)
+              xlist[[i]] <- medfate::growthInput(f, s, SpParams, local_control_i)
             }
             soil_domains[i] <- local_control_i$soilDomains
             transp_mode[i] <- local_control_i$transpirationMode
