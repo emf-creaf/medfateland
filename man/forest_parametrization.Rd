@@ -71,7 +71,7 @@ For structural corrections or when checking, \code{x} should already contain a c
 \item{minDBH}{Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
 because of the missing stand metric. A special case occurs for correction following basal area (see details).}
 
-\item{biomass_function}{A function accepting a forest object or a tree data table (as parameter name \code{x}), and a species parameter table (as parameter name \code{SpParams}), as input and
+\item{biomass_function}{A function accepting a forest object or a tree data table (as parameter name \code{x}) and
 returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.}
 
 \item{biomass_arguments}{List with additional arguments to be supplied to the biomass function.}

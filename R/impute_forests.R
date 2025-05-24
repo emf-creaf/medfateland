@@ -225,7 +225,7 @@ impute_forests <-function(x, sf_fi, dem,
 #' @param minDBH Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
 #' because of the missing stand metric. A special case occurs for correction following basal area (see details).
 #' @param ratio_limits Limits for ratio of variable in corrections, used to avoid outliers. 
-#' @param biomass_function A function accepting a forest object or a tree data table (as parameter name \code{x}), and a species parameter table (as parameter name \code{SpParams}), as input and 
+#' @param biomass_function A function accepting a forest object or a tree data table (as parameter name \code{x}) and 
 #' returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.
 #' @param biomass_arguments List with additional arguments to be supplied to the biomass function.
 #' @export
@@ -313,7 +313,7 @@ modify_forest_structure<-function(x, structure_map, variable,
       } else if(variable=="aboveground_tree_biomass") {
         if(is.null(biomass_function)) cli::cli_abort("'biomass_function' should be supplied!")
         if(nrow(f$treeData)>0) {
-          argList <- list(x = f$treeData, SpParams = SpParams)
+          argList <- list(x = f$treeData)
           if(!is.null(biomass_arguments)) argList = c(argList, biomass_arguments)
           above_biomass <- do.call(what = biomass_function, 
                                    args = argList)
