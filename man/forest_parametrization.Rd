@@ -28,6 +28,8 @@ modify_forest_structure(
   map_var = NA,
   ratio_limits = NULL,
   minDBH = 7.5,
+  biomass_function = NULL,
+  biomass_arguments = NULL,
   progress = TRUE
 )
 }
@@ -68,6 +70,11 @@ For structural corrections or when checking, \code{x} should already contain a c
 
 \item{minDBH}{Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
 because of the missing stand metric. A special case occurs for correction following basal area (see details).}
+
+\item{biomass_function}{A function accepting a forest object or a tree data table (as parameter name \code{x}), and a species parameter table (as parameter name \code{SpParams}), as input and
+returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.}
+
+\item{biomass_arguments}{List with additional arguments to be supplied to the biomass function.}
 }
 \value{
 Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.
@@ -99,12 +106,12 @@ and the input map in the target location. Options for structural variables are t
 \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 \item{\code{dominant_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 \item{\code{tree_density}: Should contain values in individuals per hectare. Corrects tree density.}
-\item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density. Forests that}
-\item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
+\item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
+\item{\code{aboveground_tree_biomass}: Should contain values in tons per hectare (Mg/ha) of aboveground tree dry weight. Corrects tree density.}
 }
 Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
-for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area,
-DBH values will be set to minDBH, and correction of basal area will be performed.
+for correction of basal area or aboveground tree biomass. In those cases, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area or aboveground tree biomass,
+DBH values will be set to minDBH, and correction will be performed.
 }
 \examples{
 # See package vignettes 'Preparing inputs'

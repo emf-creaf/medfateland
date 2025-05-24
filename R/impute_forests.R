@@ -40,12 +40,12 @@
 #'   \item{\code{mean_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 #'   \item{\code{dominant_tree_height}: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).}
 #'   \item{\code{tree_density}: Should contain values in individuals per hectare. Corrects tree density.}
-#'   \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density. Forests that}
-#'   \item{\code{mean_shrub_height}: Should contain values in cm. Corrects shrub cover.}
+#'   \item{\code{basal_area}: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.}
+#'   \item{\code{aboveground_tree_biomass}: Should contain values in tons per hectare (Mg/ha) of aboveground tree dry weight. Corrects tree density.}
 #' }
 #' Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
-#' for correction of basal area. In that case, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area, 
-#' DBH values will be set to minDBH, and correction of basal area will be performed.
+#' for correction of basal area or aboveground tree biomass. In those cases, if there are no trees larger than \code{minDBH} but structural map indicates positive values of basal area or aboveground tree biomass, 
+#' DBH values will be set to minDBH, and correction will be performed.
 #' 
 #' @return Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.
 #'  Function \code{check_forests()} returns an invisible data frame with columns indicating missing forest data and missing values in tree or shrub parameters.
@@ -225,18 +225,22 @@ impute_forests <-function(x, sf_fi, dem,
 #' @param minDBH Minimum diameter for stand metric calculation. If \code{minDBH > 0} then those stands with smaller trees will not be corrected
 #' because of the missing stand metric. A special case occurs for correction following basal area (see details).
 #' @param ratio_limits Limits for ratio of variable in corrections, used to avoid outliers. 
+#' @param biomass_function A function accepting a forest object or a tree data table (as parameter name \code{x}), and a species parameter table (as parameter name \code{SpParams}), as input and 
+#' returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.
+#' @param biomass_arguments List with additional arguments to be supplied to the biomass function.
 #' @export
 modify_forest_structure<-function(x, structure_map, variable,
                                   map_var = NA, 
                                   ratio_limits = NULL,
                                   minDBH = 7.5,
+                                  biomass_function = NULL, biomass_arguments = NULL,
                                   progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
   if(!inherits(structure_map, "SpatRaster") && !inherits(structure_map, "SpatVector")) cli::cli_abort("'structure_map' should be of class 'SpatRaster' or 'SpatVector'")
   if(is.na(map_var)) map_var = 1
-  variable <- match.arg(variable, c("mean_tree_height", "dominant_tree_height", "tree_density", "basal_area"))
+  variable <- match.arg(variable, c("mean_tree_height", "dominant_tree_height", "tree_density", "basal_area", "aboveground_tree_biomass"))
   
   if(progress) cli::cli_progress_step(paste0("Extracting ", variable))
   x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(structure_map)))
@@ -303,6 +307,32 @@ modify_forest_structure<-function(x, structure_map, variable,
               basal_area_ratio <- x_var[i]/basal_area
               if(!is.null(ratio_limits)) basal_area_ratio <- max(min(basal_area_ratio, ratio_limits[2]), ratio_limits[1])
               f$treeData$N <- f$treeData$N*basal_area_ratio
+            } 
+          }
+        }
+      } else if(variable=="aboveground_tree_biomass") {
+        if(is.null(biomass_function)) cli::cli_abort("'biomass_function' should be supplied!")
+        if(nrow(f$treeData)>0) {
+          argList <- list(x = f$treeData, SpParams = SpParams)
+          if(!is.null(biomass_arguments)) argList = c(argList, biomass_arguments)
+          above_biomass <- do.call(what = biomass_function, 
+                                   args = argList)
+          if(!is.na(above_biomass)) {
+            # If there are no trees >= minDBH but structural map indicates positive basal area, move DBH to minDBH and recalculate basal_area, to avoid division by 0
+            if((above_biomass == 0.0) && (x_var[i]>0.0)) {
+              if(nrow(f$treeData)>0) {
+                f$treeData$DBH <- minDBH
+                argList <- list(x = f$treeData, SpParams = SpParams)
+                if(!is.null(biomass_arguments)) argList = c(argList, biomass_arguments)
+                above_biomass <- do.call(what = biomass_function, 
+                                         args = argList)
+              }
+            }
+            ## If there are trees >= minDBH in the target plot correct density
+            if(above_biomass > 0.0) {
+              biomass_ratio <- x_var[i]/above_biomass
+              if(!is.null(ratio_limits)) biomass_ratio <- max(min(biomass_ratio, ratio_limits[2]), ratio_limits[1])
+              f$treeData$N <- f$treeData$N*biomass_ratio
             } 
           }
         }

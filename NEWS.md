@@ -1,5 +1,6 @@
 # medfateland 2.6.1
 - Bug correction: subwatershed mergin in spwb_land
+- Correction of tree density using maps of aboveground tree biomass
 
 # medfateland 2.6.0
 - *_land() functions can process subwatersheds
