@@ -17,7 +17,7 @@ check_forests() checks that forests are defined and do not contain missing value
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,6 +87,8 @@ check_forests() checks that forests are defined and do not contain missing value
 <span>  map_var <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  ratio_limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  minDBH <span class="op">=</span> <span class="fl">7.5</span>,</span>
+<span>  biomass_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  biomass_arguments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -165,6 +167,15 @@ For structural corrections or when checking, <code>x</code> should already conta
 <dd><p>Minimum diameter for stand metric calculation. If <code>minDBH &gt; 0</code> then those stands with smaller trees will not be corrected
 because of the missing stand metric. A special case occurs for correction following basal area (see details).</p></dd>
 
+
+<dt id="arg-biomass-function">biomass_function<a class="anchor" aria-label="anchor" href="#arg-biomass-function"></a></dt>
+<dd><p>A function accepting a forest object or a tree data table (as parameter name <code>x</code>), and a species parameter table (as parameter name <code>SpParams</code>), as input and
+returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if <code>variable = "aboveground_tree_biomass"</code>.</p></dd>
+
+
+<dt id="arg-biomass-arguments">biomass_arguments<a class="anchor" aria-label="anchor" href="#arg-biomass-arguments"></a></dt>
+<dd><p>List with additional arguments to be supplied to the biomass function.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -187,11 +198,11 @@ the function will calculate the ratio of the structure metric between the target
 and the input map in the target location. Options for structural variables are the following:</p><ul><li><p><code>mean_tree_height</code>: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).</p></li>
 <li><p><code>dominant_tree_height</code>: Should contain values in cm. Corrects tree heights and diameters (assuming a constant diameter-height relationship).</p></li>
 <li><p><code>tree_density</code>: Should contain values in individuals per hectare. Corrects tree density.</p></li>
-<li><p><code>basal_area</code>: Should contain values in squared meters per hectare (m2/ha). Corrects tree density. Forests that</p></li>
-<li><p><code>mean_shrub_height</code>: Should contain values in cm. Corrects shrub cover.</p></li>
+<li><p><code>basal_area</code>: Should contain values in squared meters per hectare (m2/ha). Corrects tree density.</p></li>
+<li><p><code>aboveground_tree_biomass</code>: Should contain values in tons per hectare (Mg/ha) of aboveground tree dry weight. Corrects tree density.</p></li>
 </ul><p>Locations where the metric value in the map is missing are left unmodified. The same happens if metric value is zero, to avoid division by zero. A special case occurs
-for correction of basal area. In that case, if there are no trees larger than <code>minDBH</code> but structural map indicates positive values of basal area,
-DBH values will be set to minDBH, and correction of basal area will be performed.</p>
+for correction of basal area or aboveground tree biomass. In those cases, if there are no trees larger than <code>minDBH</code> but structural map indicates positive values of basal area or aboveground tree biomass,
+DBH values will be set to minDBH, and correction will be performed.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
