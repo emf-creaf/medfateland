@@ -120,7 +120,8 @@ void example_routing(double totalVol, double cell, int dt) {
   std::cout << "WSE = " << wse << " m\n";
   
   Stats s = wetted_stats(dtm, mask, wse, cell);
-  double v = manning_v(s.area / 5,  s.perim / 5, slope, n); // avg over 5 wet cells
+  std::cout << "Wetted area = " << s.area << " m2, perimeter = " << s.perim <<" m \n";
+  double v = manning_v(s.area / 9,  s.perim / 9, slope, n); // avg over 9 wet cells
   std::cout << "Avg vel = " << v << " m/s\n";
   
   auto hydro = route(dtm, mask, dist, wse, v, areaC, dt);
