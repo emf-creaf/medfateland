@@ -383,19 +383,39 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   NumericVector aquifer = y["aquifer"];
   LogicalVector result_cell = y["result_cell"]; 
   
+  NumericVector meteovec = NumericVector::create(_["MinTemperature"] = NA_REAL,
+                                                 _["MaxTemperature"] = NA_REAL,
+                                                 _["MinRelativeHumidity"] = NA_REAL,
+                                                 _["MaxRelativeHumidity"] = NA_REAL,
+                                                 _["Precipitation"] = NA_REAL,
+                                                 _["Radiation"] = NA_REAL,
+                                                 _["WindSpeed"] = NA_REAL,    
+                                                 _["CO2"] = NA_REAL);
+  List XI = List::create(_["i"] = NA_INTEGER, 
+                         _["x"] = NULL,
+                         _["result_cell"] = NA_LOGICAL,
+                         _["meteovec"] = meteovec,
+                         _["latitude"] = NA_REAL, 
+                         _["elevation"] = NA_REAL, 
+                         _["slope"] = NA_REAL, 
+                         _["aspect"] = NA_REAL,
+                         _["runon"] = NA_REAL, 
+                         _["lateralFlows"] = NULL,
+                         _["waterTableDepth"] = NA_REAL); 
+  List lr;
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterOrder[i]-1; //Decrease index!!!!
     if(lct[iCell]=="wildland" || lct[iCell]=="agriculture") {
       //Soil cell: Prepare input
-      NumericVector meteovec = NumericVector::create(_["MinTemperature"] = tminVec[iCell],
-                                                     _["MaxTemperature"] = tmaxVec[iCell],
-                                                     _["MinRelativeHumidity"] = rhminVec[iCell],
-                                                     _["MaxRelativeHumidity"] = rhmaxVec[iCell],
-                                                     _["Precipitation"] = precVec[iCell],
-                                                     _["Radiation"] = radVec[iCell],
-                                                     _["WindSpeed"] = wsVec[iCell],
-                                                     _["CO2"] = C02Vec[iCell]);
+      meteovec["MinTemperature"] = tminVec[iCell];
+      meteovec["MaxTemperature"] = tmaxVec[iCell];
+      meteovec["MinRelativeHumidity"] = rhminVec[iCell];
+      meteovec["MaxRelativeHumidity"] = rhmaxVec[iCell];
+      meteovec["Precipitation"] = precVec[iCell];
+      meteovec["Radiation"] = radVec[iCell];
+      meteovec["WindSpeed"] = wsVec[iCell];
+      meteovec["CO2"] = C02Vec[iCell];
       
       double wtd = depth_to_bedrock[iCell] - (aquifer[iCell]/bedrock_porosity[iCell]);
       if(wtd<0.0) Rcout << "Negative WTD in " << iCell <<"\n";
@@ -406,20 +426,21 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       double interflowbalance = InterflowBalance[iCell];
       NumericVector wl = widths*(1.0 - (rfc/100.0));
       NumericVector lateralFlows = (interflowbalance*wl)/sum(wl);
-      List XI = List::create(_["i"] = iCell, 
-                             _["x"] = xi,
-                             _["result_cell"] = result_cell[iCell],
-                             _["meteovec"] = meteovec,
-                             _["latitude"] = latitude[iCell], 
-                             _["elevation"] = elevation[iCell], 
-                             _["slope"] = slope[iCell], 
-                             _["aspect"] = aspect[iCell],
-                             _["runon"] = Runon[iCell], 
-                             _["lateralFlows"] = lateralFlows,
-                             _["waterTableDepth"] = wtd); 
+
+      //Replace values
+      XI["i"] = iCell; 
+      XI["x"] = xi;
+      XI["result_cell"] = result_cell[iCell];
+      XI["latitude"] = latitude[iCell]; 
+      XI["elevation"] = elevation[iCell]; 
+      XI["slope"] = slope[iCell]; 
+      XI["aspect"] = aspect[iCell];
+      XI["runon"] = Runon[iCell]; 
+      XI["lateralFlows"] = lateralFlows;
+      XI["waterTableDepth"] = wtd; 
       //Launch simulation
-      List lr = fcpp_landunit_day(XI, model, date, internalCommunication,
-                                  standSummary, carbonBalanceSummary, biomassBalanceSummary);
+      lr = fcpp_landunit_day(XI, model, date, internalCommunication,
+                             standSummary, carbonBalanceSummary, biomassBalanceSummary);
       
       //Copy water balance
       localResults[iCell] = lr;
