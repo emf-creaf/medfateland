@@ -145,6 +145,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// newChannelRouting
+void newChannelRouting(double totalVol, double cell, int dt);
+RcppExport SEXP _medfateland_newChannelRouting(SEXP totalVolSEXP, SEXP cellSEXP, SEXP dtSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type totalVol(totalVolSEXP);
+    Rcpp::traits::input_parameter< double >::type cell(cellSEXP);
+    Rcpp::traits::input_parameter< int >::type dt(dtSEXP);
+    newChannelRouting(totalVol, cell, dt);
+    return R_NilValue;
+END_RCPP
+}
 // initSerghei
 List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
 RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
@@ -430,6 +442,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_willBurnWhenHitFloor", (DL_FUNC) &_medfateland_willBurnWhenHitFloor, 2},
     {"_medfateland_fireBrandBurningTimeFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandBurningTimeFromCanopyStructure, 1},
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
+    {"_medfateland_newChannelRouting", (DL_FUNC) &_medfateland_newChannelRouting, 3},
     {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
     {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
     {"_medfateland_finishSerghei", (DL_FUNC) &_medfateland_finishSerghei, 0},

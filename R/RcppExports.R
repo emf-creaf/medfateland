@@ -41,6 +41,10 @@
     .Call(`_medfateland_fireBrandFlameHeightFromCanopyStructure`, crownLength, LAIc)
 }
 
+.newChannelRouting <- function(totalVol = 5.0, cell = 1.0, dt = 60L) {
+    invisible(.Call(`_medfateland_newChannelRouting`, totalVol, cell, dt))
+}
+
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
     .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
 }
