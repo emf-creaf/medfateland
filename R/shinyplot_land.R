@@ -1,26 +1,27 @@
 .shinyplot_spatial<-function(x, SpParams, r = NULL) {
   plot_main_choices = c("Topography","Soil", "Forest stand", "Watershed")
-  ui <- fluidPage(
-    sidebarLayout(
-      sidebarPanel(
-        selectInput(
-          inputId = "plot_main_type",
-          label = "Category",
-          choices = plot_main_choices,
-          selected = plot_main_choices[1]
-        ),
-        selectInput(
-          inputId = "plot_var",
-          label = "Variable", 
-          choices = .getAllowedTopographyVars(x),
-          selected = .getAllowedTopographyVars(x)[1]
-        ),
-      ),
-      mainPanel(
-        plotOutput("spatial_plot")
-      )
-    )
+  maps <- tabPanel("Maps",
+                   sidebarLayout(
+                     sidebarPanel(
+                       selectInput(
+                         inputId = "plot_main_type",
+                         label = "Category",
+                         choices = plot_main_choices,
+                         selected = plot_main_choices[1]
+                       ),
+                       selectInput(
+                         inputId = "plot_var",
+                         label = "Variable", 
+                         choices = .getAllowedTopographyVars(x),
+                         selected = .getAllowedTopographyVars(x)[1]
+                       ),
+                     ),
+                     mainPanel(
+                       plotOutput("spatial_plot")
+                     )
+                   )
   )
+  ui <- navbarPage("Interactive plots", maps)
   server <- function(input, output, session) {
     observe({
       main_plot <- input$plot_main_type
@@ -43,7 +44,8 @@
     x_map <- x
   } else if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land")) {
     x_map <- x$sf
-    wb_plot_choices = .getWatershedWaterBalancePlotTypes()
+    wb_plot_choices <- .getWatershedWaterBalancePlotTypes()
+    dates <- as.Date(x$watershed_balance$dates)
     watershed <- tabPanel("Watershed-level",
                           sidebarLayout(
                             sidebarPanel(
@@ -69,7 +71,7 @@
                                                      "By months" = "month", 
                                                      "By seasons" = "quarter", 
                                                      "By years" = "year"),
-                                         selected = "None"
+                                         selected = "month"
                                        )
                               ),
                             ),
@@ -78,13 +80,12 @@
                             )
                           ))
   }
-  dates <- as.Date(x$watershed_balance$dates)
   
   not_null <- which(!unlist(lapply(x_map$summary, is.null)))
   map_variables <- colnames(x_map$summary[[not_null[1]]])
   map_dates <- as.Date(rownames(x_map$summary[[not_null[1]]]))
   
-  summaries <- tabPanel("Maps",
+  maps <- tabPanel("Maps",
                          sidebarLayout(
                            sidebarPanel(
                              selectInput(
@@ -95,7 +96,7 @@
                              ),
                              selectInput(
                                inputId = "map_date",
-                               label = "Date", 
+                               label = "Summary date", 
                                choices = map_dates,
                                selected = map_dates[1]
                              )
@@ -106,9 +107,9 @@
                          )
                       )
   if(inherits(x, "sf")) {
-    ui <- navbarPage("Interactive plots", summaries)
+    ui <- navbarPage("Interactive plots", maps)
   } else {
-    ui <- navbarPage("Interactive plots", watershed, summaries)
+    ui <- navbarPage("Interactive plots", watershed, maps)
   }
   server <- function(input, output, session) {
     
