@@ -1,3 +1,6 @@
+# medfateland 2.7.0
+- Runoff-runon dynamics coupled to local water balance in TETIS
+
 # medfateland 2.6.1
 - Bug correction: subwatershed mergin in spwb_land
 - Correction of tree density using maps of aboveground tree biomass

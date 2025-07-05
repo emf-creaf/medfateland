@@ -30,6 +30,7 @@ modify_forest_structure(
   minDBH = 7.5,
   biomass_function = NULL,
   biomass_arguments = NULL,
+  SpParams = NULL,
   progress = TRUE
 )
 }
@@ -75,6 +76,8 @@ because of the missing stand metric. A special case occurs for correction follow
 returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.}
 
 \item{biomass_arguments}{List with additional arguments to be supplied to the biomass function.}
+
+\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). This will be passed onto \code{biomass_function}, but can be left as \code{NULL} if not actually needed.}
 }
 \value{
 Functions \code{impute_forests()} and \code{modify_forest_structure()} return a modified object of class \code{\link[sf]{sf}}.

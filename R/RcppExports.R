@@ -93,12 +93,12 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
 }
 
-.tetisInterFlow <- function(outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisInterFlow`, outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
+.tetisInterFlow <- function(outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisInterFlow`, outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisBaseFlow <- function(outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterO, queenNeigh, waterQ, watershed_control, patchsize))
+.tetisBaseFlow <- function(outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
 .tetisApplyBaseflowChangesToAquifer <- function(outWB, y, patchsize) {
@@ -113,16 +113,8 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, outWB, y, watershed_control))
 }
 
-.tetisOverlandFlows <- function(outWB, waterO, queenNeigh, waterQ, isChannel) {
-    invisible(.Call(`_medfateland_tetisOverlandFlows`, outWB, waterO, queenNeigh, waterQ, isChannel))
-}
-
-.tetisSimulationNonSoilCells <- function(outWB, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, isChannel, watershed_control) {
-    invisible(.Call(`_medfateland_tetisSimulationNonSoilCells`, outWB, y, tminVec, tmaxVec, precVec, radVec, waterO, queenNeigh, waterQ, isChannel, watershed_control))
-}
-
-.tetisCopySoilResultsToOutput <- function(y, soilCellResults, output, tminVec, tmaxVec) {
-    invisible(.Call(`_medfateland_tetisCopySoilResultsToOutput`, y, soilCellResults, output, tminVec, tmaxVec))
+.tetisSimulationWithOverlandFlows <- function(model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control) {
+    invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control))
 }
 
 .tetisChannelRouting <- function(ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {

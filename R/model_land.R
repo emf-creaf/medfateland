@@ -293,87 +293,25 @@
                                       patchsize)
   
   
-  # B1. Weather and local flows
+  # B. Simulation of soil cells, non-soil cells and overland flows
   .copySnowpackToSoil(y)
-  .tetisModifyKsat(y, watershed_control, FALSE)
-  tminVec <- gridMeteo[["MinTemperature"]]
-  tmaxVec <- gridMeteo[["MaxTemperature"]]
-  rhminVec <- gridMeteo[["MinRelativeHumidity"]]
-  rhmaxVec <- gridMeteo[["MaxRelativeHumidity"]]
-  precVec <- gridMeteo[["Precipitation"]]
-  radVec <- gridMeteo[["Radiation"]]
-  wsVec <- gridMeteo[["WindSpeed"]]
-  C02Vec <- gridMeteo[["CO2"]]
-  
-  # B2. Simulation of non-soil cells
-  .tetisSimulationNonSoilCells(output[["WatershedWaterBalance"]],
-                               y,
-                               tminVec, tmaxVec, precVec, radVec,
-                               waterOrder, queenNeigh, waterQ, isChannel,
-                               watershed_control)
-  
-  # B3. Simulation of soil cells
-  outWB <- output[["WatershedWaterBalance"]]
-  XI <- vector("list", nX)
-  for(i in 1:nX) {
-    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
-      meteovec <- c(
-        "MinTemperature" = tminVec[i],
-        "MaxTemperature" = tmaxVec[i],
-        "MinRelativeHumidity" = rhminVec[i],
-        "MaxRelativeHumidity" = rhmaxVec[i],
-        "Precipitation"  =precVec[i],
-        "Radiation" = radVec[i],
-        "WindSpeed" = wsVec[i],
-        "CO2" = C02Vec[i]
-      )
-      wtd = y$depth_to_bedrock[i] - (y$aquifer[i]/y$bedrock_porosity[i])
-      if(wtd<0.0) cli::cli_alert_warning(paste0("Negative WTD in ", i,"\n"))
-      xi <- y$state[[i]]
-      soil_i <- xi[["soil"]]
-      widths <- soil_i$widths
-      lambda <- 1 - soil_i$rfc/100
-      w <- (widths*lambda)/sum(widths*lambda)
-      lateralFlows <- outWB$InterflowBalance[i]*w # layer flow
-      XI[[i]] <- list(i = i, 
-                      x = xi,
-                      result_cell = y$result_cell[i],
-                      meteovec = meteovec,
-                      latitude = latitude[i], 
-                      elevation = y$elevation[i], 
-                      slope= y$slope[i], 
-                      aspect = y$aspect[i],
-                      runon = outWB$Runon[i], # Take runon from non-soil cells to input
-                      lateralFlows = lateralFlows,
-                      waterTableDepth = wtd) # // New depth to aquifer (mm)
-    }
-  }
-  localResults <- vector("list", nX)
-  for(i in 1:nX) {
-    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) {
-      localResults[[i]] <- .fcpp_landunit_day(XI[[i]], date = date, model = local_model, 
-                                              internalCommunication = internalCommunication,
-                                              standSummary = standSummary, carbonBalanceSummary = carbonBalanceSummary, 
-                                              biomassBalanceSummary = biomassBalanceSummary)
-    }
-  }
+  .tetisModifyKsat(y, watershed_control, reverse = FALSE)
+  .tetisSimulationWithOverlandFlows(local_model, date, internalCommunication,
+                                    standSummary, carbonBalanceSummary, biomassBalanceSummary,
+                                    output,
+                                    y, 
+                                    latitude,
+                                    gridMeteo,
+                                    waterOrder, queenNeigh, waterQ, isChannel,
+                                    watershed_control)
   .copySnowpackFromSoil(y)
-  .tetisModifyKsat(y, watershed_control, TRUE)
+  .tetisModifyKsat(y, watershed_control, reverse = TRUE)
   
-  #C1. Process results from soil cells
-  .tetisCopySoilResultsToOutput(y, localResults, output,
-                                tminVec, tmaxVec)
-
-  #C2. Overland surface runoff from cells diverted to outlets or channel
-  .tetisOverlandFlows(output[["WatershedWaterBalance"]],
-                      waterOrder, queenNeigh, waterQ, isChannel)
-  
-  
-  #D. Applies capillarity rise, deep drainage to aquifer
+  #C. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
                                  output[["WatershedWaterBalance"]])
 
-  #E. Applies drainage from aquifer to a deeper aquifer
+  #D. Applies drainage from aquifer to a deeper aquifer
   .tetisApplyDeepAquiferLossToAquifer(output[["WatershedWaterBalance"]], 
                                       y, watershed_control)
 

@@ -40,7 +40,7 @@ void tetisModifyKsat(List y, List watershed_control, bool reverse) {
 // [[Rcpp::export(".tetisInterFlow")]]
 void tetisInterFlow(DataFrame outWB,
                     List y,
-                    IntegerVector waterO, List queenNeigh, List waterQ,
+                    IntegerVector waterOrder, List queenNeigh, List waterQ,
                     List watershed_control,
                     double patchsize) {
   
@@ -158,7 +158,7 @@ void tetisInterFlow(DataFrame outWB,
 // [[Rcpp::export(".tetisBaseFlow")]]
 void tetisBaseFlow(DataFrame outWB,
                    List y,
-                   IntegerVector waterO, List queenNeigh, List waterQ,
+                   IntegerVector waterOrder, List queenNeigh, List waterQ,
                    List watershed_control,
                    double patchsize) {
 
@@ -288,23 +288,233 @@ void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y,
   }
 }
 
-// [[Rcpp::export(".tetisOverlandFlows")]]
-void tetisOverlandFlows(DataFrame outWB,
-                        IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel) {
-
-  NumericVector ChannelExport=  outWB[WBCOM_ChannelExport];
-  NumericVector WatershedExport=  outWB[WBCOM_WatershedExport];
+// [[Rcpp::export(".tetisSimulationWithOverlandFlows")]]
+void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List internalCommunication,
+                                      bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary,
+                                      List output,
+                                      List y,
+                                      NumericVector latitude,
+                                      DataFrame gridMeteo,
+                                      IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isChannel,
+                                      List watershed_control) {
+  
+  DataFrame outWB = Rcpp::as<Rcpp::DataFrame>(output["WatershedWaterBalance"]);
+  List localResults = output["LocalResults"];
+  
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  double rock_max_infiltration = tetis_parameters["rock_max_infiltration"];
+  
   NumericVector Runoff=  outWB[WBCOM_Runoff];
   NumericVector Runon=  outWB[WBCOM_Runon];
-  NumericVector AquiferExfiltration =  outWB[WBCOM_AquiferExfiltration];
-  
-  int nX = Runoff.size();
+  NumericVector MinTemperature = outWB[WBCOM_MinTemperature];
+  NumericVector MaxTemperature = outWB[WBCOM_MaxTemperature];
+  NumericVector PET = outWB[WBCOM_PET];
+  NumericVector Rain = outWB[WBCOM_Rain];
+  NumericVector Interception = outWB[WBCOM_Interception];
+  NumericVector NetRain = outWB[WBCOM_NetRain];
+  NumericVector Infiltration = outWB[WBCOM_Infiltration];
+  NumericVector InfiltrationExcess = outWB[WBCOM_InfiltrationExcess];
+  NumericVector InterflowBalance = outWB[WBCOM_InterflowBalance];
+  NumericVector DeepDrainage = outWB[WBCOM_DeepDrainage];
+  NumericVector Snow = outWB[WBCOM_Snow];
+  NumericVector Snowmelt = outWB[WBCOM_Snowmelt];
+  NumericVector ChannelExport = outWB[WBCOM_ChannelExport];
+  NumericVector WatershedExport = outWB[WBCOM_WatershedExport];
+  NumericVector InterflowInput = outWB[WBCOM_InterflowInput];
+  NumericVector InterflowOutput = outWB[WBCOM_InterflowOutput];
+  NumericVector BaseflowInput = outWB[WBCOM_BaseflowInput];
+  NumericVector BaseflowOutput = outWB[WBCOM_BaseflowOutput];
+  NumericVector BaseflowBalance = outWB[WBCOM_BaseflowBalance];
+  NumericVector AquiferExfiltration = outWB[WBCOM_AquiferExfiltration];
+  NumericVector CapillarityRise = outWB[WBCOM_CapillarityRise];
+  NumericVector DeepAquiferLoss = outWB[WBCOM_DeepAquiferLoss];
+  NumericVector SoilEvaporation = outWB[WBCOM_SoilEvaporation];
+  NumericVector SaturationExcess = outWB[WBCOM_SaturationExcess];
+  NumericVector Transpiration = outWB[WBCOM_Transpiration];
+  NumericVector HerbTranspiration = outWB[WBCOM_HerbTranspiration];
+  NumericVector LAI, LAIherb, LAIlive, LAIexpanded, LAIdead, Cm, LgroundPAR, LgroundSWR;
+  NumericVector StructuralBalance, LabileBalance, PlantBalance, MortalityLoss, CohortBalance;
+  NumericVector GrossPrimaryProduction, MaintenanceRespiration, SynthesisRespiration, NetPrimaryProduction;
+  if(standSummary) {
+    DataFrame outStand = as<DataFrame>(output["WatershedStand"]);
+    LAI = outStand[STCOM_LAI];
+    LAIherb = outStand[STCOM_LAIherb];
+    LAIlive = outStand[STCOM_LAIlive];
+    LAIexpanded = outStand[STCOM_LAIexpanded];
+    LAIdead = outStand[STCOM_LAIdead];
+    Cm = outStand[STCOM_Cm];
+    LgroundPAR = outStand[STCOM_LgroundPAR];
+    LgroundSWR = outStand[STCOM_LgroundSWR];
+  }
+  if(carbonBalanceSummary) {
+    DataFrame outCB = as<DataFrame>(output["WatershedCarbonBalance"]);
+    GrossPrimaryProduction = outCB[CBCOM_GrossPrimaryProduction];
+    MaintenanceRespiration = outCB[CBCOM_MaintenanceRespiration];
+    SynthesisRespiration = outCB[CBCOM_SynthesisRespiration];
+    NetPrimaryProduction = outCB[CBCOM_NetPrimaryProduction];
+  }
+  if(biomassBalanceSummary) {
+    DataFrame outBB = as<DataFrame>(output["WatershedBiomassBalance"]);
+     StructuralBalance = outBB[BBCOM_StructuralBalance];
+     LabileBalance = outBB[BBCOM_LabileBalance];
+     PlantBalance = outBB[BBCOM_PlantBalance];
+     MortalityLoss = outBB[BBCOM_MortalityLoss];
+     CohortBalance = outBB[BBCOM_CohortBalance];
+  }
+    
+  NumericVector tminVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["MinTemperature"]);
+  NumericVector tmaxVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["MaxTemperature"]);
+  NumericVector rhminVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["MinRelativeHumidity"]);
+  NumericVector rhmaxVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["MaxRelativeHumidity"]);
+  NumericVector precVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["Precipitation"]);
+  NumericVector radVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["Radiation"]);
+  NumericVector wsVec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["WindSpeed"]);
+  NumericVector C02Vec = Rcpp::as<Rcpp::NumericVector>(gridMeteo["CO2"]);
+
+  CharacterVector lct = y["land_cover_type"];
+  List xList = y["state"];
+  int nX = xList.size();
+  NumericVector elevation = y["elevation"];
+  NumericVector slope = y["slope"];
+  NumericVector aspect = y["aspect"];
+  NumericVector snowpack = y["snowpack"];
+  NumericVector depth_to_bedrock = y["depth_to_bedrock"];
+  NumericVector bedrock_porosity = y["bedrock_porosity"];
+  NumericVector aquifer = y["aquifer"];
+  LogicalVector result_cell = y["result_cell"]; 
   
   for(int i=0;i<nX;i++) {
     //get next cell in order
-    int iCell = waterO[i]-1; //Decrease index!!!!
-    //Assign runoff to runon of downhill neighbours
-    double ri_tot =  Runon[iCell] + Runoff[iCell] + AquiferExfiltration[iCell];
+    int iCell = waterOrder[i]-1; //Decrease index!!!!
+    if(lct[iCell]=="wildland" || lct[iCell]=="agriculture") {
+      //Soil cell: Prepare input
+      NumericVector meteovec = NumericVector::create(_["MinTemperature"] = tminVec[iCell],
+                                                     _["MaxTemperature"] = tmaxVec[iCell],
+                                                     _["MinRelativeHumidity"] = rhminVec[iCell],
+                                                     _["MaxRelativeHumidity"] = rhmaxVec[iCell],
+                                                     _["Precipitation"] = precVec[iCell],
+                                                     _["Radiation"] = radVec[iCell],
+                                                     _["WindSpeed"] = wsVec[iCell],
+                                                     _["CO2"] = C02Vec[iCell]);
+      
+      double wtd = depth_to_bedrock[iCell] - (aquifer[iCell]/bedrock_porosity[iCell]);
+      if(wtd<0.0) Rcout << "Negative WTD in " << iCell <<"\n";
+      List xi = xList[iCell];
+      List soil_i = xi["soil"];
+      NumericVector widths = Rcpp::as<Rcpp::NumericVector>(soil_i["widths"]);
+      NumericVector rfc = Rcpp::as<Rcpp::NumericVector>(soil_i["rfc"]);
+      double interflowbalance = InterflowBalance[iCell];
+      NumericVector wl = widths*(1.0 - (rfc/100.0));
+      NumericVector lateralFlows = (interflowbalance*wl)/sum(wl);
+      List XI = List::create(_["i"] = iCell, 
+                             _["x"] = xi,
+                             _["result_cell"] = result_cell[iCell],
+                             _["meteovec"] = meteovec,
+                             _["latitude"] = latitude[iCell], 
+                             _["elevation"] = elevation[iCell], 
+                             _["slope"] = slope[iCell], 
+                             _["aspect"] = aspect[iCell],
+                             _["runon"] = Runon[iCell], 
+                             _["lateralFlows"] = lateralFlows,
+                             _["waterTableDepth"] = wtd); 
+      //Launch simulation
+      List lr = fcpp_landunit_day(XI, model, date, internalCommunication,
+                                  standSummary, carbonBalanceSummary, biomassBalanceSummary);
+      
+      //Copy water balance
+      localResults[iCell] = lr;
+      List sr = lr["simulation_results"];
+      NumericVector DB = sr["WaterBalance"];
+      MinTemperature[iCell] = tminVec[iCell];
+      MaxTemperature[iCell] = tmaxVec[iCell];
+      Snow[iCell] = DB["Snow"];
+      Snowmelt[iCell] = DB["Snowmelt"];
+      PET[iCell] = DB["PET"];
+      Rain[iCell] = DB["Rain"];
+      SoilEvaporation[iCell] = DB["SoilEvaporation"];
+      NetRain[iCell] = DB["NetRain"];
+      Interception[iCell] = Rain[iCell] - NetRain[iCell];
+      Infiltration[iCell] = DB["Infiltration"];
+      Runoff[iCell] = DB["Runoff"];
+      InfiltrationExcess[iCell] = DB["InfiltrationExcess"];
+      SaturationExcess[iCell] = DB["SaturationExcess"];
+      DeepDrainage[iCell] = DB["DeepDrainage"];
+      CapillarityRise[iCell] = DB["CapillarityRise"];
+      if(DeepDrainage[iCell] > CapillarityRise[iCell]) {
+        DeepDrainage[iCell] = DeepDrainage[iCell] - CapillarityRise[iCell];
+        CapillarityRise[iCell] = 0.0;
+      }
+      Transpiration[iCell] = DB["Transpiration"];
+      if(lct[iCell]=="wildland") {
+        HerbTranspiration[iCell] = DB["HerbTranspiration"];
+        if(standSummary){
+          NumericVector Stand = sr["Stand"];
+          LAI[iCell] = Stand["LAI"];
+          LAIherb[iCell] = Stand["LAIherb"];
+          LAIlive[iCell] = Stand["LAIlive"];
+          LAIexpanded[iCell] = Stand["LAIexpanded"];
+          LAIdead[iCell] = Stand["LAIdead"];
+          Cm[iCell] = Stand["Cm"];
+          LgroundPAR[iCell] = Stand["LgroundPAR"];
+          LgroundSWR[iCell] = Stand["LgroundSWR"];
+        } 
+        if(carbonBalanceSummary){
+          NumericVector CarbonBalance = sr["CarbonBalance"];
+          GrossPrimaryProduction[iCell] = CarbonBalance["GrossPrimaryProduction"];
+          MaintenanceRespiration[iCell] = CarbonBalance["MaintenanceRespiration"];
+          SynthesisRespiration[iCell] = CarbonBalance["SynthesisRespiration"];
+          NetPrimaryProduction[iCell] = CarbonBalance["NetPrimaryProduction"];
+        }
+        if(biomassBalanceSummary) {
+          DataFrame pbb = Rcpp::as<Rcpp::DataFrame>(sr["PlantBiomassBalance"]);
+          StructuralBalance[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["StructuralBiomassBalance"]));
+          LabileBalance[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["LabileBiomassBalance"]));
+          PlantBalance[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["PlantBiomassBalance"]));
+          MortalityLoss[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["MortalityBiomassLoss"]));
+          CohortBalance[iCell] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["CohortBiomassBalance"]));
+        }
+      }
+    } else if(lct[iCell]=="rock" || lct[iCell]=="artificial" || lct[iCell]=="water") {
+      //NON-SOIL CELL
+      MinTemperature[iCell] = tminVec[iCell];
+      MaxTemperature[iCell] = tmaxVec[iCell];
+      PET[iCell] = NA_REAL;
+      double tday = meteoland::utils_averageDaylightTemperature(tminVec[iCell], tmaxVec[iCell]);
+      if(tday<0.0) {
+        Snow[iCell] = precVec[iCell];
+        snowpack[iCell] += Snow[iCell];
+      } else {
+        Rain[iCell] = precVec[iCell];
+      }
+      if(snowpack[iCell]>0.0) {
+        double melt = medfate::hydrology_snowMelt(tday, radVec[iCell], 1.0, elevation[iCell]);
+        Snowmelt[iCell] = std::min(melt, snowpack[iCell]);
+        snowpack[iCell] -= Snowmelt[iCell];
+      }
+      if(lct[iCell]=="rock") {
+        //Part of the water is allowed to infiltrate (draining to the aquifer)
+        Infiltration[iCell] = std::min(rock_max_infiltration, Snowmelt[iCell]+Rain[iCell]);
+        DeepDrainage[iCell] = Infiltration[iCell];
+        InfiltrationExcess[iCell] = Snowmelt[iCell]+Rain[iCell] - DeepDrainage[iCell];
+        Runoff[iCell] = InfiltrationExcess[iCell];
+      } else if(lct[iCell]=="artificial") {
+        //all Precipitation becomes surface runoff if cell is rock artificial
+        InfiltrationExcess[iCell] =  Snowmelt[iCell]+Rain[iCell];
+        Runoff[iCell] = InfiltrationExcess[iCell];
+      } else if(lct[iCell]=="water") {
+        // water cells receive water from Precipitation
+        // but do not export to the atmosphere contribute nor to other cells.
+        // any received water drains directly to the aquifer so that it can feed base flow
+        DeepDrainage[iCell] = Snowmelt[iCell]+ Rain[iCell];
+        Infiltration[iCell] = DeepDrainage[iCell];
+      }
+      NetRain[iCell] = Rain[iCell];
+      // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
+    }
+    
+    // OVERLAND RUNOFF
+    // Assign runoff to runon of downhill neighbours
+    double ri_tot =  Runoff[iCell] + AquiferExfiltration[iCell];
     if(ri_tot>0.0) {
       double ri = ri_tot;
       IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
@@ -325,219 +535,6 @@ void tetisOverlandFlows(DataFrame outWB,
         } else {
           WatershedExport[iCell] += ri;
         }
-      }
-    }
-  }
-}
-
-// [[Rcpp::export(".tetisSimulationNonSoilCells")]]
-void tetisSimulationNonSoilCells(DataFrame outWB,
-                                 List y,
-                                 NumericVector tminVec, NumericVector tmaxVec, NumericVector precVec, NumericVector radVec,
-                                 IntegerVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel,
-                                 List watershed_control) {
-  
-  NumericVector MinTemperature = outWB[WBCOM_MinTemperature];
-  NumericVector MaxTemperature = outWB[WBCOM_MaxTemperature];
-  NumericVector PET = outWB[WBCOM_PET];
-  NumericVector Rain = outWB[WBCOM_Rain];
-  NumericVector Interception = outWB[WBCOM_Interception];
-  NumericVector NetRain = outWB[WBCOM_NetRain];
-  NumericVector Runoff = outWB[WBCOM_Runoff];
-  NumericVector Infiltration = outWB[WBCOM_Infiltration];
-  NumericVector InfiltrationExcess = outWB[WBCOM_InfiltrationExcess];
-  NumericVector DeepDrainage = outWB[WBCOM_DeepDrainage];
-  NumericVector Snow = outWB[WBCOM_Snow];
-  NumericVector Snowmelt = outWB[WBCOM_Snowmelt];
-  NumericVector Runon = outWB[WBCOM_Runon];
-  NumericVector ChannelExport = outWB[WBCOM_ChannelExport];
-  NumericVector WatershedExport = outWB[WBCOM_WatershedExport];
-  
-  List tetis_parameters = watershed_control["tetis_parameters"];
-  double rock_max_infiltration = tetis_parameters["rock_max_infiltration"];
-  
-  CharacterVector lct = y["land_cover_type"];
-  List xList = y["state"];
-  int nX = xList.size();
-  NumericVector elevation = y["elevation"];
-  NumericVector snowpack = y["snowpack"];
-  
-  for(int i=0;i<nX;i++){
-    if(lct[i]=="rock" || lct[i]=="artificial" || lct[i]=="water") {
-      MinTemperature[i] = tminVec[i];
-      MaxTemperature[i] = tmaxVec[i];
-      PET[i] = NA_REAL;
-      double tday = meteoland::utils_averageDaylightTemperature(tminVec[i], tmaxVec[i]);
-      if(tday<0.0) {
-        Snow[i] = precVec[i];
-        snowpack[i] += Snow[i];
-      } else {
-        Rain[i] = precVec[i];
-      }
-      if(snowpack[i]>0.0) {
-        double melt = medfate::hydrology_snowMelt(tday, radVec[i], 1.0, elevation[i]);
-        Snowmelt[i] = std::min(melt, snowpack[i]);
-        snowpack[i] -= Snowmelt[i];
-      }
-      if(lct[i]=="rock") {
-        //Part of the water is allowed to infiltrate (draining to the aquifer)
-        Infiltration[i] = std::min(rock_max_infiltration, Snowmelt[i]+Rain[i]);
-        DeepDrainage[i] = Infiltration[i];
-        InfiltrationExcess[i] = Snowmelt[i]+Rain[i] - DeepDrainage[i];
-        Runoff[i] = InfiltrationExcess[i];
-      } else if(lct[i]=="artificial") {
-        //all Precipitation becomes surface runoff if cell is rock artificial
-        InfiltrationExcess[i] =  Snowmelt[i]+Rain[i];
-        Runoff[i] = InfiltrationExcess[i];
-      } else if(lct[i]=="water") {
-        // water cells receive water from Precipitation
-        // but do not export to the atmosphere contribute nor to other cells.
-        // any received water drains directly to the aquifer so that it can feed base flow
-        DeepDrainage[i] = Snowmelt[i]+ Rain[i];
-        Infiltration[i] = DeepDrainage[i];
-      }
-      NetRain[i] = Rain[i];
-      // Rcout << i<< " Rain " << Rain[i] << " Snow " << Snow[i] << " DeepDrainage " << DeepDrainage[i] << " Snowmelt " << Snowmelt[i] << " Runoff " << Runoff[i] << "\n";
-    }
-  }
-}
-
-// [[Rcpp::export(".tetisCopySoilResultsToOutput")]]
-void tetisCopySoilResultsToOutput(List y, List soilCellResults, List output,
-                                  NumericVector tminVec, NumericVector tmaxVec){
-  
-  CharacterVector land_cover_type = y["land_cover_type"];
-  
-  DataFrame outWB = as<DataFrame>(output["WatershedWaterBalance"]);
-  List localResults = output["LocalResults"];
-  int nX = outWB.nrow();
-  
-  NumericVector InterflowInput = outWB[WBCOM_InterflowInput];
-  NumericVector InterflowOutput = outWB[WBCOM_InterflowOutput];
-  NumericVector InterflowBalance = outWB[WBCOM_InterflowBalance];
-  
-  NumericVector BaseflowInput = outWB[WBCOM_BaseflowInput];
-  NumericVector BaseflowOutput = outWB[WBCOM_BaseflowOutput];
-  NumericVector BaseflowBalance = outWB[WBCOM_BaseflowBalance];
-  
-  NumericVector AquiferExfiltration = outWB[WBCOM_AquiferExfiltration];
-  
-  NumericVector MinTemperature = outWB[WBCOM_MinTemperature];
-  NumericVector MaxTemperature = outWB[WBCOM_MaxTemperature];
-  NumericVector Rain = outWB[WBCOM_Rain];
-  NumericVector Interception = outWB[WBCOM_Interception];
-  NumericVector NetRain = outWB[WBCOM_NetRain];
-  NumericVector Runoff = outWB[WBCOM_Runoff];
-  NumericVector Infiltration = outWB[WBCOM_Infiltration];
-  NumericVector InfiltrationExcess = outWB[WBCOM_InfiltrationExcess];
-  NumericVector DeepDrainage = outWB[WBCOM_DeepDrainage];
-  NumericVector Snow = outWB[WBCOM_Snow];
-  NumericVector Snowmelt = outWB[WBCOM_Snowmelt];
-  NumericVector Runon = outWB[WBCOM_Runon];
-  NumericVector CapillarityRise = outWB[WBCOM_CapillarityRise];
-  NumericVector DeepAquiferLoss = outWB[WBCOM_DeepAquiferLoss];
-  NumericVector SoilEvaporation = outWB[WBCOM_SoilEvaporation];
-  NumericVector PET = outWB[WBCOM_PET];
-  NumericVector WatershedExport = outWB[WBCOM_WatershedExport];
-  NumericVector SaturationExcess = outWB[WBCOM_SaturationExcess];
-  NumericVector Transpiration = outWB[WBCOM_Transpiration];
-  NumericVector HerbTranspiration = outWB[WBCOM_HerbTranspiration];
-  
-  for(int i=0;i<nX;i++){
-    if((land_cover_type[i] == "wildland") || (land_cover_type[i] == "agriculture")) {
-      List lr = soilCellResults[i];
-      localResults[i] = lr;
-      List sr = lr["simulation_results"];
-      NumericVector DB = sr["WaterBalance"];
-      MinTemperature[i] = tminVec[i];
-      MaxTemperature[i] = tmaxVec[i];
-      Snow[i] = DB["Snow"];
-      Snowmelt[i] = DB["Snowmelt"];
-      PET[i] = DB["PET"];
-      Rain[i] = DB["Rain"];
-      SoilEvaporation[i] = DB["SoilEvaporation"];
-      NetRain[i] = DB["NetRain"];
-      Interception[i] = Rain[i] - NetRain[i];
-      Infiltration[i] = DB["Infiltration"];
-      Runoff[i] = DB["Runoff"];
-      InfiltrationExcess[i] = DB["InfiltrationExcess"];
-      SaturationExcess[i] = DB["SaturationExcess"];
-      DeepDrainage[i] = DB["DeepDrainage"];
-      CapillarityRise[i] = DB["CapillarityRise"];
-      if(DeepDrainage[i] > CapillarityRise[i]) {
-        DeepDrainage[i] = DeepDrainage[i] - CapillarityRise[i];
-        CapillarityRise[i] = 0.0;
-      }
-      Transpiration[i] = DB["Transpiration"];
-      if(land_cover_type[i]=="wildland") {
-        HerbTranspiration[i] = DB["HerbTranspiration"];
-      }
-    }
-  }
-  
-  if(output.containsElementNamed("WatershedStand")) {
-    DataFrame outStand = as<DataFrame>(output["WatershedStand"]);
-    NumericVector LAI = outStand[STCOM_LAI];
-    NumericVector LAIherb = outStand[STCOM_LAIherb];
-    NumericVector LAIlive = outStand[STCOM_LAIlive];
-    NumericVector LAIexpanded = outStand[STCOM_LAIexpanded];
-    NumericVector LAIdead = outStand[STCOM_LAIdead];
-    NumericVector Cm = outStand[STCOM_Cm];
-    NumericVector LgroundPAR = outStand[STCOM_LgroundPAR];
-    NumericVector LgroundSWR = outStand[STCOM_LgroundSWR];
-    for(int i=0;i<nX;i++){
-      if(land_cover_type[i] == "wildland") {
-        List lr = soilCellResults[i];
-        List sr = lr["simulation_results"];
-        NumericVector Stand = sr["Stand"];
-        LAI[i] = Stand["LAI"];
-        LAIherb[i] = Stand["LAIherb"];
-        LAIlive[i] = Stand["LAIlive"];
-        LAIexpanded[i] = Stand["LAIexpanded"];
-        LAIdead[i] = Stand["LAIdead"];
-        Cm[i] = Stand["Cm"];
-        LgroundPAR[i] = Stand["LgroundPAR"];
-        LgroundSWR[i] = Stand["LgroundSWR"];
-      }
-    }
-  }
-  
-  if(output.containsElementNamed("WatershedCarbonBalance")) {
-    DataFrame outCB = as<DataFrame>(output["WatershedCarbonBalance"]);
-    NumericVector GrossPrimaryProduction = outCB[CBCOM_GrossPrimaryProduction];
-    NumericVector MaintenanceRespiration = outCB[CBCOM_MaintenanceRespiration];
-    NumericVector SynthesisRespiration = outCB[CBCOM_SynthesisRespiration];
-    NumericVector NetPrimaryProduction = outCB[CBCOM_NetPrimaryProduction];
-    for(int i=0;i<nX;i++){
-      if(land_cover_type[i] == "wildland") {
-        List lr = soilCellResults[i];
-        List sr = lr["simulation_results"];
-        NumericVector CarbonBalance = sr["CarbonBalance"];
-        GrossPrimaryProduction[i] = CarbonBalance["GrossPrimaryProduction"];
-        MaintenanceRespiration[i] = CarbonBalance["MaintenanceRespiration"];
-        SynthesisRespiration[i] = CarbonBalance["SynthesisRespiration"];
-        NetPrimaryProduction[i] = CarbonBalance["NetPrimaryProduction"];
-      }
-    }
-  }
-  
-  if(output.containsElementNamed("WatershedBiomassBalance")) {
-    DataFrame outBB = as<DataFrame>(output["WatershedBiomassBalance"]);
-    NumericVector StructuralBalance = outBB[BBCOM_StructuralBalance];
-    NumericVector LabileBalance = outBB[BBCOM_LabileBalance];
-    NumericVector PlantBalance = outBB[BBCOM_PlantBalance];
-    NumericVector MortalityLoss = outBB[BBCOM_MortalityLoss];
-    NumericVector CohortBalance = outBB[BBCOM_CohortBalance];
-    for(int i=0;i<nX;i++){
-      if(land_cover_type[i] == "wildland") {
-        List lr = soilCellResults[i];
-        List sr = lr["simulation_results"];
-        DataFrame pbb = Rcpp::as<Rcpp::DataFrame>(sr["PlantBiomassBalance"]);
-        StructuralBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["StructuralBiomassBalance"]));
-        LabileBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["LabileBiomassBalance"]));
-        PlantBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["PlantBiomassBalance"]));
-        MortalityLoss[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["MortalityBiomassLoss"]));
-        CohortBalance[i] = sum(Rcpp::as<Rcpp::NumericVector>(pbb["CohortBiomassBalance"]));
       }
     }
   }

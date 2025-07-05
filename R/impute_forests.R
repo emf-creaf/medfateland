@@ -228,13 +228,14 @@ impute_forests <-function(x, sf_fi, dem,
 #' @param biomass_function A function accepting a forest object or a tree data table (as parameter name \code{x}) and 
 #' returning the aboveground tree biomass (Mg/ha) of the forest stand. The function may accept additional arguments. Needed if \code{variable = "aboveground_tree_biomass"}.
 #' @param biomass_arguments List with additional arguments to be supplied to the biomass function.
+#' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). This will be passed onto \code{biomass_function}, but can be left as \code{NULL} if not actually needed.
 #' @export
 modify_forest_structure<-function(x, structure_map, variable,
                                   map_var = NA, 
                                   ratio_limits = NULL,
                                   minDBH = 7.5,
                                   biomass_function = NULL, biomass_arguments = NULL,
-                                  progress = TRUE) {
+                                  SpParams = NULL, progress = TRUE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
   if(!("forest" %in% names(x))) cli::cli_abort("Column 'forest' must be defined.")
