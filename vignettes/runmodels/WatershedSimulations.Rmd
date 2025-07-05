@@ -153,6 +153,20 @@ Values of this output data frame are averages across cells in the landscape. Dat
 head(res_ws1$outlet_export_m3s)
 ```
 
+### Watershed-level summaries and plots
+
+The components of watershed-level water balance can be displayed in the console using a tailored `summary()` function:
+
+```{r}
+summary(res_ws1)
+```
+
+Analogously to plots available with package **medfate**, one can display time series of watershed-level water balance components using function `plot()`, for example:
+
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+plot(res_ws1, type = "Export")
+```
+
 ### Accessing and plotting cell summaries
 
 Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
