@@ -1,5 +1,6 @@
 # medfateland 2.7.0
 - Runoff-runon dynamics coupled to local water balance in TETIS
+- New functions for plotting watershed-level simulation results
 
 # medfateland 2.6.1
 - Bug correction: subwatershed mergin in spwb_land

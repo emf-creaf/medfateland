@@ -571,6 +571,7 @@
     varsBiomassBalance <- .vars_biomassbalance("all")
     
     LandscapeBalance <- data.frame(dates = dates,
+                                   PET = rep(0, nDays),
                                    Precipitation = rep(0, nDays),
                                    Rain = rep(0, nDays),
                                    Snow = rep(0, nDays),
@@ -594,6 +595,7 @@
                                    ChannelExport = rep(0, nDays),
                                    WatershedExport = rep(0, nDays))
     SoilLandscapeBalance <- data.frame(dates = dates,
+                                       PET = rep(0, nDays),
                                        Precipitation = rep(0, nDays),
                                        Rain = rep(0, nDays),
                                        Snow = rep(0, nDays),
@@ -825,6 +827,7 @@
     }
     
     #Landscape balance
+    LandscapeBalance$PET[day] <- sum(res_wb_day$PET, na.rm=T)/nCells
     LandscapeBalance$Rain[day] <- sum(res_wb_day$Rain, na.rm=T)/nCells
     LandscapeBalance$Snow[day] <- sum(res_wb_day$Snow, na.rm=T)/nCells
     LandscapeBalance$Snowmelt[day] <- sum(res_wb_day$Snowmelt, na.rm=T)/nCells
@@ -850,6 +853,7 @@
       LandscapeBalance$WatershedExport[day] <- sum(res_wb_day$WatershedExport, na.rm=T)/nCells
       
       if(nSoil>0) {
+        SoilLandscapeBalance$PET[day] <- sum(res_wb_day$PET[isSoilCell], na.rm=T)/nCells
         SoilLandscapeBalance$Rain[day] <- sum(res_wb_day$Rain[isSoilCell], na.rm=T)/nSoil
         SoilLandscapeBalance$Snow[day] <- sum(res_wb_day$Snow[isSoilCell], na.rm=T)/nSoil
         SoilLandscapeBalance$DeepDrainage[day] <- sum(res_wb_day$DeepDrainage[isSoilCell], na.rm=T)/nSoil

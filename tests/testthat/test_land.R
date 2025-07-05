@@ -30,11 +30,19 @@ dates = seq(as.Date("2001-03-01"), as.Date("2001-03-01"), by="day")
 test_that("Overland routing can be estimated",{
   expect_s3_class(overland_routing(r, yws_swpb[1:10,]), "sf")
 })
-test_that("Can simulate three days over landscape",{
-  expect_s3_class(spwb_land(r, yws_swpb[1:10,], meteo = examplemeteo, dates = dates, summary_frequency = "month", 
-                           SpParams = SpParamsMED, progress = FALSE), "spwb_land")
-  expect_s3_class(growth_land(r, yws_growth[1:10,], meteo = examplemeteo, dates = dates, summary_frequency = "month", 
-                             SpParams = SpParamsMED, progress = FALSE), "growth_land")
+test_that("Can simulate three days over landscape and watershed-level plots can be obtained",{
+  s1 <- spwb_land(r, yws_swpb[1:10,], meteo = examplemeteo, dates = dates, summary_frequency = "month", 
+                  SpParams = SpParamsMED, progress = FALSE)
+  g1 <- growth_land(r, yws_growth[1:10,], meteo = examplemeteo, dates = dates, summary_frequency = "month", 
+                    SpParams = SpParamsMED, progress = FALSE)
+  expect_s3_class(s1, "spwb_land")
+  expect_s3_class(g1, "growth_land")
+  expect_s3_class(plot(s1, "PET"), "ggplot")
+  expect_s3_class(plot(s1, "Evapotranspiration"), "ggplot")
+  expect_s3_class(plot(s1, "Export"), "ggplot")
+  expect_s3_class(plot(g1, "PET"), "ggplot")
+  expect_s3_class(plot(g1, "Evapotranspiration"), "ggplot")
+  expect_s3_class(plot(g1, "Export"), "ggplot")
 })
 
 test_that("Can simulate three days over landscape with dates in column",{

@@ -98,6 +98,7 @@ reference:
 - title: Post-processing
   desc:  Plot and summary functions for simulation results
   contents: 
+  - starts_with("plot.spwb_land")
   - starts_with("plot_summary")
   - starts_with("simulation_summary")
   - shinyplot_land
