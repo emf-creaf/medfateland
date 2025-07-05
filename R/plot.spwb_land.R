@@ -7,7 +7,9 @@
   df[["Date"]] = as.Date(WaterBalance$dates)
   if(type=="PET_Precipitation") {
     if(is.null(ylab)) ylab = expression(L%.%m^{-2}) 
-    df[["PET"]] = WaterBalance$PET
+    # For back-compatibility
+    if("PET" %in% names(WaterBalance)) df[["PET"]] = WaterBalance$PET
+    else df[["PET"]] =as.numeric(NA)
     df[["Precipitation"]] = WaterBalance$Precipitation
     df[["Snow"]] = WaterBalance$Snow
     if(!is.null(dates)) df = df[df$Date %in% dates,]
