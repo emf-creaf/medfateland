@@ -39,37 +39,89 @@
   shinyApp(ui = ui, server = server)
 }
 .shinyplot_results<-function(x, r = NULL) {
-  not_null <- which(!unlist(lapply(x$summary, is.null)))
-  vars = colnames(x$summary[[not_null[1]]])
-  dates = rownames(x$summary[[not_null[1]]])
-  if(inherits(x, c("spwbland", "growthland"))) {
-    vars = c("DailyRunoff", vars)
+  if(inherits(x, "sf")) {
+    x_map <- x
+  } else if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land")) {
+    x_map <- x$sf
+    wb_plot_choices = .getWatershedWaterBalancePlotTypes()
+    watershed <- tabPanel("Watershed-level",
+                          sidebarLayout(
+                            sidebarPanel(
+                              tabPanel("Plot selection",
+                                       selectInput(
+                                         inputId = "plot_type",
+                                         label = "Plot type", 
+                                         choices = wb_plot_choices,
+                                         selected = wb_plot_choices[1]
+                                       ),
+                                       sliderInput(
+                                         inputId = "date_range",
+                                         label = "Date range",
+                                         value = c(dates[1],dates[length(dates)]),
+                                         min = dates[1],
+                                         max = dates[length(dates)]
+                                       ),
+                                       selectInput(
+                                         inputId = "summary_type",
+                                         label = "Temporal aggregation", 
+                                         choices = c("None" = "day", 
+                                                     "By weeks" = "week", 
+                                                     "By months" = "month", 
+                                                     "By seasons" = "quarter", 
+                                                     "By years" = "year"),
+                                         selected = "None"
+                                       )
+                              ),
+                            ),
+                            mainPanel(
+                              plotOutput("watershed_plot")
+                            )
+                          ))
   }
-  ui <- fluidPage(
-    sidebarLayout(
-      sidebarPanel(
-        selectInput(
-          inputId = "plot_var",
-          label = "Variable", 
-          choices = vars,
-          selected = vars[1]
-        ),
-        selectInput(
-          inputId = "plot_date",
-          label = "Date", 
-          choices = dates,
-          selected = dates[1]
-        )
-      ),
-      mainPanel(
-        plotOutput("summary_plot")
-      )
-    )
-  )
+  dates <- as.Date(x$watershed_balance$dates)
+  
+  not_null <- which(!unlist(lapply(x_map$summary, is.null)))
+  map_variables <- colnames(x_map$summary[[not_null[1]]])
+  map_dates <- as.Date(rownames(x_map$summary[[not_null[1]]]))
+  
+  summaries <- tabPanel("Maps",
+                         sidebarLayout(
+                           sidebarPanel(
+                             selectInput(
+                               inputId = "map_var",
+                               label = "Variable", 
+                               choices = map_variables,
+                               selected = map_variables[1]
+                             ),
+                             selectInput(
+                               inputId = "map_date",
+                               label = "Date", 
+                               choices = map_dates,
+                               selected = map_dates[1]
+                             )
+                           ),
+                           mainPanel(
+                             plotOutput("summary_map")
+                           )
+                         )
+                      )
+  if(inherits(x, "sf")) {
+    ui <- navbarPage("Interactive plots", summaries)
+  } else {
+    ui <- navbarPage("Interactive plots", watershed, summaries)
+  }
   server <- function(input, output, session) {
     
-    output$summary_plot <- renderPlot({
-      plot_summary(x, variable = input$plot_var, date = input$plot_date, r = r)
+    output$summary_map <- renderPlot({
+      plot_summary(x_map, variable = input$map_var, date = input$map_date, r = r)
+    })
+    output$watershed_plot <- renderPlot({
+      date_lim <- input$date_range
+      date_range <- dates[dates >= date_lim[1] & dates <= date_lim[2]]
+      plot(x,
+           type = input$plot_type,
+           summary.freq = input$summary_type,
+           dates = date_range)
     })
   }
   shinyApp(ui = ui, server = server)
@@ -108,9 +160,9 @@ shinyplot_land<-function(x, SpParams = NULL, r = NULL) {
     else stop("Column 'summary' is NULL for all elements")
   }
   else if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land")) {
-    x <- x$sf
-    if("summary" %in% names(x)) {
-      not_null <- which(!unlist(lapply(x$summary, is.null)))
+    x_map <- x$sf
+    if("summary" %in% names(x_map)) {
+      not_null <- which(!unlist(lapply(x_map$summary, is.null)))
       if(length(not_null)>0) return(.shinyplot_results(x, r))
       else stop("Column 'summary' is NULL for all elements")
     }

@@ -1,8 +1,13 @@
+.getWatershedWaterBalancePlotTypes <- function(){
+  return(c("PET & Precipitation" = "PET_Precipitation",
+           "Water exported" = "Export", 
+           "Evapotranspiration" = "Evapotranspiration"))
+}
 .plot_watershed_wb <-function(WaterBalance, type,  
                               dates = NULL, 
                               xlim = NULL, ylim=NULL, xlab=NULL, ylab=NULL, 
                               summary.freq = NULL, ...) {
-  type <- match.arg(type,c("PET_Precipitation","Export", "Evapotranspiration"))
+  type <- match.arg(type,.getWatershedWaterBalancePlotTypes())
   df <- data.frame(row.names=as.character(WaterBalance$dates))
   df[["Date"]] = as.Date(WaterBalance$dates)
   if(type=="PET_Precipitation") {
