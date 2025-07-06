@@ -268,8 +268,7 @@
   isOutlet <- sf_routing$outlet
   target_outlet <- sf_routing$target_outlet
   distance_to_outlet <- sf_routing$distance_to_outlet
-  outlet_backlog <- sf_routing$outlet_backlog
-  
+
   # Reset from previous days
   .resetWaterBalanceDayOutput(output[["WatershedWaterBalance"]])
   
@@ -1141,7 +1140,6 @@
   if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and overland routing for TETIS"))
   sf_routing <- .overland_routing_inner(r, y, 
                                         raster_matching = raster_matching, 
-                                        channel_flow_speed = watershed_control$tetis_parameters$channel_flow_speed, 
                                         patchsize = patchsize,
                                         subwatersheds = watershed_control$tetis_parameters$subwatersheds,
                                         max_overlap = watershed_control$tetis_parameters$max_overlap)
@@ -1313,7 +1311,7 @@
     # Multiply by patch size to go from m3/m2 to m3 in the whole patch
     OutletExport_m3s[, outlet_non_channel] <- (res_inner$watershed_export/1e3)*patchsize/(3600*24)
     ChannelExport_m3s <- (res_inner$channel_export/1e3)*patchsize/(3600*24)
-    initial_backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
+    initial_backlog_sum <- sum(sf_routing$outlet_backlog, na.rm= TRUE)
     initial_outlet_amount <- sum(OutletExport_m3s*(3600*24))
     transport_target <- sum(ChannelExport_m3s*(3600*24))
     if(sum(sf_routing$channel)>0) {
@@ -1327,12 +1325,13 @@
         ChannelExport_vector[channel_cells] <- res_inner$channel_export[day,]
         WatershedExport_vector <- rep(0, nCells)
         .tetisChannelRouting(ChannelExport_vector, WatershedExport_vector,
+                             sf_routing$elevation, sf_routing$slope, 
                              sf_routing$channel, sf_routing$outlet, 
                              sf_routing$target_outlet, sf_routing$distance_to_outlet, sf_routing$outlet_backlog,
                              watershed_control, patchsize)
         OutletExport_m3s[day, ] <- OutletExport_m3s[day,] + (WatershedExport_vector[outlet_cells]/1e3)*patchsize/(3600*24)
       }
-      final_backlog_sum <- (sum(unlist(lapply(sf_routing$outlet_backlog, sum, na.rm= TRUE)))/1e3)*patchsize
+      final_backlog_sum <- sum(sf_routing$outlet_backlog, na.rm= TRUE)
       final_outlet_amount <- sum(OutletExport_m3s*(3600*24))
       if(header_footer) {
         cli::cli_li(paste0("Channel balance target (m3): ", round(transport_target), " outlet change (m3): ", round(final_outlet_amount - initial_outlet_amount), " backlog change (m3): ", round(final_backlog_sum - initial_backlog_sum)))
@@ -1398,7 +1397,7 @@
 #'     \item{\code{aquifer}: A numeric vector with the water content of the aquifer in each cell (in mm). If missing, it will be initialized to zero.}
 #'     \item{\code{deep_aquifer_loss}: A numeric vector with the maximum daily loss to a deeper aquifer (in mm·day-1). If missing all cells take their value from \code{deep_aquifer_loss} in \code{\link{default_watershed_control}}}
 #'     \item{\code{channel}: A logical (or binary) vector indicating overland channel routing.}
-#'     \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells from a previous simulation.}
+#'     \item{\code{outlet_backlog}: A vector indicating, for outlet cells, backlog volume of water (m3) of the corresponding channel network from a previous simulation.}
 #'   }
 #' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}). IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param meteo Input meteorological data (see \code{\link{spwb_spatial}} and details).
@@ -1443,7 +1442,7 @@
 #'       }
 #'       \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
-#'       \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells (for subsequent simulations).}
+#'       \item{\code{outlet_backlog}: A vector indicating channel water volume (m3) backlog of outlet cells (for subsequent simulations).}
 #'     }
 #'     In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 #'     \itemize{
@@ -2054,7 +2053,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     if(header_footer) cli::cli_progress_step(paste0("Determining neighbors and discharge for TETIS"))
     sf_routing <- .overland_routing_inner(r, y, 
                                           raster_matching = raster_matching, 
-                                          channel_flow_speed = watershed_control$tetis_parameters$channel_flow_speed, 
                                           patchsize = patchsize)
     outlets <- which(sf_routing$outlet)
   }
@@ -2210,7 +2208,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
 #'    \item{\code{snowpack}: A numeric vector with the snowpack water equivalent volume of each cell.}
 #'    \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'    \item{\code{outlet}: A logical vector indicating outlet cells (for subsequent simulations).}
-#'    \item{\code{outlet_backlog}: A list vector indicating channel backlog of outlet cells.}
+#'    \item{\code{outlet_backlog}: A vector indicating channel water volume (m3) backlog of outlet cells.}
 #'    \item{\code{MinTemperature}: Minimum temperature (degrees Celsius).}
 #'    \item{\code{MaxTemperature}: Maximum temperature (degrees Celsius).}
 #'    \item{\code{PET}: Potential evapotranspiration (in mm).}

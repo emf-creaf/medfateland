@@ -5,13 +5,7 @@
 \alias{cell_neighbors}
 \title{Overland routing for TETIS sub-model}
 \usage{
-overland_routing(
-  r,
-  sf,
-  channel_flow_speed = 1,
-  subwatersheds = FALSE,
-  max_overlap = 0.2
-)
+overland_routing(r, sf, subwatersheds = FALSE, max_overlap = 0.2)
 
 cell_neighbors(r, sf)
 }
@@ -25,8 +19,6 @@ cell_neighbors(r, sf)
 \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 }}
 
-\item{channel_flow_speed}{Average flow speed in the channel (in m/s).}
-
 \item{subwatersheds}{A boolean flag to define watershed subunits.}
 
 \item{max_overlap}{Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.}
@@ -36,6 +28,7 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 \itemize{
 \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 \item{\code{elevation}: Elevation above sea level (in m).}
+\item{\code{slope}: Slope (in degrees).}
 \item{\code{waterRank}: Ranked elevation in decreasing order.}
 \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
@@ -44,7 +37,7 @@ An object of class \code{\link[sf]{sf}} describing overland routing parameters a
 \item{\code{outlet}: A logical vector indicating outlet cells.}
 \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
-\item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
+\item{\code{outlet_backlog}: For each outlet, the backlog volume of water (m3) in its channel network (\code{NA} for non-outlet cells).}
 \item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE}).}
 }
 }

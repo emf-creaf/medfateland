@@ -41,10 +41,6 @@
     .Call(`_medfateland_fireBrandFlameHeightFromCanopyStructure`, crownLength, LAIc)
 }
 
-.newChannelRouting <- function(totalVol = 5.0, cell = 1.0, dt = 60L) {
-    invisible(.Call(`_medfateland_newChannelRouting`, totalVol, cell, dt))
-}
-
 .initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
     .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
 }
@@ -121,7 +117,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control))
 }
 
-.tetisChannelRouting <- function(ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisChannelRouting`, ChannelExport, WatershedExport, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize))
+.tetisChannelRouting <- function(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {
+    invisible(.Call(`_medfateland_tetisChannelRouting`, ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize))
 }
 

@@ -202,7 +202,7 @@
   }
   return(drainage_basins)
 }
-.overland_routing_inner<-function(r, sf, raster_matching, channel_flow_speed, patchsize,
+.overland_routing_inner<-function(r, sf, raster_matching, patchsize,
                                   subwatersheds = FALSE, max_overlap = 0.2) {
   if(!all(c("elevation") %in% names(sf))) stop("Column 'elevation' must be defined in 'sf'.")
   waterOrder <- order(sf$elevation, decreasing = TRUE)
@@ -213,6 +213,7 @@
   
   out <- sf::st_sf(geometry=sf::st_geometry(sf))
   out$elevation <- sf$elevation
+  out$slope <- sf$slope
   out$waterRank <- waterRank
   out$waterOrder <- waterOrder
   out$queenNeigh <- .neighFun(r, raster_matching$sf2cell, raster_matching$cell2sf)
@@ -261,18 +262,13 @@
       processed <- c(processed, origin)
       to_be_processed <- to_be_processed[to_be_processed!=origin] # Remove processed to avoid infinite loop
     }
-    out$outlet_backlog <- vector("list", nCells)
+    out$outlet_backlog <- rep(NA, nCells)
     for(i in 1:nCells) {
       if(out$outlet[i]) {
-        cell_dist <- out$distance_to_outlet[out$target_outlet == i]
-        max_dist <- max(cell_dist[!is.na(cell_dist)])
-        max_ndays <- max(1, ceiling((max_dist*sqrt(patchsize)) / (3600*24*channel_flow_speed)))
-        out$outlet_backlog[[i]] <- rep(0, max_ndays)
         if(isInputBacklog) {
-          sf_bl <- sf$outlet_backlog[[i]]
-          if(length(sf_bl)==max_ndays) {
-            out$outlet_backlog[[i]] <- sf_bl
-          }
+          out$outlet_backlog[i] <- sf$outlet_backlog[i]
+        } else {
+          out$outlet_backlog[i] <- 0
         }
       } 
     }
@@ -348,15 +344,7 @@
 }
 
 .get_backlog_sum <- function(sf_routing) {
-  nCells  <- nrow(sf_routing)
-  backlog_sum <- 0
-  for(i in 1:nCells) {
-    backlog_i <- sf_routing$outlet_backlog[[i]]
-    if(!is.null(backlog_i)) {
-      backlog_sum <- backlog_sum + sum(backlog_i, na.rm = TRUE) 
-    }
-  }
-  return(backlog_sum)
+  return(sum(sf_routing$outlet_backlog, na.rm=TRUE))
 }
 
 #' Overland routing for TETIS sub-model
@@ -371,7 +359,6 @@
 #'     \item{\code{elevation}: Elevation above sea level (in m).}
 #'     \item{\code{channel}: An optional logical (or binary) vector indicating cells corresponding to river channel.}
 #'    }
-#' @param channel_flow_speed Average flow speed in the channel (in m/s).
 #' @param subwatersheds A boolean flag to define watershed subunits.
 #' @param max_overlap Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.
 #' 
@@ -379,6 +366,7 @@
 #'     \itemize{
 #'       \item{\code{geometry}: Spatial point geometry corresponding to cell centers.}
 #'       \item{\code{elevation}: Elevation above sea level (in m).}
+#'       \item{\code{slope}: Slope (in degrees).}
 #'       \item{\code{waterRank}: Ranked elevation in decreasing order.}
 #'       \item{\code{waterOrder}: A vector with the cell's processing order for overland routing (based on elevation). First value corresponds to the row index of the first processed cell, second value corresponds to the row index of the second processed cell and so forth.}
 #'       \item{\code{queenNeigh}: A list where, for each cell, a vector gives the identity of neighbours (up to eight).}
@@ -387,7 +375,7 @@
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
 #'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{distance_to_outlet}: Distance to the target outlet in number of cells (\code{NA} for non-channel cells).}
-#'       \item{\code{outlet_backlog}: For each outlet, a backlog vector of watershed export (\code{NA} for non-outlet cells).}
+#'       \item{\code{outlet_backlog}: For each outlet, the backlog volume of water (m3) in its channel network (\code{NA} for non-outlet cells).}
 #'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE}).}
 #'     } 
 #'     
@@ -441,14 +429,12 @@
 #' 
 #' @name overland_routing
 overland_routing<-function(r, sf, 
-                           channel_flow_speed = 1.0,
                            subwatersheds = FALSE, 
                            max_overlap = 0.2) {
   represented_area_m2 <- as.vector(terra::values(terra::cellSize(r)))
   patchsize <- mean(represented_area_m2, na.rm=TRUE)
   raster_matching <- .raster_sf_matching(r, sf)
   return(.overland_routing_inner(r, sf, raster_matching, 
-                                 channel_flow_speed = channel_flow_speed, 
                                  patchsize = patchsize, 
                                  subwatersheds = subwatersheds,
                                  max_overlap = max_overlap))
