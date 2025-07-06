@@ -278,7 +278,7 @@
     out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
     out$target_outlet <- rep(NA, nCells)
     out$distance_to_outlet <- rep(NA, nCells)
-    out$outlet_backlog <- vector("list", nCells)
+    out$outlet_backlog <- rep(NA, nCells)
   }
   if(subwatersheds) {
     out$subwatershed <- .findLowOverlapDrainageBasins(out$channel, out$outlet, out$queenNeigh, out$waterQ,
