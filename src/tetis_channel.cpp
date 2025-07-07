@@ -112,7 +112,7 @@ void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExp
   //2. For each outlet:
   LogicalVector mask = LogicalVector(nX, false);
   double cell_width = sqrt(patchsize);
-  double manning_n = watershed_control["n_manning"];     // Manning's coefficient
+  double manning_n = tetis_parameters["n_manning"];     // Manning's coefficient
   double dt_sec = 86400.0; //Seconds in 1 day
   for(int i=0;i<nX;i++) {
     if(isOutlet[i]) {
