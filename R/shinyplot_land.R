@@ -66,7 +66,7 @@
                                        selectInput(
                                          inputId = "summary_type",
                                          label = "Temporal aggregation", 
-                                         choices = c("None" = "day", 
+                                         choices = c("None (days)" = "day", 
                                                      "By weeks" = "week", 
                                                      "By months" = "month", 
                                                      "By seasons" = "quarter", 

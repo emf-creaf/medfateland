@@ -1,5 +1,5 @@
 .getWatershedWaterBalancePlotTypes <- function(){
-  return(c("Hydrograph & hietograph" = "Hydrograph_hietograph",
+  return(c("Hydrograph & Hietograph" = "Hydrograph_Hietograph",
            "PET & Precipitation" = "PET_Precipitation",
            "Water exported" = "Export", 
            "Evapotranspiration" = "Evapotranspiration"))
@@ -13,7 +13,7 @@
   type <- match.arg(type,.getWatershedWaterBalancePlotTypes())
   df <- data.frame(row.names=as.character(WaterBalance$dates))
   df[["Date"]] = as.Date(WaterBalance$dates)
-  if(type=="Hydrograph_hietograph") {
+  if(type=="Hydrograph_Hietograph") {
     if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
     df[["Precipitation"]] = WaterBalance$Precipitation
     df[["Discharge"]] = rowSums(x$outlet_export_m3s)
@@ -40,12 +40,6 @@
                                              name = "Precipitation (mm)",
                                              labels = precip_labels))+
       theme_bw()
-    # # maxWidth = grid::unit.pmax(g1$widths[2:3], g2$widths[2:3])
-    # 
-    # # g1$widths[2:3] <- maxWidth
-    # # g2$widths[2:3] <- maxWidth
-    # g <- gridExtra::grid.arrange(g1, g2, ncol = 1, heights = c(1, 3))
-    
     return(g)
   } else if(type=="PET_Precipitation") {
     if(is.null(ylab)) ylab = expression(L%.%m^{-2}) 
@@ -63,8 +57,8 @@
                       PET = tapply(df$PET,INDEX=date.factor, FUN=sum, na.rm=TRUE))
     }
     g<-ggplot(df)+
-      geom_area(aes(x=.data$Date, y=.data$Precipitation, fill="Precipitation"))+
-      geom_area(aes(x=.data$Date, y=.data$Snow, fill="Snow"))+
+      geom_bar(aes(x=.data$Date, y=.data$Precipitation, fill="Precipitation"), stat = "identity")+
+      geom_bar(aes(x=.data$Date, y=.data$Snow, fill="Snow"), stat = "identity")+
       geom_path(aes(x=.data$Date, y=.data$PET, col="PET"))+
       scale_fill_manual(name="", values=c("Precipitation"="black", "Snow"="red"))+
       scale_color_manual(name="", values=c("PET"="gray"))+
@@ -152,6 +146,7 @@
 #'
 #' @details The following plots are currently available:
 #' \itemize{
+#'   \item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 #'   \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
 #'   \item{\code{"Export"}: Water exported through different fluxes.}
 #'   \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
@@ -164,16 +159,16 @@
 #' @export
 #'
 #' @name plot.spwb_land
-plot.spwb_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
+plot.spwb_land <- function(x, type="Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...) {
   .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq,...)
 }
 #' @export
 #' @rdname plot.spwb_land
-plot.growth_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
+plot.growth_land <- function(x, type="Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...) {
   .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq, ...)
 }
 #' @export
 #' @rdname plot.spwb_land
-plot.fordyn_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
+plot.fordyn_land <- function(x, type="Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...) {
   .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq,...)
 }

@@ -6,11 +6,11 @@
 \alias{plot.fordyn_land}
 \title{Displays watershed-level simulation results}
 \usage{
-\method{plot}{spwb_land}(x, type = "PET_Precipitation", dates = NULL, summary.freq = NULL, ...)
+\method{plot}{spwb_land}(x, type = "Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...)
 
-\method{plot}{growth_land}(x, type = "PET_Precipitation", dates = NULL, summary.freq = NULL, ...)
+\method{plot}{growth_land}(x, type = "Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...)
 
-\method{plot}{fordyn_land}(x, type = "PET_Precipitation", dates = NULL, summary.freq = NULL, ...)
+\method{plot}{fordyn_land}(x, type = "Hydrograph_Hietograph", dates = NULL, summary.freq = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{spwb_land}, \code{growth_land} or \code{fordyn_land}.}
@@ -32,6 +32,7 @@ Plots time series of the watershed-level balance results of simulations with \co
 \details{
 The following plots are currently available:
 \itemize{
+\item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
 \item{\code{"Export"}: Water exported through different fluxes.}
 \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
