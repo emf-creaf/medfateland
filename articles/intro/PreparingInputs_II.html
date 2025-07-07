@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Núria Aquilué / Paula Martín / María González</h4>
             
-            <h4 data-toc-skip class="date">2025-05-24</h4>
+            <h4 data-toc-skip class="date">2025-07-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_II.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_II.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_II.Rmd</code></div>
@@ -126,7 +126,7 @@ select our target watershed (Riera de Bianya [river code
 “2005528”]):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset_path</span> <span class="op">&lt;-</span> <span class="st">"~/OneDrive/EMF_datasets/"</span></span>
-<span><span class="va">scchh</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Hydrography/Sources/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">scchh</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Hydrography/data-raw/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">watershed</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">scchh</span><span class="op">[</span><span class="va">scchh</span><span class="op">$</span><span class="va">pfafrio</span> <span class="op">==</span><span class="st">"2005528"</span>,<span class="op">]</span>, <span class="st">"epsg:25831"</span><span class="op">)</span></span>
 <span><span class="va">watershed</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
@@ -144,7 +144,7 @@ select our target watershed (Riera de Bianya [river code
 using:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset_path</span> <span class="op">&lt;-</span> <span class="st">"~/OneDrive/EMF_datasets/"</span></span>
-<span><span class="va">counties</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"PoliticalBoundaries/Sources/Catalunya/Comarques/comarques.shp"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">counties</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"PoliticalBoundaries/data-raw/Catalunya/Comarques/comarques.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">counties</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
@@ -184,8 +184,8 @@ object:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2089227 111.6    4177900 223.2  2592357 138.5</span></span>
-<span><span class="co">## Vcells 3520583  26.9    8388608  64.0  8386884  64.0</span></span></code></pre>
+<span><span class="co">## Ncells 2098286 112.1    4170381 222.8  2633864 140.7</span></span>
+<span><span class="co">## Vcells 3530837  27.0    8388608  64.0  8387155  64.0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -201,7 +201,7 @@ using package <code>terra</code>:</p>
 <code class="sourceCode R"><span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dem</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 9282, 9391, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 9282, 9391, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 30, 30  (x, y)</span></span>
 <span><span class="co">## extent      : 258097.5, 539827.5, 4485488, 4763948  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -215,13 +215,13 @@ and slope:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking inputs</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'id'</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[5.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography <span style="color: #B2B2B2;">[5.6s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span></span></code></pre></div>
@@ -259,10 +259,10 @@ using:</p>
 map, in this case we will use a land cover raster for Catalonia, issued
 in 2018:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lcm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"LandCover/Sources/Catalunya/cobertes-sol-v1r0-2018.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">lcm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"LandCover/data-raw/Catalunya/cobertes-sol-v1r0-2018.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lcm</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 259198, 267234, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 259198, 267234, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 1, 1  (x, y)</span></span>
 <span><span class="co">## extent      : 260170, 527404, 4488784, 4747982  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -345,19 +345,19 @@ dominant tree or shrub species. We start by loading the <a href="https://www.mit
 Forest Map (1:25000)</a> for the region of Catalonia, which is in vector
 format, using package <code>terra</code>:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">forest_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Products/Catalunya/mfe25_cat_class.shp"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">forest_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Spain/MFE25/data-raw/mfe_catalunia/MFE_51_class.gpkg"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">forest_map</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
 <span><span class="co">##  geometry    : polygons </span></span>
 <span><span class="co">##  dimensions  : 238096, 1  (geometries, attributes)</span></span>
-<span><span class="co">##  extent      : 0.1591812, 3.332506, 40.523, 42.86144  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">##  source      : mfe25_cat_class.shp</span></span>
-<span><span class="co">##  coord. ref. : lon/lat ETRS89 (EPSG:4258) </span></span>
-<span><span class="co">##  names       :              Class</span></span>
-<span><span class="co">##  type        :              &lt;chr&gt;</span></span>
-<span><span class="co">##  values      : Pinus halepensis_2</span></span>
-<span><span class="co">##                Pinus halepensis_2</span></span>
-<span><span class="co">##                Pinus halepensis_2</span></span></code></pre>
+<span><span class="co">##  extent      : 766711.1, 1021907, 4491747, 4752105  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">##  source      : MFE_51_class.gpkg</span></span>
+<span><span class="co">##  coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) </span></span>
+<span><span class="co">##  names       : Class</span></span>
+<span><span class="co">##  type        : &lt;chr&gt;</span></span>
+<span><span class="co">##  values      :    NA</span></span>
+<span><span class="co">##                   NA</span></span>
+<span><span class="co">##                   NA</span></span></code></pre>
 <p>Second, we need forest inventory data for imputations. Arguably, this
 is the hardest part. Let’s assume one has access to a such data already
 in format for package <em>medfateland</em> (how to build such data set
@@ -399,7 +399,7 @@ for us (this normally takes some time):</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/forest_parametrization.html">impute_forests</a></span><span class="op">(</span><span class="va">y_1</span>, sf_fi <span class="op">=</span> <span class="va">sf_nfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
 <span>                      forest_map <span class="op">=</span> <span class="va">forest_map</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 103 target locations.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest imputed on 2018 out of 2161 target wildland locations (93.4%).</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest class was missing for 143 locations and forests were not imputed there.</span></span></code></pre>
@@ -494,7 +494,7 @@ shrubland areas. To this aim, we use a vegetation map representing
 habitats of interest for the EU: <a href="https://agricultura.gencat.cat/ca/serveis/cartografia-sig/bases-cartografiques/habitats/habitats-catalunya/" class="external-link"><em>Hàbitats
 d’interès comunitari</em></a>:</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">veg_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Sources/Catalunya/Habitats_v2/Habitats_interes_com.shp"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">veg_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Catalunya/data-raw/Habitats_v2/Habitats_interes_com.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">veg_map</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
 <span><span class="co">##  geometry    : polygons </span></span>
@@ -554,7 +554,7 @@ define a empty forest to be imputed in those
 <span>                      missing_class_imputation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                      missing_class_forest <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/emptyforest.html" class="external-link">emptyforest</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest imputed on 143 out of 143 target wildland locations (100%).</span></span></code></pre>
 <p>We call again function <code><a href="../../reference/check_inputs.html">check_forests()</a></code> to verify that
@@ -586,7 +586,7 @@ resolution:</p>
 <code class="sourceCode R"><span><span class="va">height_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">height_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 20, 20  (x, y)</span></span>
 <span><span class="co">## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -600,7 +600,7 @@ crop to the target area:</p>
 <span>                                  fact <span class="op">=</span> <span class="fl">2</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">height_map_40</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 253, 374, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 253, 374, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 40, 40  (x, y)</span></span>
 <span><span class="co">## extent      : 444920, 459880, 4668360, 4678480  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -667,7 +667,7 @@ from LiDAR flights:</p>
 <code class="sourceCode R"><span><span class="va">basal_area_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">basal_area_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 13100, 13400, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 20, 20  (x, y)</span></span>
 <span><span class="co">## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -679,7 +679,7 @@ from LiDAR flights:</p>
 <span>                                      fact <span class="op">=</span> <span class="fl">2</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">basal_area_map_40</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 253, 374, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 253, 374, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 40, 40  (x, y)</span></span>
 <span><span class="co">## extent      : 444920, 459880, 4668360, 4678480  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
@@ -1028,11 +1028,11 @@ administration (<a href="https://agricultura.gencat.cat/ca/ambits/desenvolupamen
 de cultius</a> from 2018). We start by reading the crop map and
 subsetting it to the target area:</p>
 <div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">file_crop_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Agriculture/Sources/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">file_crop_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Agriculture/data-raw/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp"</span><span class="op">)</span></span>
 <span><span class="va">crop_map</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="va">file_crop_map</span>, options <span class="op">=</span> <span class="st">"ENCODING=UTF-8"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## options:        ENCODING=UTF-8 </span></span>
 <span><span class="co">## Reading layer `Cultius_DUN2018' from data source </span></span>
-<span><span class="co">##   `/home/miquel/OneDrive/EMF_datasets/Agriculture/Sources/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp' </span></span>
+<span><span class="co">##   `/home/miquel/OneDrive/EMF_datasets/Agriculture/data-raw/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">## Simple feature collection with 638797 features and 9 fields</span></span>
 <span><span class="co">## Geometry type: MULTIPOLYGON</span></span>
@@ -1070,7 +1070,7 @@ Ray-grass, the most common crop in the area:</p>
 <p>In order to transform crop names into crop factors, we need a look-up
 table, which we prepared for Catalonia</p>
 <div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">crop_lookup_table</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Agriculture/Sources/Catalunya/Kc_CAT_MOD.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">crop_lookup_table</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Agriculture/data-raw/Catalunya/Kc_CAT_MOD.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">crop_lookup_table</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
 <span><span class="co">##   Cultiu_map                  Cultiu_text                 Grup   Asignacio    Kc</span></span>
@@ -1211,7 +1211,7 @@ cells that are part of the channel network. We start by loading the
 river network from Catalonia (source: <em>Agència Catalana de
 l’Aigua</em>):</p>
 <div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rivers</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Hydrography/Sources/Catalunya/Rius/Rius_CARACT.shp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rivers</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Hydrography/data-raw/Catalunya/Rius/Rius_CARACT.shp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then, we rasterize it using the target area raster definition. We use
 the <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> function to distinguish river from other cells,
 independently of the river order:</p>
@@ -1271,7 +1271,7 @@ function <code><a href="../../reference/initialize_landscape.html">initialize_la
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,9 @@
 <span>  <span class="va">SpParams</span>,</span>
 <span>  <span class="va">local_control</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"spwb"</span>,</span>
-<span>  simplify <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  merge_trees <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  merge_shrubs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reduce_to_dominant <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  replace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -90,7 +92,15 @@
 <dd><p>A string to indicate the model, either <code>"spwb"</code> or <code>"growth"</code>.</p></dd>
 
 
-<dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
+<dt id="arg-merge-trees">merge_trees<a class="anchor" aria-label="anchor" href="#arg-merge-trees"></a></dt>
+<dd><p>A logical flag to simplify tree cohorts by merging tree records in DBH classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeTrees</a></code>).</p></dd>
+
+
+<dt id="arg-merge-shrubs">merge_shrubs<a class="anchor" aria-label="anchor" href="#arg-merge-shrubs"></a></dt>
+<dd><p>A logical flag to simplify shrub cohorts by merging shrub records in height classes (see <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_mergeShrubs</a></code>).</p></dd>
+
+
+<dt id="arg-reduce-to-dominant">reduce_to_dominant<a class="anchor" aria-label="anchor" href="#arg-reduce-to-dominant"></a></dt>
 <dd><p>Boolean flag to simplify forest to the tree and shrub cohorts with largest leaf area index. The leaf area index of the whole tree (respectively, shrub) layer will be attributed to the selected cohort.
 See function <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_reduceToDominant</a></code>.</p></dd>
 
@@ -112,7 +122,7 @@ and returns the modified object of class 'sf'.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Initialization is normally dealt automatically when calling simulation functions <code><a href="spwb_spatial.html">spwb_spatial</a></code>,  <code><a href="spwb_spatial.html">growth_spatial</a></code>,
 <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code> or <code><a href="spwb_spatial_day.html">growth_spatial_day</a></code>. However, function <code>initialize_landscape</code>  allows separating initialization from model simulations.</p>
-<p>Option <code>simplify</code> has been implemented to allow simplification of forests to tree/shrub dominant cohorts during watershed simulations
+<p>Options <code>merge_shrubs</code>, <code>merge_trees</code> and <code>reduce_to_dominant</code> have been implemented to allow simplification of forests during watershed simulations
 where focus is on runoff (e.g. calibration of watershed parameters or burnin periods). Elements identified as <code>result_cell</code> will not be simplified.</p>
     </div>
     <div class="section level2">
@@ -137,7 +147,7 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SpParamsMED"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Define local control parameters using function in medfate</span></span></span>
-<span class="r-in"><span><span class="va">local_control</span> <span class="op">&lt;-</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">local_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If necessary, change defaults</span></span></span>
 <span class="r-in"><span></span></span>
@@ -146,7 +156,7 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 <span class="r-in"><span>                                         local_control <span class="op">=</span> <span class="va">local_control</span>, </span></span>
 <span class="r-in"><span>                                         model <span class="op">=</span> <span class="st">"spwb"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 100 state objects for model 'spwb'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[9ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Transpiration mode [Granier: 100, Sperry: 0, Sureau: 0]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil doimains [buckets: 100, single: 0, dual: 0]</span>
@@ -162,7 +172,7 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
