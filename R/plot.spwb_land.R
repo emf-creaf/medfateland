@@ -1,16 +1,53 @@
 .getWatershedWaterBalancePlotTypes <- function(){
-  return(c("PET & Precipitation" = "PET_Precipitation",
+  return(c("Hydrograph & hietograph" = "Hydrograph_hietograph",
+           "PET & Precipitation" = "PET_Precipitation",
            "Water exported" = "Export", 
            "Evapotranspiration" = "Evapotranspiration"))
 }
-.plot_watershed_wb <-function(WaterBalance, type,  
+.plot_watershed_wb <-function(x, type,  
                               dates = NULL, 
                               xlim = NULL, ylim=NULL, xlab=NULL, ylab=NULL, 
                               summary.freq = NULL, ...) {
+  WaterBalance <- x$watershed_balance
+  
   type <- match.arg(type,.getWatershedWaterBalancePlotTypes())
   df <- data.frame(row.names=as.character(WaterBalance$dates))
   df[["Date"]] = as.Date(WaterBalance$dates)
-  if(type=="PET_Precipitation") {
+  if(type=="Hydrograph_hietograph") {
+    if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
+    df[["Precipitation"]] = WaterBalance$Precipitation
+    df[["Discharge"]] = rowSums(x$outlet_export_m3s)
+    if(!is.null(dates)) df = df[df$Date %in% dates,]
+    if(!is.null(summary.freq)) {
+      date.factor = cut(as.Date(df$Date), breaks=summary.freq)
+      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
+                      Precipitation = tapply(df$Precipitation,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      Discharge = tapply(df$Discharge,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+    }
+    
+    factor <- max(df$Precipitation)/max(df$Discharge)
+    maxRange <- 1.1*(max(df$Precipitation/factor) + max(df$Discharge))
+    precip_labels <- function(x) {round(x*factor)}
+    g <- ggplot(df)+
+      geom_tile(aes(x = .data$Date,
+                    y = -1*((.data$Precipitation/factor)/2-maxRange), # y = the center point of each bar
+                    height = .data$Precipitation/factor,
+                    width = 1), fill = "blue", color="white")+
+      # geom_bar(aes(.data$Date, .data$Precipitation), stat = 'identity', fill = "blue") +
+      geom_line(aes(.data$Date, .data$Discharge), color = "black") +
+      scale_y_continuous(name = "Discharge (m3/s)",
+                         sec.axis = sec_axis(trans = ~-1*(.-maxRange),
+                                             name = "Precipitation (mm)",
+                                             labels = precip_labels))+
+      theme_bw()
+    # # maxWidth = grid::unit.pmax(g1$widths[2:3], g2$widths[2:3])
+    # 
+    # # g1$widths[2:3] <- maxWidth
+    # # g2$widths[2:3] <- maxWidth
+    # g <- gridExtra::grid.arrange(g1, g2, ncol = 1, heights = c(1, 3))
+    
+    return(g)
+  } else if(type=="PET_Precipitation") {
     if(is.null(ylab)) ylab = expression(L%.%m^{-2}) 
     # For back-compatibility
     if("PET" %in% names(WaterBalance)) df[["PET"]] = WaterBalance$PET
@@ -128,15 +165,15 @@
 #'
 #' @name plot.spwb_land
 plot.spwb_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
-  .plot_watershed_wb(x$watershed_balance, type = type, dates = dates, summary.freq = summary.freq,...)
+  .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq,...)
 }
 #' @export
 #' @rdname plot.spwb_land
 plot.growth_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
-  .plot_watershed_wb(x$watershed_balance, type = type, dates = dates, summary.freq = summary.freq, ...)
+  .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq, ...)
 }
 #' @export
 #' @rdname plot.spwb_land
 plot.fordyn_land <- function(x, type="PET_Precipitation", dates = NULL, summary.freq = NULL, ...) {
-  .plot_watershed_wb(x$watershed_balance, type = type, dates = dates, summary.freq = summary.freq,...)
+  .plot_watershed_wb(x, type = type, dates = dates, summary.freq = summary.freq,...)
 }

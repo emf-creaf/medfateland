@@ -71,7 +71,7 @@
                                                      "By months" = "month", 
                                                      "By seasons" = "quarter", 
                                                      "By years" = "year"),
-                                         selected = "month"
+                                         selected = "day"
                                        )
                               ),
                             ),

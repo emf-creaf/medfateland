@@ -158,7 +158,7 @@ dfshheight_plot<- bind_rows(dfshheight_plot_vec) |> sf::st_as_sf()
 dflai_allom_plot<- bind_rows(dflai_allom_plot_vec) |> sf::st_as_sf()
 dflai_state_plot<- bind_rows(dflai_state_plot_vec) |> sf::st_as_sf()
 
-load("~/OneDrive/EMF_datasets/PoliticalBoundaries/Products/Catalunya/catalonia.rdata")
+load("~/OneDrive/EMF_datasets/PoliticalBoundaries/data/Catalunya/catalonia.rdata")
 cat_sfc = sf::st_as_sfc(cat.contour)
 ```
 
