@@ -167,6 +167,13 @@ Analogously to plots available with package **medfate**, one can display time se
 plot(res_ws1, type = "Export")
 ```
 
+or the usual combination of hietograph and hydrograph using:
+
+
+```{r, warning=FALSE, fig.align='center', fig.width=7}
+plot(res_ws1, type = "Hydrograph")
+```
+
 ### Accessing and plotting cell summaries
 
 Unlike `spwb_spatial()` where summaries could be arbitrarily generated *a posteriori* from simulation results, with `spwb_land()` the summaries are always fixed and embedded with the simulation result. For example, we can inspect the summaries for a given landscape cell using:
