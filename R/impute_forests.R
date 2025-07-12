@@ -314,10 +314,11 @@ modify_forest_structure<-function(x, structure_map, variable,
       } else if(variable=="aboveground_tree_biomass") {
         if(is.null(biomass_function)) cli::cli_abort("'biomass_function' should be supplied!")
         if(nrow(f$treeData)>0) {
-          argList <- list(x = f$treeData)
+          argList <- list(x = f$treeData, SpParams = SpParams)
           if(!is.null(biomass_arguments)) argList = c(argList, biomass_arguments)
           above_biomass <- do.call(what = biomass_function, 
                                    args = argList)
+          # cat(paste0(" map ", x_var[i], " plot: ", above_biomass, "\n"))
           if(!is.na(above_biomass)) {
             # If there are no trees >= minDBH but structural map indicates positive basal area, move DBH to minDBH and recalculate basal_area, to avoid division by 0
             if((above_biomass == 0.0) && (x_var[i]>0.0)) {
