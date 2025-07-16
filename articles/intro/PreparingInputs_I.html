@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Adriana Tovar / Víctor Granda</h4>
             
-            <h4 data-toc-skip class="date">2025-07-07</h4>
+            <h4 data-toc-skip class="date">2025-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_I.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_I.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_I.Rmd</code></div>
@@ -175,7 +175,7 @@ we will use a DEM raster for Catalonia at 30 m resolution, which we load
 using package <code>terra</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset_path</span> <span class="op">&lt;-</span> <span class="st">"~/OneDrive/EMF_datasets/"</span></span>
-<span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dem</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
 <span><span class="co">## size        : 9282, 9391, 1  (nrow, ncol, nlyr)</span></span>
@@ -351,7 +351,7 @@ and storing them in a particular format, so that function
 function documentation). The extraction of SoilGrids data for our target
 locations is fast using this approach:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">soilgrids_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Soils/Sources/Global/SoilGrids/Spain/"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">soilgrids_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Soils/Global/SoilGrids/Spain/"</span><span class="op">)</span></span>
 <span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y_2</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And the result has an extra column <code>soil</code>:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
@@ -398,11 +398,11 @@ here we will resort on a global product at 250m-resolution by <a href="https://d
 which consists on three rasters:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Censored soil depth (cm)</span></span>
-<span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Sources/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Probability of bedrock within first 2m [0-100]</span></span>
-<span><span class="va">bdrlog</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Sources/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">bdrlog</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Absolute depth to bedrock (cm)</span></span>
-<span><span class="va">bdticm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Sources/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">bdticm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>In order to accelerate raster manipulations, we crop the global
 rasters to the extent of the target area:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
