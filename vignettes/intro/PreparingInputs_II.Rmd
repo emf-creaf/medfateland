@@ -40,7 +40,7 @@ Any spatial data set should begin with the definition of spatial elements. Here 
 First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya [river code "2005528"]):
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
-scchh <- terra::vect(paste0(dataset_path, "Hydrography/data-raw/Spain/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
+scchh <- terra::vect(paste0(dataset_path, "Hydrography/Spain/CuencasSubcuencas/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
 ```
@@ -49,7 +49,7 @@ We can draw a map with the location of the watershed within Catalonia using:
 
 ```{r, fig.width=5, fig.height=5, fig.align="center", fig.alt="Location of the watershed within Catalonia"}
 dataset_path <- "~/OneDrive/EMF_datasets/"
-counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/data-raw/Catalunya/Comarques/comarques.shp"))
+counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Catalunya/Comarques/comarques.shp"))
 ggplot()+
   geom_spatvector(data = counties)+
   geom_spatvector(fill = "black", data = watershed)+
@@ -92,7 +92,7 @@ Once an object `sf` has been defined with target locations, we need to determine
 
 ```{r}
 
-dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"))
+dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"))
 dem
 ```
 
@@ -125,7 +125,7 @@ plot_variable(y_0, "elevation", r = r)+
 In addition to topography, users should have access to a land cover map, in this case we will use a land cover raster for Catalonia, issued in 2018:
 
 ```{r}
-lcm <- terra::rast(paste0(dataset_path,"LandCover/data-raw/Catalunya/cobertes-sol-v1r0-2018.tif"))
+lcm <- terra::rast(paste0(dataset_path,"LandCover/Catalunya/MapaCobertesSol2018/cobertes-sol-v1r0-2018.tif"))
 lcm
 ```
 
@@ -192,7 +192,7 @@ Our task here will be to perform imputations of forest inventory plots to our ta
 
 A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the [Spanish Forest Map (1:25000)](https://www.miteco.gob.es/en/biodiversidad/temas/inventarios-nacionales/mapa-forestal-espana/mfe_25.html) for the region of Catalonia, which is in vector format, using package `terra`:
 ```{r}
-forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/data-raw/mfe_catalunia/MFE_51_class.gpkg"))
+forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/mfe_catalunia/MFE_51_class.gpkg"))
 forest_map
 ```
 
@@ -245,7 +245,7 @@ gc()
 In this section we illustrate how to use function `impute_forest()` to impute `forest` objects in shrubland areas. To this aim, we use a vegetation map representing habitats of interest for the EU: [*Hàbitats d'interès comunitari*](https://agricultura.gencat.cat/ca/serveis/cartografia-sig/bases-cartografiques/habitats/habitats-catalunya/):
 
 ```{r}
-veg_map <- terra::vect(paste0(dataset_path,"ForestMaps/Catalunya/data-raw/Habitats_v2/Habitats_interes_com.shp"))
+veg_map <- terra::vect(paste0(dataset_path,"ForestMaps/Catalunya/Habitats_v2/Habitats_interes_com.shp"))
 veg_map
 ```
 In this case we use a database of 575 shrubland inventory plots in Catalonia described in [Casals et al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
@@ -288,7 +288,7 @@ The forests resulting from imputation are formally fine for simulations, but the
 There are several global products made recently available, that combine satellite LiDAR observations with other information, such as [Simard et al. (2011)](https://doi.org/10.1029/2011JG001708), [Potapov et al. (2021)](https://doi.org/10.1016/j.rse.2020.112165) or [Lang et al. (2023)](https://doi.org/10.1038/s41559-023-02206-6). Alternatively, airborne LiDAR products are available for some countries and regions. Here we will use [biophysical structural maps](https://www.icgc.cat/ca/Geoinformacio-i-mapes/Mapes/Mapes-de-variables-biofisiques-de-larbrat-de-Catalunya) derived from LiDAR flights in Catalonia (years 2016-2017). First we will load a mean tree height raster at 20-m resolution:
 
 ```{r}
-height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
+height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
 height_map
 ```
 
@@ -332,7 +332,7 @@ y_4$forest[[1]]
 Additionally, one may have access to other maps of structural variables. In our case, we will use a raster of basal area, also derived from LiDAR flights:
 
 ```{r}
-basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Sources/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
+basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
 basal_area_map
 ```
 
@@ -472,7 +472,7 @@ Soil information is most usually lacking for the target locations. Regional maps
 Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target cells is rather fast using this approach: 
 
 ```{r}
-soilgrids_path = paste0(dataset_path,"Soils/Sources/Global/SoilGrids/Spain/")
+soilgrids_path = paste0(dataset_path,"Soils/Global/SoilGrids/Spain/")
 y_6 <- add_soilgrids(y_5, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
 
@@ -500,11 +500,11 @@ SoilGrids 2.0 does not provide information on soil depth, and rock fragment cont
 
 ```{r}
 # Censored soil depth (cm)
-bdricm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
+bdricm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
 # Probability of bedrock within first 2m [0-100]
-bdrlog <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"))
+bdrlog <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"))
 # Absolute depth to bedrock (cm)
-bdticm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"))
+bdticm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"))
 ```
 
 In order to accelerate raster manipulations, we crop the global rasters to the extent of the target area:
@@ -586,7 +586,7 @@ In this section we illustrate the estimation of additional variables that are ne
 If there are target locations whose land cover type is *agriculture* we should supply a column called `crop_factor` in our `sf` input object, so that soil water balance can be conducted in agriculture locations. Crop maps for Europe can be found, for example in [d'Andrimont et al. (2021)](https://doi.org/10.1016/j.rse.2021.112708). In our case we will use regional data from the Catalan administration ([Mapa de cultius](https://agricultura.gencat.cat/ca/ambits/desenvolupament-rural/sigpac/mapa-cultius/index.html) from 2018). We start by reading the crop map and subsetting it to the target area: 
 
 ```{r}
-file_crop_map <- paste0(dataset_path,"Agriculture/data-raw/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp")
+file_crop_map <- paste0(dataset_path,"Agriculture/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp")
 crop_map <- sf::st_read(file_crop_map, options = "ENCODING=UTF-8")
 crop_map <- terra::crop(terra::vect(crop_map[,"Cultiu"]), r)
 ```
@@ -625,7 +625,7 @@ df_agr_crop$Cultiu[is.na(df_agr_crop$Cultiu)] <- "RAY-GRASS"
 
 In order to transform crop names into crop factors, we need a look-up table, which we prepared for Catalonia
 ```{r}
-crop_lookup_table <- readxl::read_xlsx(paste0(dataset_path, "Agriculture/data-raw/Catalunya/Kc_CAT_MOD.xlsx"))
+crop_lookup_table <- readxl::read_xlsx(paste0(dataset_path, "Agriculture/Catalunya/Coefficients_cultius/Kc_CAT_MOD.xlsx"))
 head(crop_lookup_table)
 ```
 
@@ -674,7 +674,7 @@ plot_variable(y_8, "depth_to_bedrock", r = r)
 If regional maps are not available to inform about permeability and conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0 ([Huscroft et al. 2021](https://doi.org/10.1002/2017GL075860)):
 
 ```{r}
-glhymps_map <- terra::vect(paste0(dataset_path,"Soils/Sources/Global/GLHYMPS2/GLHYMPS_Spain.shp"))
+glhymps_map <- terra::vect(paste0(dataset_path,"Geology/Global/GLHYMPS2/GLHYMPS_Spain.shp"))
 glhymps_map
 ```
 
@@ -743,7 +743,7 @@ gc()
 For large watersheds it is advisable to specify a river channel network, so that the model can include channel water routing explicitly. This is done by adding a logical column `channel` indicating cells that are part of the channel network. We start by loading the river network from Catalonia (source: *Agència Catalana de l'Aigua*):
 
 ```{r}
-rivers <-terra::vect(paste0(dataset_path, "Hydrography/data-raw/Catalunya/Rius/Rius_CARACT.shp"))
+rivers <-terra::vect(paste0(dataset_path, "Hydrography/Catalunya/HidrografiaACA/Rius/Rius_CARACT.shp"))
 ```
 
 Then, we rasterize it using the target area raster definition. We use the `is.na()` function to distinguish river from other cells, independently of the river order:

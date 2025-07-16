@@ -68,7 +68,7 @@ Once an object `sf` has been defined with target locations, we need to determine
 
 ```{r}
 dataset_path <- "~/OneDrive/EMF_datasets/"
-dem <- terra::rast(paste0(dataset_path,"Topography/Products/Catalunya/MET30m_ETRS89_UTM31_ICGC.tif"))
+dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"))
 dem
 ```
 
@@ -172,7 +172,7 @@ Soil information is most usually lacking for the target locations. Regional maps
 Function `add_soilgrids()` can perform queries using the REST API of SoilGrids, but this becomes problematic for multiple sites. Hence, we recommend downloading SoilGrid rasters for the target region and storing them in a particular format, so that function `add_soilgrids()` can read them (check the details of the function documentation). The extraction of SoilGrids data for our target locations is fast using this approach: 
 
 ```{r}
-soilgrids_path = paste0(dataset_path,"Soils/Sources/Global/SoilGrids/Spain/")
+soilgrids_path = paste0(dataset_path,"Soils/Global/SoilGrids/Spain/")
 y_3 <- add_soilgrids(y_2, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
 
@@ -199,11 +199,11 @@ SoilGrids 2.0 does not provide information on soil depth, and rock fragment cont
 
 ```{r}
 # Censored soil depth (cm)
-bdricm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
+bdricm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
 # Probability of bedrock within first 2m [0-100]
-bdrlog <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"))
+bdrlog <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRLOG_M_250m_ll.tif"))
 # Absolute depth to bedrock (cm)
-bdticm <- terra::rast(paste0(dataset_path, "Soils/Sources/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"))
+bdticm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"))
 ```
 
 In order to accelerate raster manipulations, we crop the global rasters to the extent of the target area:
