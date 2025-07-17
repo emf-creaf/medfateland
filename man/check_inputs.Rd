@@ -26,6 +26,7 @@ check_forests(
   x,
   SpParams = NULL,
   missing_action = "no_action",
+  default_forest = NULL,
   progress = FALSE,
   verbose = TRUE
 )
@@ -50,13 +51,16 @@ check_soils(
 
 \item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}).}
 
+\item{default_forest}{Default \code{\link[medfate]{forest}} object to fill locations where missing (e.g. \code{default_forest = medfate::emptyforest()}).}
+
 \item{progress}{A logical flag to print information about progress.}
 
 \item{check_equal_layers}{Logical flag to test whether soils have the same number of layers.}
 }
 \value{
 All functions return a modified \code{\link[sf]{sf}} object if \code{missing_action} is either \code{"filter"} or \code{"default"}. Otherwise,
-they return an invisible tibble with logical columns indicating where missing information is.
+they return an invisible tibble with logical columns indicating where missing information is. In \code{check_forests()} the function will return a modified object if
+parameter \code{default_forest} is provided.
 }
 \description{
 Functions to check and correct spatial inputs for simulations
@@ -68,7 +72,7 @@ Function \code{check_land_cover()} checks that column \code{"land_cover_type"} d
 
 Function \code{check_forests()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. If \code{SpParams} is provided, the function also checks
-whether species names are within the taxa represented in \code{SpParams}.
+whether species names are within the taxa represented in \code{SpParams}. If \code{default_forest} is provided, the function will use it to fill locations with missing forests objects.
 
 Function \code{check_soils()} checks first that "wildland" and "agriculture" locations have a defined soil object. Then it looks for missing data in required
 soil physical parameters.

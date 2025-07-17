@@ -25,7 +25,12 @@ test_that("default action checks return sf", {
 example_wrong <- example_ifn
 example_wrong$forest[[1]]$treeData$Species[2] <- "kk"
 example_corrected <- check_forests(example_wrong, SpParams = SpParamsMED, missing_action = "filter")
+example_wrong_2 <- example_ifn
+example_wrong_2$forest[1] <- list(NULL)
+example_corrected_2 <- check_forests(example_wrong_2, SpParams = SpParamsMED, default_forest = emptyforest())
 test_that("filter action on wrong forests works", {
   expect_s3_class(check_forests(example_wrong, SpParams = SpParamsMED, missing_action = "filter", verbose = FALSE), "sf")
   expect_false(any(as.matrix( check_forests(example_corrected, SpParams = SpParamsMED, verbose = FALSE))))
+  expect_true(any(as.matrix( check_forests(example_wrong_2, SpParams = SpParamsMED, verbose = FALSE))))
+  expect_false(any(as.matrix( check_forests(example_corrected_2, SpParams = SpParamsMED, verbose = FALSE))))
 })

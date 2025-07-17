@@ -4,6 +4,7 @@
 #'
 #' @param x An object of class \code{\link[sf]{sf}} to be checked.
 #' @param default_values Vector of default values for locations with missing data.
+#' @param default_forest Default \code{\link[medfate]{forest}} object to fill locations where missing (e.g. \code{default_forest = medfate::emptyforest()}).
 #' @param missing_action Action to perform for missing values, either "no_action" (for checks), "filter" (filter missing data), "default" (impute default values)
 #' @param verbose Logical flag to indicate extra console output.
 #' @param progress A logical flag to print information about progress.
@@ -15,13 +16,14 @@
 #' 
 #' Function \code{check_forests()} checks first that \code{\link[medfate]{forest}} objects are defined in "wildland" locations. Then, it looks for missing
 #' data in tree or shrub attributes required for simulations. If \code{SpParams} is provided, the function also checks
-#' whether species names are within the taxa represented in \code{SpParams}.
+#' whether species names are within the taxa represented in \code{SpParams}. If \code{default_forest} is provided, the function will use it to fill locations with missing forests objects.
 #' 
 #' Function \code{check_soils()} checks first that "wildland" and "agriculture" locations have a defined soil object. Then it looks for missing data in required
 #' soil physical parameters.
 #' 
 #' @return All functions return a modified \code{\link[sf]{sf}} object if \code{missing_action} is either \code{"filter"} or \code{"default"}. Otherwise,
-#' they return an invisible tibble with logical columns indicating where missing information is. 
+#' they return an invisible tibble with logical columns indicating where missing information is. In \code{check_forests()} the function will return a modified object if
+#' parameter \code{default_forest} is provided.
 #'
 #' @export
 #'
@@ -110,6 +112,7 @@ check_land_cover<-function(x,
 #' @export
 check_forests <-function(x, SpParams = NULL,
                          missing_action = "no_action",
+                         default_forest = NULL,
                          progress = FALSE, 
                          verbose = TRUE) {
   if(!inherits(x, "sf")) cli::cli_abort("'x' should be of class 'sf' ")
@@ -221,8 +224,8 @@ check_forests <-function(x, SpParams = NULL,
   mis_shrub_any  <- mis_shrub_species | mis_shrub_height | mis_shrub_cover
   error_any <- mis_tree_any | wrong_tree_species | mis_shrub_any | wrong_shrub_species
   if(sum(error_any)==0) if(verbose) cli::cli_alert_success("No missing/wrong values detected in key tree/shrub attributes of 'forest' objects.")
-  
-  if(missing_action=="no_action") {
+
+  if(is.null(default_forest) && missing_action=="no_action") {
     out <- data.frame(missing_forest = mis_forest,
                       wrong_forest_class = wrong_class,
                       tree_species = mis_tree_species,
@@ -235,44 +238,56 @@ check_forests <-function(x, SpParams = NULL,
                       shrub_cover = mis_shrub_cover,
                       shrub_height = mis_shrub_height)
     return(invisible(tibble::as_tibble(out)))
-  } else if(missing_action=="filter") {
-    if(any(error_any)) {
-      if(verbose) cli::cli_alert_info(paste0("Filtering out problematic tree/shrub records in ", sum(error_any), " locations (",round(100*sum(error_any)/npoints,1),"%) with missing/wrong forest data."))
-      if(progress) {
-        cli::cli_progress_bar("Locations", total = nrow(x))
-      }
+  } else {
+    if(!is.null(default_forest) && (sum(mis_forest)>0)) {
+      if(verbose) cli::cli_alert_info(paste0("Filling ", sum(mis_forest), " missing forest(s) with default forest."))
+      if(progress) cli::cli_progress_bar("Locations", total = nrow(x))
       for(i in 1:npoints) {
-        if(error_any[i]) {
-          if(progress) cli::cli_progress_update()
-          if(land_cover_type[i] == "wildland") {
-            f <- x$forest[[i]]
-            if(!is.null(f)) {
-              if(wrong_class[i]) {
-                x$forest[[i]] <- list(NULL)
-              } else {
-                if(mis_tree_any [i]) {
-                  f$treeData <- f$treeData |>
-                    dplyr::filter(is.na(.data$Species) & is.na(.data$DBH) & is.na(.data$Height) & is.na(.data$N))
-                } else if(mis_shrub_any [i]) {
-                  f$shrubData <- f$shrubData |>
-                    dplyr::filter(is.na(.data$Species) & is.na(.data$Cover) & is.na(.data$Height))
+        if(progress) cli::cli_progress_update()
+        if(mis_forest[i]) x$forest[[i]] <- default_forest
+      }
+      if(progress) cli::cli_progress_done()
+      
+    } 
+    if(missing_action=="filter") {
+      if(any(error_any)) {
+        if(verbose) cli::cli_alert_info(paste0("Filtering out problematic tree/shrub records in ", sum(error_any), " locations (",round(100*sum(error_any)/npoints,1),"%) with missing/wrong forest data."))
+        if(progress) {
+          cli::cli_progress_bar("Locations", total = nrow(x))
+        }
+        for(i in 1:npoints) {
+          if(error_any[i]) {
+            if(progress) cli::cli_progress_update()
+            if(land_cover_type[i] == "wildland") {
+              f <- x$forest[[i]]
+              if(!is.null(f)) {
+                if(wrong_class[i]) {
+                  x$forest[[i]] <- list(NULL)
+                } else {
+                  if(mis_tree_any [i]) {
+                    f$treeData <- f$treeData |>
+                      dplyr::filter(is.na(.data$Species) & is.na(.data$DBH) & is.na(.data$Height) & is.na(.data$N))
+                  } else if(mis_shrub_any [i]) {
+                    f$shrubData <- f$shrubData |>
+                      dplyr::filter(is.na(.data$Species) & is.na(.data$Cover) & is.na(.data$Height))
+                  }
+                  if(wrong_tree_species[i]) {
+                    f$treeData <- f$treeData |>
+                      dplyr::filter(.data$Species %in% accepted_tree_names)
+                  }
+                  if(wrong_shrub_species[i]) {
+                    f$shrubData <- f$shrubData |>
+                      dplyr::filter(.data$Species %in% accepted_shrub_names)
+                  }
+                  x$forest[[i]] <- f
                 }
-                if(wrong_tree_species[i]) {
-                  f$treeData <- f$treeData |>
-                    dplyr::filter(.data$Species %in% accepted_tree_names)
-                }
-                if(wrong_shrub_species[i]) {
-                  f$shrubData <- f$shrubData |>
-                    dplyr::filter(.data$Species %in% accepted_shrub_names)
-                }
-                x$forest[[i]] <- f
               }
             }
           }
         }
+        if(progress) cli::cli_progress_done()
       }
-      if(progress) cli::cli_progress_done()
-    }
+    } 
   } 
   return(x)
 }

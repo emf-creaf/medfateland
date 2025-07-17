@@ -33,10 +33,9 @@
                     y = -1*((.data$Precipitation/factor)/2-maxRange), # y = the center point of each bar
                     height = .data$Precipitation/factor,
                     width = 1), fill = "blue", color="white")+
-      # geom_bar(aes(.data$Date, .data$Precipitation), stat = 'identity', fill = "blue") +
       geom_line(aes(.data$Date, .data$Discharge), color = "black") +
       scale_y_continuous(name = "Discharge (m3/s)",
-                         sec.axis = sec_axis(trans = ~-1*(.-maxRange),
+                         sec.axis = sec_axis(transform = ~-1*(.-maxRange),
                                              name = "Precipitation (mm)",
                                              labels = precip_labels))+
       theme_bw()
