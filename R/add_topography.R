@@ -42,13 +42,29 @@ add_topography<-function(x, dem,
     if(progress) cli::cli_progress_step("Defining column 'id'")
     x$id <- 1:nrow(x)
   }
-  if(progress) cli::cli_progress_step("Extracting topography")
+  if(!("elevation" %in% names(x))) {
+    if(progress) cli::cli_progress_step("Defining column 'elevation'")
+    x$elevation <- NA
+  }
+  if(!("slope" %in% names(x))) {
+    if(progress) cli::cli_progress_step("Defining column 'slope'")
+    x$slope <- NA
+  }
+  if(!("aspect" %in% names(x))) {
+    if(progress) cli::cli_progress_step("Defining column 'aspect'")
+    x$aspect <- NA
+  }
+  
+  if(progress) cli::cli_progress_step("Extracting topography from 'dem'")
   x_vect <- terra::vect(sf::st_transform(x, terra::crs(dem)))
-  x$elevation <- terra::extract(dem, x_vect)[,2]
+  x_elev <- terra::extract(dem, x_vect)[,2]
+  x$elevation[!is.na(x_elev)] <- x_elev[!is.na(x_elev)]
   slope <- terra::terrain(dem, v = "slope", unit = "degrees")
-  x$slope <- terra::extract(slope, x_vect)[,2]
+  x_slope <- terra::extract(slope, x_vect)[,2]
+  x$slope[!is.na(x_slope)] <- x_slope[!is.na(x_slope)] 
   aspect <- terra::terrain(dem, v = "aspect", unit = "degrees")
-  x$aspect <- terra::extract(aspect, x_vect)[,2]
+  x_aspect <- terra::extract(aspect, x_vect)[,2]
+  x$aspect[!is.na(x_aspect)] <- x_aspect[!is.na(x_aspect)] 
   if(progress) cli::cli_progress_done()
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
