@@ -60,7 +60,7 @@ check_topography<-function(x,
                       missing_aspect = mis_aspect)
     return(invisible(tibble::as_tibble(out)))
   } else if(missing_action=="filter") {
-    if(!any(mis_any)){
+    if(any(mis_any)){
       if(verbose) cli::cli_alert_info(paste0("Filtering out ", sum(mis_any), " locations (",round(100*sum(mis_any)/nrow(x),1),"%) with missing topography."))
       x <- x[!mis_any,,drop =FALSE]
     }
