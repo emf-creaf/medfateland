@@ -251,8 +251,8 @@ veg_map
 In this case we use a database of 575 shrubland inventory plots in Catalonia described in [Casals et al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
 
 ```{r}
-sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/Combuscat/"
-sf_sfi <- readRDS(paste0(sfi_path, "Products/Combuscat_final.rds"))
+sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
+sf_sfi <- readRDS(paste0(sfi_path, "data/sf_combuscat.rds"))
 sf_sfi
 ```
 
@@ -784,7 +784,7 @@ saveRDS(y_8, "bianya.rds")
 
 Since the data set corresponds to a watershed, we should also store the raster:
 
-```{r}
+```{r, eval = FALSE}
 r$value <- TRUE
 terra::writeRaster(r, "bianya_raster.tif", overwrite=TRUE)
 ```
