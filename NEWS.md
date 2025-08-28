@@ -2,7 +2,7 @@
 - Runoff-runon dynamics coupled to local water balance in TETIS
 - PET is now stored in watershed-level results
 - New functions for plotting watershed-level simulation results
-- New channel routing algorithm (variable velocity) suggested by Maria Gonzalez-Sanchis
+- New channel routing algorithm (variable velocity) suggested by M. Gonzalez-Sanchis
 
 # medfateland 2.6.1
 - Bug correction: subwatershed mergin in spwb_land
