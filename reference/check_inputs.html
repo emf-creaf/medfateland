@@ -71,6 +71,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  SpParams <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  missing_action <span class="op">=</span> <span class="st">"no_action"</span>,</span>
+<span>  default_forest <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -109,6 +110,10 @@
 <dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>).</p></dd>
 
 
+<dt id="arg-default-forest">default_forest<a class="anchor" aria-label="anchor" href="#arg-default-forest"></a></dt>
+<dd><p>Default <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> object to fill locations where missing (e.g. <code>default_forest = medfate::emptyforest()</code>).</p></dd>
+
+
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
 <dd><p>A logical flag to print information about progress.</p></dd>
 
@@ -120,7 +125,8 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>All functions return a modified <code><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a></code> object if <code>missing_action</code> is either <code>"filter"</code> or <code>"default"</code>. Otherwise,
-they return an invisible tibble with logical columns indicating where missing information is.</p>
+they return an invisible tibble with logical columns indicating where missing information is. In <code>check_forests()</code> the function will return a modified object if
+parameter <code>default_forest</code> is provided.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -128,7 +134,7 @@ they return an invisible tibble with logical columns indicating where missing in
 <p>Function <code>check_land_cover()</code> checks that column <code>"land_cover_type"</code> does not contain missing values.</p>
 <p>Function <code>check_forests()</code> checks first that <code><a href="https://emf-creaf.github.io/medfate/reference/forest.html" class="external-link">forest</a></code> objects are defined in "wildland" locations. Then, it looks for missing
 data in tree or shrub attributes required for simulations. If <code>SpParams</code> is provided, the function also checks
-whether species names are within the taxa represented in <code>SpParams</code>.</p>
+whether species names are within the taxa represented in <code>SpParams</code>. If <code>default_forest</code> is provided, the function will use it to fill locations with missing forests objects.</p>
 <p>Function <code>check_soils()</code> checks first that "wildland" and "agriculture" locations have a defined soil object. Then it looks for missing data in required
 soil physical parameters.</p>
     </div>
