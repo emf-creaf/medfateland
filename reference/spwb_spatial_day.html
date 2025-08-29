@@ -11,7 +11,7 @@ No spatial processes are simulated."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ No spatial processes are simulated.</p>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -76,7 +76,7 @@ No spatial processes are simulated.</p>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -162,13 +162,13 @@ No spatial processes are simulated.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' for date '2001-03-01'</span> <span style="color: #00BBBB;">────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating '100' input objects.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating '100' input objects. <span style="color: #B2B2B2;">[3.2s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating '100' input objects. <span style="color: #B2B2B2;">[2.7s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Performing 'spwb' simulations.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
