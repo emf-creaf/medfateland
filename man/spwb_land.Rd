@@ -158,6 +158,7 @@ with the following columns:
 \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 \item{\code{outlet}: A logical vector indicating outlet cells.}
 \item{\code{outlet_backlog}: A vector indicating channel water volume (m3) backlog of outlet cells (for subsequent simulations).}
+\item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE} in watershed control parameters).}
 }
 In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 \itemize{

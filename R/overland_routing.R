@@ -241,9 +241,9 @@
         out$outlet[i] <- TRUE
       }
     }
-    out$target_outlet <- rep(NA, nCells)
+    out$target_outlet <- as.integer(rep(NA, nCells))
     out$target_outlet[out$outlet] <- which(out$outlet)
-    out$distance_to_outlet <- rep(NA, nCells)
+    out$distance_to_outlet <- as.numeric(rep(NA, nCells))
     out$distance_to_outlet[out$outlet] <- 0
     out$distance_to_outlet[sf$channel] <- 0
     to_be_processed <- which(out$outlet)
@@ -276,9 +276,9 @@
     out$waterQ <- .waterQFun(out$waterRank, out$queenNeigh,  raster_matching$sf_coords, sf$elevation)
     out$channel <- rep(FALSE, nCells)
     out$outlet <- (unlist(lapply(out$waterQ, sum))==0)
-    out$target_outlet <- rep(NA, nCells)
-    out$distance_to_outlet <- rep(NA, nCells)
-    out$outlet_backlog <- rep(NA, nCells)
+    out$target_outlet <- as.integer(rep(NA, nCells))
+    out$distance_to_outlet <- as.numeric(rep(NA, nCells))
+    out$outlet_backlog <- as.numeric(rep(NA, nCells))
   }
   if(subwatersheds) {
     out$subwatershed <- .findLowOverlapDrainageBasins(out$channel, out$outlet, out$queenNeigh, out$waterQ,
@@ -319,7 +319,7 @@
       out$waterRank[sel_i] <- order(out$waterOrder[sel_i])
     }
   } else {
-    out$subwatersheds <- rep(NA, nCells)
+    out$subwatershed <- as.integer(rep(NA, nCells))
   }
   # Check
   for(i in 1:nCells) { 

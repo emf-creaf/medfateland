@@ -1,3 +1,6 @@
+# medfateland 2.7.1
+- Subwatersheds returned as part of spatial output in *_land simulations
+
 # medfateland 2.7.0
 - Runoff-runon dynamics coupled to local water balance in TETIS
 - PET is now stored in watershed-level results

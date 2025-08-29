@@ -190,16 +190,16 @@ Our task here will be to perform imputations of forest inventory plots to our ta
 
 ### Forest imputation
 
-A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the [Spanish Forest Map (1:25000)](https://www.miteco.gob.es/en/biodiversidad/temas/inventarios-nacionales/mapa-forestal-espana/mfe_25.html) for the region of Catalonia, which is in vector format, using package `terra`:
+A map of forest types in the target area is important to determine dominant tree or shrub species. We start by loading the [Spanish Forest Map (1:25000)](https://www.miteco.gob.es/en/biodiversidad/temas/inventarios-nacionales/mapa-forestal-espana/mfe_25.html) for the Girona province, which is in vector format, using package `terra`:
 ```{r}
-forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/mfe_catalunia/MFE_51_class.gpkg"))
+forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/MFE_PROVINCES/MFE_17_class.gpkg"))
 forest_map
 ```
 
-Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the [Fourth Spanish Forest Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html) for Catalonia (5509 forest plots):
+Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the [Fourth Spanish Forest Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html) for Girona province (1455 forest plots):
 ```{r}
 nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
-sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsMED/IFN4/Catalunya/IFN4_cat_final_ETRS89H31.rds"))
+sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsES/IFN4/soilmod/IFN4_17_soilmod_WGS84.rds"))
 sf_nfi
 ```
 Note that this is already an `sf` object suitable for simulations, but refers to the locations of the forest inventory plots, not to our target area.
@@ -795,7 +795,7 @@ terra::writeRaster(r, "bianya_raster.tif", overwrite=TRUE)
 We can check whether the input data set is well formed by calling function  `initialize_landscape()`:
 
 ```{r}
-z <- initialize_landscape(y_8, SpParamsMED, defaultControl(),
+z <- initialize_landscape(y_8, traits4models::SpParamsES, defaultControl(),
                           progress = FALSE)
 ```
 

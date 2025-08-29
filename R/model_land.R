@@ -1342,6 +1342,7 @@
     sf_out <- res_inner$sf
     sf_out$outlet <- sf_routing$outlet
     sf_out$outlet_backlog <- sf_routing$outlet_backlog
+    sf_out$subwatershed <- sf_routing$subwatershed
 
     res <- list(watershed_control = watershed_control,
                 sf = sf_out,
@@ -1443,6 +1444,7 @@
 #'       \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
 #'       \item{\code{outlet_backlog}: A vector indicating channel water volume (m3) backlog of outlet cells (for subsequent simulations).}
+#'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE} in watershed control parameters).}
 #'     }
 #'     In function \code{fordyn_land} the \code{\link[sf]{sf}} object contains additional columns:
 #'     \itemize{
@@ -2172,6 +2174,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   if(watershed_model=="tetis")  {
     res$outlet <- sf_routing$outlet
     res$outlet_backlog <- sf_routing$outlet_backlog
+    res$subwatershed <- sf_routing$subwatershed
   }
   wb <- ws_day$WatershedWaterBalance
   for(n in names(wb)) res[[n]] <- wb[[n]]
