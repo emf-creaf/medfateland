@@ -7,17 +7,24 @@ ypts_growth <- initialize_landscape(example_ifn[1:2,], SpParams = SpParamsMED, l
                                    model = "growth", progress = FALSE)
 
 data("examplemeteo")
-
-
-
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-01"), by="day")
+
+ypts_swpb_meteo <- ypts_swpb[1:2,]
+ypts_swpb_meteo$meteo <- list(examplemeteo, examplemeteo)
+
+ypts_growth_meteo <- ypts_growth[1:2,]
+ypts_growth_meteo$meteo <- list(examplemeteo, examplemeteo)
 
 test_that("Can simulate one day over landscape",{
   expect_s3_class(spwb_spatial(ypts_swpb[1:2,], meteo = examplemeteo, dates = dates, 
                              SpParams = SpParamsMED, progress = FALSE), "sf")
+  expect_s3_class(spwb_spatial(ypts_swpb_meteo, meteo = NULL, dates = dates, 
+                               SpParams = SpParamsMED, progress = FALSE), "sf")
   expect_s3_class(growth_spatial(ypts_growth[1:2,],, meteo = examplemeteo, dates = dates, 
                              SpParams = SpParamsMED, progress = FALSE), "sf")
+  expect_s3_class(growth_spatial(ypts_growth_meteo, meteo = NULL, dates = dates, 
+                                 SpParams = SpParamsMED, progress = FALSE), "sf")
 })
 
 

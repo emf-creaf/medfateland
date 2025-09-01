@@ -97,6 +97,7 @@ optimization_rock<-function(sf, SpParams, meteo = NULL, local_control = defaultC
   n <- nrow(sf)
   local_control$verbose <- FALSE
   
+  if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("`dates` should be an object of class `Date`")
   if(is.null(meteo) && !("meteo" %in% names(sf))) stop("Column 'meteo' must be defined in 'sf' if not supplied separately")
   if("meteo" %in% names(sf)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))

@@ -9,15 +9,26 @@ ypts_growth <- initialize_landscape(example_ifn[1:2,], SpParams = SpParamsMED, l
 data("examplemeteo")
 
 
-
 data("SpParamsMED")
 date = "2001-03-01"
+
+
+ypts_swpb_meteo <- ypts_swpb[1:2,]
+ypts_swpb_meteo$meteo <- list(examplemeteo, examplemeteo)
+
+ypts_growth_meteo <- ypts_growth[1:2,]
+ypts_growth_meteo$meteo <- list(examplemeteo, examplemeteo)
+
 
 test_that("Can simulate one day over landscape",{
   expect_s3_class(spwb_spatial_day(ypts_swpb[1:2,], meteo = examplemeteo, date = date, 
                                  SpParams = SpParamsMED, progress = FALSE), "sf")
+  expect_s3_class(spwb_spatial_day(ypts_swpb_meteo, meteo = NULL, date = date, 
+                                   SpParams = SpParamsMED, progress = FALSE), "sf")
   expect_s3_class(growth_spatial_day(ypts_growth[1:2,], meteo = examplemeteo, date = date, 
                                  SpParams = SpParamsMED, progress = FALSE), "sf")
+  expect_s3_class(growth_spatial_day(ypts_growth_meteo, meteo = NULL, date = date, 
+                                     SpParams = SpParamsMED, progress = FALSE), "sf")
 })
 
 test_that("Can simulate one day over landscape using new interpolator",{

@@ -182,7 +182,7 @@
         datesMeteo <- as.Date(row.names(meteo))
       }
       if(sum(datesMeteo %in% dates) < length(dates)) {
-        stop("Supplied weather data frame does not cover all elements in 'dates'")
+        cli::cli_abort("Supplied weather data frame does not cover all elements in 'dates'")
       }
       # Subset dates in meteo
       if("dates" %in% names(meteo)) {
@@ -222,7 +222,7 @@
       }
       meteo <- meteo[!drop]
       if(sum(datesMeteo %in% dates) < length(dates)) {
-        stop("Supplied weather interpolator(s) do not cover all elements in 'dates'")
+        cli::cli_abort("Supplied weather interpolator(s) do not cover all elements in 'dates'")
       }
     }
   }
@@ -232,8 +232,8 @@
   datesMeteo_1 <- NULL
   for(i in 1:length(meteo_column)) {
     met_i <- meteo_column[[i]]
-    if(is.null(met_i)) stop(paste0("NULL wheather in row ",i))
-    if(!inherits(met_i, "data.frame")) stop(paste0("Weather data of row ", i, " does not inherit 'data.frame' class"))
+    if(is.null(met_i)) cli::cli_abort(paste0("NULL wheather in row ",i))
+    if(!inherits(met_i, "data.frame")) cli::cli_abort(paste0("Weather data of row ", i, " does not inherit 'data.frame' class"))
     if("dates" %in% names(met_i)) {
       tryCatch({
         datesMeteo_i <- as.Date(met_i$dates)
@@ -246,11 +246,11 @@
     if(i==1) datesMeteo_1 <- datesMeteo_i
     if(!is.null(dates)) {
       if(sum(datesMeteo_i %in% dates) < length(dates)) {
-        stop(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
+        cli::cli_abort(paste0("Supplied weather data frame for row ",i," does not cover all elements in 'dates'"))
       }
       # Subset dates in met_i
       if("dates" %in% names(met_i)) {
-        met_i <- met_i[met_i$dates %in% dates, , drop = FALSE]
+        met_i <- met_i[as.Date(met_i$dates) %in% dates, , drop = FALSE]
       } else {
         met_i <- met_i[as.character(dates), , drop = FALSE]
       }
@@ -302,6 +302,7 @@
                         parallelize = FALSE, num_cores = detectCores()-1, chunk_size = NULL,
                         progress = TRUE, local_verbose = FALSE) {
   
+  
   if(progress) cli::cli_progress_step(paste0("Checking sf input"))
   .check_sf_input(y)
   
@@ -340,7 +341,8 @@
   } else {
     managementlist = vector("list",n)
   }
-  if(is.null(meteo) && !("meteo" %in% names(y))) stop("Column 'meteo' must be defined in 'y' if not supplied separately")
+  if(!is.null(dates)) if(!inherits(dates, "Date")) cli::cli_abort("`dates` should be an object of class `Date`")
+  if(is.null(meteo) && !("meteo" %in% names(y))) cli::cli_abort("Column 'meteo' must be defined in 'y' if not supplied separately")
   if("meteo" %in% names(y)) {
     if(progress) cli::cli_progress_step(paste0("Checking meteo column input"))
     meteo <- NULL
