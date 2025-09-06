@@ -165,6 +165,7 @@ void tetisBaseFlow(DataFrame outWB,
   NumericVector baseflowInput = outWB[WBCOM_BaseflowInput];
   NumericVector baseflowOutput = outWB[WBCOM_BaseflowOutput];
   NumericVector baseflowBalance = outWB[WBCOM_BaseflowBalance];
+  NumericVector AquiferExfiltration = outWB[WBCOM_AquiferExfiltration];
   
   CharacterVector lct = y["land_cover_type"];
   List xList = y["state"];
@@ -178,84 +179,89 @@ void tetisBaseFlow(DataFrame outWB,
   List tetis_parameters = watershed_control["tetis_parameters"];
   double R_baseflow = tetis_parameters["R_baseflow"];
   double n_baseflow = tetis_parameters["n_baseflow"];
+  int num_daily_substeps = tetis_parameters["num_daily_substeps"];
   
   //A. Subsurface fluxes
   double cellWidth = sqrt(patchsize); //cell width in m
   
-  //A1. Calculate soil and aquifer water table elevation (heads)
+  NumericVector baseflowBalance_step(nX,NA_REAL);
+  NumericVector baseflowInput_step(nX,NA_REAL);
+  NumericVector baseflowOutput_step(nX,NA_REAL);
   NumericVector AquiferWaterTableElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
-  for(int i=0;i<nX;i++){
-    AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
-  }
   
-  //A2b. Calculate BASEFLOW output for each cell (in m3/day)
-  for(int i=0;i<nX;i++){
-    double Kbaseflow = R_baseflow*bedrock_conductivity[i]; //m/day
-    if(aquifer[i]>0) {
-      double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n_baseflow)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n_baseflow); //Transmissivity in m2
-      IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
-      //water table slope between target and neighbours
-      NumericVector qni(ni.size(), 0.0);
-      for(int j=0;j<ni.size();j++) {
-        double tanBeta = (AquiferWaterTableElevation[i]-AquiferWaterTableElevation[ni[j]-1])/cellWidth;
-        if(tanBeta>0.0) qni[j] = tanBeta*T*cellWidth; //flow in m3/day
-      }
-      double qntotal = sum(qni);
-      double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*patchsize); //avoid excessive outflow
-      double corrfactor = qntotalallowed/qntotal;
-      for(int j=0;j<ni.size();j++) {
-        if(qni[j]>0.0) {
-          baseflowInput[ni[j]-1] += 1000.0*qni[j]*corrfactor/patchsize; // in mm/day
-          baseflowOutput[i] += 1000.0*qni[j]*corrfactor/patchsize;
+  double tfactor = 1.0/((double) num_daily_substeps);
+  for(int d=0;d<num_daily_substeps;d++) {
+    //A1. Calculate aquifer water table elevation (heads)
+    for(int i=0;i<nX;i++){
+      baseflowInput_step[i] = 0.0;
+      baseflowOutput_step[i] = 0.0;
+      AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
+    }
+    //A2b. Calculate BASEFLOW output for each cell
+    for(int i=0;i<nX;i++){
+      double Kbaseflow = R_baseflow*bedrock_conductivity[i]; //m/day
+      if(aquifer[i]>0) {
+        double T = ((Kbaseflow*depth_to_bedrock[i]*0.001)/n_baseflow)*pow(1.0-((depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]))/depth_to_bedrock[i]),n_baseflow); //Transmissivity in m2
+        IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[i]);
+        //water table slope between target and neighbours
+        NumericVector qni(ni.size(), 0.0);
+        for(int j=0;j<ni.size();j++) {
+          double tanBeta = (AquiferWaterTableElevation[i]-AquiferWaterTableElevation[ni[j]-1])/cellWidth;
+          if(tanBeta>0.0) {
+            qni[j] = tanBeta*T*cellWidth; //flow in m3/day
+            qni[j] *= tfactor; //Apply reduction factor for multiple num_daily_substeps
+          }
+        }
+        double qntotal = sum(qni);
+        double qntotalallowed = std::min(qntotal, (aquifer[i]/1000.0)*patchsize); //avoid excessive outflow
+        double corrfactor = qntotalallowed/qntotal;
+        for(int j=0;j<ni.size();j++) {
+          if(qni[j]>0.0) {
+            baseflowInput_step[ni[j]-1] += 1000.0*qni[j]*corrfactor/patchsize; // in mm/day
+            baseflowOutput_step[i] += 1000.0*qni[j]*corrfactor/patchsize;
+          }
         }
       }
     }
-    // if(baseflowOutput[i]>aquifer[i]) {
-    //   Rcerr<< " Baseoutflow greater than aquifer in "<< (i+1) <<"\n";
-    //   Rcout<< baseflowOutput[i]<<" "<< aquifer[i] <<"\n";
-    // }
+    
+    //Apply changes to aquifer  
+    double balsum =0.0;
+    for(int i=0;i<nX;i++){
+      //Balance for this subdaily time step
+      baseflowBalance_step[i] = baseflowInput_step[i] - baseflowOutput_step[i];
+      aquifer[i] = aquifer[i] + baseflowBalance_step[i]; //New water amount in the aquifer (mm water)
+      if(aquifer[i] < 0.0) {
+        //Correct balance and aquifer
+        baseflowBalance_step[i] = baseflowBalance_step[i] - aquifer[i];
+        aquifer[i] = 0.0;
+      }
+      baseflowBalance[i] += baseflowBalance_step[i];
+      balsum += baseflowBalance_step[i];
+      double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
+      if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
+        AquiferExfiltration[i] += - DTAn*bedrock_porosity[i];
+        aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
+      }
+    }
+    if(balsum>0.00001) stop("Non-negligible baseflow balance sum");
   }
-  
-  //A3. Balance
-  double balsum =0.0;
-  for(int i=0;i<nX;i++){
-    baseflowBalance[i] = baseflowInput[i] - baseflowOutput[i];
-    balsum +=baseflowBalance[i];
-  }
-  if(balsum>0.00001) stop("Non-negligible baseflow balance sum");
 }
 
-// [[Rcpp::export(".tetisApplyBaseflowChangesToAquifer")]]
-void tetisApplyBaseflowChangesToAquifer(DataFrame outWB,
-                                        List y,
-                                        double patchsize) {
-  NumericVector depth_to_bedrock  = y["depth_to_bedrock"];
-  NumericVector bedrock_porosity = y["bedrock_porosity"];
-  NumericVector aquifer = y["aquifer"];
-  NumericVector AquiferExfiltration = outWB[WBCOM_AquiferExfiltration];
-  NumericVector baseflowBalance = outWB[WBCOM_BaseflowBalance];
-  int nX = aquifer.size();
-  for(int i=0;i<nX;i++){
-    aquifer[i] = aquifer[i] + baseflowBalance[i]; //New water amount in the aquifer (mm water)
-    if(aquifer[i] < 0.0) {
-      // Rcerr << "negative aquifer in cell "<< (i+1)<<" after base flows\n";
-      aquifer[i] = 0.0;
-    }
-    double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
-    if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
-      AquiferExfiltration[i] = - DTAn*bedrock_porosity[i];
-      aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
-    }
-  }
-}
 
 // [[Rcpp::export(".tetisApplyLocalFlowsToAquifer")]]
 void tetisApplyLocalFlowsToAquifer(List y,
-                                   DataFrame outWB) {
+                                   DataFrame outWB,
+                                   LogicalVector isChannel,
+                                   LogicalVector isOutlet) {
+  NumericVector AquiferExfiltration =  outWB[WBCOM_AquiferExfiltration];
   NumericVector DeepDrainage =  outWB[WBCOM_DeepDrainage];
   NumericVector CapillarityRise =  outWB[WBCOM_CapillarityRise];
+  NumericVector ChannelExport =  outWB[WBCOM_ChannelExport];
+  NumericVector WatershedExport =  outWB[WBCOM_WatershedExport];
   
   NumericVector aquifer = y["aquifer"];
+  NumericVector depth_to_bedrock  = y["depth_to_bedrock"];
+  NumericVector bedrock_porosity = y["bedrock_porosity"];
   
   int nX = aquifer.size();
   for(int i=0;i<nX;i++){
@@ -264,6 +270,17 @@ void tetisApplyLocalFlowsToAquifer(List y,
       // Rcerr << "negative aquifer in cell "<< (i+1)<<" after local flows\n";
       // Rcout << DeepDrainage[i]<< " " << CapillarityRise[i]<<"\n";
       aquifer[i] = 0.0;
+    }
+    double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
+    if((DTAn < 0.0) && (isChannel[i] || isOutlet[i])) { // Turn negative aquifer depth into aquifer discharge
+      double offset = - DTAn*bedrock_porosity[i];
+      AquiferExfiltration[i] += offset;
+      aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
+      if(isChannel[i]) {
+        ChannelExport[i] += AquiferExfiltration[i];
+      } else {
+        WatershedExport[i] += AquiferExfiltration[i];
+      }
     }
   }
 }
@@ -303,6 +320,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   
   List tetis_parameters = watershed_control["tetis_parameters"];
   double rock_max_infiltration = tetis_parameters["rock_max_infiltration"];
+  bool free_drainage_enforced = tetis_parameters["free_drainage_enforced"];
   
   NumericVector Runoff=  outWB[WBCOM_Runoff];
   NumericVector Runon=  outWB[WBCOM_Runon];
@@ -419,6 +437,9 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       
       double wtd = depth_to_bedrock[iCell] - (aquifer[iCell]/bedrock_porosity[iCell]);
       if(wtd<0.0) Rcout << "Negative WTD in " << iCell <<"\n";
+      // This reduces capillary rise but avoids instabilities (aquifer is more separated from local processes)
+      if(free_drainage_enforced) wtd = NA_REAL;
+      
       List xi = xList[iCell];
       List soil_i = xi["soil"];
       NumericVector widths = Rcpp::as<Rcpp::NumericVector>(soil_i["widths"]);
@@ -435,7 +456,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       XI["elevation"] = elevation[iCell]; 
       XI["slope"] = slope[iCell]; 
       XI["aspect"] = aspect[iCell];
-      XI["runon"] = Runon[iCell]; 
+      XI["runon"] = Runon[iCell];
       XI["lateralFlows"] = lateralFlows;
       XI["waterTableDepth"] = wtd; 
       //Launch simulation
@@ -464,6 +485,14 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       if(DeepDrainage[iCell] > CapillarityRise[iCell]) {
         DeepDrainage[iCell] = DeepDrainage[iCell] - CapillarityRise[iCell];
         CapillarityRise[iCell] = 0.0;
+      } else if (DeepDrainage[iCell] < CapillarityRise[iCell]) {
+        CapillarityRise[iCell] = CapillarityRise[iCell] - DeepDrainage[iCell];
+        DeepDrainage[iCell] = 0.0;
+      }
+      if((AquiferExfiltration[iCell]>0.0) || (SaturationExcess[iCell]>0.0)) { //If soil is saturated deep drainage cannot occur
+        SaturationExcess[iCell] +=DeepDrainage[iCell];
+        Runoff[iCell] +=DeepDrainage[iCell];
+        DeepDrainage[iCell] = 0.0;
       }
       Transpiration[iCell] = DB["Transpiration"];
       if(lct[iCell]=="wildland") {
@@ -535,27 +564,28 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
     
     // OVERLAND RUNOFF
     // Assign runoff to runon of downhill neighbours
-    double ri_tot =  Runoff[iCell] + AquiferExfiltration[iCell];
+    double ri_tot =  Runoff[iCell];
+    NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
+    IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
+    // Add aquifer exfiltration to the water to be distributed if not an outlet or channel
+    if((sum(qi)>0.0) && (!isChannel[iCell])) ri_tot +=AquiferExfiltration[iCell];
     if(ri_tot>0.0) {
       double ri = ri_tot;
-      IntegerVector ni = Rcpp::as<Rcpp::IntegerVector>(queenNeigh[iCell]);
-      NumericVector qi = Rcpp::as<Rcpp::NumericVector>(waterQ[iCell]);
       if(ni.size()>0) {
         for(int j=0;j<ni.size();j++)  {
           Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
           ri -= (qi[j]*ri_tot);
         }
       }
-      if((sum(qi)>0.0) && (ri > 0.00001)) {
-        Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
-        stop("Non-outlet cell with runoff export");
-      }
-      if(sum(qi)==0.0) { // outlet
+      if(sum(qi)==0.0 || isChannel[iCell]) { // outlet or channel
         if(isChannel[iCell]) {
-          ChannelExport[iCell] += ri;
+          ChannelExport[iCell] += ri + AquiferExfiltration[iCell];
         } else {
-          WatershedExport[iCell] += ri;
+          WatershedExport[iCell] += ri + AquiferExfiltration[iCell];
         }
+      } else if(ri > 0.000001) {
+        Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+        stop("Non-outlet or channel cell with runoff export");
       }
     }
   }

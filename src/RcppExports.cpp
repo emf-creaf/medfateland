@@ -341,26 +341,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// tetisApplyBaseflowChangesToAquifer
-void tetisApplyBaseflowChangesToAquifer(DataFrame outWB, List y, double patchsize);
-RcppExport SEXP _medfateland_tetisApplyBaseflowChangesToAquifer(SEXP outWBSEXP, SEXP ySEXP, SEXP patchsizeSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
-    Rcpp::traits::input_parameter< List >::type y(ySEXP);
-    Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    tetisApplyBaseflowChangesToAquifer(outWB, y, patchsize);
-    return R_NilValue;
-END_RCPP
-}
 // tetisApplyLocalFlowsToAquifer
-void tetisApplyLocalFlowsToAquifer(List y, DataFrame outWB);
-RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP outWBSEXP) {
+void tetisApplyLocalFlowsToAquifer(List y, DataFrame outWB, LogicalVector isChannel, LogicalVector isOutlet);
+RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP outWBSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
-    tetisApplyLocalFlowsToAquifer(y, outWB);
+    Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type isOutlet(isOutletSEXP);
+    tetisApplyLocalFlowsToAquifer(y, outWB, isChannel, isOutlet);
     return R_NilValue;
 END_RCPP
 }
@@ -447,8 +437,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 7},
-    {"_medfateland_tetisApplyBaseflowChangesToAquifer", (DL_FUNC) &_medfateland_tetisApplyBaseflowChangesToAquifer, 3},
-    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 2},
+    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 4},
     {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 3},
     {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 15},
     {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 11},

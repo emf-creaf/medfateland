@@ -284,13 +284,6 @@
                  watershed_control,
                  patchsize)
 
-
-  
-  # A3b. Apply changes in aquifer to each cell
-  .tetisApplyBaseflowChangesToAquifer(output[["WatershedWaterBalance"]],
-                                      y,
-                                      patchsize)
-  
   
   # B. Simulation of soil cells, non-soil cells and overland flows
   .copySnowpackToSoil(y)
@@ -308,7 +301,9 @@
   
   #C. Applies capillarity rise, deep drainage to aquifer
   .tetisApplyLocalFlowsToAquifer(y,
-                                 output[["WatershedWaterBalance"]])
+                                 output[["WatershedWaterBalance"]],
+                                 isChannel,
+                                 isOutlet)
 
   #D. Applies drainage from aquifer to a deeper aquifer
   .tetisApplyDeepAquiferLossToAquifer(output[["WatershedWaterBalance"]], 
@@ -445,7 +440,7 @@
                         "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
                         "DeepDrainage", "CapillarityRise", "DeepAquiferLoss",
                         "SoilEvaporation", "Transpiration", "HerbTranspiration",
-                        "InterflowInput", "InterflowOutput", "InterflowBalance", "BaseflowInput", "BaseflowOutput", "BaseflowBalance", "AquiferExfiltration")
+                        "InterflowBalance", "BaseflowBalance", "AquiferExfiltration")
   if(type %in% c("sum", "all")) return(varsWaterBalance)
   return(c())
 }

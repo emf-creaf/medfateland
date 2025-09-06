@@ -2,6 +2,7 @@
   return(c("Hydrograph & Hietograph" = "Hydrograph_Hietograph",
            "PET & Precipitation" = "PET_Precipitation",
            "Water exported" = "Export", 
+           "Soil-Aquifer exchange" = "SoilAquifer",
            "Evapotranspiration" = "Evapotranspiration"))
 }
 .plot_watershed_wb <-function(x, type,  
@@ -127,6 +128,24 @@
                                            "Aquifer exfiltration" = "red", "Cell runoff" = "blue", 
                                            "Channel export" = "darkgreen",
                                            "Deep aquifer export" = "darkgray"))+
+      ylab(ylab)+ xlab(xlab)+
+      theme_bw()
+    return(g)
+  } else if(type=="SoilAquifer") {
+    if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
+    df[["CapillarityRise"]] = WaterBalance$CapillarityRise
+    df[["DeepDrainage"]] = -WaterBalance$DeepDrainage
+    if(!is.null(dates)) df = df[df$Date %in% dates,]
+    if(!is.null(summary.freq)) {
+      date.factor = cut(as.Date(df$Date), breaks=summary.freq)
+      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
+                      CapillarityRise = tapply(df$CapillarityRise,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      DeepDrainage = tapply(df$DeepDrainage,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+    }
+    g<-ggplot(df)+
+      geom_bar(aes(x=.data$Date, y=.data$CapillarityRise, fill="Capillarity rise"), stat = "identity")+
+      geom_bar(aes(x=.data$Date, y=.data$DeepDrainage, fill="Deep drainage"), stat = "identity")+
+      scale_fill_manual(name="", values=c("Capillarity rise" = "red", "Deep drainage" = "blue"))+
       ylab(ylab)+ xlab(xlab)+
       theme_bw()
     return(g)

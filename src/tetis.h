@@ -10,11 +10,8 @@ DataFrame tetisWatershedFlows(List y,
                               IntegerVector waterO, List queenNeigh, List waterQ,
                               List watershed_control,
                               double patchsize);
-NumericVector tetisApplyBaseflowChangesToAquifer(List y,
-                                                 NumericVector baseflowBalance,
-                                                 double patchsize);
 void tetisApplyLocalFlowsToAquifer(List y,
                                    NumericVector CapillarityRise,
-                                   NumericVector DeepDrainage);
-NumericVector tetisOverlandFlows( NumericVector Runoff, NumericVector AquiferDischarge,
-                                  NumericVector waterO, List queenNeigh, List waterQ, LogicalVector isChannel);
+                                   NumericVector DeepDrainage,
+                                   LogicalVector isChannel,
+                                   LogicalVector isOutlet);

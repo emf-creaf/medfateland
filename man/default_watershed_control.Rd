@@ -21,7 +21,8 @@ A list with the following items:
 \item{\code{R_baseflow [= 5.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 \item{\code{n_interflow [= 1.0]}: Exponent for the determination of interflow.}
 \item{\code{n_baseflow [= 1.0]}: Exponent for the determination of baseflow.}
-\item{\code{num_daily_substeps [= 4]}: Number of daily sub-steps for interflow calculations.}
+\item{\code{free_drainage_enforced [= TRUE]}: A boolean flag to prevent water table effects into local soil water balance.}
+\item{\code{num_daily_substeps [= 1]}: Number of daily sub-steps for interflow and baseflow calculations.}
 \item{\code{subwatersheds [= FALSE]}: A boolean flag to define watershed subunits.}
 \item{\code{max_overlap [= 0.2]}: Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.}
 \item{\code{rock_max_infiltration [= 10]}: Maximum infiltration rate (mm·day-1) for rock cells.}
