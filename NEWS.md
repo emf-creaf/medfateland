@@ -1,7 +1,11 @@
+# medfateland 2.7.2
+- Daily substeps available for base flows
+- Aquifer (water table depth) effects on soil local water balance can be disabled
+- Aquifer water balance revised
+
 # medfateland 2.7.1
 - Subwatersheds returned as part of spatial output in *_land simulations
 - Bug correction for .check_meteo_column_input issue #5
-- Daily substeps available for base flows
 - New plot option for watershed-level simulation results
 
 # medfateland 2.7.0
