@@ -64,7 +64,7 @@ void tetisInterFlow(DataFrame outWB,
   List x, soil, control;
   NumericVector widths, Ksat;
   
-  //A1. Calculate soil and aquifer water table elevation (heads)
+  //A1. Calculate soil water table elevation (heads)
   LogicalVector is_soil(nX, false);
   NumericVector K_inter_max(nX,NA_REAL); //Maximum interflow conductivity
   NumericVector D(nX,NA_REAL); //Soil depth (mm)
@@ -191,7 +191,7 @@ void tetisBaseFlow(DataFrame outWB,
   
   double tfactor = 1.0/((double) num_daily_substeps);
   for(int d=0;d<num_daily_substeps;d++) {
-    //A1. Calculate aquifer water table elevation (heads)
+    //A1. Calculate aquifer water table elevation (heads in m)
     for(int i=0;i<nX;i++){
       baseflowInput_step[i] = 0.0;
       baseflowOutput_step[i] = 0.0;
@@ -230,17 +230,20 @@ void tetisBaseFlow(DataFrame outWB,
       //Balance for this subdaily time step
       baseflowBalance_step[i] = baseflowInput_step[i] - baseflowOutput_step[i];
       aquifer[i] = aquifer[i] + baseflowBalance_step[i]; //New water amount in the aquifer (mm water)
-      if(aquifer[i] < 0.0) {
-        //Correct balance and aquifer
-        baseflowBalance_step[i] = baseflowBalance_step[i] - aquifer[i];
-        aquifer[i] = 0.0;
-      }
+      // if(aquifer[i] < 0.0) {
+      //   //Correct balance and aquifer
+      //   baseflowBalance_step[i] = baseflowBalance_step[i] - aquifer[i];
+      //   aquifer[i] = 0.0;
+      // }
       baseflowBalance[i] += baseflowBalance_step[i];
+      baseflowInput[i] += baseflowInput_step[i];
+      baseflowOutput[i] += baseflowOutput_step[i];
       balsum += baseflowBalance_step[i];
       double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
-      if(DTAn < 0.0) { // Turn negative aquifer depth into aquifer discharge
-        AquiferExfiltration[i] += - DTAn*bedrock_porosity[i];
-        aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
+      if(DTAn < 0.0) { // Turn negative depth to aquifer into aquifer discharge
+        double offset = -1.0*DTAn*bedrock_porosity[i];
+        AquiferExfiltration[i] += offset;
+        aquifer[i] -= offset;
       }
     }
     if(balsum>0.00001) stop("Non-negligible baseflow balance sum");
@@ -266,20 +269,20 @@ void tetisApplyLocalFlowsToAquifer(List y,
   int nX = aquifer.size();
   for(int i=0;i<nX;i++){
     aquifer[i] = aquifer[i] + DeepDrainage[i] - CapillarityRise[i];
-    if(aquifer[i]< 0.0) {
-      // Rcerr << "negative aquifer in cell "<< (i+1)<<" after local flows\n";
-      // Rcout << DeepDrainage[i]<< " " << CapillarityRise[i]<<"\n";
-      aquifer[i] = 0.0;
-    }
+    // if(aquifer[i]< 0.0) {
+    //   // Rcerr << "negative aquifer in cell "<< (i+1)<<" after local flows\n";
+    //   // Rcout << DeepDrainage[i]<< " " << CapillarityRise[i]<<"\n";
+    //   aquifer[i] = 0.0;
+    // }
     double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
-    if((DTAn < 0.0) && (isChannel[i] || isOutlet[i])) { // Turn negative aquifer depth into aquifer discharge
-      double offset = - DTAn*bedrock_porosity[i];
+    if((DTAn < 0.0) && (isChannel[i] || isOutlet[i])) { // Turn negative depth to aquifer into aquifer discharge
+      double offset = -1.0*DTAn*bedrock_porosity[i];
       AquiferExfiltration[i] += offset;
-      aquifer[i] = depth_to_bedrock[i]*bedrock_porosity[i];
+      aquifer[i] -= offset;
       if(isChannel[i]) {
-        ChannelExport[i] += AquiferExfiltration[i];
+        ChannelExport[i] += offset;
       } else {
-        WatershedExport[i] += AquiferExfiltration[i];
+        WatershedExport[i] += offset;
       }
     }
   }
@@ -485,14 +488,21 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       if(DeepDrainage[iCell] > CapillarityRise[iCell]) {
         DeepDrainage[iCell] = DeepDrainage[iCell] - CapillarityRise[iCell];
         CapillarityRise[iCell] = 0.0;
+        DB["CapillarityRise"] = CapillarityRise[iCell];
+        DB["DeepDrainage"] = DeepDrainage[iCell];
       } else if (DeepDrainage[iCell] < CapillarityRise[iCell]) {
         CapillarityRise[iCell] = CapillarityRise[iCell] - DeepDrainage[iCell];
         DeepDrainage[iCell] = 0.0;
+        DB["CapillarityRise"] = CapillarityRise[iCell];
+        DB["DeepDrainage"] = DeepDrainage[iCell];
       }
       if((AquiferExfiltration[iCell]>0.0) || (SaturationExcess[iCell]>0.0)) { //If soil is saturated deep drainage cannot occur
         SaturationExcess[iCell] +=DeepDrainage[iCell];
         Runoff[iCell] +=DeepDrainage[iCell];
         DeepDrainage[iCell] = 0.0;
+        DB["SaturationExcess"] = SaturationExcess[iCell];
+        DB["Runoff"] = Runoff[iCell];
+        DB["DeepDrainage"] = DeepDrainage[iCell];
       }
       Transpiration[iCell] = DB["Transpiration"];
       if(lct[iCell]=="wildland") {
