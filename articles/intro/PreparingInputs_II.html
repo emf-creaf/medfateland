@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Núria Aquilué / Paula Martín / María González</h4>
             
-            <h4 data-toc-skip class="date">2025-08-29</h4>
+            <h4 data-toc-skip class="date">2025-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_II.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_II.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_II.Rmd</code></div>
@@ -184,8 +184,8 @@ object:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           used  (Mb) gc trigger  (Mb) max used  (Mb)</span></span>
-<span><span class="co">## Ncells 2098985 112.1    4170741 222.8  2651106 141.6</span></span>
-<span><span class="co">## Vcells 3530897  27.0    8388608  64.0  8387420  64.0</span></span></code></pre>
+<span><span class="co">## Ncells 2099511 112.2    4173311 222.9  2635979 140.8</span></span>
+<span><span class="co">## Vcells 3531619  27.0    8388608  64.0  8388199  64.0</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="topography-and-land-cover-type">Topography and land cover type<a class="anchor" aria-label="anchor" href="#topography-and-land-cover-type"></a>
@@ -218,22 +218,21 @@ and slope:</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking inputs <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'id'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'id' <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'elevation'</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'elevation' <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'slope'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'slope' <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'slope' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Defining column 'aspect'</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Defining column 'aspect' <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting topography from 'dem'</span></span></code></pre>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography from 'dem' <span style="color: #B2B2B2;">[9.6s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Extracting topography from 'dem' <span style="color: #B2B2B2;">[5.6s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_0</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 2573 features and 4 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -256,7 +255,7 @@ and slope:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2,563 more rows</span></span></span></code></pre>
 <p>We can check that there are no missing values in topographic features
 using:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_topography</a></span><span class="op">(</span><span class="va">y_0</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values in topography.</span></span></code></pre>
 <p>We can now examine the elevation of the area, using the raster
@@ -268,7 +267,7 @@ using:</p>
 <p>In addition to topography, users should have access to a land cover
 map, in this case we will use a land cover raster for Catalonia, issued
 in 2018:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lcm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"LandCover/Catalunya/MapaCobertesSol2018/cobertes-sol-v1r0-2018.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lcm</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
@@ -284,7 +283,7 @@ how to map legend elements to the five land cover types used in
 <strong>medfateland</strong>. After inspecting our land cover map
 legend, we define the following vectors to perform the legend
 mapping:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">agriculture</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span></span>
 <span><span class="va">wildland</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span><span class="op">:</span><span class="fl">17</span>,<span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">rock</span> <span class="op">&lt;-</span> <span class="fl">18</span><span class="op">:</span><span class="fl">19</span></span>
@@ -292,7 +291,7 @@ mapping:</p>
 <span><span class="va">water</span> <span class="op">&lt;-</span> <span class="fl">36</span><span class="op">:</span><span class="fl">41</span></span></code></pre></div>
 <p>Having these inputs, we can use <code><a href="../../reference/add_topography.html">add_land_cover()</a></code> to add
 land cover to our starting <code>sf</code>:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_land_cover</a></span><span class="op">(</span><span class="va">y_0</span>, </span>
 <span>                      land_cover_map <span class="op">=</span> <span class="va">lcm</span>, </span>
 <span>                      wildland <span class="op">=</span> <span class="va">wildland</span>, </span>
@@ -321,7 +320,7 @@ land cover to our starting <code>sf</code>:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> (449998.3 4678189)    10      831.  27.3   101. wildland       </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2,563 more rows</span></span></span></code></pre>
 <p>As before, we can check for missing data:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_land_cover</a></span><span class="op">(</span><span class="va">y_1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values in land cover.</span></span></code></pre>
 <p>We can examine the land cover types in our target area using:</p>
@@ -354,7 +353,7 @@ to available data.</p>
 dominant tree or shrub species. We start by loading the <a href="https://www.miteco.gob.es/en/biodiversidad/temas/inventarios-nacionales/mapa-forestal-espana/mfe_25.html" class="external-link">Spanish
 Forest Map (1:25000)</a> for the Girona province, which is in vector
 format, using package <code>terra</code>:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Spain/MFE25/MFE_PROVINCES/MFE_17_class.gpkg"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">forest_map</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
@@ -376,7 +375,7 @@ will be illustrated in a different vignette). We also load an
 corresponding to the <a href="https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html" class="external-link">Fourth
 Spanish Forest Inventory</a> for Girona province (1455 forest
 plots):</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nfi_path</span> <span class="op">&lt;-</span> <span class="st">"/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"</span></span>
 <span><span class="va">sf_nfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">nfi_path</span>, <span class="st">"data/SpParamsES/IFN4/soilmod/IFN4_17_soilmod_WGS84.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sf_nfi</span></span></code></pre></div>
@@ -407,10 +406,10 @@ not to our target area.</p>
 <p>Having these two inputs (forest map and forest inventory data), we
 can use function <code><a href="../../reference/forest_parametrization.html">impute_forests()</a></code> to perform the imputation
 for us (this normally takes some time):</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/forest_parametrization.html">impute_forests</a></span><span class="op">(</span><span class="va">y_1</span>, sf_fi <span class="op">=</span> <span class="va">sf_nfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
 <span>                      forest_map <span class="op">=</span> <span class="va">forest_map</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> 12 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 165 target locations.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest imputed on 2018 out of 2161 target wildland locations (93.4%).</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest class was missing for 143 locations and forests were not imputed there.</span></span></code></pre>
@@ -424,7 +423,7 @@ details can be found in the documentation of
 <code><a href="../../reference/forest_parametrization.html">impute_forests()</a></code>.</p>
 <p>The resulting <code>sf</code> has an extra column named
 <code>forest</code>:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 2573 features and 6 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -448,7 +447,7 @@ details can be found in the documentation of
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: forest &lt;list&gt;</span></span></span></code></pre>
 <p>Only <code>wildland</code> locations will have a <code>forest</code>
 object, for example:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## $treeData</span></span>
 <span><span class="co">##                          Species        DBH   Height           N Z50 Z95</span></span>
@@ -487,7 +486,7 @@ object, for example:</p>
 <p>It is important to know whether the forest inputs are complete and
 suitable for simulations. This can be done using function
 <code><a href="../../reference/check_inputs.html">check_forests()</a></code>:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> Missing 'forest' data in 143 wildland locations (6.6%).</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -508,7 +507,7 @@ alternative is to provide more suitable data.</p>
 shrubland areas. To this aim, we use a vegetation map representing
 habitats of interest for the EU: <a href="https://agricultura.gencat.cat/ca/serveis/cartografia-sig/bases-cartografiques/habitats/habitats-catalunya/" class="external-link"><em>Hàbitats
 d’interès comunitari</em></a>:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">veg_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"ForestMaps/Catalunya/Habitats_v2/Habitats_interes_com.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">veg_map</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
@@ -530,7 +529,7 @@ d’interès comunitari</em></a>:</p>
 <p>In this case we use a database of 575 shrubland inventory plots in
 Catalonia described in <a href="https://doi.org/10.1186/s13595-023-01190-y" class="external-link">Casals et
 al. (2023)</a>:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sfi_path</span> <span class="op">&lt;-</span> <span class="st">"/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"</span></span>
 <span><span class="va">sf_sfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sfi_path</span>, <span class="st">"data/sf_combuscat.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sf_sfi</span></span></code></pre></div>
@@ -562,20 +561,20 @@ we will ask the function to make imputations in locations with missing
 vegetation class (<code>missing_class_imputation = TRUE</code>) and
 define a empty forest to be imputed in those
 (<code>missing_class_forest = emptyforest()</code>):</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/forest_parametrization.html">impute_forests</a></span><span class="op">(</span><span class="va">y_2</span>, sf_fi <span class="op">=</span> <span class="va">sf_sfi</span>, dem <span class="op">=</span> <span class="va">dem</span>, </span>
 <span>                      forest_map <span class="op">=</span> <span class="va">veg_map</span>, </span>
 <span>                      var_class <span class="op">=</span> <span class="st">"TEXT_HIC1"</span>,</span>
 <span>                      missing_class_imputation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                      missing_class_forest <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/emptyforest.html" class="external-link">emptyforest</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #BBBB00;">!</span> 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Forest imputed on 143 out of 143 target wildland locations (100%).</span></span></code></pre>
 <p>We call again function <code><a href="../../reference/check_inputs.html">check_forests()</a></code> to verify that
 there are no wildland cells without a <code>forest</code> object
 defined:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -597,7 +596,7 @@ some countries and regions. Here we will use <a href="https://www.icgc.cat/ca/Ge
 structural maps</a> derived from LiDAR flights in Catalonia (years
 2016-2017). First we will load a mean tree height raster at 20-m
 resolution:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">height_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">height_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
@@ -610,7 +609,7 @@ resolution:</p>
 <p>This resolution is a bit finer than the size of forest inventory
 plots. Hence, we aggregate the raster to the 40m resolution, while we
 crop to the target area:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">height_map_40</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">height_map</span>, <span class="va">r</span><span class="op">)</span>, </span>
 <span>                                  fact <span class="op">=</span> <span class="fl">2</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">height_map_40</span></span></code></pre></div>
@@ -624,7 +623,7 @@ crop to the target area:</p>
 <span><span class="co">## min value   :                                                3.965 </span></span>
 <span><span class="co">## max value   :                                               25.000</span></span></code></pre>
 <p>Mean tree height data has the following distribution:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">height_map_40</span><span class="op">)</span><span class="op">&lt;-</span> <span class="st">"height"</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">height</span><span class="op">)</span>, data<span class="op">=</span><span class="va">height_map_40</span><span class="op">)</span><span class="op">+</span></span>
@@ -636,7 +635,7 @@ crop to the target area:</p>
 correct mean tree height according to the LiDAR data (Note the
 correction of units: tree heights are in cm in
 <strong>medfate</strong>):</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">height_map_40_cm</span> <span class="op">&lt;-</span> <span class="va">height_map_40</span><span class="op">*</span><span class="fl">100</span></span>
 <span><span class="va">y_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/forest_parametrization.html">modify_forest_structure</a></span><span class="op">(</span><span class="va">y_3</span>, <span class="va">height_map_40_cm</span>, var <span class="op">=</span> <span class="st">"mean_tree_height"</span>,</span>
 <span>                               progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -644,7 +643,7 @@ correction of units: tree heights are in cm in
 function assumes that the diameter-height relationship needs to be
 preserved. If we inspect the same <code>forest</code> object again, we
 will be able to note changes in height and diameter values:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_4</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## $treeData</span></span>
 <span><span class="co">##                          Species        DBH    Height           N Z50 Z95</span></span>
@@ -683,7 +682,7 @@ will be able to note changes in height and diameter values:</p>
 <p>Additionally, one may have access to other maps of structural
 variables. In our case, we will use a raster of basal area, also derived
 from LiDAR flights:</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basal_area_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">basal_area_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
@@ -694,7 +693,7 @@ from LiDAR flights:</p>
 <span><span class="co">## source      : variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif </span></span>
 <span><span class="co">## name        : variables-biofisiques-arbrat-v1r0-ab-2016-2017</span></span></code></pre>
 <p>We perform the same aggregation done for heights:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basal_area_map_40</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">basal_area_map</span>, <span class="va">r</span><span class="op">)</span>, </span>
 <span>                                      fact <span class="op">=</span> <span class="fl">2</span>, fun <span class="op">=</span> <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">basal_area_map_40</span></span></code></pre></div>
@@ -708,7 +707,7 @@ from LiDAR flights:</p>
 <span><span class="co">## min value   :                                           3.48 </span></span>
 <span><span class="co">## max value   :                                          60.00</span></span></code></pre>
 <p>Basal area geographic distribution looks as follows:</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">basal_area_map_40</span><span class="op">)</span><span class="op">&lt;-</span> <span class="st">"basal_area"</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">basal_area</span><span class="op">)</span>, data<span class="op">=</span><span class="va">basal_area_map_40</span><span class="op">)</span><span class="op">+</span></span>
@@ -718,7 +717,7 @@ from LiDAR flights:</p>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-41-1.png" alt="Basal area map derived from LiDAR" width="576"></p>
 <p>We now use the same function to correct basal area values (no unit
 conversion is needed in this case):</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/forest_parametrization.html">modify_forest_structure</a></span><span class="op">(</span><span class="va">y_4</span>, <span class="va">basal_area_map_40</span>, var <span class="op">=</span> <span class="st">"basal_area"</span>,</span>
 <span>                               progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that basal area (or tree density) corrections should be done
@@ -726,7 +725,7 @@ after the height correction, because of the effect that height
 correction has on tree diameters. The correction of basal area operates
 on tree density values. As before, we can inspect changes in tree
 density:</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_5</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## $treeData</span></span>
 <span><span class="co">##                          Species        DBH    Height           N Z50 Z95</span></span>
@@ -764,28 +763,28 @@ density:</p>
 <span><span class="co">## [1] "forest" "list"</span></span></code></pre>
 <p>To finish this section, we will show the effect of imputation and
 correction on structural variables, compared with the LiDAR data.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_3</span>, <span class="st">"basal_area"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"m2/ha"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">70</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"a) Imputation"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_4</span>, <span class="st">"basal_area"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"m2/ha"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">70</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"b) Imputation + H correction"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_5</span>, <span class="st">"basal_area"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"m2/ha"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">70</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"c) Imputation + H/BA correction"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">basal_area_map_40</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_vect</span><span class="op">$</span><span class="va">basal_area</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">basal_area_map_40</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">$</span><span class="va">basal_area</span></span>
 <span><span class="va">r_ba</span><span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">x_vect</span>, <span class="va">r</span>, field <span class="op">=</span> <span class="st">"basal_area"</span><span class="op">)</span></span>
@@ -805,7 +804,7 @@ two corrections differs from the LiDAR basal area in locations that have
 not been corrected because of missing LiDAR values (or missing tree
 data). We can quantitatively assess the relationship between predicted
 basal area and the observed one using:</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ba_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">extract_variables</a></span><span class="op">(</span><span class="va">y_5</span>, <span class="st">"basal_area"</span><span class="op">)</span><span class="op">$</span><span class="va">basal_area</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="va">ba_5</span>, <span class="va">x_vect</span><span class="op">$</span><span class="va">basal_area</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -821,7 +820,7 @@ basal area and the observed one using:</p>
 <span><span class="co">## 0.8893536</span></span></code></pre>
 <p>We can also see the effect of the imputation and correction on mean
 tree height:</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_3</span>, <span class="st">"mean_tree_height"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"cm"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2600</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
@@ -829,7 +828,7 @@ tree height:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_4</span>, <span class="st">"mean_tree_height"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"cm"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2600</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
@@ -837,7 +836,7 @@ tree height:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_5</span>, <span class="st">"mean_tree_height"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_fill_continuous</a></span><span class="op">(</span><span class="st">"cm"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2600</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"viridis"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
@@ -845,7 +844,7 @@ tree height:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">height_map_40_cm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_vect</span><span class="op">$</span><span class="va">height</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">height_map_40_cm</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">$</span><span class="va">height</span></span>
 <span><span class="va">r_ba</span><span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">x_vect</span>, <span class="va">r</span>, field <span class="op">=</span> <span class="st">"height"</span><span class="op">)</span></span>
@@ -860,7 +859,7 @@ tree height:</p>
 <p>Here the basal area correction did not have any effect on mean tree
 height. The relationship between estimated and predicted mean tree
 height is:</p>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mth_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">extract_variables</a></span><span class="op">(</span><span class="va">y_5</span>, <span class="st">"mean_tree_height"</span><span class="op">)</span><span class="op">$</span><span class="va">mean_tree_height</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="va">mth_5</span>, <span class="va">x_vect</span><span class="op">$</span><span class="va">height</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -876,7 +875,7 @@ height is:</p>
 <span><span class="co">## 0.9148377</span></span></code></pre>
 <p>Finally, we check again that forests are well-defined, using function
 <code><a href="../../reference/check_inputs.html">check_forests()</a></code>:</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_5</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -902,11 +901,11 @@ and storing them in a particular format, so that function
 <code><a href="../../reference/soil_parametrization.html">add_soilgrids()</a></code> can read them (check the details of the
 function documentation). The extraction of SoilGrids data for our target
 cells is rather fast using this approach:</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soilgrids_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Soils/Global/SoilGrids/Spain/"</span><span class="op">)</span></span>
 <span><span class="va">y_6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y_5</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And the result has an extra column <code>soil</code>:</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_6</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 2573 features and 7 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -930,7 +929,7 @@ cells is rather fast using this approach:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: forest &lt;list&gt;, soil &lt;list&gt;</span></span></span></code></pre>
 <p>The elements of the list are the usual data frames of soil properties
 in <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_6</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   widths clay sand   om   bd  rfc nitrogen</span></span>
 <span><span class="co">## 1     50 21.5 38.4 8.69 1.12 18.0     5.16</span></span>
@@ -942,7 +941,7 @@ in <strong>medfate</strong>:</p>
 <p>During data retrieval, there might be some locations where SoilGrids
 2.0 data was missing. We can use function <code><a href="../../reference/check_inputs.html">check_soils()</a></code> to
 detect those cases and fill them with default values:</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_7</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/check_inputs.html">check_soils</a></span><span class="op">(</span><span class="va">y_6</span>, missing_action <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 81 null 'soil' elements out of 2492 wildland/agriculture locations (3.3%).</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland/agriculture locations with NULL values in column 'soil'.</span></span></code></pre>
@@ -962,7 +961,7 @@ information is available for soil depth, depth to the (unaltered)
 bedrock, or both. Soil depth maps are not common in many regions, so
 here we will resort on a global product at 250m-resolution by <a href="https://doi.org/10.1002/2016MS000686" class="external-link">Shangguan et al. (2017)</a>,
 which consists on three rasters:</p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Censored soil depth (cm)</span></span>
 <span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Probability of bedrock within first 2m [0-100]</span></span>
@@ -971,7 +970,7 @@ which consists on three rasters:</p>
 <span><span class="va">bdticm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>In order to accelerate raster manipulations, we crop the global
 rasters to the extent of the target area:</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">bdricm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_ext</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">x_vect</span><span class="op">)</span></span>
 <span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">bdricm</span>, <span class="va">x_ext</span>, snap <span class="op">=</span> <span class="st">"out"</span><span class="op">)</span></span>
@@ -982,15 +981,15 @@ have observed a fairly good correlation between soil depth values in
 Catalonia and the probability of finding the bedrock within the first
 two meters. Hence, we multiply the two layers and use it as a (crude)
 estimate of soil depth, expressing it in mm:</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soil_depth_mm</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">bdricm</span><span class="op">$</span><span class="va">BDRICM_M_250m_ll</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="va">bdrlog</span><span class="op">$</span><span class="va">BDRLOG_M_250m_ll</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>and we take the depth to bedrock as appropriate, but change its units
 to mm as well:</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">depth_to_bedrock_mm</span> <span class="op">&lt;-</span> <span class="va">bdticm</span><span class="op">*</span><span class="fl">10</span></span></code></pre></div>
 <p>We can now call function <code><a href="../../reference/soil_parametrization.html">modify_soils()</a></code> with the two
 rasters to perform the correction of soil characteristics:</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">modify_soils</a></span><span class="op">(</span><span class="va">y_7</span>, </span>
 <span>                    soil_depth_map <span class="op">=</span> <span class="va">soil_depth_mm</span>, </span>
 <span>                    depth_to_bedrock_map <span class="op">=</span> <span class="va">depth_to_bedrock_mm</span>,</span>
@@ -999,7 +998,7 @@ rasters to perform the correction of soil characteristics:</p>
 that only the soil depth map had an effect on the correction procedure.
 After the correction, the rock fragment content of the soil has changed
 substantially:</p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   widths clay sand   om   bd      rfc nitrogen</span></span>
 <span><span class="co">## 1     50 21.5 38.4 8.69 1.12 18.00000     5.16</span></span>
@@ -1011,7 +1010,7 @@ substantially:</p>
 <p>We can compare the effect of the correction on the soil water
 capacity (in mm) by inspecting the following plots (note the change in
 magnitude and spatial pattern):</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_7</span>, <span class="st">"soil_vol_extract"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_distiller</a></span><span class="op">(</span><span class="st">"mm"</span>, type <span class="op">=</span> <span class="st">"seq"</span>, palette <span class="op">=</span> <span class="st">"YlGnBu"</span>, direction <span class="op">=</span> <span class="fl">1</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
@@ -1026,7 +1025,7 @@ magnitude and spatial pattern):</p>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-60-1.png" alt="Extractable soil water volume before and after correcting SoilGrids data" width="672"></p>
 <p>Finally, we can call again <code><a href="../../reference/check_inputs.html">check_soils()</a></code> to verify that
 everything is fine:</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_soils</a></span><span class="op">(</span><span class="va">y_8</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 81 null 'soil' elements out of 2492 wildland/agriculture locations (3.3%).</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland/agriculture locations with NULL values in column 'soil'.</span></span></code></pre>
@@ -1052,7 +1051,7 @@ al. (2021)</a>. In our case we will use regional data from the Catalan
 administration (<a href="https://agricultura.gencat.cat/ca/ambits/desenvolupament-rural/sigpac/mapa-cultius/index.html" class="external-link">Mapa
 de cultius</a> from 2018). We start by reading the crop map and
 subsetting it to the target area:</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">file_crop_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Agriculture/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp"</span><span class="op">)</span></span>
 <span><span class="va">crop_map</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="va">file_crop_map</span>, options <span class="op">=</span> <span class="st">"ENCODING=UTF-8"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## options:        ENCODING=UTF-8 </span></span>
@@ -1064,10 +1063,10 @@ subsetting it to the target area:</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 264864.2 ymin: 4488884 xmax: 523857.3 ymax: 4733681</span></span>
 <span><span class="co">## Projected CRS: ETRS89 / UTM zone 31N</span></span></code></pre>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crop_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">crop_map</span><span class="op">[</span>,<span class="st">"Cultiu"</span><span class="op">]</span><span class="op">)</span>, <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p>Crops in the target watershed, occupy valley bottoms as expected:</p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">Cultiu</span><span class="op">)</span>, data<span class="op">=</span><span class="va">crop_map</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/ggspatvector.html" class="external-link">geom_spatvector</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, data <span class="op">=</span> <span class="va">watershed</span><span class="op">)</span><span class="op">+</span></span>
@@ -1075,14 +1074,14 @@ subsetting it to the target area:</p>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-65-1.png" alt="Crop distribution in the study area" width="576"></p>
 <p>To obtain our crop factors, we first extract the crop name
 corresponding to <em>agriculture</em> locations:</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel_agr</span> <span class="op">&lt;-</span> <span class="va">y_1</span><span class="op">$</span><span class="va">land_cover_type</span><span class="op">==</span><span class="st">"agriculture"</span></span>
 <span><span class="va">x_agr</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="va">sel_agr</span><span class="op">]</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">crop_map</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_agr_crop</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">crop_map</span>, </span>
 <span>                             <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">x_agr</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Some cells may have missing values, specially if the land cover map
 and the crop map are not consistent:</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">x_agr_crop</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -1090,11 +1089,11 @@ and the crop map are not consistent:</p>
 <span><span class="co">##   191   140</span></span></code></pre>
 <p>For simplicity we will assume the missing values correspond to
 Ray-grass, the most common crop in the area:</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">df_agr_crop</span><span class="op">$</span><span class="va">Cultiu</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"RAY-GRASS"</span></span></code></pre></div>
 <p>In order to transform crop names into crop factors, we need a look-up
 table, which we prepared for Catalonia</p>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crop_lookup_table</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Agriculture/Catalunya/Coefficients_cultius/Kc_CAT_MOD.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">crop_lookup_table</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
@@ -1108,7 +1107,7 @@ table, which we prepared for Catalonia</p>
 <span><span class="co">## <span style="color: #BCBCBC;">6</span> ALGARROBA HERBACIA NO SIEGA Algarroba herbacia no siega LLEGU… Mitjana … 0.36</span></span></code></pre>
 <p>We join the two tables by the crop name column and get the crop
 factor (column <code>Kc</code>):</p>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_agr_crop</span> <span class="op">&lt;-</span> <span class="va">df_agr_crop</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">crop_lookup_table</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cultiu"</span><span class="op">=</span><span class="st">"Cultiu_map"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y_8</span><span class="op">$</span><span class="va">crop_factor</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -1138,7 +1137,7 @@ porosity (as proportion of volume).</li>
 <p>As estimate of depth to bedrock, one can use the same variable from
 <a href="https://doi.org/10.1002/2016MS000686" class="external-link">Shangguan et
 al. (2017)</a>, that we already transformed to mm:</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">y_8</span><span class="op">)</span>, </span>
 <span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y_8</span><span class="op">$</span><span class="va">depth_to_bedrock</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">depth_to_bedrock_mm</span>, <span class="va">x_vect</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span></span></code></pre></div>
@@ -1148,7 +1147,7 @@ al. (2017)</a>, that we already transformed to mm:</p>
 conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0
 (<a href="https://doi.org/10.1002/2017GL075860" class="external-link">Huscroft et
 al. 2021</a>):</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">glhymps_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Geology/Global/GLHYMPS2/GLHYMPS_Spain.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">glhymps_map</span></span></code></pre></div>
 <pre><code><span><span class="co">##  class       : SpatVector </span></span>
@@ -1168,7 +1167,7 @@ al. 2021</a>):</p>
 <span><span class="co">##         0         NA    NA    NA              </span></span>
 <span><span class="co">##         0         NA    NA    NA</span></span></code></pre>
 <p>We first extract the GLHYMPS 2.0 data on the target locations:</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">y_8</span><span class="op">)</span>, </span>
 <span>                                       <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">glhymps_map</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_glhymps</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">glhymps_map</span>, <span class="va">x_vect</span><span class="op">)</span></span>
@@ -1196,15 +1195,15 @@ al. 2021</a>):</p>
 <span><span class="co">## 6     939134 1701770734          0     0      0    0   0</span></span></code></pre>
 <p>For porosity we simply divide the GLHYMPS 2.0 value by 100 to find
 the proportion:</p>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_porosity</span> <span class="op">&lt;-</span> <span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"Porosity_x"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span></span></code></pre></div>
 <p>Its geographic distribution is quite simple:</p>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_porosity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-78-1.png" alt="Bedrock porosity from GLHYMPS 2.0" width="576"></p>
 <p>GLHYMPS 2.0 provides permeability in the log scale, and the following
 operations are needed to obtain hydraulic conductivity in m/day:</p>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Permeability m2</span></span>
 <span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="op">(</span><span class="va">x_glhymps</span><span class="op">[</span>,<span class="st">"logK_Ferr_"</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="co"># Water density kg·m-3</span></span>
@@ -1219,10 +1218,10 @@ operations are needed to obtain hydraulic conductivity in m/day:</p>
 <span><span class="va">K_day</span> <span class="op">&lt;-</span> <span class="va">K</span><span class="op">*</span><span class="fl">3600</span><span class="op">*</span><span class="fl">24</span></span></code></pre></div>
 <p>Finally, we assign the conductivity values to the <code>sf</code>
 object:</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">bedrock_conductivity</span> <span class="op">&lt;-</span> <span class="va">K_day</span></span></code></pre></div>
 <p>Its geographic distribution is very simple, again:</p>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bedrock_conductivity"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-81-1.png" alt="Bedrock conductivity from GLHYMPS 2.0" width="576"></p>
 </div>
@@ -1235,20 +1234,20 @@ This is done by adding a logical column <code>channel</code> indicating
 cells that are part of the channel network. We start by loading the
 river network from Catalonia (source: <em>Agència Catalana de
 l’Aigua</em>):</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rivers</span> <span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Hydrography/Catalunya/HidrografiaACA/Rius/Rius_CARACT.shp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then, we rasterize it using the target area raster definition. We use
 the <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> function to distinguish river from other cells,
 independently of the river order:</p>
-<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rivers_rast</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">rivers</span>, <span class="va">r</span>, field <span class="op">=</span> <span class="st">"OBJECTID"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Once we have this raster, we perform the extraction to fill column
 <code>channel</code>:</p>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_8</span><span class="op">$</span><span class="va">channel</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">rivers_rast</span>, <span class="va">y_8</span>, ID <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">OBJECTID</span></span></code></pre></div>
 <p>Similarly to other variables, the river network can be visualized
 using:</p>
-<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"channel"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PreparingInputs_II_files/figure-html/unnamed-chunk-86-1.png" alt="River channel network" width="576"></p>
 </div>
@@ -1268,11 +1267,11 @@ scenarios</a>.</p>
 <p>At the end of the process of building spatial inputs, we should store
 the result as an RDS file, to be loaded at the time of performing
 simulations, e.g.</p>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="st">"bianya.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Since the data set corresponds to a watershed, we should also store
 the raster:</p>
-<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html" class="external-link">writeRaster</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"bianya_raster.tif"</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1281,7 +1280,7 @@ the raster:</p>
 </h2>
 <p>We can check whether the input data set is well formed by calling
 function <code><a href="../../reference/initialize_landscape.html">initialize_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y_8</span>, <span class="fu">traits4models</span><span class="fu">::</span><span class="va"><a href="https://emf-creaf.github.io/traits4models/reference/SpParamsES.html" class="external-link">SpParamsES</a></span>, <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                          progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>

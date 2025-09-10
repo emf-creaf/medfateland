@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Adriana Tovar / Víctor Granda</h4>
             
-            <h4 data-toc-skip class="date">2025-08-29</h4>
+            <h4 data-toc-skip class="date">2025-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_I.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_I.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_I.Rmd</code></div>
@@ -190,10 +190,8 @@ using package <code>terra</code>:</p>
 <code><a href="../../reference/add_topography.html">add_topography()</a></code> to add topographic features to our
 starting <code>sf</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y_1</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">y_1</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 3 features and 4 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
@@ -207,7 +205,7 @@ starting <code>sf</code>:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">3</span> POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3</span></span></code></pre>
 <p>We can check that there are no missing values in topographic
 features:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_topography</a></span><span class="op">(</span><span class="va">y_1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values in topography.</span></span></code></pre>
 </div>
@@ -221,7 +219,7 @@ In our case, we will define <code>forest</code> objects from tree
 records in Poblet. While at this point you would read your own data from
 a file or data base, here we simply load the data from
 <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">poblet_trees</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">poblet_trees</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Plot.Code Indv.Ref             Species Diameter.cm</span></span>
@@ -240,11 +238,11 @@ into names meaningful for <strong>medfate</strong>. For this, we can
 check function <code><a href="https://emf-creaf.github.io/medfate/reference/forest_mapWoodyTables.html" class="external-link">forest_mapTreeTable()</a></code> in the package.
 Furthermore, we need to map the forest stand identifier. If we exclude
 <code>Indv.Ref</code>, the other variables would be mapped using:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"Plot.Code"</span>, <span class="st">"Species.name"</span> <span class="op">=</span> <span class="st">"Species"</span>, <span class="st">"DBH"</span> <span class="op">=</span> <span class="st">"Diameter.cm"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we are ready to call function <code><a href="../../reference/add_forests.html">add_forests()</a></code>, which
 should facilitate the creation of forest objects:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_forests.html">add_forests</a></span><span class="op">(</span><span class="va">y_1</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, </span>
 <span>                   SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in forest_mapTreeTable(x = tree_id, mapping_x = tree_mapping, SpParams</span></span>
@@ -256,7 +254,7 @@ humilis</em> (downy oak) was not matched to any species name in
 <code>SpParamsMED</code> (that is the reason why we provided it as an
 input). We correct the scientific name for downy oak and repeat to avoid
 losing tree records:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Species</span><span class="op">==</span><span class="st">"Quercus humilis"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Quercus pubescens"</span></span>
 <span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_forests.html">add_forests</a></span><span class="op">(</span><span class="va">y_1</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, </span>
 <span>                   SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span>
@@ -274,7 +272,7 @@ losing tree records:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">3</span> POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <span style="color: #949494;">&lt;forest [5]&gt;</span></span></span></code></pre>
 <p>The function has added a column <code>forest</code> with the tree
 data. We can check the metrics of the first forest stand using:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Tree BA (m2/ha): 3.0179815  adult trees: 3.0179815  saplings: 0 </span></span>
 <span><span class="co">## Density (ind/ha) adult trees: 267  saplings: 0  shrubs (estimated): 0 </span></span>
@@ -289,16 +287,16 @@ each record (row in the input data frame) will count as a tree, but we
 can add the sampled plot surface to correct density per hectare. In a
 15-m radius plot, the sampled surface is 706.86 m2. We add this
 information in the data table:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">PlotSurface</span> <span class="op">&lt;-</span> <span class="fl">706.86</span></span></code></pre></div>
 <p>and we can repeat the read of forest inventory data after adding a
 new element to the mapping vector:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mapping</span>, <span class="st">"plot.size"</span> <span class="op">=</span> <span class="st">"PlotSurface"</span><span class="op">)</span></span>
 <span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_forests.html">add_forests</a></span><span class="op">(</span><span class="va">y_1</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></code></pre></div>
 <p>If we check the forest again, we will see the change in density and
 basal area:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">$</span><span class="va">forest</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">SpParamsMED</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 </span></span>
 <span><span class="co">## Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 </span></span>
@@ -308,7 +306,7 @@ basal area:</p>
 <span><span class="co">## PAR ground (%): NA  SWR ground (%): NA</span></span></code></pre>
 <p>At this point, we may wonder whether we are finished. Function
 <code><a href="../../reference/check_inputs.html">check_forests()</a></code> can help detecting missing data:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -318,16 +316,16 @@ required for simulations using <strong>medfate</strong>, we need to
 estimate them. While being overly simplistic, here we use one allometric
 equation for all species to estimate tree height in cm from
 diameter:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Height.cm</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">1.806</span><span class="op">*</span><span class="va">poblet_trees</span><span class="op">$</span><span class="va">Diameter.cm</span><span class="op">^</span><span class="fl">0.518</span></span></code></pre></div>
 <p>Now we modify the mapping to include height and repeat the reading
 operation:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mapping</span>, <span class="st">"Height"</span> <span class="op">=</span> <span class="st">"Height.cm"</span><span class="op">)</span></span>
 <span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_forests.html">add_forests</a></span><span class="op">(</span><span class="va">y_1</span>, tree_table <span class="op">=</span> <span class="va">poblet_trees</span>, tree_mapping <span class="op">=</span> <span class="va">mapping</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span><span class="op">)</span></span></code></pre></div>
 <p>If we check the forest data again, we should encounter no more
 issues:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -352,11 +350,11 @@ and storing them in a particular format, so that function
 <code><a href="../../reference/soil_parametrization.html">add_soilgrids()</a></code> can read them (check the details of the
 function documentation). The extraction of SoilGrids data for our target
 locations is fast using this approach:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soilgrids_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Soils/Global/SoilGrids/Spain/"</span><span class="op">)</span></span>
 <span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y_2</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>And the result has an extra column <code>soil</code>:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_3</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 3 features and 6 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -371,7 +369,7 @@ locations is fast using this approach:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">3</span> POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <span style="color: #949494;">&lt;forest [5]&gt;</span> <span style="color: #949494;">&lt;df [6 × 7]&gt;</span></span></span></code></pre>
 <p>The elements of the list are the usual data frames of soil properties
 in <strong>medfate</strong>:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_3</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   widths clay sand   om   bd  rfc nitrogen</span></span>
 <span><span class="co">## 1     50 25.3 32.1 7.24 1.05 16.8     5.07</span></span>
@@ -382,7 +380,7 @@ in <strong>medfate</strong>:</p>
 <span><span class="co">## 6   1000 32.0 30.2 0.62 1.50 21.5     0.44</span></span></code></pre>
 <p>We can use function <code><a href="../../reference/check_inputs.html">check_soils()</a></code> to detect whether
 there are missing values:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_soils</a></span><span class="op">(</span><span class="va">y_3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland/agriculture locations with NULL values in column 'soil'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values detected in key soil attributes.</span></span></code></pre>
@@ -398,7 +396,7 @@ information is available for soil depth, depth to the (unaltered)
 bedrock, or both. Soil depth maps are not common in many regions, so
 here we will resort on a global product at 250m-resolution by <a href="https://doi.org/10.1002/2016MS000686" class="external-link">Shangguan et al. (2017)</a>,
 which consists on three rasters:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Censored soil depth (cm)</span></span>
 <span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Probability of bedrock within first 2m [0-100]</span></span>
@@ -407,7 +405,7 @@ which consists on three rasters:</p>
 <span><span class="va">bdticm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>, <span class="st">"Soils/Global/SoilDepth_Shangguan2017/BDTICM_M_250m_ll.tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>In order to accelerate raster manipulations, we crop the global
 rasters to the extent of the target area:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">bdricm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_ext</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">x_vect</span><span class="op">)</span></span>
 <span><span class="va">bdricm</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">bdricm</span>, <span class="va">x_ext</span>, snap <span class="op">=</span> <span class="st">"out"</span><span class="op">)</span></span>
@@ -418,15 +416,15 @@ have observed a fairly good correlation between soil depth values in
 Catalonia and the probability of finding the bedrock within the first
 two meters. Hence, we multiply the two layers and use it as a (crude)
 estimate of soil depth, expressing it in mm:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soil_depth_mm</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">bdricm</span><span class="op">$</span><span class="va">BDRICM_M_250m_ll</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="va">bdrlog</span><span class="op">$</span><span class="va">BDRLOG_M_250m_ll</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>and we take the depth to bedrock as appropriate, but change its units
 to mm as well:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">depth_to_bedrock_mm</span> <span class="op">&lt;-</span> <span class="va">bdticm</span><span class="op">*</span><span class="fl">10</span></span></code></pre></div>
 <p>We can now call function <code><a href="../../reference/soil_parametrization.html">modify_soils()</a></code> with the two
 rasters to perform the correction of soil characteristics:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">modify_soils</a></span><span class="op">(</span><span class="va">y_3</span>, </span>
 <span>                    soil_depth_map <span class="op">=</span> <span class="va">soil_depth_mm</span>, </span>
 <span>                    depth_to_bedrock_map <span class="op">=</span> <span class="va">depth_to_bedrock_mm</span>,</span>
@@ -435,7 +433,7 @@ rasters to perform the correction of soil characteristics:</p>
 that only the soil depth map had an effect on the correction procedure.
 After the correction, the rock fragment content of the soil has changed
 substantially:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_4</span><span class="op">$</span><span class="va">soil</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   widths clay sand   om   bd      rfc nitrogen</span></span>
 <span><span class="co">## 1     50 25.3 32.1 7.24 1.05 16.80000     5.07</span></span>
@@ -446,7 +444,7 @@ substantially:</p>
 <span><span class="co">## 6   1000 32.0 30.2 0.62 1.50 92.56329     0.44</span></span></code></pre>
 <p>Finally, we can call again <code><a href="../../reference/check_inputs.html">check_soils()</a></code> to verify that
 everything is fine:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_soils</a></span><span class="op">(</span><span class="va">y_4</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland/agriculture locations with NULL values in column 'soil'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values detected in key soil attributes.</span></span></code></pre>
@@ -457,10 +455,10 @@ everything is fine:</p>
 </h3>
 <p>We can check whether the input data set is well formed by calling
 function <code><a href="../../reference/initialize_landscape.html">initialize_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">y_4</span>, <span class="va">SpParamsMED</span>, <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                          progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 3 features and 7 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -492,7 +490,7 @@ general procedure is simplified, as shown below:</p>
 <p>To illustrate this procedure, we first load an example data set given
 in the <strong>forestables</strong> package for the Spanish national
 forest inventory:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ifn_output_example"</span><span class="op">)</span></span>
 <span><span class="va">ifn_output_example</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8,997 × 24</span></span></span>
@@ -515,13 +513,13 @@ forest inventory:</p>
 <span><span class="co">## <span style="color: #949494;">#   type &lt;int&gt;, tree &lt;list&gt;, understory &lt;list&gt;, regen &lt;list&gt;</span></span></span></code></pre>
 <p>The dataset contains data from different forest inventory
 surveys:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">ifn_output_example</span><span class="op">$</span><span class="va">version</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## ifn2 ifn3 ifn4 </span></span>
 <span><span class="co">## 3542 3769 1686</span></span></code></pre>
 <p>Here we will use only data from the last survey (IFN4):</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ifn4_example</span> <span class="op">&lt;-</span> <span class="va">ifn_output_example</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">version</span> <span class="op">==</span> <span class="st">"ifn4"</span><span class="op">)</span></span>
 <span><span class="va">ifn4_example</span></span></code></pre></div>
@@ -551,7 +549,7 @@ surveys:</p>
 (or sf) issued from package <strong>forestables</strong> and reshaping
 it for <strong>medfateland</strong>. In this example we will only
 transform the first 100 rows:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/parse_forestable.html">parse_forestable</a></span><span class="op">(</span><span class="va">ifn4_example</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">y_1</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 100 features and 9 fields</span></span>
@@ -579,7 +577,7 @@ coordinates, and topography. Importantly, it defined a new column called
 <code>forest</code> and parsed tree and shrub data into it.</p>
 <p>If we check the forest data, we may encounter issues to be
 solved:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_forests</a></span><span class="op">(</span><span class="va">y_1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland locations with NULL values in column 'forest'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> All objects in column 'forest' have the right class.</span></span></code></pre>
@@ -595,25 +593,24 @@ repeated here for completeness.</p>
 a lot of missing values. It is normally preferrable to extract
 topographic features from a digital elevation model (although the error
 in plot coordinates adds uncertainty into the result):</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">y_1</span>, dem <span class="op">=</span> <span class="va">dem</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <p><strong>Soil data</strong></p>
 <p>Soil data is not normally sampled in national forest inventory data,
 or it is difficult to harmonize. Therefore, we will normally resort on
 SoilGrids as before:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">add_soilgrids</a></span><span class="op">(</span><span class="va">y_2</span>, soilgrids_path <span class="op">=</span> <span class="va">soilgrids_path</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>We can now call function <code><a href="../../reference/soil_parametrization.html">modify_soils()</a></code> with the two
 rasters to perform the correction of soil characteristics:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/soil_parametrization.html">modify_soils</a></span><span class="op">(</span><span class="va">y_3</span>, </span>
 <span>                    soil_depth_map <span class="op">=</span> <span class="va">soil_depth_mm</span>, </span>
 <span>                    depth_to_bedrock_map <span class="op">=</span> <span class="va">depth_to_bedrock_mm</span>,</span>
 <span>                    progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can call <code><a href="../../reference/check_inputs.html">check_soils()</a></code> to verify that
 everything is fine:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_inputs.html">check_soils</a></span><span class="op">(</span><span class="va">y_4</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No wildland/agriculture locations with NULL values in column 'soil'.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No missing values detected in key soil attributes.</span></span></code></pre>

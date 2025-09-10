@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@
 <li><p><code>R_baseflow [= 5.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
 <li><p><code>n_interflow [= 1.0]</code>: Exponent for the determination of interflow.</p></li>
 <li><p><code>n_baseflow [= 1.0]</code>: Exponent for the determination of baseflow.</p></li>
-<li><p><code>num_daily_substeps [= 4]</code>: Number of daily sub-steps for interflow calculations.</p></li>
+<li><p><code>free_drainage_enforced [= TRUE]</code>: A boolean flag to prevent water table effects into local soil water balance.</p></li>
+<li><p><code>num_daily_substeps [= 1]</code>: Number of daily sub-steps for interflow and baseflow calculations.</p></li>
 <li><p><code>subwatersheds [= FALSE]</code>: A boolean flag to define watershed subunits.</p></li>
 <li><p><code>max_overlap [= 0.2]</code>: Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.</p></li>
 <li><p><code>rock_max_infiltration [= 10]</code>: Maximum infiltration rate (mm·day-1) for rock cells.</p></li>
@@ -121,8 +122,11 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$n_baseflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$free_drainage_enforced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$num_daily_substeps</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$subwatersheds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>

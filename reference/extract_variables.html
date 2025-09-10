@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@
 
 
 <dt id="arg-spparams">SpParams<a class="anchor" aria-label="anchor" href="#arg-spparams"></a></dt>
-<dd><p>A data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>), required for most forest stand variables.</p></dd>
+<dd><p>An optional data frame with species parameters (see <code><a href="https://emf-creaf.github.io/medfate/reference/SpParams.html" class="external-link">SpParamsMED</a></code>), required for some forest stand variables.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -83,7 +83,7 @@
 
 
 <dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
-<dd><p>An object of class <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">SpatRaster</a></code>, defining the raster topology.</p></dd>
+<dd><p>An optional object of class <code><a href="https://rspatial.github.io/terra/reference/SpatRaster-class.html" class="external-link">SpatRaster</a></code>, defining the raster topology. If supplied, values are shown as raster pixels. Otherwise, points are drawn.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -98,7 +98,8 @@ Function <code>plot_variables()</code> returns a ggplot object.</p>
 <li><p><code>"slope"</code>: Slope in degrees.</p></li>
 <li><p><code>"aspect"</code>: Slope in degrees.</p></li>
 <li><p><code>"land_cover_type"</code>: Land cover type.</p></li>
-</ul><p><em>Soil</em>:</p><ul><li><p><code>"soil_vol_extract"</code>: Total water extractable volume (mm).</p></li>
+</ul><p><em>Snowpack and soil</em>:</p><ul><li><p><code>"snowpack"</code>: Snowpack water equivalent (mm). Requires 'snowpack' to be defined in <code>x</code>.</p></li>
+<li><p><code>"soil_vol_extract"</code>: Total water extractable volume (mm).</p></li>
 <li><p><code>"soil_vol_sat"</code>: Total water volume at saturation (mm).</p></li>
 <li><p><code>"soil_vol_fc"</code>: Total water volume at field capacity (mm).</p></li>
 <li><p><code>"soil_vol_wp"</code>: Total water volume at wilting point (mm).</p></li>
@@ -107,13 +108,13 @@ Function <code>plot_variables()</code> returns a ggplot object.</p>
 <li><p><code>"soil_rew_curr"</code>: Current soil relative extractable water (%).</p></li>
 <li><p><code>"soil_theta_curr"</code>: Current soil moisture content (% vol.)</p></li>
 <li><p><code>"soil_psi_curr"</code>: Current soil water potential (MPa).</p></li>
-</ul><p><em>Watershed</em>:</p><ul><li><p><code>"depth_to_bedrock"</code>: Depth to bedrock (m).</p></li>
+</ul><p><em>Hydrogeology</em>:</p><ul><li><p><code>"depth_to_bedrock"</code>: Depth to bedrock (m).</p></li>
 <li><p><code>"bedrock_porosity"</code>: Bedrock porosity.</p></li>
 <li><p><code>"bedrock_conductivity"</code>: Bedrock conductivity (m/day).</p></li>
-<li><p><code>"aquifer_elevation"</code>: Aquifer elevation over bedrock (m).</p></li>
+<li><p><code>"channel"</code>: River channel network. Requires 'channel' to be defined in <code>x</code>.</p></li>
+</ul><p><em>Aquifer</em> (requires 'aquifer' to be defined in <code>x</code>):</p><ul><li><p><code>"aquifer_elevation"</code>: Aquifer elevation over bedrock (m).</p></li>
 <li><p><code>"depth_to_aquifer"</code>: Depth to aquifer (m).</p></li>
 <li><p><code>"aquifer"</code>: Aquifer volume (mm).</p></li>
-<li><p><code>"snowpack"</code>: Snowpack water equivalent (mm).</p></li>
 </ul><p><em>Forest stand</em>:</p><ul><li><p><code>"basal_area"</code>: Basal area (m2/ha).</p></li>
 <li><p><code>"tree_density"</code>: Tree density (ind/ha).</p></li>
 <li><p><code>"mean_tree_height"</code>: Mean tree height (cm).</p></li>
@@ -121,10 +122,10 @@ Function <code>plot_variables()</code> returns a ggplot object.</p>
 <li><p><code>"dominant_tree_diameter"</code>: Dominant tree diameter (cm).</p></li>
 <li><p><code>"quadratic_mean_tree_diameter"</code>: Quadratic mean tree diameter (cm).</p></li>
 <li><p><code>"hart_becking_index"</code>: Hart-Becking index.</p></li>
-<li><p><code>"leaf_area_index"</code>: Leaf area index (m2/m2).</p></li>
-<li><p><code>"foliar_biomass"</code>: Foliar biomass (kg/m2).</p></li>
-<li><p><code>"fuel_loading"</code>: Fine live fuel loading (kg/m2).</p></li>
-<li><p><code>"shrub_volume"</code>: Shrub volume (m3/m2).</p></li>
+<li><p><code>"leaf_area_index"</code>: Leaf area index (m2/m2). Requires <code>SpParams</code> to be supplied.</p></li>
+<li><p><code>"foliar_biomass"</code>: Foliar biomass (kg/m2). Requires <code>SpParams</code> to be supplied.</p></li>
+<li><p><code>"fuel_loading"</code>: Fine live fuel loading (kg/m2). Requires <code>SpParams</code> to be supplied.</p></li>
+<li><p><code>"shrub_volume"</code>: Shrub volume (m3/m2). Requires <code>SpParams</code> to be supplied.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
