@@ -36,6 +36,7 @@ const int WBCOM_BaseflowBalance = 25;
 const int WBCOM_ChannelExport = 26;
 const int WBCOM_WatershedExport = 27;
 const int WBCOM_Interception = 28;
+const int WBCOM_NegativeAquiferCorrection = 29;
 
 const int STCOM_LAI = 0;
 const int STCOM_LAIherb = 1;
@@ -167,7 +168,7 @@ void copyStateFromResults(List y, List localResults) {
 List createDayOutput(int nX, 
                      bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
 
-  int ncol = 29;
+  int ncol = 30;
   List out(ncol);
   CharacterVector colnames(ncol);
   for(int i = 0; i<ncol; i++) out[i] = NumericVector(nX, 0.0);
@@ -200,7 +201,8 @@ List createDayOutput(int nX,
   colnames[WBCOM_BaseflowBalance] = "BaseflowBalance";
   colnames[WBCOM_ChannelExport] = "ChannelExport";
   colnames[WBCOM_WatershedExport] = "WatershedExport";
-
+  colnames[WBCOM_NegativeAquiferCorrection] = "NegativeAquiferCorrection";
+  
   out.attr("names") = colnames;
 
   DataFrame waterBalance(out);

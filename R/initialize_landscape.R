@@ -192,7 +192,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
       cli::cli_li(paste0("Transpiration mode [Granier: ", sum(transp_mode=="Granier", na.rm=TRUE), 
                          ", Sperry: ", sum(transp_mode=="Sperry", na.rm=TRUE), 
                          ", Sureau: " , sum(transp_mode=="Sureau", na.rm=TRUE),"]"))
-      cli::cli_li(paste0("Soil doimains [buckets: ", sum(soil_domains=="buckets", na.rm=TRUE), 
+      cli::cli_li(paste0("Soil domains [buckets: ", sum(soil_domains=="buckets", na.rm=TRUE), 
                          ", single: ", sum(soil_domains=="single", na.rm=TRUE), 
                          ", dual: " , sum(soil_domains=="dual", na.rm=TRUE),"]"))
     }

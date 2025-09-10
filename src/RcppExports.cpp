@@ -326,8 +326,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisBaseFlow
-void tetisBaseFlow(DataFrame outWB, List y, IntegerVector waterOrder, List queenNeigh, List waterQ, List watershed_control, double patchsize);
-RcppExport SEXP _medfateland_tetisBaseFlow(SEXP outWBSEXP, SEXP ySEXP, SEXP waterOrderSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
+void tetisBaseFlow(DataFrame outWB, List y, IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isChannel, LogicalVector isOutlet, List watershed_control, double patchsize);
+RcppExport SEXP _medfateland_tetisBaseFlow(SEXP outWBSEXP, SEXP ySEXP, SEXP waterOrderSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
@@ -335,22 +335,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type waterOrder(waterOrderSEXP);
     Rcpp::traits::input_parameter< List >::type queenNeigh(queenNeighSEXP);
     Rcpp::traits::input_parameter< List >::type waterQ(waterQSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type isOutlet(isOutletSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    tetisBaseFlow(outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize);
+    tetisBaseFlow(outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize);
     return R_NilValue;
 END_RCPP
 }
 // tetisApplyLocalFlowsToAquifer
-void tetisApplyLocalFlowsToAquifer(List y, DataFrame outWB, LogicalVector isChannel, LogicalVector isOutlet);
-RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP outWBSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP) {
+void tetisApplyLocalFlowsToAquifer(List y, DataFrame outWB);
+RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP outWBSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
-    Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
-    Rcpp::traits::input_parameter< LogicalVector >::type isOutlet(isOutletSEXP);
-    tetisApplyLocalFlowsToAquifer(y, outWB, isChannel, isOutlet);
+    tetisApplyLocalFlowsToAquifer(y, outWB);
     return R_NilValue;
 END_RCPP
 }
@@ -436,8 +436,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 7},
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
-    {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 7},
-    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 4},
+    {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 9},
+    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 2},
     {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 3},
     {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 15},
     {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 11},

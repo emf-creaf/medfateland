@@ -35,6 +35,7 @@ const int WBCOM_BaseflowBalance = 25;
 const int WBCOM_ChannelExport = 26;
 const int WBCOM_WatershedExport = 27;
 const int WBCOM_Interception = 28;
+const int WBCOM_NegativeAquiferCorrection = 29;
 
 const int STCOM_LAI = 0;
 const int STCOM_LAIherb = 1;

@@ -15,7 +15,7 @@
 \arguments{
 \item{x}{An object of class \code{spwb_land}, \code{growth_land} or \code{fordyn_land}.}
 
-\item{type}{The information to be plotted (see details)}
+\item{type}{The information to be plotted (see details).}
 
 \item{dates}{A Date vector with a subset of dates to be plotted.}
 
@@ -35,6 +35,8 @@ The following plots are currently available:
 \item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
 \item{\code{"Export"}: Water exported through different fluxes.}
+\item{\code{"Overland_Runoff"}: Origin of overland runoff flows (i.e. saturation excess or infiltration excess).}
+\item{\code{"Soil_Aquifer"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
 \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
 }
 }

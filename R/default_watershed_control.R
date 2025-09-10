@@ -10,11 +10,12 @@
 #'    \item{\code{tetis_parameters}: A list of TETIS parameters with the following elements: 
 #'      \itemize{
 #'        \item{\code{R_localflow [= 1.0]}: Correction factor for soil hydraulic saturated conductivity (local vertical flows).}
+#'        \item{\code{interflow [= TRUE]}: A boolean flag to include interflow.}
 #'        \item{\code{R_interflow [= 50.0]}: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).}
-#'        \item{\code{R_baseflow [= 5.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 #'        \item{\code{n_interflow [= 1.0]}: Exponent for the determination of interflow.}
+#'        \item{\code{baseflow [= TRUE]}: A boolean flag to include baseflow.}
+#'        \item{\code{R_baseflow [= 5.0]}: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).}
 #'        \item{\code{n_baseflow [= 1.0]}: Exponent for the determination of baseflow.}
-#'        \item{\code{free_drainage_enforced [= TRUE]}: A boolean flag to prevent water table effects into local soil water balance.}
 #'        \item{\code{num_daily_substeps [= 1]}: Number of daily sub-steps for interflow and baseflow calculations.}
 #'        \item{\code{subwatersheds [= FALSE]}: A boolean flag to define watershed subunits.}
 #'        \item{\code{max_overlap [= 0.2]}: Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.}
@@ -44,11 +45,12 @@ default_watershed_control<-function(watershed_model = "tetis") {
   weather_aggregation_factor <- 1
   tetis_parameters<-list(
     R_localflow = 1.0,
+    interflow = TRUE,
     R_interflow = 50.0,
-    R_baseflow = 5.0,
     n_interflow = 1.0,
+    baseflow = TRUE,
+    R_baseflow = 5.0,
     n_baseflow = 1.0,
-    free_drainage_enforced  = TRUE,
     num_daily_substeps = 1,
     subwatersheds = FALSE,
     max_overlap = 0.2,

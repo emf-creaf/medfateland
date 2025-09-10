@@ -37,32 +37,32 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-12-31"), by="day")
 ws_control <- default_watershed_control("tetis")
 example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                     local_control = defaultControl(soilDomains = "dual"),
+                                     local_control = defaultControl(soilDomains = "single"),
                                      reduce_to_dominant = TRUE)
 # first year
 res1 <- spwb_land(r, example_init, SpParamsMED, examplemeteo, 
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
+plot(res1, "Export")
+plot(res1, "Aquifer")
+summary(res1$sf$aquifer)
 example_watershed_burnin <- update_landscape(example_init, res1)
-plot(res1$watershed_balance$WatershedExport, type="l")
 # second year
 res2 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
+plot(res2, "Export")
+plot(res2, "Aquifer")
+sum(res2$sf$aquifer)
 example_watershed_burnin <- update_landscape(example_watershed_burnin, res2)
-plot(res2$watershed_balance$WatershedExport, type="l")
 # third year
 res3 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
                   dates = dates, summary_frequency = "month",
                   watershed_control = ws_control)
+plot(res3, "Export")
+plot(res3, "Aquifer")
+sum(res3$sf$aquifer)
 example_watershed_burnin <- update_landscape(example_watershed_burnin, res3)
-plot(res3$watershed_balance$WatershedExport, type="l")
-# fourth year
-res4 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
-                  dates = dates, summary_frequency = "month",
-                  watershed_control = ws_control)
-example_watershed_burnin <- update_landscape(example_watershed_burnin, res4)
-plot(res4$watershed_balance$WatershedExport, type="l")
 
 
 #Example sf from IFN3 (original coordinates)

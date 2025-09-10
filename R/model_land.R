@@ -272,17 +272,14 @@
   # Reset from previous days
   .resetWaterBalanceDayOutput(output[["WatershedWaterBalance"]])
   
-  # A. Landscape interflow and baseflow
-  .tetisInterFlow(output[["WatershedWaterBalance"]], 
-                  y,
-                  waterOrder, queenNeigh, waterQ,
-                  watershed_control,
-                  patchsize)
-  .tetisBaseFlow(output[["WatershedWaterBalance"]],
-                 y,
-                 waterOrder, queenNeigh, waterQ,
-                 watershed_control,
-                 patchsize)
+  # A. Landscape interflow
+  if(watershed_control$tetis_parameters$interflow) {
+    .tetisInterFlow(output[["WatershedWaterBalance"]], 
+                    y,
+                    waterOrder, queenNeigh, waterQ,
+                    watershed_control,
+                    patchsize)
+  }
 
   
   # B. Simulation of soil cells, non-soil cells and overland flows
@@ -300,11 +297,15 @@
   .tetisModifyKsat(y, watershed_control, reverse = TRUE)
   
   #C. Applies capillarity rise, deep drainage to aquifer
-  .tetisApplyLocalFlowsToAquifer(y,
-                                 output[["WatershedWaterBalance"]],
-                                 isChannel,
-                                 isOutlet)
-
+  if(watershed_control$tetis_parameters$baseflow) {
+    .tetisBaseFlow(output[["WatershedWaterBalance"]],
+                   y,
+                   waterOrder, queenNeigh, waterQ,
+                   isChannel, isOutlet,
+                   watershed_control,
+                   patchsize)
+  }
+  
   #D. Applies drainage from aquifer to a deeper aquifer
   .tetisApplyDeepAquiferLossToAquifer(output[["WatershedWaterBalance"]], 
                                       y, watershed_control)
@@ -587,7 +588,8 @@
                                    BaseflowBalance = rep(0, nDays),
                                    AquiferExfiltration = rep(0, nDays),
                                    ChannelExport = rep(0, nDays),
-                                   WatershedExport = rep(0, nDays))
+                                   WatershedExport = rep(0, nDays),
+                                   NegativeAquiferCorrection = rep(0, nDays)) 
     SoilLandscapeBalance <- data.frame(dates = dates,
                                        PET = rep(0, nDays),
                                        Precipitation = rep(0, nDays),
@@ -845,6 +847,7 @@
       LandscapeBalance$BaseflowBalance[day] <- sum(res_wb_day$BaseflowBalance, na.rm=T)/nCells
       LandscapeBalance$ChannelExport[day] <- sum(res_wb_day$ChannelExport, na.rm=T)/nCells
       LandscapeBalance$WatershedExport[day] <- sum(res_wb_day$WatershedExport, na.rm=T)/nCells
+      LandscapeBalance$NegativeAquiferCorrection[day] <- sum(res_wb_day$NegativeAquiferCorrection, na.rm=T)/nCells
       
       if(nSoil>0) {
         SoilLandscapeBalance$PET[day] <- sum(res_wb_day$PET[isSoilCell], na.rm=T)/nCells
@@ -910,6 +913,7 @@
     AquiferExfiltrationsum <- sum(LandscapeBalance$AquiferExfiltration , na.rm=T)
     InterflowBalancesum <- sum(LandscapeBalance$InterflowBalance , na.rm=T)
     BaseflowBalancesum <- sum(LandscapeBalance$BaseflowBalance , na.rm=T)
+    NegativeAquiferCorrectionsum <- sum(LandscapeBalance$NegativeAquiferCorrection , na.rm=T)
     snowpack_wb <- Snowsum - Snowmeltsum
     if(header_footer) {
       cli::cli_li(paste0("Snowpack balance",
@@ -939,7 +943,7 @@
                          " fluxes (mm): ",round(soil_wb,2)))
     }
     
-    aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum - DeepAquiferLosssum
+    aquifer_wb <- DeepDrainagesum - AquiferExfiltrationsum - CapillarityRisesum - DeepAquiferLosssum + NegativeAquiferCorrectionsum
     if(header_footer){
       cli::cli_li(paste0("Aquifer balance",
                          " content (mm): ", round(finalAquiferContent - initialAquiferContent,2),
@@ -948,11 +952,12 @@
                          " Drainage input: ", round(DeepDrainagesum,2),
                          " Exfiltration: ",round(AquiferExfiltrationsum,2),
                          " Capillary rise: ",round(CapillarityRisesum,2),
+                         " Negative aquifer correction: ",round(NegativeAquiferCorrectionsum,2),
                          " Deep loss: ",round(DeepAquiferLosssum,2)))
     }
     
     landscape_etp <- SoilEvaporationsum + Transpirationsum + HerbTranspirationsum + Interceptionsum
-    landscape_wb <- Precipitationsum - ChannelExportsum - WatershedExportsum - landscape_etp - DeepAquiferLosssum
+    landscape_wb <- Precipitationsum - ChannelExportsum - WatershedExportsum - landscape_etp - DeepAquiferLosssum + NegativeAquiferCorrectionsum
     if(header_footer) {
       cli::cli_li(paste0("Watershed balance",
                          " content (mm): ", round(finalLandscapeContent - initialLandscapeContent,2),
@@ -961,6 +966,7 @@
                          " Precipitation: ", round(Precipitationsum,2),
                          " Surface export: ",round(ChannelExportsum + WatershedExportsum,2),
                          " Evapotransp.: ",round(landscape_etp,2),
+                         " Negative aquifer correction: ",round(NegativeAquiferCorrectionsum,2),
                          " Deep loss: ",round(DeepAquiferLosssum,2)))
     }
   }
@@ -2343,6 +2349,7 @@ summary.spwb_land<-function(object, ...){
   WatershedExportsum <- sum(wb$WatershedExport, na.rm=T)
   InterflowBalancesum <- sum(wb$InterflowBalance , na.rm=T)
   BaseflowBalancesum <- sum(wb$BaseflowBalance , na.rm=T)
+  NegativeAquiferCorrectionsum <- sum(wb$NegativeAquiferCorrection , na.rm=T)
   
   SoilPrecipitationsum <- sum(sb$Precipitation, na.rm=T)
   SoilRainfallsum <- sum(sb$Rain, na.rm=T)
@@ -2373,6 +2380,7 @@ summary.spwb_land<-function(object, ...){
   cat(paste0("  Aquifer water balance components:\n"))
   cat(paste0("    Deep drainage (mm) ", round(DeepDrainagesum,2), "  Capillarity rise (mm) ",round(CapillarityRisesum,2),"\n"))
   cat(paste0("    Exfiltration (mm) ",round(AquiferExfiltrationsum,2),"  Deep aquifer loss (mm) ", round(DeepAquiferLosssum,2), "\n"))
+  cat(paste0("    Negative aquifer correction (mm) ",round(NegativeAquiferCorrectionsum,2), "\n"))
   cat(paste0("  Watershed water balance components:\n"))
   cat(paste0("    Precipitation (mm) ", round(Precipitationsum,2),"\n"))
   cat(paste0("    Interception (mm) ", round(Interceptionsum,2), "  Soil evaporation (mm) ",round(SoilEvaporationsum,2),"\n"))

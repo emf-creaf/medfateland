@@ -2,8 +2,8 @@
   return(c("Hydrograph & Hietograph" = "Hydrograph_Hietograph",
            "PET & Precipitation" = "PET_Precipitation",
            "Water exported" = "Export", 
-           "Overland runoff" = "OverlandRunoff",
-           "Soil-Aquifer exchange" = "SoilAquifer",
+           "Overland runoff" = "Overland_Runoff",
+           "Aquifer balance" = "Aquifer_Balance",
            "Evapotranspiration" = "Evapotranspiration"))
 }
 .plot_watershed_wb <-function(x, type,  
@@ -97,8 +97,6 @@
     return(g)
   } else if(type=="Export") {
     if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
-    df[["AquiferExfiltration"]] = WaterBalance$AquiferExfiltration
-    df[["CellRunoff"]] = WaterBalance$CellRunoff 
     df[["ChannelExport"]] = WaterBalance$ChannelExport 
     df[["WatershedExport"]] = WaterBalance$WatershedExport 
     df[["DeepAquiferLoss"]] = WaterBalance$DeepAquiferLoss
@@ -106,30 +104,24 @@
     if(!is.null(summary.freq)) {
       date.factor = cut(as.Date(df$Date), breaks=summary.freq)
       df = data.frame(Date = as.Date(as.character(levels(date.factor))),
-                      AquiferExfiltration = tapply(df$AquiferExfiltration,INDEX=date.factor, FUN=sum, na.rm=TRUE),
-                      CellRunoff = tapply(df$CellRunoff,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       ChannelExport = tapply(df$ChannelExport,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       WatershedExport = tapply(df$WatershedExport,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       DeepAquiferLoss = tapply(df$DeepAquiferLoss,INDEX=date.factor, FUN=sum, na.rm=TRUE))
     }
     g<-ggplot(df)+
       geom_line(aes(x=.data$Date, y=.data$WatershedExport, col="Watershed surface export"))+
-      geom_line(aes(x=.data$Date, y=.data$AquiferExfiltration, col="Aquifer exfiltration"))+
-      geom_line(aes(x=.data$Date, y=.data$CellRunoff, col="Overland runoff"))+
       geom_line(aes(x=.data$Date, y=.data$ChannelExport, col="Channel export"))+
       geom_line(aes(x=.data$Date, y=.data$DeepAquiferLoss, col="Deep aquifer export"))+
       scale_color_manual(name="", values=c("Watershed surface export"="black", 
-                                           "Aquifer exfiltration" = "red", "Overland runoff" = "blue", 
                                            "Channel export" = "darkgreen",
                                            "Deep aquifer export" = "darkgray"), 
                          limits = c("Watershed surface export", 
-                                    "Aquifer exfiltration", "Overland runoff", 
                                     "Channel export",
                                     "Deep aquifer export"))+
       ylab(ylab)+ xlab(xlab)+
       theme_bw()
     return(g)
-  } else if(type=="OverlandRunoff") {
+  } else if(type=="Overland_Runoff") {
     if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
     df[["CellRunoff"]] = WaterBalance$CellRunoff 
     df[["InfiltrationExcess"]] = WaterBalance$InfiltrationExcess
@@ -152,21 +144,28 @@
       ylab(ylab)+ xlab(xlab)+
       theme_bw()
     return(g)
-  } else if(type=="SoilAquifer") {
+  } else if(type=="Aquifer_Balance") {
     if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
     df[["CapillarityRise"]] = WaterBalance$CapillarityRise
-    df[["DeepDrainage"]] = -WaterBalance$DeepDrainage
+    df[["DeepDrainage"]] = WaterBalance$DeepDrainage
+    df[["AquiferExfiltration"]] = WaterBalance$AquiferExfiltration
+    df[["NegativeAquiferCorrection"]] = WaterBalance$NegativeAquiferCorrection
     if(!is.null(dates)) df = df[df$Date %in% dates,]
     if(!is.null(summary.freq)) {
       date.factor = cut(as.Date(df$Date), breaks=summary.freq)
       df = data.frame(Date = as.Date(as.character(levels(date.factor))),
                       CapillarityRise = tapply(df$CapillarityRise,INDEX=date.factor, FUN=sum, na.rm=TRUE),
-                      DeepDrainage = tapply(df$DeepDrainage,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+                      DeepDrainage = tapply(df$DeepDrainage,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      AquiferExfiltration = tapply(df$AquiferExfiltration,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      NegativeAquiferCorrection = tapply(df$NegativeAquiferCorrection,INDEX=date.factor, FUN=sum, na.rm=TRUE))
     }
     g<-ggplot(df)+
-      geom_bar(aes(x=.data$Date, y=.data$CapillarityRise, fill="Capillarity rise"), stat = "identity")+
-      geom_bar(aes(x=.data$Date, y=.data$DeepDrainage, fill="Deep drainage"), stat = "identity")+
-      scale_fill_manual(name="", values=c("Capillarity rise" = "red", "Deep drainage" = "blue"))+
+      geom_line(aes(x=.data$Date, y=.data$CapillarityRise, col="Capillarity rise"))+
+      geom_line(aes(x=.data$Date, y=.data$DeepDrainage, col="Deep drainage"))+
+      geom_line(aes(x=.data$Date, y=.data$AquiferExfiltration, col="Aquifer exfiltration"))+
+      geom_line(aes(x=.data$Date, y=.data$NegativeAquiferCorrection, col="Neg. aquifer corr."))+
+      scale_color_manual(name="", values=c("Capillarity rise" = "red", "Deep drainage" = "blue", "Aquifer exfiltration" = "black",
+                                           "Neg. aquifer corr." = "darkgray"))+
       ylab(ylab)+ xlab(xlab)+
       theme_bw()
     return(g)
@@ -178,7 +177,7 @@
 #' Plots time series of the watershed-level balance results of simulations with \code{spwb_land}, \code{growth_land} or \code{fordyn_land}.
 #' 
 #' @param x An object of class \code{spwb_land}, \code{growth_land} or \code{fordyn_land}.
-#' @param type The information to be plotted (see details)
+#' @param type The information to be plotted (see details).
 #' @param dates A Date vector with a subset of dates to be plotted.
 #' @param summary.freq Frequency of summary statistics (see \code{\link{cut.Date}}).
 #' @param ... Additional parameters for function \code{plot} (not used).
@@ -188,6 +187,8 @@
 #'   \item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 #'   \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
 #'   \item{\code{"Export"}: Water exported through different fluxes.}
+#'   \item{\code{"Overland_Runoff"}: Origin of overland runoff flows (i.e. saturation excess or infiltration excess).}
+#'   \item{\code{"Soil_Aquifer"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
 #'   \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
 #' }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
