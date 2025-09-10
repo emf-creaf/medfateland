@@ -53,16 +53,8 @@ res2 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
                  watershed_control = ws_control)
 plot(res2, "Export")
 plot(res2, "Aquifer")
-sum(res2$sf$aquifer)
+summary(res2$sf$aquifer)
 example_watershed_burnin <- update_landscape(example_watershed_burnin, res2)
-# third year
-res3 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo,
-                  dates = dates, summary_frequency = "month",
-                  watershed_control = ws_control)
-plot(res3, "Export")
-plot(res3, "Aquifer")
-sum(res3$sf$aquifer)
-example_watershed_burnin <- update_landscape(example_watershed_burnin, res3)
 
 
 #Example sf from IFN3 (original coordinates)
