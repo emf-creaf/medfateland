@@ -1,5 +1,5 @@
 .shinyplot_spatial<-function(x, SpParams, r = NULL) {
-  plot_main_choices = c("Topography","Soil", "Forest stand", "Watershed")
+  plot_main_choices = c("Topography & land use","Soil & snowpack", "Forest stand", "Hydrogeology", "Aquifer")
   maps <- tabPanel("Maps",
                    sidebarLayout(
                      sidebarPanel(
@@ -25,10 +25,11 @@
   server <- function(input, output, session) {
     observe({
       main_plot <- input$plot_main_type
-      if(main_plot=="Topography") sub_choices = .getAllowedTopographyVars(x)
-      else if(main_plot=="Soil") sub_choices = .getAllowedSoilVars(x)
+      if(main_plot=="Topography & land use") sub_choices = .getAllowedTopographyVars(x)
       else if(main_plot=="Forest stand") sub_choices = .getAllowedForestStandVars(x, SpParams)
-      else if(main_plot=="Watershed") sub_choices = .getAllowedWatershedVars(x)
+      else if(main_plot=="Soil & snowpack") sub_choices = .getAllowedSnowpackSoilVars(x)
+      else if(main_plot=="Hydrogeology") sub_choices = .getAllowedHydrogeologyVars(x)
+      else if(main_plot=="Aquifer") sub_choices = .getAllowedAquiferVars(x)
       updateSelectInput(session, "plot_var",
                         choices = sub_choices)
     })

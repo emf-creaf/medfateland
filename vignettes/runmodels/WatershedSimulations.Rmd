@@ -104,7 +104,7 @@ At this point is important to learn one option that may speed up calculations. I
 
 ```{r}
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
-                                           local_control = defaultControl(),
+                                           local_control = defaultControl(soilDomains = "single"),
                                            reduce_to_dominant = TRUE)
 example_simplified
 ```

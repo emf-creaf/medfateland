@@ -2,6 +2,7 @@
   return(c("Hydrograph & Hietograph" = "Hydrograph_Hietograph",
            "PET & Precipitation" = "PET_Precipitation",
            "Water exported" = "Export", 
+           "Overland runoff" = "OverlandRunoff",
            "Soil-Aquifer exchange" = "SoilAquifer",
            "Evapotranspiration" = "Evapotranspiration"))
 }
@@ -96,8 +97,6 @@
     return(g)
   } else if(type=="Export") {
     if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
-    df[["InfiltrationExcess"]] = WaterBalance$InfiltrationExcess
-    df[["SaturationExcess"]] = WaterBalance$SaturationExcess
     df[["AquiferExfiltration"]] = WaterBalance$AquiferExfiltration
     df[["CellRunoff"]] = WaterBalance$CellRunoff 
     df[["ChannelExport"]] = WaterBalance$ChannelExport 
@@ -107,8 +106,6 @@
     if(!is.null(summary.freq)) {
       date.factor = cut(as.Date(df$Date), breaks=summary.freq)
       df = data.frame(Date = as.Date(as.character(levels(date.factor))),
-                      InfiltrationExcess = tapply(df$InfiltrationExcess,INDEX=date.factor, FUN=sum, na.rm=TRUE),
-                      SaturationExcess = tapply(df$SaturationExcess,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       AquiferExfiltration = tapply(df$AquiferExfiltration,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       CellRunoff = tapply(df$CellRunoff,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       ChannelExport = tapply(df$ChannelExport,INDEX=date.factor, FUN=sum, na.rm=TRUE),
@@ -116,18 +113,42 @@
                       DeepAquiferLoss = tapply(df$DeepAquiferLoss,INDEX=date.factor, FUN=sum, na.rm=TRUE))
     }
     g<-ggplot(df)+
-      geom_line(aes(x=.data$Date, y=.data$WatershedExport, col="Watershed export"))+
-      geom_line(aes(x=.data$Date, y=.data$InfiltrationExcess, col="Infiltration excess"))+
-      geom_line(aes(x=.data$Date, y=.data$SaturationExcess, col="Saturation excess"))+
+      geom_line(aes(x=.data$Date, y=.data$WatershedExport, col="Watershed surface export"))+
       geom_line(aes(x=.data$Date, y=.data$AquiferExfiltration, col="Aquifer exfiltration"))+
-      geom_line(aes(x=.data$Date, y=.data$CellRunoff, col="Cell runoff"))+
+      geom_line(aes(x=.data$Date, y=.data$CellRunoff, col="Overland runoff"))+
       geom_line(aes(x=.data$Date, y=.data$ChannelExport, col="Channel export"))+
       geom_line(aes(x=.data$Date, y=.data$DeepAquiferLoss, col="Deep aquifer export"))+
-      scale_color_manual(name="", values=c("Watershed export"="black", 
-                                           "Infiltration excess" = "yellow", "Saturation excess" = "lightblue",
-                                           "Aquifer exfiltration" = "red", "Cell runoff" = "blue", 
+      scale_color_manual(name="", values=c("Watershed surface export"="black", 
+                                           "Aquifer exfiltration" = "red", "Overland runoff" = "blue", 
                                            "Channel export" = "darkgreen",
-                                           "Deep aquifer export" = "darkgray"))+
+                                           "Deep aquifer export" = "darkgray"), 
+                         limits = c("Watershed surface export", 
+                                    "Aquifer exfiltration", "Overland runoff", 
+                                    "Channel export",
+                                    "Deep aquifer export"))+
+      ylab(ylab)+ xlab(xlab)+
+      theme_bw()
+    return(g)
+  } else if(type=="OverlandRunoff") {
+    if(is.null(ylab)) ylab =  expression(L%.%m^{-2})    
+    df[["CellRunoff"]] = WaterBalance$CellRunoff 
+    df[["InfiltrationExcess"]] = WaterBalance$InfiltrationExcess
+    df[["SaturationExcess"]] = WaterBalance$SaturationExcess
+    if(!is.null(dates)) df = df[df$Date %in% dates,]
+    if(!is.null(summary.freq)) {
+      date.factor = cut(as.Date(df$Date), breaks=summary.freq)
+      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
+                      InfiltrationExcess = tapply(df$InfiltrationExcess,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      SaturationExcess = tapply(df$SaturationExcess,INDEX=date.factor, FUN=sum, na.rm=TRUE),
+                      CellRunoff = tapply(df$CellRunoff,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+    }
+    g<-ggplot(df)+
+      geom_line(aes(x=.data$Date, y=.data$InfiltrationExcess, col="Infiltration excess"))+
+      geom_line(aes(x=.data$Date, y=.data$SaturationExcess, col="Saturation excess"))+
+      geom_line(aes(x=.data$Date, y=.data$CellRunoff, col="Overland runoff"))+
+      scale_color_manual(name="", values=c("Infiltration excess" = "red", "Saturation excess" = "blue",
+                                           "Overland runoff" = "black"),
+                         limits =c("Overland runoff", "Infiltration excess","Saturation excess")) +
       ylab(ylab)+ xlab(xlab)+
       theme_bw()
     return(g)

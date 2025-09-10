@@ -14,13 +14,13 @@ plot_variable(x, variable = "land_cover_type", SpParams = NULL, r = NULL, ...)
 
 \item{vars}{A string vector with the name of the variables to extract (see details).}
 
-\item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.}
+\item{SpParams}{An optional data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for some forest stand variables.}
 
 \item{...}{Additional arguments (not used).}
 
 \item{variable}{A string with the name of the variables to draw (see details).}
 
-\item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
+\item{r}{An optional object of class \code{\link[terra]{SpatRaster}}, defining the raster topology. If supplied, values are shown as raster pixels. Otherwise, points are drawn.}
 }
 \value{
 Function \code{extract_variables()} returns an object of class \code{\link[sf]{sf}} with the desired variables.
@@ -40,8 +40,9 @@ The following string values are available for \code{vars}.
 \item{\code{"land_cover_type"}: Land cover type.}
 }
 
-\emph{Soil}:
+\emph{Snowpack and soil}:
 \itemize{
+\item{\code{"snowpack"}: Snowpack water equivalent (mm). Requires 'snowpack' to be defined in \code{x}.}
 \item{\code{"soil_vol_extract"}: Total water extractable volume (mm).}
 \item{\code{"soil_vol_sat"}: Total water volume at saturation (mm).}
 \item{\code{"soil_vol_fc"}: Total water volume at field capacity (mm).}
@@ -53,15 +54,19 @@ The following string values are available for \code{vars}.
 \item{\code{"soil_psi_curr"}: Current soil water potential (MPa).}
 }
 
-\emph{Watershed}:
+\emph{Hydrogeology}:
 \itemize{
 \item{\code{"depth_to_bedrock"}: Depth to bedrock (m).}
 \item{\code{"bedrock_porosity"}: Bedrock porosity.}
 \item{\code{"bedrock_conductivity"}: Bedrock conductivity (m/day).}
+\item{\code{"channel"}: River channel network. Requires 'channel' to be defined in \code{x}.}
+}
+
+\emph{Aquifer} (requires 'aquifer' to be defined in \code{x}):
+\itemize{
 \item{\code{"aquifer_elevation"}: Aquifer elevation over bedrock (m).}
 \item{\code{"depth_to_aquifer"}: Depth to aquifer (m).}
 \item{\code{"aquifer"}: Aquifer volume (mm).}
-\item{\code{"snowpack"}: Snowpack water equivalent (mm).}
 }
 
 \emph{Forest stand}:
@@ -73,10 +78,10 @@ The following string values are available for \code{vars}.
 \item{\code{"dominant_tree_diameter"}: Dominant tree diameter (cm).}
 \item{\code{"quadratic_mean_tree_diameter"}: Quadratic mean tree diameter (cm).}
 \item{\code{"hart_becking_index"}: Hart-Becking index.}
-\item{\code{"leaf_area_index"}: Leaf area index (m2/m2).}
-\item{\code{"foliar_biomass"}: Foliar biomass (kg/m2).}
-\item{\code{"fuel_loading"}: Fine live fuel loading (kg/m2).}
-\item{\code{"shrub_volume"}: Shrub volume (m3/m2).}
+\item{\code{"leaf_area_index"}: Leaf area index (m2/m2). Requires \code{SpParams} to be supplied.}
+\item{\code{"foliar_biomass"}: Foliar biomass (kg/m2). Requires \code{SpParams} to be supplied.}
+\item{\code{"fuel_loading"}: Fine live fuel loading (kg/m2). Requires \code{SpParams} to be supplied.}
+\item{\code{"shrub_volume"}: Shrub volume (m3/m2). Requires \code{SpParams} to be supplied.}
 }
 }
 \examples{
