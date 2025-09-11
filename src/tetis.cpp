@@ -265,9 +265,9 @@ void tetisBaseFlow(DataFrame outWB,
 }
 
 
-// [[Rcpp::export(".tetisApplyDeepAquiferLossToAquifer")]]
-void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y,
-                                        List watershed_control) {
+// [[Rcpp::export(".tetisDeepAquiferLossToAquifer")]]
+void tetisDeepAquiferLossToAquifer(DataFrame outWB, List y,
+                                   List watershed_control) {
   
   NumericVector DeepAquiferLoss =  outWB[WBCOM_DeepAquiferLoss];
   
@@ -573,5 +573,76 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
     }
   }
 }
+
+// [[Rcpp::export(".tetisWatershedDay")]]
+void tetisWatershedDay(List output,
+                       List internalCommunication,
+                       String local_model,
+                       List y,
+                       List sf_routing,
+                       List watershed_control,
+                       CharacterVector date,
+                       DataFrame gridMeteo,
+                       NumericVector latitude, 
+                       bool standSummary = false, 
+                       bool carbonBalanceSummary = false, 
+                       bool biomassBalanceSummary = false,
+                       double patchsize = NA_REAL) {
+  
+  DataFrame outWB = Rcpp::as<Rcpp::DataFrame>(output["WatershedWaterBalance"]);
+  
+  IntegerVector waterOrder = sf_routing["waterOrder"];
+  List queenNeigh = sf_routing["queenNeigh"];
+  List waterQ = sf_routing["waterQ"];
+  LogicalVector isChannel = sf_routing["channel"];
+  LogicalVector isOutlet = sf_routing["outlet"];
+  IntegerVector target_outlet = sf_routing["target_outlet"];
+  NumericVector distance_to_outlet = sf_routing["distance_to_outlet"];
+  
+  List tetis_parameters = watershed_control["tetis_parameters"];
+  bool interflow = tetis_parameters["interflow"];
+  bool baseflow = tetis_parameters["baseflow"];
+
+    
+  // Reset from previous days
+  resetWaterBalanceDayOutput(outWB);
+
+  // A. Landscape interflow
+  if(interflow) {
+    tetisInterFlow(outWB, y, waterOrder, queenNeigh, waterQ,
+                   watershed_control,
+                   patchsize);
+  }
+  
+  // B. Simulation of soil cells, non-soil cells and overland flows
+  copySnowpackToSoil(y);
+  tetisModifyKsat(y, watershed_control, false);
+  tetisSimulationWithOverlandFlows(local_model, date, internalCommunication,
+                                   standSummary, carbonBalanceSummary, biomassBalanceSummary,
+                                   output,
+                                   y, 
+                                   latitude,
+                                   gridMeteo,
+                                   waterOrder, queenNeigh, waterQ, isChannel,
+                                   watershed_control);
+  copySnowpackFromSoil(y);
+  tetisModifyKsat(y, watershed_control, true);
+  
+  //C. Baseflow
+  if(baseflow) {
+     tetisBaseFlow(outWB,
+                   y,
+                   waterOrder, queenNeigh, waterQ,
+                   isChannel, isOutlet,
+                   watershed_control,
+                   patchsize);
+  }
+  
+  //D. Applies drainage from aquifer to a deeper aquifer
+  tetisDeepAquiferLossToAquifer(outWB, 
+                                y, watershed_control);
+    
+}
+
 
 

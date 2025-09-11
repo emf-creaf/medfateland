@@ -343,15 +343,15 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// tetisApplyDeepAquiferLossToAquifer
-void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y, List watershed_control);
-RcppExport SEXP _medfateland_tetisApplyDeepAquiferLossToAquifer(SEXP outWBSEXP, SEXP ySEXP, SEXP watershed_controlSEXP) {
+// tetisDeepAquiferLossToAquifer
+void tetisDeepAquiferLossToAquifer(DataFrame outWB, List y, List watershed_control);
+RcppExport SEXP _medfateland_tetisDeepAquiferLossToAquifer(SEXP outWBSEXP, SEXP ySEXP, SEXP watershed_controlSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
     Rcpp::traits::input_parameter< List >::type y(ySEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
-    tetisApplyDeepAquiferLossToAquifer(outWB, y, watershed_control);
+    tetisDeepAquiferLossToAquifer(outWB, y, watershed_control);
     return R_NilValue;
 END_RCPP
 }
@@ -376,6 +376,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     tetisSimulationWithOverlandFlows(model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control);
+    return R_NilValue;
+END_RCPP
+}
+// tetisWatershedDay
+void tetisWatershedDay(List output, List internalCommunication, String local_model, List y, List sf_routing, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary, double patchsize);
+RcppExport SEXP _medfateland_tetisWatershedDay(SEXP outputSEXP, SEXP internalCommunicationSEXP, SEXP local_modelSEXP, SEXP ySEXP, SEXP sf_routingSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP, SEXP patchsizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type output(outputSEXP);
+    Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
+    Rcpp::traits::input_parameter< String >::type local_model(local_modelSEXP);
+    Rcpp::traits::input_parameter< List >::type y(ySEXP);
+    Rcpp::traits::input_parameter< List >::type sf_routing(sf_routingSEXP);
+    Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latitude(latitudeSEXP);
+    Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
+    Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
+    tetisWatershedDay(output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary, carbonBalanceSummary, biomassBalanceSummary, patchsize);
     return R_NilValue;
 END_RCPP
 }
@@ -427,8 +449,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 9},
-    {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 3},
+    {"_medfateland_tetisDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisDeepAquiferLossToAquifer, 3},
     {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 15},
+    {"_medfateland_tetisWatershedDay", (DL_FUNC) &_medfateland_tetisWatershedDay, 13},
     {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 12},
     {NULL, NULL, 0}
 };

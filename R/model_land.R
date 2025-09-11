@@ -247,71 +247,6 @@
   return(internalCommunication)
 }
 
-.watershedDayTetis<- function(output,
-                              internalCommunication,
-                              local_model,
-                              y,
-                              sf_routing,
-                              watershed_control,
-                              date,
-                              gridMeteo,
-                              latitude, 
-                              standSummary = FALSE, carbonBalanceSummary = FALSE, biomassBalanceSummary = FALSE,
-                              patchsize = NA, progress = TRUE) {
-
-  nX <- nrow(y)
-  
-  waterOrder <- sf_routing$waterOrder
-  queenNeigh <- sf_routing$queenNeigh
-  waterQ <- sf_routing$waterQ
-  isChannel <- sf_routing$channel
-  isOutlet <- sf_routing$outlet
-  target_outlet <- sf_routing$target_outlet
-  distance_to_outlet <- sf_routing$distance_to_outlet
-
-  # Reset from previous days
-  .resetWaterBalanceDayOutput(output[["WatershedWaterBalance"]])
-  
-  # A. Landscape interflow
-  if(watershed_control$tetis_parameters$interflow) {
-    .tetisInterFlow(output[["WatershedWaterBalance"]], 
-                    y,
-                    waterOrder, queenNeigh, waterQ,
-                    watershed_control,
-                    patchsize)
-  }
-
-  
-  # B. Simulation of soil cells, non-soil cells and overland flows
-  .copySnowpackToSoil(y)
-  .tetisModifyKsat(y, watershed_control, reverse = FALSE)
-  .tetisSimulationWithOverlandFlows(local_model, date, internalCommunication,
-                                    standSummary, carbonBalanceSummary, biomassBalanceSummary,
-                                    output,
-                                    y, 
-                                    latitude,
-                                    gridMeteo,
-                                    waterOrder, queenNeigh, waterQ, isChannel,
-                                    watershed_control)
-  .copySnowpackFromSoil(y)
-  .tetisModifyKsat(y, watershed_control, reverse = TRUE)
-  
-  #C. Applies capillarity rise, deep drainage to aquifer
-  if(watershed_control$tetis_parameters$baseflow) {
-    .tetisBaseFlow(output[["WatershedWaterBalance"]],
-                   y,
-                   waterOrder, queenNeigh, waterQ,
-                   isChannel, isOutlet,
-                   watershed_control,
-                   patchsize)
-  }
-  
-  #D. Applies drainage from aquifer to a deeper aquifer
-  .tetisApplyDeepAquiferLossToAquifer(output[["WatershedWaterBalance"]], 
-                                      y, watershed_control)
-
-}
-
 
 ## This function is in R to use parallelization
 .watershedDaySerghei<- function(local_model,
@@ -719,7 +654,7 @@
                                        CO2ByYear)
     
     if(watershed_model=="tetis") {
-      .watershedDayTetis(output = ws_day,
+      .tetisWatershedDay(output = ws_day,
                          internalCommunication = internalCommunication,
                          local_model = local_model,
                          y = y,
@@ -729,7 +664,7 @@
                          gridMeteo = gridMeteo,
                          latitude = latitude,
                          standSummary = standSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary,
-                         patchsize = patchsize, progress = progress)
+                         patchsize = patchsize)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
                                      lct = y$land_cover_type, xList = y$state,
@@ -2138,7 +2073,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   ws_day  <- .createDayOutput(nCells, FALSE, FALSE, FALSE)
   
   if(watershed_model=="tetis") {
-    .watershedDayTetis(output = ws_day,
+    .tetisWatershedDay(output = ws_day,
                        internalCommunication = internalCommunication,
                        local_model = local_model,
                        y = y,
@@ -2147,8 +2082,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                        date = datechar,
                        gridMeteo = gridMeteo,
                        latitude = latitude,
-                       patchsize = patchsize, 
-                       progress = progress)
+                       patchsize = patchsize)
   } else if(watershed_model=="serghei") {
     ws_day <- .watershedDaySerghei(local_model = local_model,
                                    lct = y$land_cover_type, xList = y$state,
