@@ -240,6 +240,9 @@
       max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
       max_num_canopy_layers <- max(max_num_canopy_layers, nrow(xi$canopy))
       max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
+    } else if((y$land_cover_type[i]=="agriculture") && (!is.null(y$state[[i]]))) {
+      xi <- y$state[[i]]
+      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
     }
   }
   internalCommunication <- medfate::general_communication_structures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,

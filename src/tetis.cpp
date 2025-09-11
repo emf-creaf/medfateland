@@ -294,7 +294,8 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
                                       NumericVector latitude,
                                       DataFrame gridMeteo,
                                       IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isChannel,
-                                      List watershed_control) {
+                                      List watershed_control,
+                                      bool debug) {
   
   DataFrame outWB = Rcpp::as<Rcpp::DataFrame>(output["WatershedWaterBalance"]);
   List localResults = output["LocalResults"];
@@ -404,6 +405,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   for(int i=0;i<nX;i++) {
     //get next cell in order
     int iCell = waterOrder[i]-1; //Decrease index!!!!
+    if(debug) Rcout << i << " cell: "<< iCell;
     if(lct[iCell]=="wildland" || lct[iCell]=="agriculture") {
       //Soil cell: Prepare input
       meteovec["MinTemperature"] = tminVec[iCell];
@@ -437,9 +439,10 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       XI["lateralFlows"] = lateralFlows;
       XI["waterTableDepth"] = wtd; 
       //Launch simulation
+      if(debug) Rcout<<"[";
       lr = fcpp_landunit_day(XI, model, date, internalCommunication,
                              standSummary, carbonBalanceSummary, biomassBalanceSummary);
-      
+      if(debug) Rcout<<".]\n";
       //Copy water balance
       localResults[iCell] = lr;
       List sr = lr["simulation_results"];
@@ -459,26 +462,8 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       SaturationExcess[iCell] = DB["SaturationExcess"];
       DeepDrainage[iCell] = DB["DeepDrainage"];
       CapillarityRise[iCell] = DB["CapillarityRise"];
-      // if(DeepDrainage[iCell] > CapillarityRise[iCell]) {
-      //   DeepDrainage[iCell] = DeepDrainage[iCell] - CapillarityRise[iCell];
-      //   CapillarityRise[iCell] = 0.0;
-      //   DB["CapillarityRise"] = CapillarityRise[iCell];
-      //   DB["DeepDrainage"] = DeepDrainage[iCell];
-      // } else if (DeepDrainage[iCell] < CapillarityRise[iCell]) {
-      //   CapillarityRise[iCell] = CapillarityRise[iCell] - DeepDrainage[iCell];
-      //   DeepDrainage[iCell] = 0.0;
-      //   DB["CapillarityRise"] = CapillarityRise[iCell];
-      //   DB["DeepDrainage"] = DeepDrainage[iCell];
-      // }
-      // if((AquiferExfiltration[iCell]>0.0) || (SaturationExcess[iCell]>0.0)) { //If soil is saturated deep drainage cannot occur
-      //   SaturationExcess[iCell] +=DeepDrainage[iCell];
-      //   Runoff[iCell] +=DeepDrainage[iCell];
-      //   DeepDrainage[iCell] = 0.0;
-      //   DB["SaturationExcess"] = SaturationExcess[iCell];
-      //   DB["Runoff"] = Runoff[iCell];
-      //   DB["DeepDrainage"] = DeepDrainage[iCell];
-      // }
       Transpiration[iCell] = DB["Transpiration"];
+      
       if(lct[iCell]=="wildland") {
         HerbTranspiration[iCell] = DB["HerbTranspiration"];
         if(standSummary){
@@ -587,7 +572,8 @@ void tetisWatershedDay(List output,
                        bool standSummary = false, 
                        bool carbonBalanceSummary = false, 
                        bool biomassBalanceSummary = false,
-                       double patchsize = NA_REAL) {
+                       double patchsize = NA_REAL,
+                       bool debug = false) {
   
   DataFrame outWB = Rcpp::as<Rcpp::DataFrame>(output["WatershedWaterBalance"]);
   
@@ -609,12 +595,14 @@ void tetisWatershedDay(List output,
 
   // A. Landscape interflow
   if(interflow) {
+    if(debug) Rcout<< "Interflow\n";
     tetisInterFlow(outWB, y, waterOrder, queenNeigh, waterQ,
                    watershed_control,
                    patchsize);
   }
   
   // B. Simulation of soil cells, non-soil cells and overland flows
+  if(debug) Rcout<< "Local balance\n";
   copySnowpackToSoil(y);
   tetisModifyKsat(y, watershed_control, false);
   tetisSimulationWithOverlandFlows(local_model, date, internalCommunication,
@@ -624,13 +612,15 @@ void tetisWatershedDay(List output,
                                    latitude,
                                    gridMeteo,
                                    waterOrder, queenNeigh, waterQ, isChannel,
-                                   watershed_control);
+                                   watershed_control,
+                                   debug);
   copySnowpackFromSoil(y);
   tetisModifyKsat(y, watershed_control, true);
   
   //C. Baseflow
   if(baseflow) {
-     tetisBaseFlow(outWB,
+    if(debug) Rcout<< "Baseflow\n";
+    tetisBaseFlow(outWB,
                    y,
                    waterOrder, queenNeigh, waterQ,
                    isChannel, isOutlet,
@@ -639,6 +629,7 @@ void tetisWatershedDay(List output,
   }
   
   //D. Applies drainage from aquifer to a deeper aquifer
+  if(debug) Rcout<< "DeepLoss\n";
   tetisDeepAquiferLossToAquifer(outWB, 
                                 y, watershed_control);
     
