@@ -96,7 +96,7 @@ void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExp
                          NumericVector elevation, NumericVector slope, 
                          LogicalVector isChannel, LogicalVector isOutlet, 
                          IntegerVector target_outlet, IntegerVector distance_to_outlet, NumericVector outlet_backlog,
-                         List watershed_control, double patchsize) {
+                         List watershed_control, double patchsize, bool debug = false) {
   List tetis_parameters = watershed_control["tetis_parameters"];
   
   int nX = ChannelExport.size();  
@@ -130,19 +130,24 @@ void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExp
         }
         //    b. Find the water stream elevation corresponding to the total volume
         double wse = find_wse(elevation, mask, patchsize, backlog, wse_min, wse_max);
-        // Rcout << " Outlet: " << i << " channel cells: " << sum(mask) << " total volume " << backlog << " WSE: "<<  wse<< " (m)";
+        if(debug) Rcout << " Outlet: " << i << " channel cells: " << sum(mask) << " total volume " << backlog << " WSE: "<<  wse<< " (m)";
         //    c. Determine the wetted area and perimeter in the channel network
         Stats s = wetted_stats(elevation, slope, mask, wse, cell_width);
-        // Rcout << " wetted cells: " << s.n<< " area: "<<  s.area << " (m2) perim: " <<  s.perim <<" (m) ave slope "<< s.slope_percent<< " (%)";
-        //    d. Calculate average stream velocity (m/s) using Manning's equation
-        double v = manning_v(s.area, s.perim, s.slope_percent, manning_n);
-        // Rcout<< " avg vel = " << v << " (m/s)";
-        //    e. For every cell whose elevation is lower than the water stream elevation, determine the time to outlet
-        double outlet_vol_m3 = outlet_volume(elevation, mask, distance_to_outlet, 
-                                             wse, v, patchsize,
-                                             dt_sec);
-        outlet_vol_m3 = std::min(outlet_vol_m3, backlog);
-        // Rcout<< " outlet_vol = " << outlet_vol_m3 << " (m3)\n";
+        if(debug) Rcout << " wetted cells: " << s.n<< " area: "<<  s.area << " (m2) perim: " <<  s.perim <<" (m) ave slope "<< s.slope_percent<< " (%)";
+        double outlet_vol_m3 = 0.0;
+        if(s.n>0) {
+          //    d. Calculate average stream velocity (m/s) using Manning's equation
+          double v = manning_v(s.area, s.perim, s.slope_percent, manning_n);
+          if(debug) Rcout<< " avg vel = " << v << " (m/s)";
+          //    e. For every cell whose elevation is lower than the water stream elevation, determine the time to outlet
+          outlet_vol_m3 = outlet_volume(elevation, mask, distance_to_outlet, 
+                                               wse, v, patchsize,
+                                               dt_sec);
+          outlet_vol_m3 = std::min(outlet_vol_m3, backlog);
+        } else { // If the cell does not have draining cells it should export all backlog
+          outlet_vol_m3 = backlog;
+        }
+        if(debug) Rcout<< " outlet_vol = " << outlet_vol_m3 << " (m3)\n";
         //    f. Add the volume reaching the outlet during the current day and keep the remaining for the day after.
         WatershedExport[i] = outlet_vol_m3*(1e3/patchsize);
         outlet_backlog[i] = backlog - outlet_vol_m3;

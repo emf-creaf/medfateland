@@ -265,37 +265,6 @@ void tetisBaseFlow(DataFrame outWB,
 }
 
 
-// [[Rcpp::export(".tetisApplyLocalFlowsToAquifer")]]
-void tetisApplyLocalFlowsToAquifer(List y,
-                                   DataFrame outWB) {
-  NumericVector DeepDrainage =  outWB[WBCOM_DeepDrainage];
-  NumericVector CapillarityRise =  outWB[WBCOM_CapillarityRise];
-  
-  NumericVector aquifer = y["aquifer"];
-  NumericVector depth_to_bedrock  = y["depth_to_bedrock"];
-  NumericVector bedrock_porosity = y["bedrock_porosity"];
-  
-  int nX = aquifer.size();
-  for(int i=0;i<nX;i++){
-    double aquifer_initial = aquifer[i];
-    aquifer[i] = aquifer[i] + DeepDrainage[i] - CapillarityRise[i];
-    // if(aquifer[i]< 0.0) {
-    //   Rcout << "negative aquifer from "<< aquifer_initial <<" mm to "<< aquifer[i] << " mm in cell "<< (i+1)<<" after local flows DD: "<< DeepDrainage[i]<< " CR:" << CapillarityRise[i]<<"\n";
-    //   aquifer[i] = 0.0;
-    // }
-    // double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //New depth to aquifer (mm)
-    // if((DTAn < 0.0) && (isChannel[i] || isOutlet[i])) { // Turn negative depth to aquifer into aquifer discharge
-    //   double offset = -1.0*DTAn*bedrock_porosity[i];
-    //   AquiferExfiltration[i] += offset;
-    //   aquifer[i] -= offset;
-    //   if(isChannel[i]) {
-    //     ChannelExport[i] += offset;
-    //   } else {
-    //     WatershedExport[i] += offset;
-    //   }
-    // }
-  }
-}
 // [[Rcpp::export(".tetisApplyDeepAquiferLossToAquifer")]]
 void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y,
                                         List watershed_control) {

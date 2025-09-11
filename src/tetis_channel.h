@@ -9,4 +9,4 @@ void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExp
                          NumericVector elevation, NumericVector slope, 
                          LogicalVector isChannel, LogicalVector isOutlet, 
                          IntegerVector target_outlet, IntegerVector distance_to_outlet, NumericVector outlet_backlog,
-                         List watershed_control, double patchsize);
+                         List watershed_control, double patchsize, bool debug = false);

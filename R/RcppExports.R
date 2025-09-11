@@ -101,10 +101,6 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize))
 }
 
-.tetisApplyLocalFlowsToAquifer <- function(y, outWB) {
-    invisible(.Call(`_medfateland_tetisApplyLocalFlowsToAquifer`, y, outWB))
-}
-
 .tetisApplyDeepAquiferLossToAquifer <- function(outWB, y, watershed_control) {
     invisible(.Call(`_medfateland_tetisApplyDeepAquiferLossToAquifer`, outWB, y, watershed_control))
 }
@@ -113,7 +109,7 @@ drainageCells <- function(queenNeigh, waterQ, iCell) {
     invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control))
 }
 
-.tetisChannelRouting <- function(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisChannelRouting`, ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize))
+.tetisChannelRouting <- function(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize, debug = FALSE) {
+    invisible(.Call(`_medfateland_tetisChannelRouting`, ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize, debug))
 }
 

@@ -70,13 +70,14 @@ For the baseline configuration, we set the three scaling factors to one:
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
+ws_control$tetis_parameters$num_daily_substeps <- 6
 ```
 
 Now we launch the simulation. Focus on the values (in mm) predicted for aquifer exfiltration, saturation excess and, finally, the sum of the two sources as export runoff. 
 ```{r}
 res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                    dates = dates, summary_frequency = "month", summary_blocks = "WaterBalance",
-                   watershed_control = ws_control, progress = FALSE)
+                   watershed_control = ws_control, progress = TRUE)
 ```
 
 In the following we compare these values to those issued from simulations with altered scaling factors.
@@ -91,7 +92,7 @@ ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
 res_L5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                      dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
-                     watershed_control = ws_control, progress = FALSE)
+                     watershed_control = ws_control, progress = TRUE)
 ```
 
 Increasing `R_localflow` has the effect of increasing the drainage from soils to the aquifer (hence, decreasing soil moisture). It also increases capillarity rise due to the higher conductivity. Aquifer exfiltration increases downslope as a consequence of the larger recharge in upslope cells. 

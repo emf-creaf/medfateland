@@ -343,17 +343,6 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// tetisApplyLocalFlowsToAquifer
-void tetisApplyLocalFlowsToAquifer(List y, DataFrame outWB);
-RcppExport SEXP _medfateland_tetisApplyLocalFlowsToAquifer(SEXP ySEXP, SEXP outWBSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type y(ySEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type outWB(outWBSEXP);
-    tetisApplyLocalFlowsToAquifer(y, outWB);
-    return R_NilValue;
-END_RCPP
-}
 // tetisApplyDeepAquiferLossToAquifer
 void tetisApplyDeepAquiferLossToAquifer(DataFrame outWB, List y, List watershed_control);
 RcppExport SEXP _medfateland_tetisApplyDeepAquiferLossToAquifer(SEXP outWBSEXP, SEXP ySEXP, SEXP watershed_controlSEXP) {
@@ -391,8 +380,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisChannelRouting
-void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExport, NumericVector elevation, NumericVector slope, LogicalVector isChannel, LogicalVector isOutlet, IntegerVector target_outlet, IntegerVector distance_to_outlet, NumericVector outlet_backlog, List watershed_control, double patchsize);
-RcppExport SEXP _medfateland_tetisChannelRouting(SEXP ChannelExportSEXP, SEXP WatershedExportSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP, SEXP target_outletSEXP, SEXP distance_to_outletSEXP, SEXP outlet_backlogSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP) {
+void tetisChannelRouting(NumericVector ChannelExport, NumericVector WatershedExport, NumericVector elevation, NumericVector slope, LogicalVector isChannel, LogicalVector isOutlet, IntegerVector target_outlet, IntegerVector distance_to_outlet, NumericVector outlet_backlog, List watershed_control, double patchsize, bool debug);
+RcppExport SEXP _medfateland_tetisChannelRouting(SEXP ChannelExportSEXP, SEXP WatershedExportSEXP, SEXP elevationSEXP, SEXP slopeSEXP, SEXP isChannelSEXP, SEXP isOutletSEXP, SEXP target_outletSEXP, SEXP distance_to_outletSEXP, SEXP outlet_backlogSEXP, SEXP watershed_controlSEXP, SEXP patchsizeSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type ChannelExport(ChannelExportSEXP);
@@ -406,7 +395,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type outlet_backlog(outlet_backlogSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
-    tetisChannelRouting(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize);
+    Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
+    tetisChannelRouting(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize, debug);
     return R_NilValue;
 END_RCPP
 }
@@ -437,10 +427,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 9},
-    {"_medfateland_tetisApplyLocalFlowsToAquifer", (DL_FUNC) &_medfateland_tetisApplyLocalFlowsToAquifer, 2},
     {"_medfateland_tetisApplyDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisApplyDeepAquiferLossToAquifer, 3},
     {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 15},
-    {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 11},
+    {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 12},
     {NULL, NULL, 0}
 };
 
