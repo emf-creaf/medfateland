@@ -16,30 +16,60 @@
   df <- data.frame(row.names=as.character(WaterBalance$dates))
   df[["Date"]] = as.Date(WaterBalance$dates)
   if(type=="Hydrograph_Hietograph") {
-    if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
+    outlet_cells <- colnames(x$outlet_export_m3s)
+    channel_cells <- colnames(x$channel_export_m3s)
+
+    isChannel <- (length(channel_cells)>0)
+    
     df[["Precipitation"]] = WaterBalance$Precipitation
-    df[["Discharge"]] = rowSums(x$outlet_export_m3s)
+    df[["WatershedDischarge"]] = rowSums(x$outlet_export_m3s)
+    
+    if(isChannel) {
+      outlet_non_channel <- !(outlet_cells %in% channel_cells)
+      df[["ChannelDischarge"]] = rowSums(x$channel_export_m3s)
+      df[["DirectDischarge"]] = rowSums(x$outlet_export_m3s[, outlet_non_channel, drop = FALSE])
+    }
     if(!is.null(dates)) df = df[df$Date %in% dates,]
     if(!is.null(summary.freq)) {
       date.factor = cut(as.Date(df$Date), breaks=summary.freq)
-      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
+      df2 = data.frame(Date = as.Date(as.character(levels(date.factor))),
                       Precipitation = tapply(df$Precipitation,INDEX=date.factor, FUN=sum, na.rm=TRUE),
-                      Discharge = tapply(df$Discharge,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+                      WatershedDischarge = tapply(df$WatershedDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE))
+      if(isChannel) {
+        df2$ChannelDischarge = tapply(df$ChannelDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
+        df2$DirectDischarge = tapply(df$DirectDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
+      }
+      df <- df2
     }
-    
-    factor <- max(df$Precipitation)/max(df$Discharge)
-    maxRange <- 1.1*(max(df$Precipitation/factor) + max(df$Discharge))
+    factor <- max(df$Precipitation)/max(df$WatershedDischarge)
+    maxRange <- 1.1*(max(df$Precipitation/factor) + max(df$WatershedDischarge))
     precip_labels <- function(x) {round(x*factor)}
+    if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
     g <- ggplot(df)+
       geom_tile(aes(x = .data$Date,
                     y = -1*((.data$Precipitation/factor)/2-maxRange), # y = the center point of each bar
                     height = .data$Precipitation/factor,
-                    width = 1), fill = "blue", color="white")+
-      geom_line(aes(.data$Date, .data$Discharge), color = "black") +
+                    width = 1), fill = "blue", color="blue")
+    if(!isChannel) {
+      g <- g+
+        geom_line(aes(.data$Date, .data$WatershedDischarge), color = "black")
+    } else {
+      g <- g+
+        geom_line(aes(.data$Date, .data$DirectDischarge, color = "Direct discharge")) +
+        geom_line(aes(.data$Date, .data$ChannelDischarge, color = "Channel discharge")) +
+        geom_line(aes(.data$Date, .data$WatershedDischarge, color = "Watershed discharge")) +
+        scale_color_manual(name="", 
+                           values=c("Watershed discharge"="black", "Channel discharge"="darkgreen", "Direct discharge"="orange"), 
+                           limits = c("Watershed discharge", 
+                                      "Channel discharge",
+                                      "Direct discharge"))        
+    }
+    g <- g +
       scale_y_continuous(name = "Discharge (m3/s)",
                          sec.axis = sec_axis(transform = ~-1*(.-maxRange),
                                              name = "Precipitation (mm)",
                                              labels = precip_labels))+
+      ylab(ylab)+
       theme_bw()
     return(g)
   } else if(type=="PET_Precipitation") {

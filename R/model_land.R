@@ -486,9 +486,9 @@
     channel_cells <- which(sf_routing$channel)
     outlet_nonchannel_cells <- which(sf_routing$outlet & !sf_routing$channel)
 
-    WatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
-    colnames(WatershedExport) <- outlet_nonchannel_cells
-    rownames(WatershedExport) <- as.character(dates)
+    DirectWatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
+    colnames(DirectWatershedExport) <- outlet_nonchannel_cells
+    rownames(DirectWatershedExport) <- as.character(dates)
 
     ChannelExport <- matrix(0,nrow = nDays, ncol = length(channel_cells))
     colnames(ChannelExport) <- channel_cells
@@ -756,7 +756,7 @@
     
     ## Store watershed runoff reaching each outlet and channel
     if(watershed_model=="tetis") {
-      WatershedExport[day,] <- res_wb_day$WatershedExport[outlet_nonchannel_cells]
+      DirectWatershedExport[day,] <- res_wb_day$WatershedExport[outlet_nonchannel_cells]
       ChannelExport[day,] <- res_wb_day$ChannelExport[channel_cells]
     }
     
@@ -870,7 +870,7 @@
     SoilTranspirationsum <- sum(SoilLandscapeBalance$Transpiration , na.rm=T)
     SoilInterflowBalancesum <- sum(SoilLandscapeBalance$InterflowBalance , na.rm=T)
     ChannelExportsum <- sum(ChannelExport, na.rm=T)/nCells
-    WatershedExportsum <- sum(WatershedExport, na.rm=T)/nCells
+    WatershedExportsum <- sum(DirectWatershedExport, na.rm=T)/nCells
 
     soil_input <- (SoilInfiltrationsum + SoilCapillarityRisesum + SoilInterflowBalancesum)
     soil_output <- (SoilDeepDrainagesum + SoilSoilEvaporationsum + SoilHerbTranspirationsum + SoilTranspirationsum + SoilSaturationExcesssum)
@@ -920,7 +920,7 @@
               watershed_balance = LandscapeBalance,
               watershed_soil_balance = SoilLandscapeBalance,
               channel_export = ChannelExport,
-              watershed_export = WatershedExport)
+              direct_watershed_export = DirectWatershedExport)
   } else {
     l <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
               watershed_balance = LandscapeBalance)
@@ -1136,9 +1136,9 @@
       channel_cells <- which(sf_routing$channel)
       outlet_nonchannel_cells <- which(sf_routing$outlet & !sf_routing$channel)
       
-      WatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
-      colnames(WatershedExport) <- outlet_nonchannel_cells
-      rownames(WatershedExport) <- as.character(dates)
+      DirectWatershedExport <- matrix(0,nrow = nDays, ncol = length(outlet_nonchannel_cells))
+      colnames(DirectWatershedExport) <- outlet_nonchannel_cells
+      rownames(DirectWatershedExport) <- as.character(dates)
       
       ChannelExport <- matrix(0,nrow = nDays, ncol = length(channel_cells))
       colnames(ChannelExport) <- channel_cells
@@ -1214,13 +1214,13 @@
         channel_cells_sub <- channel_cells %in% which(sel_subwatershed)
         outlet_nonchannel_cells_sub <- outlet_nonchannel_cells %in% which(sel_subwatershed)
         ChannelExport[,channel_cells_sub] <- res_inner_sub$channel_export
-        WatershedExport[,outlet_nonchannel_cells_sub] <- res_inner_sub$watershed_export
+        DirectWatershedExport[,outlet_nonchannel_cells_sub] <- res_inner_sub$direct_watershed_export
       }
       res_inner <- list(sf = sf::st_as_sf(tibble::as_tibble(sf)),
                         watershed_balance = LandscapeBalance,
                         watershed_soil_balance = SoilLandscapeBalance,
                         channel_export = ChannelExport,
-                        watershed_export = WatershedExport)
+                        direct_watershed_export = DirectWatershedExport)
       
     } else {
       if(header_footer) cli::cli_h2("WHOLE-WATERSHED SIMULATION")
@@ -1248,7 +1248,7 @@
     # 1 L = 1 dm3 = 1e-3 m3
     # 1 d = 24h = 24*3600 s
     # Multiply by patch size to go from m3/m2 to m3 in the whole patch
-    OutletExport_m3s[, outlet_non_channel] <- (res_inner$watershed_export/1e3)*patchsize/(3600*24)
+    OutletExport_m3s[, outlet_non_channel] <- (res_inner$direct_watershed_export/1e3)*patchsize/(3600*24)
     ChannelExport_m3s <- (res_inner$channel_export/1e3)*patchsize/(3600*24)
     initial_backlog_sum <- sum(sf_routing$outlet_backlog, na.rm= TRUE)
     initial_outlet_amount <- sum(OutletExport_m3s*(3600*24))
