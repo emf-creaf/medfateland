@@ -26,7 +26,8 @@
     
     if(isChannel) {
       outlet_non_channel <- !(outlet_cells %in% channel_cells)
-      df[["ChannelDischarge"]] = rowSums(x$channel_export_m3s)
+      df[["ChannelLoad"]] = rowSums(x$channel_export_m3s)
+      df[["ChannelDischarge"]] = rowSums(x$outlet_export_m3s[, !outlet_non_channel, drop = FALSE])
       df[["DirectDischarge"]] = rowSums(x$outlet_export_m3s[, outlet_non_channel, drop = FALSE])
     }
     if(!is.null(dates)) df = df[df$Date %in% dates,]
@@ -36,6 +37,7 @@
                       Precipitation = tapply(df$Precipitation,INDEX=date.factor, FUN=sum, na.rm=TRUE),
                       WatershedDischarge = tapply(df$WatershedDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE))
       if(isChannel) {
+        df2$ChannelLoad = tapply(df$ChannelLoad,INDEX=date.factor, FUN=sum, na.rm=TRUE)
         df2$ChannelDischarge = tapply(df$ChannelDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
         df2$DirectDischarge = tapply(df$DirectDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
       }
@@ -55,21 +57,25 @@
         geom_line(aes(.data$Date, .data$WatershedDischarge), color = "black")
     } else {
       g <- g+
-        geom_line(aes(.data$Date, .data$DirectDischarge, color = "Direct discharge")) +
+        geom_line(aes(.data$Date, .data$ChannelLoad, color = "Channel load")) +
         geom_line(aes(.data$Date, .data$ChannelDischarge, color = "Channel discharge")) +
+        geom_line(aes(.data$Date, .data$DirectDischarge, color = "Direct discharge")) +
         geom_line(aes(.data$Date, .data$WatershedDischarge, color = "Watershed discharge")) +
         scale_color_manual(name="", 
-                           values=c("Watershed discharge"="black", "Channel discharge"="darkgreen", "Direct discharge"="orange"), 
+                           values=c("Watershed discharge"="black",
+                                    "Channel load" = "red",
+                                    "Channel discharge"="darkgreen", 
+                                    "Direct discharge"="yellow"), 
                            limits = c("Watershed discharge", 
+                                      "Channel load",
                                       "Channel discharge",
                                       "Direct discharge"))        
     }
     g <- g +
-      scale_y_continuous(name = "Discharge (m3/s)",
+      scale_y_continuous(name = ylab,
                          sec.axis = sec_axis(transform = ~-1*(.-maxRange),
                                              name = "Precipitation (mm)",
                                              labels = precip_labels))+
-      ylab(ylab)+
       theme_bw()
     return(g)
   } else if(type=="PET_Precipitation") {
