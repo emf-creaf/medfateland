@@ -539,21 +539,23 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
     // Add aquifer exfiltration to the water to be distributed if not an outlet or channel
     if(ri_tot>0.0) {
       double ri = ri_tot;
-      if(ni.size()>0) {
-        for(int j=0;j<ni.size();j++)  {
-          Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
-          ri -= (qi[j]*ri_tot);
+      if(isChannel[iCell]) { // If is channel then export
+        ChannelExport[iCell] += ri;
+        ri = 0.0;
+      } else if(sum(qi)==0.0) {// If is outlet then export
+        WatershedExport[iCell] += ri;
+        ri = 0.0;
+      } else { // Otherwise, distribute among waterQ neighbours
+        if(ni.size()>0) {
+          for(int j=0;j<ni.size();j++)  {
+            Runon[ni[j]-1] += (qi[j]*ri_tot); //decrease index
+            ri -= (qi[j]*ri_tot);
+          }
         }
-      }
-      if(sum(qi)==0.0 || isChannel[iCell]) { // outlet or channel
-        if(isChannel[iCell]) {
-          ChannelExport[iCell] += ri;
-        } else {
-          WatershedExport[iCell] += ri;
+        if(ri > 0.000001) {
+          Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
+          stop("Non-outlet or channel cell with runoff export");
         }
-      } else if(ri > 0.000001) {
-        Rcout<< i <<ni.size()<< " "<<qi.size()<<" "<<iCell<< " "<< sum(qi)<< " "<< ri<<"\n";
-        stop("Non-outlet or channel cell with runoff export");
       }
     }
   }
