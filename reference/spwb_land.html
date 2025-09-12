@@ -251,6 +251,8 @@ with the following columns:
 </ul></li>
 <li><p><code>result</code>: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.</p></li>
 <li><p><code>outlet</code>: A logical vector indicating outlet cells.</p></li>
+<li><p><code>channel</code>: A logical vector indicating channel cells.</p></li>
+<li><p><code>target_outlet</code>: Index of the outlet cell to which the channel leads  (<code>NA</code> for non-channel cells).</p></li>
 <li><p><code>outlet_backlog</code>: A vector indicating channel water volume (m3) backlog of outlet cells (for subsequent simulations).</p></li>
 <li><p><code>subwatershed</code>: Integer vector indicating watershed subunits (<code>NA</code> if <code>subwatersheds = FALSE</code> in watershed control parameters).</p></li>
 </ul>
@@ -347,7 +349,7 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-in"><span>                 dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
 <span class="r-in"><span>                 watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -374,7 +376,7 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">INITIALISATION</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[5ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[4ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil domains [buckets: 0, single: 65, dual: 0]</span>
@@ -383,38 +385,39 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  13% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  14% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  17% | ETA:  8s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  18% | ETA:  8s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA:  8s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  22% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  16% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  18% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  21% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  23% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA:  8s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA:  8s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  29% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  32% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  40% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% | ETA:  6s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  5s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  51% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% | ETA:  5s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% | ETA:  5s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  56% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% | ETA:  4s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  4s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% | ETA:  3s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% | ETA:  3s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  76% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% | ETA:  3s</span>
@@ -424,8 +427,9 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA:  2s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% | ETA:  2s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  89% | ETA:  1s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% | ETA:  1s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA:  1s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% | ETA:  0s</span>
@@ -434,11 +438,11 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Snowpack balance content (mm): 0 fluxes (mm): 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil balance content (mm): -54.82 fluxes (mm): -54.82</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer balance content (mm): 23.88 fluxes (mm): 23.88</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer fluxes (mm) Drainage input: 136.39 Exfiltration: 112.48 Capillary rise: 0.05 Negative aquifer</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> correction: 0.02 Deep loss: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer fluxes (mm) Drainage input: 136.39 Exfiltration: 112.48 Capillary</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> rise: 0.05 Negative aquifer correction: 0.02 Deep loss: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed balance content (mm): -30.11 fluxes (mm): -30.11</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 112.48 Evapotransp.: 72.38 Negative</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> aquifer correction: 0.02 Deep loss: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 112.48</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Evapotransp.: 72.38 Negative aquifer correction: 0.02 Deep loss: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">FINAL BALANCE CHECK</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -482,18 +486,18 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-in"><span>                            dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span></span>
 <span class="r-in"><span>                            watershed_control <span class="op">=</span> <span class="va">ws_control</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[8ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[9ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[31ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[32ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[18ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Hydrological model: TETIS</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Number of grid cells: 120 Number of target cells: 66</span>
@@ -516,60 +520,62 @@ than that of raster 'r', by changing the watershed control parameter called 'wea
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  13% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  14% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  17% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  16% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  18% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  22% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  19% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  21% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  23% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA:  8s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA:  8s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA:  8s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% | ETA:  8s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% | ETA:  7s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% | ETA:  7s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA:  6s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% | ETA:  6s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  40% | ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% | ETA:  6s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% | ETA:  6s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  47% | ETA:  5s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% | ETA:  5s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  5s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  6s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% | ETA:  5s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% | ETA:  4s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  58% | ETA:  4s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% | ETA:  5s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  58% | ETA:  5s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  60% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% | ETA:  4s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% | ETA:  3s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% | ETA:  3s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  76% | ETA:  3s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% | ETA:  2s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA:  2s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% | ETA:  2s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% | ETA:  2s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA:  1s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  89% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  98% | ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Snowpack balance content (mm): 0 fluxes (mm): 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil balance content (mm): -56.57 fluxes (mm): -56.57</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer balance content (mm): 24.01 fluxes (mm): 24.01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer fluxes (mm) Drainage input: 141.58 Exfiltration: 117.53 Capillary rise: 0.07 Negative aquifer</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> correction: 0.03 Deep loss: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Aquifer fluxes (mm) Drainage input: 141.58 Exfiltration: 117.53 Capillary</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> rise: 0.07 Negative aquifer correction: 0.03 Deep loss: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed balance content (mm): -31.7 fluxes (mm): -31.7</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 117.53 Evapotransp.: 68.94 Negative</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> aquifer correction: 0.03 Deep loss: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 117.53</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Evapotransp.: 68.94 Negative aquifer correction: 0.03 Deep loss: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">FINAL BALANCE CHECK</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>

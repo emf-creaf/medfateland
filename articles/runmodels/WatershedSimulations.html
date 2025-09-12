@@ -340,12 +340,12 @@ return a list with the following elements:</p>
 analogous to those of functions <code>*_spatial()</code>:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 66 features and 8 fields</span></span>
+<pre><code><span><span class="co">## Simple feature collection with 66 features and 10 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570</span></span>
 <span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 9</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 11</span></span></span>
 <span><span class="co">##            geometry state            aquifer snowpack summary  result outlet</span></span>
 <span><span class="co">##  <span style="color: #BCBCBC;">*</span>      <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   5.11       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
@@ -359,7 +359,8 @@ analogous to those of functions <code>*_spatial()</code>:</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.393      2.81 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    1.05       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: outlet_backlog &lt;dbl&gt;, subwatershed &lt;int&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: channel &lt;lgl&gt;, target_outlet &lt;int&gt;, outlet_backlog &lt;dbl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   subwatershed &lt;int&gt;</span></span></span></code></pre>
 <p>Columns <code>state</code>, <code>aquifer</code> and
 <code>snowpack</code> contain state variables, whereas
 <code>summary</code> contains temporal summaries for all cells. Column
@@ -583,37 +584,37 @@ importance:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       before     after</span></span>
-<span><span class="co">## 1  0.0000000 0.3358477</span></span>
-<span><span class="co">## 2  0.0000000 0.2849383</span></span>
-<span><span class="co">## 3  0.0000000 0.2710239</span></span>
-<span><span class="co">## 4  0.0000000 0.3749774</span></span>
-<span><span class="co">## 5  0.0000000 0.3436249</span></span>
-<span><span class="co">## 6  0.0000000 0.5517443</span></span>
-<span><span class="co">## 7  0.0000000 0.4952552</span></span>
-<span><span class="co">## 8  0.0000000 0.5732651</span></span>
-<span><span class="co">## 9  0.0000000 0.6071644</span></span>
-<span><span class="co">## 10 0.0000000 0.8147722</span></span>
-<span><span class="co">## 11 0.0000000 0.9448990</span></span>
-<span><span class="co">## 12 0.0000000 1.1609422</span></span>
-<span><span class="co">## 13 0.0000000 1.2501232</span></span>
-<span><span class="co">## 14 0.0000000 1.3994129</span></span>
-<span><span class="co">## 15 0.0000000 1.4765262</span></span>
-<span><span class="co">## 16 0.8351093 1.5433484</span></span>
-<span><span class="co">## 17 1.5216469 1.5312703</span></span>
-<span><span class="co">## 18 1.5252638 1.5061681</span></span>
-<span><span class="co">## 19 1.7786587 1.4541204</span></span>
-<span><span class="co">## 20 1.6554239 1.3881780</span></span>
-<span><span class="co">## 21 1.8650843 1.4678973</span></span>
-<span><span class="co">## 22 1.9730926 1.5166361</span></span>
-<span><span class="co">## 23 2.0248463 1.5171288</span></span>
-<span><span class="co">## 24 2.1197260 1.5554719</span></span>
-<span><span class="co">## 25 2.2070084 1.5680345</span></span>
-<span><span class="co">## 26 2.3631633 1.5952060</span></span>
-<span><span class="co">## 27 2.4141957 1.5783955</span></span>
-<span><span class="co">## 28 2.4051552 1.5790579</span></span>
-<span><span class="co">## 29 2.3179406 1.5183760</span></span>
-<span><span class="co">## 30 2.2075102 1.4531713</span></span>
-<span><span class="co">## 31 2.1197476 1.4045194</span></span></code></pre>
+<span><span class="co">## 1  0.0000000 0.2839459</span></span>
+<span><span class="co">## 2  0.0000000 0.2636110</span></span>
+<span><span class="co">## 3  0.0000000 0.2517584</span></span>
+<span><span class="co">## 4  0.0000000 0.3575337</span></span>
+<span><span class="co">## 5  0.0000000 0.3277986</span></span>
+<span><span class="co">## 6  0.0000000 0.5373678</span></span>
+<span><span class="co">## 7  0.0000000 0.4821657</span></span>
+<span><span class="co">## 8  0.0000000 0.5613350</span></span>
+<span><span class="co">## 9  0.0000000 0.5960535</span></span>
+<span><span class="co">## 10 0.0000000 0.8046782</span></span>
+<span><span class="co">## 11 0.0000000 0.9356817</span></span>
+<span><span class="co">## 12 0.0000000 1.1525101</span></span>
+<span><span class="co">## 13 0.0000000 1.2423591</span></span>
+<span><span class="co">## 14 0.0000000 1.3922569</span></span>
+<span><span class="co">## 15 0.0000000 1.4699202</span></span>
+<span><span class="co">## 16 0.8351093 1.5372364</span></span>
+<span><span class="co">## 17 1.5216469 1.5256049</span></span>
+<span><span class="co">## 18 1.5252638 1.5009055</span></span>
+<span><span class="co">## 19 1.7786587 1.4492208</span></span>
+<span><span class="co">## 20 1.6554239 1.3836055</span></span>
+<span><span class="co">## 21 1.8650843 1.4636177</span></span>
+<span><span class="co">## 22 1.9730926 1.5126281</span></span>
+<span><span class="co">## 23 2.0248463 1.5133617</span></span>
+<span><span class="co">## 24 2.1197260 1.5519245</span></span>
+<span><span class="co">## 25 2.2070084 1.5646857</span></span>
+<span><span class="co">## 26 2.3631633 1.5920368</span></span>
+<span><span class="co">## 27 2.4141957 1.5753846</span></span>
+<span><span class="co">## 28 2.4051552 1.5761990</span></span>
+<span><span class="co">## 29 2.3179406 1.5156458</span></span>
+<span><span class="co">## 30 2.2075102 1.4505642</span></span>
+<span><span class="co">## 31 2.1197476 1.4020247</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>
@@ -779,7 +780,7 @@ to see what the model is doing:</p>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Column 'snowpack' was missing in 'sf'. Initializing empty snowpack.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Minimum bedrock porosity set to 0.1%.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.9s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.5s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[2s]</span></span></span>
