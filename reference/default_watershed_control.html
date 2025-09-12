@@ -70,11 +70,13 @@
 <li><p><code>weather_aggregation_factor [= 1]</code>: An integer specifying the spatial aggregation for interpolated weather.</p></li>
 <li><p><code>tetis_parameters</code>: A list of TETIS parameters with the following elements:
 </p><ul><li><p><code>R_localflow [= 1.0]</code>: Correction factor for soil hydraulic saturated conductivity (local vertical flows).</p></li>
+<li><p><code>interflow [= TRUE]</code>: A boolean flag to include interflow.</p></li>
 <li><p><code>R_interflow [= 50.0]</code>: Correction factor for soil hydraulic saturated conductivity (subsurface flow between grid cells).</p></li>
-<li><p><code>R_baseflow [= 5.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
 <li><p><code>n_interflow [= 1.0]</code>: Exponent for the determination of interflow.</p></li>
+<li><p><code>baseflow [= TRUE]</code>: A boolean flag to include baseflow.</p></li>
+<li><p><code>R_baseflow [= 5.0]</code>: Correction factor for bedrock hydraulic conductivity (groundwaterflow between grid cells).</p></li>
 <li><p><code>n_baseflow [= 1.0]</code>: Exponent for the determination of baseflow.</p></li>
-<li><p><code>free_drainage_enforced [= TRUE]</code>: A boolean flag to prevent water table effects into local soil water balance.</p></li>
+<li><p><code>free_drainage_outlets [= TRUE]</code>: A boolean flag to prevent water table effects into local soil water balance of outlet/channel cells (included for numerical stability).</p></li>
 <li><p><code>num_daily_substeps [= 1]</code>: Number of daily sub-steps for interflow and baseflow calculations.</p></li>
 <li><p><code>subwatersheds [= FALSE]</code>: A boolean flag to define watershed subunits.</p></li>
 <li><p><code>max_overlap [= 0.2]</code>: Maximum proportion of overlapping cells for watershed subunits to be considered independent. Lower values will normally produce larger subunits.</p></li>
@@ -110,19 +112,25 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_localflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$interflow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_interflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_baseflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$n_interflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$baseflow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$R_baseflow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$n_baseflow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$free_drainage_enforced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$free_drainage_outlets</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tetis_parameters$num_daily_substeps</span>

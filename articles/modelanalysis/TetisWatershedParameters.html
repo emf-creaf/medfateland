@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / María González</h4>
             
-            <h4 data-toc-skip class="date">2025-09-10</h4>
+            <h4 data-toc-skip class="date">2025-09-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/modelanalysis/TetisWatershedParameters.Rmd" class="external-link"><code>vignettes/modelanalysis/TetisWatershedParameters.Rmd</code></a></small>
       <div class="d-none name"><code>TetisWatershedParameters.Rmd</code></div>
@@ -108,12 +108,12 @@ that can be used to understand the inputs required:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span>
 <span><span class="va">example_watershed_burnin</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 66 features and 14 fields</span></span>
+<pre><code><span><span class="co">## Simple feature collection with 66 features and 15 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570</span></span>
 <span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 15</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 16</span></span></span>
 <span><span class="co">##            geometry    id elevation slope aspect land_cover_type</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570)     1      <span style="text-decoration: underline;">1</span>162 11.3   79.2  wildland       </span></span>
@@ -127,9 +127,9 @@ that can be used to understand the inputs required:</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370)     9      <span style="text-decoration: underline;">1</span>213 13.2   78.7  wildland       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370)    10      <span style="text-decoration: underline;">1</span>198  8.56  75.6  agriculture    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 9 more variables: forest &lt;list&gt;, soil &lt;list&gt;, state &lt;list&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 10 more variables: forest &lt;list&gt;, soil &lt;list&gt;, state &lt;list&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   depth_to_bedrock &lt;dbl&gt;, bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, crop_factor &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   snowpack &lt;dbl&gt;, aquifer &lt;dbl&gt;, crop_factor &lt;dbl&gt;, outlet_backlog &lt;dbl&gt;</span></span></span></code></pre>
 <p>The watershed state is the result of a four-year burn-in period, in
 order to have aquifer and soil moisture at a (dynamic) equilibrium.
 Another spatial input is needed to describe the grid topology, which in
@@ -168,19 +168,25 @@ transfer processes, in this case:</p>
 <pre><code><span><span class="co">## $R_localflow</span></span>
 <span><span class="co">## [1] 1</span></span>
 <span><span class="co">## </span></span>
+<span><span class="co">## $interflow</span></span>
+<span><span class="co">## [1] TRUE</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## $R_interflow</span></span>
 <span><span class="co">## [1] 50</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## $R_baseflow</span></span>
-<span><span class="co">## [1] 5</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $n_interflow</span></span>
 <span><span class="co">## [1] 1</span></span>
 <span><span class="co">## </span></span>
+<span><span class="co">## $baseflow</span></span>
+<span><span class="co">## [1] TRUE</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $R_baseflow</span></span>
+<span><span class="co">## [1] 5</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## $n_baseflow</span></span>
 <span><span class="co">## [1] 1</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## $free_drainage_enforced</span></span>
+<span><span class="co">## $free_drainage_outlets</span></span>
 <span><span class="co">## [1] TRUE</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $num_daily_substeps</span></span>
@@ -212,26 +218,149 @@ configuration, we set the three scaling factors to one:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_localflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
+<span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">num_daily_substeps</span> <span class="op">&lt;-</span> <span class="fl">6</span></span></code></pre></div>
 <p>Now we launch the simulation. Focus on the values (in mm) predicted
 for aquifer exfiltration, saturation excess and, finally, the sum of the
 two sources as export runoff.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                   dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>, summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
-<span>                   watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>                   watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[73ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[29ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
+<pre><code><span><span class="co">## • Average cell area: 10006 m2, Total area: 120 ha, Target area: 66 ha</span></span></code></pre>
+<pre><code><span><span class="co">## • Cell land use [wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## • Cells with soil: 65</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of days to simulate: 90</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of temporal cell summaries: 3</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of channel cells: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">INITIALISATION</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All state objects are already available for 'spwb'.</span></span></code></pre>
+<pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## • Soil domains [buckets: 0, single: 65, dual: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">WHOLE-WATERSHED SIMULATION</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  10% | ETA: 19s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■                          </span>  18% | ETA: 23s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% | ETA: 25s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% | ETA: 28s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% | ETA: 27s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% | ETA: 28s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA: 28s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  47% | ETA: 27s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% | ETA: 24s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% | ETA: 20s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA: 16s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% | ETA: 13s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA: 10s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% | ETA:  6s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## • Snowpack balance content (mm): 0 fluxes (mm): 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Soil balance content (mm): 86.51 fluxes (mm): 86.51</span></span></code></pre>
+<pre><code><span><span class="co">## • Aquifer balance content (mm): 2.72 fluxes (mm): 2.72</span></span></code></pre>
+<pre><code><span><span class="co">## • Aquifer fluxes (mm) Drainage input: 6.95 Exfiltration: 3.85 Capillary rise:</span></span>
+<span><span class="co">## 1.84 Negative aquifer correction: 1.48 Deep loss: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Watershed balance content (mm): 87.92 fluxes (mm): 87.92</span></span></code></pre>
+<pre><code><span><span class="co">## • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 3.85</span></span>
+<span><span class="co">## Evapotransp.: 64.44 Negative aquifer correction: 1.48 Deep loss: 0</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">FINAL BALANCE CHECK</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## • Final channel sum (m3): 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Final outlet sum (m3): 2545</span></span></code></pre>
+<pre><code><span><span class="co">## • Final watershed export sum (m3): 2545</span></span></code></pre>
 <p>In the following we compare these values to those issued from
 simulations with altered scaling factors.</p>
 <p><strong>Increasing local vertical conductivity</strong></p>
 <p>We begin our sensitivity analysis by increasing the vertical
 conductivity five times:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_localflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">res_L5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, </span>
 <span>                     dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,summary_blocks <span class="op">=</span> <span class="st">"WaterBalance"</span>,</span>
-<span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' over a watershed</span> <span style="color: #00BBBB;">─────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[30ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## • Hydrological model: TETIS</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of grid cells: 120 Number of target cells: 66</span></span></code></pre>
+<pre><code><span><span class="co">## • Average cell area: 10006 m2, Total area: 120 ha, Target area: 66 ha</span></span></code></pre>
+<pre><code><span><span class="co">## • Cell land use [wildland: 48 agriculture: 17 artificial: 0 rock: 1 water: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## • Cells with soil: 65</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of days to simulate: 90</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of temporal cell summaries: 3</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of cells with daily model results requested: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of channel cells: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Number of outlet cells: 1</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">INITIALISATION</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All state objects are already available for 'spwb'.</span></span></code></pre>
+<pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## • Soil domains [buckets: 0, single: 65, dual: 0]</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">WHOLE-WATERSHED SIMULATION</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■                             </span>   6% | ETA: 49s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■                            </span>  11% | ETA: 46s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■                           </span>  14% | ETA:  1m</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■                         </span>  19% | ETA:  1m</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■                        </span>  24% | ETA: 47s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■                       </span>  27% | ETA: 49s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% | ETA: 46s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% | ETA: 40s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA: 37s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% | ETA: 26s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% | ETA: 16s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% | ETA:  7s</span></span></code></pre>
+<pre><code><span><span class="co">## Daily simulations <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span></code></pre>
+<pre><code><span><span class="co">## • Snowpack balance content (mm): 0 fluxes (mm): 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Soil balance content (mm): 77.7 fluxes (mm): 77.7</span></span></code></pre>
+<pre><code><span><span class="co">## • Aquifer balance content (mm): 9.53 fluxes (mm): 9.53</span></span></code></pre>
+<pre><code><span><span class="co">## • Aquifer fluxes (mm) Drainage input: 15.12 Exfiltration: 5.48 Capillary rise:</span></span>
+<span><span class="co">## 0.33 Negative aquifer correction: 0.23 Deep loss: 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Watershed balance content (mm): 86.06 fluxes (mm): 86.06</span></span></code></pre>
+<pre><code><span><span class="co">## • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 5.48</span></span>
+<span><span class="co">## Evapotransp.: 63.43 Negative aquifer correction: 0.23 Deep loss: 0</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">FINAL BALANCE CHECK</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## • Final channel sum (m3): 0</span></span></code></pre>
+<pre><code><span><span class="co">## • Final outlet sum (m3): 3619</span></span></code></pre>
+<pre><code><span><span class="co">## • Final watershed export sum (m3): 3619</span></span></code></pre>
 <p>Increasing <code>R_localflow</code> has the effect of increasing the
 drainage from soils to the aquifer (hence, decreasing soil moisture). It
 also increases capillarity rise due to the higher conductivity. Aquifer
@@ -240,7 +369,7 @@ in upslope cells.</p>
 <p><strong>Increasing subsurface lateral conductivity</strong></p>
 <p>We now focus on the lateral conductivity of subsurface fluxes
 (interflow):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_localflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -253,7 +382,7 @@ resulting in a much larger saturation excess. It also impacts the amount
 of aquifer exfiltration.</p>
 <p><strong>Increasing groundwater lateral conductivity</strong> Let’s
 now perform a simulation with an increased groundwater conductivity:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_localflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_interflow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">R_baseflow</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
@@ -270,7 +399,7 @@ exfiltration.</p>
 <div class="section level3">
 <h3 id="flux-rate-series">Flux rate series<a class="anchor" aria-label="anchor" href="#flux-rate-series"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df1</span><span class="op">&lt;-</span> <span class="va">res_0</span><span class="op">$</span><span class="va">watershed_balance</span></span>
 <span><span class="va">df1</span><span class="op">$</span><span class="va">Scenario</span> <span class="op">&lt;-</span> <span class="st">"Baseline"</span></span>
 <span><span class="va">df2</span><span class="op">&lt;-</span> <span class="va">res_L5</span><span class="op">$</span><span class="va">watershed_balance</span></span>
@@ -282,14 +411,14 @@ exfiltration.</p>
 <span><span class="va">df</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df1</span>,<span class="va">df2</span>,<span class="va">df3</span>, <span class="va">df4</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">Scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Scenario</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baseline"</span>, <span class="st">"R_local x 5"</span>, <span class="st">"R_inter x 5"</span>, <span class="st">"R_base x 5"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Drainage</strong></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">DeepDrainage</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Deep drainage (mm)"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Aquifer exfiltration</strong></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">dates</span>, y <span class="op">=</span><span class="va">AquiferExfiltration</span>, col <span class="op">=</span> <span class="va">Scenario</span>, linetype <span class="op">=</span> <span class="va">Scenario</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Aquifer exfiltration (mm)"</span><span class="op">)</span><span class="op">+</span></span>
@@ -300,7 +429,7 @@ exfiltration.</p>
 <h3 id="flux-rate-maps">Flux rate maps<a class="anchor" aria-label="anchor" href="#flux-rate-maps"></a>
 </h3>
 <p><strong>Drainage to aquifer</strong></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_L5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_local x 5"</span><span class="op">)</span></span>
 <span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_I5</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"DeepDrainage"</span>, date <span class="op">=</span> <span class="st">"2001-01-01"</span>, r <span class="op">=</span> <span class="va">r</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"R_inter x 5"</span><span class="op">)</span></span>
@@ -308,7 +437,7 @@ exfiltration.</p>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Sub-surface balance</strong></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"InterflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">450</span><span class="op">)</span>, mid<span class="op">=</span><span class="st">"gray"</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>
@@ -324,7 +453,7 @@ exfiltration.</p>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span> , ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
 <p><strong>Groundwater balance</strong></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_0</span><span class="op">$</span><span class="va">sf</span>, <span class="st">"BaseflowBalance"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient2</a></span><span class="op">(</span>mid<span class="op">=</span><span class="st">"gray"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">250</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span></span>

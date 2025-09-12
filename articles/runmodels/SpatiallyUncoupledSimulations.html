@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2025-09-10</h4>
+            <h4 data-toc-skip class="date">2025-09-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/runmodels/SpatiallyUncoupledSimulations.Rmd" class="external-link"><code>vignettes/runmodels/SpatiallyUncoupledSimulations.Rmd</code></a></small>
       <div class="d-none name"><code>SpatiallyUncoupledSimulations.Rmd</code></div>
@@ -204,7 +204,7 @@ objects, we can draw maps of some variables using:</p>
 <p><img src="SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-4-1.png" alt="Basal area of forest stands" width="672" style="display: block; margin: auto;"></p>
 <p>The set of maps available can be known by inspecting the help of
 function <code><a href="../../reference/extract_variables.html">extract_variables()</a></code>. Alternatively, the package
-provides function <code><a href="../../reference/shinyplot_land.html">shinyplot_land()</a></code> to display maps
+provides function <code>shinyplot_land()</code> to display maps
 interactively.</p>
 </div>
 <div class="section level3">
@@ -283,22 +283,22 @@ january and february):</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[1.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[25ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[9.9s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[31ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>Function <code><a href="../../reference/spwb_spatial.html">spwb_spatial()</a></code> first initializes model inputs
@@ -395,7 +395,7 @@ function allows us to display maps of summaries for specific dates:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_sum</span>, <span class="st">"Transpiration"</span>, <span class="st">"2001-02-01"</span>, limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-14-2.png" alt="Maps of transpiration for different dates" width="672" style="display: block; margin: auto;"></p>
 <p>To avoid displaying maps one by one, the package includes function
-<code><a href="../../reference/shinyplot_land.html">shinyplot_land()</a></code> that allows displaying maps of temporal
+<code><a href="https://emf-creaf.github.io/medfate/reference/shinyplot.html" class="external-link">shinyplot()</a></code> that allows displaying maps of temporal
 summaries interactively.</p>
 </div>
 <div class="section level3">
@@ -419,16 +419,16 @@ balance components instead of simulation results:</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[2.6s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[2.5s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[10s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[9.9s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
@@ -491,16 +491,16 @@ the data frame corresponding to plant drought stress:</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[20ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 100 input objects for model 'spwb'</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 100 input objects for model 'spwb' <span style="color: #B2B2B2;">[2.7s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[34ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[22ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[10.2s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[9.8s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
@@ -550,20 +550,20 @@ in the set of stands for an extra month:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb'</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All input objects are already available for 'spwb'</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input<span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[22ms]</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input<span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[20ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[33ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[30ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 7; chunk size = 14)</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[9.3s]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 7; chunk size = 14) <span style="color: #B2B2B2;">[9.4s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[20ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[36ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <p>And display a map with the resulting month transpiration:</p>
@@ -609,12 +609,11 @@ provided in the package:</p>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Performing 'spwb' simulations on 100 locations</span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> Performing 'spwb' simulations on 100 locations <span style="color: #B2B2B2;">[17ms]</span></span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■                              </span>   4% | ETA: 25s</span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■                          </span>  16% | ETA: 18s</span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% | ETA: 14s</span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% | ETA: 10s</span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% | ETA:  5s</span></span>
-<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% | ETA:  2s</span></span>
+<span><span class="co">## Stands <span style="color: #00BB00;">■■■                             </span>   6% | ETA: 19s</span></span>
+<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■                         </span>  20% | ETA: 16s</span></span>
+<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA: 12s</span></span>
+<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% | ETA:  7s</span></span>
+<span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% | ETA:  3s</span></span>
 <span><span class="co">## Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 </div>
