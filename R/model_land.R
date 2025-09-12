@@ -1282,6 +1282,8 @@
     }
     sf_out <- res_inner$sf
     sf_out$outlet <- sf_routing$outlet
+    sf_out$channel <- sf_routing$channel
+    sf_out$target_outlet <- sf_routing$target_outlet
     sf_out$outlet_backlog <- sf_routing$outlet_backlog
     sf_out$subwatershed <- sf_routing$subwatershed
 
@@ -1390,6 +1392,8 @@
 #'       }
 #'       \item{\code{result}: A list of cell detailed results (only for those indicated in the input), with contents depending on the local model.}
 #'       \item{\code{outlet}: A logical vector indicating outlet cells.}
+#'       \item{\code{channel}: A logical vector indicating channel cells.}
+#'       \item{\code{target_outlet}: Index of the outlet cell to which the channel leads  (\code{NA} for non-channel cells).}
 #'       \item{\code{outlet_backlog}: A vector indicating channel water volume (m3) backlog of outlet cells (for subsequent simulations).}
 #'       \item{\code{subwatershed}: Integer vector indicating watershed subunits (\code{NA} if \code{subwatersheds = FALSE} in watershed control parameters).}
 #'     }
@@ -2119,6 +2123,8 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   }
   if(watershed_model=="tetis")  {
     res$outlet <- sf_routing$outlet
+    res$channel <- sf_routing$channel
+    res$target_outlet <- sf_routing$target_outlet
     res$outlet_backlog <- sf_routing$outlet_backlog
     res$subwatershed <- sf_routing$subwatershed
   }

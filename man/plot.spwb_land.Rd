@@ -34,9 +34,10 @@ The following plots are currently available:
 \itemize{
 \item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
-\item{\code{"Export"}: Water exported through different fluxes.}
+\item{\code{"Channel"}: Partitioning of overall discharge into discharge from channel and direct outlet discharge. Channel loading is also shown to evidence the routing effect.}
+\item{\code{"Export"}: Water exported through different fluxes: (total watershed export, channel routing, deep drainage).}
 \item{\code{"Overland_Runoff"}: Origin of overland runoff flows (i.e. saturation excess or infiltration excess).}
-\item{\code{"Soil_Aquifer"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
+\item{\code{"Aquifer_Balance"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
 \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
 }
 }

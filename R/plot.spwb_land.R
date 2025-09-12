@@ -1,6 +1,7 @@
 .getWatershedWaterBalancePlotTypes <- function(){
   return(c("Hydrograph & Hietograph" = "Hydrograph_Hietograph",
            "PET & Precipitation" = "PET_Precipitation",
+           "Channel routing" = "Channel",
            "Water exported" = "Export", 
            "Overland runoff" = "Overland_Runoff",
            "Aquifer balance" = "Aquifer_Balance",
@@ -16,68 +17,68 @@
   df <- data.frame(row.names=as.character(WaterBalance$dates))
   df[["Date"]] = as.Date(WaterBalance$dates)
   if(type=="Hydrograph_Hietograph") {
-    outlet_cells <- colnames(x$outlet_export_m3s)
-    channel_cells <- colnames(x$channel_export_m3s)
 
-    isChannel <- (length(channel_cells)>0)
-    
     df[["Precipitation"]] = WaterBalance$Precipitation
     df[["WatershedDischarge"]] = rowSums(x$outlet_export_m3s)
     
-    if(isChannel) {
-      outlet_non_channel <- !(outlet_cells %in% channel_cells)
-      df[["ChannelLoad"]] = rowSums(x$channel_export_m3s)
-      df[["ChannelDischarge"]] = rowSums(x$outlet_export_m3s[, !outlet_non_channel, drop = FALSE])
-      df[["DirectDischarge"]] = rowSums(x$outlet_export_m3s[, outlet_non_channel, drop = FALSE])
-    }
     if(!is.null(dates)) df = df[df$Date %in% dates,]
     if(!is.null(summary.freq)) {
       date.factor = cut(as.Date(df$Date), breaks=summary.freq)
-      df2 = data.frame(Date = as.Date(as.character(levels(date.factor))),
+      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
                       Precipitation = tapply(df$Precipitation,INDEX=date.factor, FUN=sum, na.rm=TRUE),
-                      WatershedDischarge = tapply(df$WatershedDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE))
-      if(isChannel) {
-        df2$ChannelLoad = tapply(df$ChannelLoad,INDEX=date.factor, FUN=sum, na.rm=TRUE)
-        df2$ChannelDischarge = tapply(df$ChannelDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
-        df2$DirectDischarge = tapply(df$DirectDischarge,INDEX=date.factor, FUN=sum, na.rm=TRUE)
-      }
-      df <- df2
+                      WatershedDischarge = tapply(df$WatershedDischarge,INDEX=date.factor, FUN=mean, na.rm=TRUE))
     }
     factor <- max(df$Precipitation)/max(df$WatershedDischarge)
     maxRange <- 1.1*(max(df$Precipitation/factor) + max(df$WatershedDischarge))
     precip_labels <- function(x) {round(x*factor)}
-    if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
+    if(is.null(ylab)) ylab = expression(paste("Discharge (",m^{3}%.%s^{-1}, ")")) 
     g <- ggplot(df)+
       geom_tile(aes(x = .data$Date,
                     y = -1*((.data$Precipitation/factor)/2-maxRange), # y = the center point of each bar
                     height = .data$Precipitation/factor,
-                    width = 1), fill = "blue", color="blue")
-    if(!isChannel) {
-      g <- g+
-        geom_line(aes(.data$Date, .data$WatershedDischarge), color = "black")
-    } else {
-      g <- g+
-        geom_line(aes(.data$Date, .data$ChannelLoad, color = "Channel load")) +
-        geom_line(aes(.data$Date, .data$ChannelDischarge, color = "Channel discharge")) +
-        geom_line(aes(.data$Date, .data$DirectDischarge, color = "Direct discharge")) +
-        geom_line(aes(.data$Date, .data$WatershedDischarge, color = "Watershed discharge")) +
-        scale_color_manual(name="", 
-                           values=c("Watershed discharge"="black",
-                                    "Channel load" = "red",
-                                    "Channel discharge"="darkgreen", 
-                                    "Direct discharge"="yellow"), 
-                           limits = c("Watershed discharge", 
-                                      "Channel load",
-                                      "Channel discharge",
-                                      "Direct discharge"))        
-    }
-    g <- g +
+                    width = 1), fill = "blue", color="blue")+
+      geom_line(aes(.data$Date, .data$WatershedDischarge), color = "black")+
       scale_y_continuous(name = ylab,
                          sec.axis = sec_axis(transform = ~-1*(.-maxRange),
                                              name = "Precipitation (mm)",
                                              labels = precip_labels))+
       theme_bw()
     return(g)
+  } else if(type=="Channel") {
+    outlet_cells <- colnames(x$outlet_export_m3s)
+    outlet_channel <- as.character(unique(x$sf$target_outlet[as.numeric(colnames(x$channel_export_m3s))]))
+    outlet_non_channel <- !(outlet_cells %in% outlet_channel)
+    df[["WatershedDischarge"]] = rowSums(x$outlet_export_m3s)
+    df[["ChannelLoad"]] = rowSums(x$channel_export_m3s)
+    df[["ChannelDischarge"]] = rowSums(x$outlet_export_m3s[, !outlet_non_channel, drop = FALSE])
+    df[["DirectDischarge"]] = rowSums(x$outlet_export_m3s[, outlet_non_channel, drop = FALSE])
+    if(!is.null(dates)) df = df[df$Date %in% dates,]
+    if(!is.null(summary.freq)) {
+      date.factor = cut(as.Date(df$Date), breaks=summary.freq)
+      df = data.frame(Date = as.Date(as.character(levels(date.factor))),
+                      WatershedDischarge = tapply(df$WatershedDischarge,INDEX=date.factor, FUN=mean, na.rm=TRUE),
+                      ChannelLoad = tapply(df$ChannelLoad,INDEX=date.factor, FUN=mean, na.rm=TRUE),
+                      ChannelDischarge = tapply(df$ChannelDischarge,INDEX=date.factor, FUN=mean, na.rm=TRUE),
+                      DirectDischarge = tapply(df$DirectDischarge,INDEX=date.factor, FUN=mean, na.rm=TRUE))
+    }
+    if(is.null(ylab)) ylab = expression(m^{3}%.%s^{-1}) 
+    g <- ggplot(df)+
+      geom_line(aes(.data$Date, .data$ChannelLoad, color = "Channel load")) +
+      geom_line(aes(.data$Date, .data$ChannelDischarge, color = "Channel discharge")) +
+      geom_line(aes(.data$Date, .data$DirectDischarge, color = "Direct discharge")) +
+      geom_line(aes(.data$Date, .data$WatershedDischarge, color = "Watershed discharge")) +
+      scale_color_manual(name="", 
+                         values=c("Watershed discharge"="black",
+                                  "Channel load" = "red",
+                                  "Channel discharge"="darkgreen", 
+                                  "Direct discharge"="yellow"), 
+                         limits = c("Watershed discharge", 
+                                    "Channel load",
+                                    "Channel discharge",
+                                    "Direct discharge"))+
+      ylab(ylab)+
+      theme_bw()
+    return(g)    
   } else if(type=="PET_Precipitation") {
     if(is.null(ylab)) ylab = expression(L%.%m^{-2}) 
     # For back-compatibility
@@ -222,9 +223,10 @@
 #' \itemize{
 #'   \item{\code{"Hydrograph_Hietograph"}: A combination of hydrograph and hietograph (in a secondary, reversed, axis).}
 #'   \item{\code{"PET_Precipitation"}: Potential evapotranspiration, rainfall and snow.}
-#'   \item{\code{"Export"}: Water exported through different fluxes.}
+#'   \item{\code{"Channel"}: Partitioning of overall discharge into discharge from channel and direct outlet discharge. Channel loading is also shown to evidence the routing effect.}
+#'   \item{\code{"Export"}: Water exported through different fluxes: (total watershed export, channel routing, deep drainage).}
 #'   \item{\code{"Overland_Runoff"}: Origin of overland runoff flows (i.e. saturation excess or infiltration excess).}
-#'   \item{\code{"Soil_Aquifer"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
+#'   \item{\code{"Aquifer_Balance"}: Water exchanged between soil and aquifer (i.e. soil deep drainage and capillarity rise).}
 #'   \item{\code{"Evapotranspiration"}: Interception, woody transpiration, herb transpiration and soil evaporation.}
 #' }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
