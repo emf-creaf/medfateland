@@ -133,7 +133,7 @@
 #' 
 #' Creates a shiny app with interactive plots for spatial inputs and simulation results 
 #' 
-#' @param x The object of class 'sf' containing information to be drawn (see details). Alternatively, an object of class 'spwb_land', 'growth_land' or 'fordyn_land'.
+#' @param x The object of class 'sf' containing information to be drawn (see details). 
 #' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.
 #' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' 
@@ -152,26 +152,46 @@
 #' @seealso \code{\link{plot_summary}}, \code{\link{extract_variables}}
 #' 
 #' @export
-shinyplot_land<-function(x, SpParams = NULL, r = NULL) {
-  if(inherits(x, "sf") && ("elevation" %in% names(x))) {
+shinyplot.sf <- function(x, SpParams = NULL, r = NULL, ...) {
+  if("elevation" %in% names(x)) {
     return(.shinyplot_spatial(x, SpParams, r))
   }
-  else if(inherits(x, "sf") && ("summary" %in% names(x))) {
+  else if("summary" %in% names(x)) {
     not_null <- which(!unlist(lapply(x$summary, is.null)))
     if(length(not_null)>0) return(.shinyplot_results(x, r))
     else stop("Column 'summary' is NULL for all elements")
-  }
-  else if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land")) {
-    x_map <- x$sf
-    if("summary" %in% names(x_map)) {
-      not_null <- which(!unlist(lapply(x_map$summary, is.null)))
-      if(length(not_null)>0) return(.shinyplot_results(x, r))
-      else stop("Column 'summary' is NULL for all elements")
-    }
   } else {
     stop("Wrong class type for 'x'")
   }
 }
 
+#' Shiny app with interactive plots and maps of watershed simulation results
+#' 
+#' Creates a shiny app with interactive plots for simulation results 
+#' 
+#' @param x An object of class \code{\link{spwb_land}}, \code{\link{growth_land}} or \code{\link{fordyn_land}}.
+#' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
+#' @param ... Additional parameters for function shinyplot (not used).
+#' 
+#' @return An object that represents the shiny app 
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' @seealso \code{\link{spwb_land}}, \code{\link{plot.spwb_land}}, \code{\link{plot_variable}}
+#' @name shinyplot.spwb_land
+#' @export
+shinyplot.spwb_land<- function(x, r = NULL, ...) {
+  return(.shinyplot_results(x, r))
+}
 
-  
+#' @rdname shinyplot.spwb_land
+#' @export
+shinyplot.growth_land<- function(x, r = NULL, ...) {
+  return(.shinyplot_results(x, r))
+}
+
+#' @rdname shinyplot.spwb_land
+#' @export
+shinyplot.fordyn_land<- function(x, r = NULL, ...) {
+  return(.shinyplot_results(x, r))
+}

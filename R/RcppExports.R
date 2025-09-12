@@ -85,16 +85,16 @@
     invisible(.Call(`_medfateland_tetisInterFlow`, outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize))
 }
 
-.tetisBaseFlow <- function(outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize) {
-    invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize))
+.tetisBaseFlow <- function(outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize, debug = FALSE) {
+    invisible(.Call(`_medfateland_tetisBaseFlow`, outWB, y, waterOrder, queenNeigh, waterQ, isChannel, isOutlet, watershed_control, patchsize, debug))
 }
 
 .tetisDeepAquiferLossToAquifer <- function(outWB, y, watershed_control) {
     invisible(.Call(`_medfateland_tetisDeepAquiferLossToAquifer`, outWB, y, watershed_control))
 }
 
-.tetisSimulationWithOverlandFlows <- function(model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control, debug) {
-    invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isChannel, watershed_control, debug))
+.tetisSimulationWithOverlandFlows <- function(model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug) {
+    invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug))
 }
 
 .tetisWatershedDay <- function(output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary = FALSE, carbonBalanceSummary = FALSE, biomassBalanceSummary = FALSE, patchsize = NA_real_, debug = FALSE) {

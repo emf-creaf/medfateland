@@ -161,7 +161,8 @@ void tetisBaseFlow(DataFrame outWB,
                    IntegerVector waterOrder, List queenNeigh, List waterQ,
                    LogicalVector isChannel, LogicalVector isOutlet,
                    List watershed_control,
-                   double patchsize) {
+                   double patchsize,
+                   bool debug = false) {
 
   NumericVector baseflowInput = outWB[WBCOM_BaseflowInput];
   NumericVector baseflowOutput = outWB[WBCOM_BaseflowOutput];
@@ -210,6 +211,21 @@ void tetisBaseFlow(DataFrame outWB,
       }
       // Calculate aquifer water table elevation (heads in m)
       AquiferWaterTableElevation[i] = elevation[i]-(depth_to_bedrock[i]/1000.0) + (aquifer[i]/bedrock_porosity[i])/1000.0;
+      
+      // If aquifer elevation is higher than elevation and is outlet/channel then generate exfiltration directly (before lateral base flows)
+      // This is meant to alleviate instabilities between deep drainage and exfiltration in outlet cells
+      if((AquiferWaterTableElevation[i] > elevation[i]) && (isChannel[i] || isOutlet[i])) {
+        double DTAn = depth_to_bedrock[i] - (aquifer[i]/bedrock_porosity[i]); //Should be negative
+        double offset = -1.0*DTAn*bedrock_porosity[i];
+        AquiferExfiltration[i] += offset;
+        aquifer[i] -= offset;
+        AquiferWaterTableElevation[i] = elevation[i];
+        if(isChannel[i]) {
+          ChannelExport[i] += offset;
+        } else {
+          WatershedExport[i] += offset;
+        }
+      }
     }
     //A2b. Calculate BASEFLOW output for each cell
     for(int i=0;i<nX;i++){
@@ -293,7 +309,8 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
                                       List y,
                                       NumericVector latitude,
                                       DataFrame gridMeteo,
-                                      IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isChannel,
+                                      IntegerVector waterOrder, List queenNeigh, List waterQ, 
+                                      LogicalVector isOutlet, LogicalVector isChannel,
                                       List watershed_control,
                                       bool debug) {
   
@@ -302,7 +319,8 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   
   List tetis_parameters = watershed_control["tetis_parameters"];
   double rock_max_infiltration = tetis_parameters["rock_max_infiltration"];
-
+  bool free_drainage_outlets = tetis_parameters["free_drainage_outlets"];
+  
   NumericVector Runoff=  outWB[WBCOM_Runoff];
   NumericVector Runon=  outWB[WBCOM_Runon];
   NumericVector MinTemperature = outWB[WBCOM_MinTemperature];
@@ -418,7 +436,10 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       meteovec["CO2"] = C02Vec[iCell];
       
       double wtd = std::max(0.0, depth_to_bedrock[iCell] - (aquifer[iCell]/bedrock_porosity[iCell]));
-
+      // This effectively uncouples capillarity rise from aquifer elevation but helps avoiding instabilities 
+      // in the local balance of outlet cells 
+      if(free_drainage_outlets && (isOutlet[iCell] || isChannel[iCell])) wtd = NA_REAL;
+      
       List xi = xList[iCell];
       List soil_i = xi["soil"];
       NumericVector widths = Rcpp::as<Rcpp::NumericVector>(soil_i["widths"]);
@@ -613,7 +634,8 @@ void tetisWatershedDay(List output,
                                    y, 
                                    latitude,
                                    gridMeteo,
-                                   waterOrder, queenNeigh, waterQ, isChannel,
+                                   waterOrder, queenNeigh, waterQ, 
+                                   isOutlet, isChannel,
                                    watershed_control,
                                    debug);
   copySnowpackFromSoil(y);
@@ -627,7 +649,8 @@ void tetisWatershedDay(List output,
                    waterOrder, queenNeigh, waterQ,
                    isChannel, isOutlet,
                    watershed_control,
-                   patchsize);
+                   patchsize, 
+                   debug);
   }
   
   //D. Applies drainage from aquifer to a deeper aquifer
