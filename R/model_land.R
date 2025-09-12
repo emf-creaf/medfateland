@@ -1268,6 +1268,9 @@
                              sf_routing$channel, sf_routing$outlet, 
                              sf_routing$target_outlet, sf_routing$distance_to_outlet, sf_routing$outlet_backlog,
                              watershed_control, patchsize)
+        # Add export from channel routing to watershed balance
+        res_inner$watershed_balance$WatershedExport[day] <- res_inner$watershed_balance$WatershedExport[day] + (sum(WatershedExport_vector)/nCells)
+        # Add export from channel routing to output export
         OutletExport_m3s[day, ] <- OutletExport_m3s[day,] + (WatershedExport_vector[outlet_cells]/1e3)*patchsize/(3600*24)
       }
       final_backlog_sum <- sum(sf_routing$outlet_backlog, na.rm= TRUE)
@@ -1277,7 +1280,6 @@
         cli::cli_li(paste0("Final outlet backlog sum (m3): ", round(final_backlog_sum)))
       }
     }
-    
     sf_out <- res_inner$sf
     sf_out$outlet <- sf_routing$outlet
     sf_out$outlet_backlog <- sf_routing$outlet_backlog
@@ -1292,6 +1294,12 @@
   }
   
   class(res)<-c(land_model, "list")
+  if(header_footer) {
+    cli::cli_h2("FINAL BALANCE CHECK")
+    cli::cli_li(paste0("Final channel sum (m3): ", round(sum(ChannelExport_m3s*(3600*24)))))
+    cli::cli_li(paste0("Final outlet sum (m3): ", round(sum(OutletExport_m3s*(3600*24)))))
+    cli::cli_li(paste0("Final watershed export sum (m3): ", round(sum(res_inner$watershed_balance$WatershedExport*nCells*patchsize/1e3))))
+  }    
   return(res)
 }
 
