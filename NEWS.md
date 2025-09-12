@@ -3,6 +3,7 @@
 - Aquifer (water table depth) effects on soil local water balance can be disabled
 - Aquifer water balance revised
 - Negative aquifer correction introduced
+- Bug correction: Instabilities in outlet cells for watershed simulations
 - Bug correction: Channel routing in outlets without drainage basin
 
 # medfateland 2.7.1
