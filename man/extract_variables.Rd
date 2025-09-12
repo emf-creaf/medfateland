@@ -96,7 +96,7 @@ extract_variables(example_ifn, vars = c("basal_area", "leaf_area_index"),
                   
 }
 \seealso{
-\code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot_land}}
+\code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot.sf}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

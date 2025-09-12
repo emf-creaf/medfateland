@@ -12,6 +12,8 @@
 \item{SpParams}{A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.}
 
 \item{r}{An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.}
+
+\item{...}{Additional parameters for function shinyplot (not used).}
 }
 \value{
 An object that represents the shiny app

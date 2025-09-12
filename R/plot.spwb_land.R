@@ -231,7 +231,7 @@
 #' @returns A ggplot object
 #' 
 #' @seealso  \code{\link{spwb_land}}, \code{\link{growth_land}}, \code{\link{fordyn_land}}, 
-#'           \code{\link{plot_summary}}, \code{\link{shinyplot_land}}
+#'           \code{\link{plot_summary}}, \code{\link{shinyplot.spwb_land}}
 #' @export
 #'
 #' @name plot.spwb_land

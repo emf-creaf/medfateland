@@ -136,6 +136,7 @@
 #' @param x The object of class 'sf' containing information to be drawn (see details). 
 #' @param SpParams A data frame with species parameters (see \code{\link[medfate]{SpParamsMED}}), required for most forest stand variables.
 #' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
+#' @param ... Additional parameters for function shinyplot (not used).
 #' 
 #' @details Only run this function in interactive mode. The shiny app can be used to display spatial inputs or simulation results. 
 #' 

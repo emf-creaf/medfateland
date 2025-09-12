@@ -101,4 +101,4 @@ reference:
   - starts_with("plot.spwb_land")
   - starts_with("plot_summary")
   - starts_with("simulation_summary")
-  - shinyplot_land
+  - starts_with("shinyplot")

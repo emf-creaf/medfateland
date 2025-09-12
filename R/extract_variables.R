@@ -397,7 +397,7 @@
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot_land}}
+#' @seealso \code{\link[medfate]{forest}}, \code{\link[medfate]{soil}}, \code{\link[medfate]{summary.forest}}, \code{\link{shinyplot.sf}}
 #' 
 #' @examples
 #' # Load data and species parameters from medfate

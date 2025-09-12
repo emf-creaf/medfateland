@@ -42,7 +42,7 @@ The following plots are currently available:
 }
 \seealso{
 \code{\link{spwb_land}}, \code{\link{growth_land}}, \code{\link{fordyn_land}},
-\code{\link{plot_summary}}, \code{\link{shinyplot_land}}
+\code{\link{plot_summary}}, \code{\link{shinyplot.spwb_land}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

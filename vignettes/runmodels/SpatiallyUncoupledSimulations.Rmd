@@ -149,7 +149,7 @@ plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
 plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
-To avoid displaying maps one by one, the package includes function `shinyplot_land()` that allows displaying maps of temporal summaries interactively.
+To avoid displaying maps one by one, the package includes function `shinyplot()` that allows displaying maps of temporal summaries interactively.
 
 ### Simulation with integrated temporal summaries
 
