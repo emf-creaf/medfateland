@@ -442,10 +442,12 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       
       List xi = xList[iCell];
       List soil_i = xi["soil"];
-      NumericVector widths = Rcpp::as<Rcpp::NumericVector>(soil_i["widths"]);
-      NumericVector rfc = Rcpp::as<Rcpp::NumericVector>(soil_i["rfc"]);
+      List control_i = xi["control"];
       double interflowbalance = InterflowBalance[iCell];
-      NumericVector wl = widths*(1.0 - (rfc/100.0));
+      //Assume water will exit/enter faster in soil layers that have more water
+      //This is better than assuming weights equal to layer widths, which can result
+      //In water leaving bottom layers when rain fills the top layers
+      NumericVector wl = medfate::soil_water(soil_i, control_i["soilFunctions"]);
       NumericVector lateralFlows = (interflowbalance*wl)/sum(wl);
 
       //Replace values

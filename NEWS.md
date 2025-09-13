@@ -3,8 +3,9 @@
 - Aquifer (water table depth) effects on soil local water balance can be disabled
 - Aquifer water balance revised
 - Negative aquifer correction introduced
+- Modification of vertical partitioning of interflow to avoid the need of aquifer correction
 - shinyplot() functions renamed to S3 class-specific
-- Bug correction: Instabilities in outlet cells for watershed simulations
+- Avoiding instabilities in outlet cells for watershed simulations
 - Bug correction: Channel routing in outlets without drainage basin
 
 # medfateland 2.7.1
