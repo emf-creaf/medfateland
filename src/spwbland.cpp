@@ -47,6 +47,21 @@ const int STCOM_Cm = 5;
 const int STCOM_LgroundPAR = 6;
 const int STCOM_LgroundSWR = 7;
 
+const int FHCOM_DFMC = 0;
+const int FHCOM_CFMC_understory = 1;
+const int FHCOM_CFMC_overstory = 2;
+const int FHCOM_ROS_surface = 3;
+const int FHCOM_I_b_surface = 4;
+const int FHCOM_t_r_surface = 5;
+const int FHCOM_FL_surface = 6;
+const int FHCOM_Ic_ratio = 7;
+const int FHCOM_ROS_crown = 8;
+const int FHCOM_I_b_crown = 9;
+const int FHCOM_t_r_crown = 10;
+const int FHCOM_FL_crown = 11;
+const int FHCOM_SFP = 12;
+const int FHCOM_CFP = 13;
+
 const int CBCOM_GrossPrimaryProduction = 0;
 const int CBCOM_MaintenanceRespiration = 1;
 const int CBCOM_SynthesisRespiration = 2;
@@ -101,7 +116,7 @@ void copyStateFromResults(List y, List localResults) {
 
 // [[Rcpp::export(".createDayOutput")]]
 List createDayOutput(int nX, 
-                     bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
+                     bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
 
   int ncol = 30;
   List out(ncol);
@@ -162,6 +177,29 @@ List createDayOutput(int nX,
     DataFrame stand(out_stand);
     l.push_back(stand, "WatershedStand");
   }
+  if(fireHazardSummary) {
+    int ncol_fire = 14;
+    List out_fire(ncol_fire);
+    CharacterVector colnames_fire(ncol_fire);
+    for(int i = 0; i<ncol_fire; i++) out_fire[i] = NumericVector(nX, NA_REAL);
+    colnames_fire[FHCOM_DFMC] = "DFMC";
+    colnames_fire[FHCOM_CFMC_understory] = "CFMC_understory";
+    colnames_fire[FHCOM_CFMC_overstory] = "CFMC_overstory";
+    colnames_fire[FHCOM_ROS_surface] = "ROS_surface";
+    colnames_fire[FHCOM_I_b_surface] = "I_b_surface";
+    colnames_fire[FHCOM_t_r_surface] = "t_r_surface";
+    colnames_fire[FHCOM_FL_surface] = "FL_surface";
+    colnames_fire[FHCOM_Ic_ratio] = "Ic_ratio";
+    colnames_fire[FHCOM_ROS_crown] = "ROS_crown";
+    colnames_fire[FHCOM_I_b_crown] = "I_b_crown";
+    colnames_fire[FHCOM_t_r_crown] = "t_r_crown";
+    colnames_fire[FHCOM_FL_crown] = "FL_crown";
+    colnames_fire[FHCOM_SFP] = "SFP";
+    colnames_fire[FHCOM_CFP] = "CFP";
+    out_fire.attr("names") = colnames_fire;
+    DataFrame fire(out_fire);
+    l.push_back(fire, "WatershedFireHazard");
+  }
   if(carbonBalanceSummary) {
     int ncol_cb = 4;
     List out_cb(ncol_cb);
@@ -204,10 +242,12 @@ void resetWaterBalanceDayOutput(DataFrame outWB) {
 
 // [[Rcpp::export(".fcpp_landunit_day")]]
 List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, 
-                       bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
+                       bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
   List res;
   List x = xi["x"];
   List control  = x["control"];
+  //This forces fire hazard estimation
+  control["fireHazardResults"] = fireHazardSummary;
   String transpirationMode = control["transpirationMode"];
   CharacterVector classString = x.attr("class");
   NumericVector meteovec = xi["meteovec"];
@@ -252,6 +292,9 @@ List fcpp_landunit_day(List xi, String model, CharacterVector date, List interna
       res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
       if(standSummary && spwbOut.containsElementNamed("Stand")) {
         res.push_back(clone(as<NumericVector>(spwbOut["Stand"])),"Stand");
+      }
+      if(fireHazardSummary && spwbOut.containsElementNamed("FireHazard")) {
+        res.push_back(clone(as<NumericVector>(spwbOut["FireHazard"])),"FireHazard");
       }
       if(model=="growth") {
         List growthOut;

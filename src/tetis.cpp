@@ -304,7 +304,7 @@ void tetisDeepAquiferLossToAquifer(DataFrame outWB, List y,
 
 // [[Rcpp::export(".tetisSimulationWithOverlandFlows")]]
 void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List internalCommunication,
-                                      bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary,
+                                      bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary,
                                       List output,
                                       List y,
                                       NumericVector latitude,
@@ -352,6 +352,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   NumericVector LAI, LAIherb, LAIlive, LAIexpanded, LAIdead, Cm, LgroundPAR, LgroundSWR;
   NumericVector StructuralBalance, LabileBalance, PlantBalance, MortalityLoss, CohortBalance;
   NumericVector GrossPrimaryProduction, MaintenanceRespiration, SynthesisRespiration, NetPrimaryProduction;
+  NumericVector DFMC, CFMC_understory, CFMC_overstory, ROS_surface, I_b_surface, t_r_surface, FL_surface, Ic_ratio, ROS_crown, I_b_crown, t_r_crown, FL_crown, SFP, CFP;
   if(standSummary) {
     DataFrame outStand = as<DataFrame>(output["WatershedStand"]);
     LAI = outStand[STCOM_LAI];
@@ -362,6 +363,23 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
     Cm = outStand[STCOM_Cm];
     LgroundPAR = outStand[STCOM_LgroundPAR];
     LgroundSWR = outStand[STCOM_LgroundSWR];
+  }
+  if(fireHazardSummary) {
+    DataFrame fireStand = as<DataFrame>(output["WatershedFireHazard"]);
+    DFMC = fireStand[FHCOM_DFMC];
+    CFMC_understory = fireStand[FHCOM_CFMC_understory];
+    CFMC_overstory = fireStand[FHCOM_CFMC_overstory];
+    ROS_surface = fireStand[FHCOM_ROS_surface];
+    I_b_surface = fireStand[FHCOM_I_b_surface];
+    t_r_surface = fireStand[FHCOM_t_r_surface];
+    FL_surface = fireStand[FHCOM_FL_surface];
+    Ic_ratio = fireStand[FHCOM_Ic_ratio];
+    ROS_crown = fireStand[FHCOM_ROS_crown];
+    I_b_crown = fireStand[FHCOM_I_b_crown];
+    t_r_crown = fireStand[FHCOM_t_r_crown];
+    FL_crown = fireStand[FHCOM_FL_crown];
+    SFP = fireStand[FHCOM_SFP];
+    CFP = fireStand[FHCOM_CFP];
   }
   if(carbonBalanceSummary) {
     DataFrame outCB = as<DataFrame>(output["WatershedCarbonBalance"]);
@@ -464,7 +482,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
       //Launch simulation
       if(debug) Rcout<<"[";
       lr = fcpp_landunit_day(XI, model, date, internalCommunication,
-                             standSummary, carbonBalanceSummary, biomassBalanceSummary);
+                             standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary);
       if(debug) Rcout<<".]\n";
       //Copy water balance
       localResults[iCell] = lr;
@@ -499,6 +517,23 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
           Cm[iCell] = Stand["Cm"];
           LgroundPAR[iCell] = Stand["LgroundPAR"];
           LgroundSWR[iCell] = Stand["LgroundSWR"];
+        } 
+        if(fireHazardSummary){
+          NumericVector FireHazard = sr["FireHazard"];
+          DFMC[iCell] = FireHazard["DFMC [%]"];
+          CFMC_understory[iCell] = FireHazard["CFMC_understory [%]"];
+          CFMC_overstory[iCell] = FireHazard["CFMC_overstory [%]"];
+          ROS_surface[iCell] = FireHazard["ROS_surface [m/min]"];
+          I_b_surface[iCell] = FireHazard["I_b_surface [kW/m]"];
+          t_r_surface[iCell] = FireHazard["t_r_surface [s]"];
+          FL_surface[iCell] = FireHazard["FL_surface [m]"];
+          Ic_ratio[iCell] = FireHazard["Ic_ratio"];
+          ROS_crown[iCell] = FireHazard["ROS_crown [m/min]"];
+          I_b_crown[iCell] = FireHazard["I_b_crown [kW/m]"];
+          t_r_crown[iCell] = FireHazard["t_r_crown [s]"];
+          FL_crown[iCell] = FireHazard["FL_crown [m]"];
+          SFP[iCell] = FireHazard["SFP"];
+          CFP[iCell] = FireHazard["CFP"];
         } 
         if(carbonBalanceSummary){
           NumericVector CarbonBalance = sr["CarbonBalance"];
@@ -595,6 +630,7 @@ void tetisWatershedDay(List output,
                        DataFrame gridMeteo,
                        NumericVector latitude, 
                        bool standSummary = false, 
+                       bool fireHazardSummary = false,
                        bool carbonBalanceSummary = false, 
                        bool biomassBalanceSummary = false,
                        double patchsize = NA_REAL,
@@ -631,7 +667,7 @@ void tetisWatershedDay(List output,
   copySnowpackToSoil(y);
   tetisModifyKsat(y, watershed_control, false);
   tetisSimulationWithOverlandFlows(local_model, date, internalCommunication,
-                                   standSummary, carbonBalanceSummary, biomassBalanceSummary,
+                                   standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary,
                                    output,
                                    y, 
                                    latitude,

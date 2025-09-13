@@ -1,33 +1,3 @@
-
-# Checks that soils have equal number of layers and width
-.check_equal_soil_discretization<-function(soil_column, force_equal_layer_widths) {
-  nlayers <- NA
-  widths <- NA
-  for(i in 1:length(soil_column)) {
-    s <- soil_column[[i]]
-    if(!is.null(s) && inherits(s, "soil")) {
-      widths_i <- s[["widths"]]
-      if(!is.na(nlayers)) {
-        if(length(widths_i)!=nlayers) stop("All soil elements need to have the same number of layers.")
-        if(!all(widths_i==widths)) {
-          if(!force_equal_layer_widths) stop("Soil layer width needs to be the same for all cells.")
-          for(l in 1:nlayers) {
-            widths_i[l] <- widths[l]
-          }
-          s[["widths"]] <- widths_i
-          soil_column[[i]] <- s
-        }
-      } else {
-        widths <- widths_i
-        nlayers <- length(widths_i)
-      }
-    }
-  }
-  return(soil_column)
-}
-
-
-
 .f_landunit_day<-function(xi, model, date, internalCommunication){
   out <- NA
   if(model=="spwb") {
@@ -64,191 +34,7 @@
   return(out)
 }
 
-.get_dates_stars_list <- function(meteo) {
-  datesStarsList <- NULL
-  if(!is.null(meteo)) {
-    if(inherits(meteo, "list")) {
-      datesStarsList <- vector("list", length(meteo))
-      for(i in 1:length(meteo)) {
-        datesStarsList[[i]] <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
-      }
-    }
-  }
-  return(datesStarsList)
-}
-.get_dates_meteo <- function(y, meteo) {
-  datesMeteo <- NULL
-  if(!is.null(meteo)) {
-    if(inherits(meteo,"data.frame")) {
-      if(!("dates" %in% names(meteo))) {
-        datesMeteo <- as.Date(row.names(meteo))
-      } else {
-        datesMeteo <- as.Date(meteo$dates)
-      }
-    } else if(inherits(meteo, "stars")) {
-      datesMeteo <- as.Date(stars::st_get_dimension_values(meteo, "date"))
-    } else if(inherits(meteo, "list")) {
-      for(i in 1:length(meteo)) {
-        datesMeteo_i <- as.Date(stars::st_get_dimension_values(meteo[[i]], "date"))
-        if(is.null(datesMeteo)) datesMeteo <- datesMeteo_i
-        else datesMeteo <- c(datesMeteo, datesMeteo_i)
-      }
-    }
-  } else {
-    if(!("meteo" %in% names(y))) cli::cli_abort("Column 'meteo' must be defined in 'y' if not supplied separately")
-    if(!("dates" %in% names(y$meteo[[1]]))) {
-      datesMeteo <- as.Date(row.names(y$meteo[[1]]))
-    } else {
-      datesMeteo <- as.Date(y$meteo[[1]]$dates)
-    }
-    # check that all items have same dates
-    for(i in 1:nrow(y)) {
-      if(!("dates" %in% names(y$meteo[[i]]))) {
-        datesMeteo_i <- as.Date(row.names(y$meteo[[i]]))
-      } else {
-        datesMeteo_i <- as.Date(y$meteo[[i]]$dates)
-      }
-      if(!all(datesMeteo_i==datesMeteo)) cli::cli_abort("All spatial elements need to have the same weather dates.")
-    }
-  }
-  return(datesMeteo)
-}
 
-.get_meteo_mapping <- function(r, y, meteo, sf_coords, sf2cell, 
-                               agg_fact){
-  pts_sf_meteo <- NULL
-  pts_sf_meteo_2_sf <- NULL
-  if(!is.null(meteo)) {
-    if(inherits(meteo, "stars") || inherits(meteo, "list")) {
-      nCells <- nrow(y)
-      r$elevation <- NA
-      r$slope <- NA
-      r$aspect <- NA
-      r$elevation[sf2cell] <- y$elevation
-      r$slope[sf2cell] <- y$slope
-      r$aspect[sf2cell] <- y$aspect
-      agg_fact <- as.integer(agg_fact)
-      r_meteo <- r
-      if(agg_fact > 1) {
-        r_meteo <- terra::aggregate(r_meteo, fact = agg_fact, fun = "median", na.rm = TRUE)
-      }
-      pts_sf_meteo <- sf::st_as_sf(terra::as.points(r_meteo))
-      pts_sf2cell_meteo <- terra::cellFromXY(r_meteo, sf::st_coordinates(pts_sf_meteo))
-      sf2cell_meteo <- terra::cellFromXY(r_meteo, sf_coords)
-      pts_sf_meteo_2_sf <- rep(NA, nCells)
-      for(i in 1:length(pts_sf_meteo_2_sf)) pts_sf_meteo_2_sf[i] <- which(pts_sf2cell_meteo==sf2cell_meteo[i])
-    }
-  }
-  return(list("pts_sf_meteo" = pts_sf_meteo, 
-              "pts_sf_meteo_2_sf" = pts_sf_meteo_2_sf))
-}
-
-.build_grid_meteo_day <- function(y, meteo, datesMeteo, date, 
-                                  meteo_mapping,
-                                  datesStarsList = NULL, 
-                                  CO2ByYear = numeric(0)) {
-  pts_sf_meteo <- meteo_mapping[["pts_sf_meteo"]] 
-  pts_sf_meteo_2_sf <- meteo_mapping[["pts_sf_meteo_2_sf"]]
-  nCells <- nrow(y)
-  doy <- as.numeric(format(date,"%j"))
-  datechar <- as.character(date)
-  yearString <- substr(datechar, 1, 4)
-  gridMinTemperature <- rep(NA, nCells)
-  gridMaxTemperature <- rep(NA, nCells)
-  gridMinRelativeHumidity <- rep(NA, nCells)
-  gridMaxRelativeHumidity <- rep(NA, nCells)
-  gridPrecipitation <- rep(NA, nCells)
-  gridRadiation <- rep(NA, nCells)
-  gridWindSpeed <- rep(NA, nCells)
-  Catm <- NA
-  if(yearString %in% names(CO2ByYear)) Catm <- CO2ByYear[yearString]
-  gridCO2 = rep(Catm, nCells)
-  
-  if(!is.null(meteo)) {
-    if(inherits(meteo,"stars") || inherits(meteo,"list")) {
-      if(inherits(meteo,"stars")) {
-        i_meteo <- meteo
-      } else {
-        i_stars <- NA
-        for(i in 1:length(datesStarsList)) {
-          if(date %in% datesStarsList[[i]]) i_stars <- i
-        }
-        if(is.na(i_stars)) stop("Date to be processed not found in interpolator list")
-        i_meteo <- meteo[[i_stars]]
-      }
-      met <- meteoland::interpolate_data(pts_sf_meteo, i_meteo, dates = date, 
-                                         verbose = FALSE, ignore_convex_hull_check = TRUE)
-      ml <- tidyr::unnest(met, cols = "interpolated_data")
-      gridMinTemperature <- ml$MinTemperature[pts_sf_meteo_2_sf]
-      gridMaxTemperature <- ml$MaxTemperature[pts_sf_meteo_2_sf]
-      gridMinRelativeHumidity <- ml$MinRelativeHumidity[pts_sf_meteo_2_sf]
-      gridMaxRelativeHumidity <- ml$MaxRelativeHumidity[pts_sf_meteo_2_sf]
-      gridPrecipitation <- ml$Precipitation[pts_sf_meteo_2_sf]
-      gridRadiation <- ml$Radiation[pts_sf_meteo_2_sf]
-      gridWindSpeed <- ml$WindSpeed[pts_sf_meteo_2_sf]    
-    } else { # data frame
-      imeteo <- which(datesMeteo == date) #date index in meteo data
-      # repeat values for all cells
-      gridMinTemperature <- rep(meteo[imeteo,"MinTemperature"], nCells)
-      gridMaxTemperature <- rep(meteo[imeteo,"MaxTemperature"], nCells)
-      gridMinRelativeHumidity <- rep(meteo[imeteo,"MinRelativeHumidity"], nCells)
-      gridMaxRelativeHumidity <- rep(meteo[imeteo,"MaxRelativeHumidity"], nCells)
-      gridPrecipitation <- rep(meteo[imeteo,"Precipitation"], nCells)
-      gridRadiation <- rep(meteo[imeteo, "Radiation"], nCells)
-      gridWindSpeed <- rep(meteo[imeteo, "WindSpeed"], nCells)
-      if("CO2" %in% names(meteo)) gridCO2 <- rep(meteo[imeteo, "CO2"], nCells)
-    }
-  } 
-  else {
-    imeteo = which(datesMeteo == date) #date index in meteo data
-    for(iml in 1:nCells) {
-      meti <- y$meteo[[iml]]
-      gridMinTemperature[iml] <- meti$MinTemperature[imeteo]
-      gridMaxTemperature[iml] <- meti$MaxTemperature[imeteo]
-      gridMinRelativeHumidity[iml] <- meti$MinRelativeHumidity[imeteo]
-      gridMaxRelativeHumidity[iml] <- meti$MaxRelativeHumidity[imeteo]
-      gridPrecipitation[iml] <- meti$Precipitation[imeteo]
-      gridRadiation[iml] <- meti$Radiation[imeteo]
-      gridWindSpeed[iml] <- meti$WindSpeed[imeteo]
-      if("CO2" %in% names(meti)) gridCO2[iml] <- meti$CO2[imeteo]
-    }
-  }
-  
-  gridRadiation[is.na(gridRadiation)] <- mean(gridRadiation, na.rm=T)
-  gridMeteo <- data.frame(MinTemperature = gridMinTemperature, 
-                          MaxTemperature = gridMaxTemperature,
-                          MinRelativeHumidity = gridMinRelativeHumidity,
-                          MaxRelativeHumidity = gridMaxRelativeHumidity,
-                          Precipitation = gridPrecipitation,
-                          Radiation = gridRadiation,
-                          WindSpeed = gridWindSpeed,
-                          CO2 = gridCO2)
-  
-  return(gridMeteo)
-}
-
-# Define communication structures
-.defineInternalCommunication <- function(y, local_model) {
-  max_num_cohorts <- 1
-  max_num_soil_layers <- 1
-  max_num_canopy_layers <-1
-  max_num_timesteps <- 24
-  for(i in 1:nrow(y)) {
-    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
-      xi <- y$state[[i]]
-      max_num_cohorts <- max(max_num_cohorts, nrow(xi$cohorts))
-      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
-      max_num_canopy_layers <- max(max_num_canopy_layers, nrow(xi$canopy))
-      max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
-    } else if((y$land_cover_type[i]=="agriculture") && (!is.null(y$state[[i]]))) {
-      xi <- y$state[[i]]
-      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
-    }
-  }
-  internalCommunication <- medfate::general_communication_structures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,
-                                                                     local_model);
-  return(internalCommunication)
-}
 
 
 ## This function is in R to use parallelization
@@ -369,68 +155,6 @@
               "LocalResults" = localResults))
 }
 
-.vars_stand <- function(type = "all") {
-  varsStand <- c("LAI", "LAIherb", "LAIlive", "LAIexpanded", "LAIdead", "Cm", "LgroundPAR", "LgroundSWR")
-  if(type %in% c("mean", "all")) return(varsStand)
-  return(c())
-}
-.vars_waterbalance <- function(type = "all"){
-  varsWaterBalance <- c("Snowmelt", "Interception", "NetRain",  
-                        "Infiltration", "InfiltrationExcess",  "SaturationExcess", "Runon", "Runoff", 
-                        "DeepDrainage", "CapillarityRise", "DeepAquiferLoss",
-                        "SoilEvaporation", "Transpiration", "HerbTranspiration",
-                        "InterflowBalance", "BaseflowBalance", "AquiferExfiltration")
-  if(type %in% c("sum", "all")) return(varsWaterBalance)
-  return(c())
-}
-.vars_carbonbalance <- function(type = "all") {
-  varsCarbonBalance <- c("GrossPrimaryProduction","MaintenanceRespiration","SynthesisRespiration","NetPrimaryProduction")
-  if(type %in% c("sum", "all")) return(varsCarbonBalance)
-  return(c())
-}
-.vars_biomassbalance <- function(type = "all") {
-  varsBiomassBalance <- c("StructuralBalance", "LabileBalance", "PlantBalance", "MortalityLoss", "CohortBalance")
-  if(type %in% c("sum", "all")) return(varsBiomassBalance)
-  return(c())
-}
-.vars_summary <- function(type = "all",
-                          standSummary, waterBalanceSummary, carbonBalanceSummary, biomassBalanceSummary) {
-  if(type=="state") {
-    return(c("SWE", "RWC", "SoilVol","WTD"))
-  } else if(type=="all") {
-    vars <- c("MinTemperature","MaxTemperature","PET", "Rain", "Snow", "SWE", "RWC", "SoilVol","WTD","DTA")
-  } else if(type=="sum") {
-    vars <- c("PET","Rain", "Snow")
-  } else if(type=="mean") {
-    vars <- c("MinTemperature", "MaxTemperature")
-  }
-  if(waterBalanceSummary) vars <- c(vars, .vars_waterbalance(type))
-  if(standSummary) vars <- c(vars, .vars_stand(type))
-  if(carbonBalanceSummary) vars <- c(vars, .vars_carbonbalance(type))
-  if(biomassBalanceSummary) vars <- c(vars, .vars_biomassbalance(type))
-  return(vars)
-}
-
-.aggregate_summary_to_annual<-function(m, varsSum, varsMean, varsState) {
-  month_weights <- c(31,28,31,30,31,30,31,31,30,31,30,31)[1:nrow(m)]
-  month_weights <- month_weights/sum(month_weights)
-  coln <- colnames(m)
-  rown <- rownames(m)
-  year_string <- paste0(substr(rown[1], 1,4),"-01-01")
-  m_year <- matrix(NA, nrow=1, ncol = ncol(m), dimnames = list(year_string, coln))
-  for(j in 1:ncol(m)) {
-    if(coln[j] %in% varsSum) {
-      m_year[1,j] <- sum(m[,j], na.rm=TRUE)
-    } else if(coln[j] %in% varsMean) {
-      m_year[1,j] <- sum(m[,j]*month_weights, na.rm=TRUE)
-    } else if((coln[j] %in% varsState) || (coln[j] == "DTA")) {
-      m_year[1,j] <- sum(m[,j]*month_weights, na.rm=TRUE)
-    } else {
-      stop(paste0("variable name ", coln[j]," not found in summary variables for sums or means"))
-    }
-  }
-  return(m_year)
-}
 
 .simulate_land_inner <- function(local_model = "spwb", 
                                  r, y, sf_routing, 
@@ -469,12 +193,13 @@
   # Summary flags
   waterBalanceSummary <- "WaterBalance" %in% summary_blocks
   standSummary <- "Stand" %in% summary_blocks
+  fireHazardSummary <- "FireHazard" %in% summary_blocks
   carbonBalanceSummary <- "CarbonBalance" %in% summary_blocks
   biomassBalanceSummary <- "BiomassBalance" %in% summary_blocks
   
   # Define communication structures
   internalCommunication <- .defineInternalCommunication(y, local_model)
-  ws_day  <- .createDayOutput(nCells, standSummary, carbonBalanceSummary, biomassBalanceSummary)
+  ws_day  <- .createDayOutput(nCells, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary)
 
   meteo_mapping <- .get_meteo_mapping(r, y, meteo, sf_coords, sf2cell, 
                                       watershed_control[["weather_aggregation_factor"]])
@@ -494,13 +219,14 @@
     colnames(ChannelExport) <- channel_cells
     rownames(ChannelExport) <- as.character(dates)
     
-    vars <- .vars_summary("all", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    vars <- .vars_summary("all", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+    varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
     varsWaterBalance <- .vars_waterbalance("all")
     varsCarbonBalance <- .vars_carbonbalance("all")
     varsStand <- .vars_stand("all")
+    varsFireHazard <- .vars_firehazard("all")
     varsBiomassBalance <- .vars_biomassbalance("all")
     
     LandscapeBalance <- data.frame(dates = dates,
@@ -666,7 +392,7 @@
                          date = datechar,
                          gridMeteo = gridMeteo,
                          latitude = latitude,
-                         standSummary = standSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary,
+                         standSummary = standSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary,
                          patchsize = patchsize)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
@@ -683,10 +409,10 @@
     
     res_wb_day <- ws_day[["WatershedWaterBalance"]]
     if(standSummary) res_stand_day <- ws_day[["WatershedStand"]]
+    if(fireHazardSummary) res_fire_day <- ws_day[["WatershedFireHazard"]]
     if(carbonBalanceSummary) res_cb_day <- ws_day[["WatershedCarbonBalance"]]
     if(biomassBalanceSummary) res_bb_day <- ws_day[["WatershedBiomassBalance"]]
     local_res_day <- ws_day[["LocalResults"]]
-    
     # Fill local daily results for result cells
     for(i in 1:nCells) {
       if(y$result_cell[i]) {
@@ -715,6 +441,9 @@
         if(v %in% varsStand) {
           if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_stand_day[[v]][i]
           else summarylist[[i]][ifactor,v] <- res_stand_day[[v]][i]
+        } else if(v %in% varsFireHazard) {
+          if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_fire_day[[v]][i]
+          else summarylist[[i]][ifactor,v] <- res_fire_day[[v]][i]
         } else if(v %in% varsCarbonBalance) {
           if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_cb_day[[v]][i]
           else summarylist[[i]][ifactor,v] <- res_cb_day[[v]][i]
@@ -730,6 +459,9 @@
         if(v %in% varsStand) {
           if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_stand_day[[v]][i]/t.df[ifactor]
           else summarylist[[i]][ifactor,v] <- res_stand_day[[v]][i]/t.df[ifactor]
+        } else if(v %in% varsFireHazard) {
+          if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_fire_day[[v]][i]/t.df[ifactor]
+          else summarylist[[i]][ifactor,v] <- res_fire_day[[v]][i]/t.df[ifactor]
         } else if(v %in% varsCarbonBalance) {
           if(!is.na(summarylist[[i]][ifactor,v])) summarylist[[i]][ifactor,v] <- summarylist[[i]][ifactor,v] + res_cb_day[[v]][i]/t.df[ifactor]
           else summarylist[[i]][ifactor,v] <- res_cb_day[[v]][i]/t.df[ifactor]
@@ -966,10 +698,10 @@
   land_model <- match.arg(land_model, c("spwb_land", "growth_land", "fordyn_land"))
   if(land_model == "spwb_land") {
     local_model <- "spwb"
-    summary_blocks <- match.arg(summary_blocks, c(NA, "WaterBalance", "Stand"),several.ok = TRUE)
+    summary_blocks <- match.arg(summary_blocks, c(NA, "WaterBalance", "Stand", "FireHazard"),several.ok = TRUE)
   } else if(land_model=="growth_land") {
     local_model <- "growth"
-    summary_blocks <- match.arg(summary_blocks, c(NA,"WaterBalance", "Stand","CarbonBalance", "BiomassBalance"),several.ok = TRUE)
+    summary_blocks <- match.arg(summary_blocks, c(NA,"WaterBalance", "Stand", "FireHazard","CarbonBalance", "BiomassBalance"),several.ok = TRUE)
   }
   else if(land_model=="fordyn_land") local_model <- "growth"
   
@@ -1028,6 +760,9 @@
   if(!("result_cell" %in% names(y))) {
     y$result_cell <- rep(FALSE, nrow(y))
   }
+
+  # Force loading estimation for fire hazard calculation
+  local_control$fireHazardResults <- ("FireHazard" %in% summary_blocks)
   
   # Set local control if not existing
   if(!("local_control" %in% names(y))) {
@@ -1037,7 +772,6 @@
   default_non_result_control$standResults <- FALSE
   default_non_result_control$plantResults <- FALSE
   default_non_result_control$soilResults <- FALSE
-  default_non_result_control$fireHazardResults <- FALSE
   default_non_result_control$temperatureResults <- FALSE
   default_non_result_control$leafResults <- FALSE
   default_non_result_control$plantLabileCarbonBalanceResults  <- FALSE
@@ -1355,7 +1089,7 @@
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", "weeks", ...) (see \code{\link{cut.Date}}).
 #'                          In \code{fordyn_land} summary frequency can only be "months" or "years". 
-#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance" and "Stand". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.  
+#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance", "Stand" and "FireHazard". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.  
 #' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
 #'                      parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
@@ -2085,7 +1819,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                                      meteo_mapping,
                                      datesStarsList)
 
-  ws_day  <- .createDayOutput(nCells, FALSE, FALSE, FALSE)
+  ws_day  <- .createDayOutput(nCells, FALSE, FALSE, FALSE, FALSE)
   
   if(watershed_model=="tetis") {
     .tetisWatershedDay(output = ws_day,

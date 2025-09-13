@@ -1,3 +1,6 @@
+# medfateland 2.8.1
+- Add fire hazard to summary blocks for spwb_land and growth_land
+
 # medfateland 2.8.0
 - Daily substeps available for base flows
 - Aquifer (water table depth) effects on soil local water balance can be disabled

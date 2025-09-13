@@ -218,16 +218,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // createDayOutput
-List createDayOutput(int nX, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
-RcppExport SEXP _medfateland_createDayOutput(SEXP nXSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
+List createDayOutput(int nX, bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
+RcppExport SEXP _medfateland_createDayOutput(SEXP nXSEXP, SEXP standSummarySEXP, SEXP fireHazardSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type nX(nXSEXP);
     Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type fireHazardSummary(fireHazardSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
-    rcpp_result_gen = Rcpp::wrap(createDayOutput(nX, standSummary, carbonBalanceSummary, biomassBalanceSummary));
+    rcpp_result_gen = Rcpp::wrap(createDayOutput(nX, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -242,8 +243,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // fcpp_landunit_day
-List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
-RcppExport SEXP _medfateland_fcpp_landunit_day(SEXP xiSEXP, SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
+List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary);
+RcppExport SEXP _medfateland_fcpp_landunit_day(SEXP xiSEXP, SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP, SEXP standSummarySEXP, SEXP fireHazardSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -252,9 +253,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
     Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
     Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type fireHazardSummary(fireHazardSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
-    rcpp_result_gen = Rcpp::wrap(fcpp_landunit_day(xi, model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary));
+    rcpp_result_gen = Rcpp::wrap(fcpp_landunit_day(xi, model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -318,14 +320,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // tetisSimulationWithOverlandFlows
-void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List internalCommunication, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary, List output, List y, NumericVector latitude, DataFrame gridMeteo, IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isOutlet, LogicalVector isChannel, List watershed_control, bool debug);
-RcppExport SEXP _medfateland_tetisSimulationWithOverlandFlows(SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP, SEXP outputSEXP, SEXP ySEXP, SEXP latitudeSEXP, SEXP gridMeteoSEXP, SEXP waterOrderSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP isOutletSEXP, SEXP isChannelSEXP, SEXP watershed_controlSEXP, SEXP debugSEXP) {
+void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List internalCommunication, bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary, List output, List y, NumericVector latitude, DataFrame gridMeteo, IntegerVector waterOrder, List queenNeigh, List waterQ, LogicalVector isOutlet, LogicalVector isChannel, List watershed_control, bool debug);
+RcppExport SEXP _medfateland_tetisSimulationWithOverlandFlows(SEXP modelSEXP, SEXP dateSEXP, SEXP internalCommunicationSEXP, SEXP standSummarySEXP, SEXP fireHazardSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP, SEXP outputSEXP, SEXP ySEXP, SEXP latitudeSEXP, SEXP gridMeteoSEXP, SEXP waterOrderSEXP, SEXP queenNeighSEXP, SEXP waterQSEXP, SEXP isOutletSEXP, SEXP isChannelSEXP, SEXP watershed_controlSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type model(modelSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type date(dateSEXP);
     Rcpp::traits::input_parameter< List >::type internalCommunication(internalCommunicationSEXP);
     Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type fireHazardSummary(fireHazardSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
     Rcpp::traits::input_parameter< List >::type output(outputSEXP);
@@ -339,13 +342,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< LogicalVector >::type isChannel(isChannelSEXP);
     Rcpp::traits::input_parameter< List >::type watershed_control(watershed_controlSEXP);
     Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
-    tetisSimulationWithOverlandFlows(model, date, internalCommunication, standSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug);
+    tetisSimulationWithOverlandFlows(model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug);
     return R_NilValue;
 END_RCPP
 }
 // tetisWatershedDay
-void tetisWatershedDay(List output, List internalCommunication, String local_model, List y, List sf_routing, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, bool standSummary, bool carbonBalanceSummary, bool biomassBalanceSummary, double patchsize, bool debug);
-RcppExport SEXP _medfateland_tetisWatershedDay(SEXP outputSEXP, SEXP internalCommunicationSEXP, SEXP local_modelSEXP, SEXP ySEXP, SEXP sf_routingSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP standSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP, SEXP patchsizeSEXP, SEXP debugSEXP) {
+void tetisWatershedDay(List output, List internalCommunication, String local_model, List y, List sf_routing, List watershed_control, CharacterVector date, DataFrame gridMeteo, NumericVector latitude, bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary, double patchsize, bool debug);
+RcppExport SEXP _medfateland_tetisWatershedDay(SEXP outputSEXP, SEXP internalCommunicationSEXP, SEXP local_modelSEXP, SEXP ySEXP, SEXP sf_routingSEXP, SEXP watershed_controlSEXP, SEXP dateSEXP, SEXP gridMeteoSEXP, SEXP latitudeSEXP, SEXP standSummarySEXP, SEXP fireHazardSummarySEXP, SEXP carbonBalanceSummarySEXP, SEXP biomassBalanceSummarySEXP, SEXP patchsizeSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type output(outputSEXP);
@@ -358,11 +361,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type latitude(latitudeSEXP);
     Rcpp::traits::input_parameter< bool >::type standSummary(standSummarySEXP);
+    Rcpp::traits::input_parameter< bool >::type fireHazardSummary(fireHazardSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type carbonBalanceSummary(carbonBalanceSummarySEXP);
     Rcpp::traits::input_parameter< bool >::type biomassBalanceSummary(biomassBalanceSummarySEXP);
     Rcpp::traits::input_parameter< double >::type patchsize(patchsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
-    tetisWatershedDay(output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary, carbonBalanceSummary, biomassBalanceSummary, patchsize, debug);
+    tetisWatershedDay(output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary, patchsize, debug);
     return R_NilValue;
 END_RCPP
 }
@@ -405,15 +409,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},
     {"_medfateland_copyStateFromResults", (DL_FUNC) &_medfateland_copyStateFromResults, 2},
-    {"_medfateland_createDayOutput", (DL_FUNC) &_medfateland_createDayOutput, 4},
+    {"_medfateland_createDayOutput", (DL_FUNC) &_medfateland_createDayOutput, 5},
     {"_medfateland_resetWaterBalanceDayOutput", (DL_FUNC) &_medfateland_resetWaterBalanceDayOutput, 1},
-    {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 7},
+    {"_medfateland_fcpp_landunit_day", (DL_FUNC) &_medfateland_fcpp_landunit_day, 8},
     {"_medfateland_tetisModifyKsat", (DL_FUNC) &_medfateland_tetisModifyKsat, 3},
     {"_medfateland_tetisInterFlow", (DL_FUNC) &_medfateland_tetisInterFlow, 7},
     {"_medfateland_tetisBaseFlow", (DL_FUNC) &_medfateland_tetisBaseFlow, 10},
     {"_medfateland_tetisDeepAquiferLossToAquifer", (DL_FUNC) &_medfateland_tetisDeepAquiferLossToAquifer, 3},
-    {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 17},
-    {"_medfateland_tetisWatershedDay", (DL_FUNC) &_medfateland_tetisWatershedDay, 14},
+    {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 18},
+    {"_medfateland_tetisWatershedDay", (DL_FUNC) &_medfateland_tetisWatershedDay, 15},
     {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 12},
     {NULL, NULL, 0}
 };
