@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@ Caceres</h4>
 <h2 id="aim">Aim<a class="anchor" aria-label="anchor" href="#aim"></a>
 </h2>
 <p>The aim of this vignette is to illustrate how to use
-<strong>medfateland</strong> (v. 2.7.2) to carry out simulations of
+<strong>medfateland</strong> (v. 2.8.1) to carry out simulations of
 forest function and dynamics on a set of forest stands while including
 lateral water transfer processes. This is done using functions
 <code><a href="../../reference/spwb_land.html">spwb_land()</a></code>, <code><a href="../../reference/spwb_land.html">growth_land()</a></code> and
@@ -277,7 +277,7 @@ structure to the dominant species (see function
 <span>                                           local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>                                           reduce_to_dominant <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
 <pre><code><span><span class="co">## • Soil domains [buckets: 0, single: 65, dual: 0]</span></span></code></pre>
@@ -584,37 +584,37 @@ importance:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       before     after</span></span>
-<span><span class="co">## 1  0.0000000 0.2839479</span></span>
-<span><span class="co">## 2  0.0000000 0.2624872</span></span>
-<span><span class="co">## 3  0.0000000 0.2496824</span></span>
-<span><span class="co">## 4  0.0000000 0.3538110</span></span>
-<span><span class="co">## 5  0.0000000 0.3207307</span></span>
-<span><span class="co">## 6  0.0000000 0.5280024</span></span>
-<span><span class="co">## 7  0.0000000 0.4683106</span></span>
-<span><span class="co">## 8  0.0000000 0.5416577</span></span>
-<span><span class="co">## 9  0.0000000 0.5582394</span></span>
-<span><span class="co">## 10 0.0000000 0.7536786</span></span>
-<span><span class="co">## 11 0.0000000 0.8583734</span></span>
-<span><span class="co">## 12 0.0000000 1.0517529</span></span>
-<span><span class="co">## 13 0.0000000 1.1024724</span></span>
-<span><span class="co">## 14 0.0000000 1.1705453</span></span>
-<span><span class="co">## 15 0.0000000 1.1923218</span></span>
-<span><span class="co">## 16 0.4316068 1.2368853</span></span>
-<span><span class="co">## 17 1.3611302 1.2127253</span></span>
-<span><span class="co">## 18 1.3824718 1.1604799</span></span>
-<span><span class="co">## 19 1.5585046 1.0942546</span></span>
-<span><span class="co">## 20 1.5105266 1.0230663</span></span>
-<span><span class="co">## 21 1.6881300 1.1011815</span></span>
-<span><span class="co">## 22 1.8266431 1.1306662</span></span>
-<span><span class="co">## 23 1.8739380 1.1441089</span></span>
-<span><span class="co">## 24 1.9760436 1.1828387</span></span>
-<span><span class="co">## 25 2.0570481 1.1856872</span></span>
-<span><span class="co">## 26 2.2017285 1.1986224</span></span>
-<span><span class="co">## 27 2.2502758 1.2001603</span></span>
-<span><span class="co">## 28 2.2419296 1.2010510</span></span>
-<span><span class="co">## 29 2.1508800 1.1491970</span></span>
-<span><span class="co">## 30 2.0449937 1.0828878</span></span>
-<span><span class="co">## 31 1.9626078 1.0348105</span></span></code></pre>
+<span><span class="co">## 1  0.0000000 0.2045580</span></span>
+<span><span class="co">## 2  0.0000000 0.1886241</span></span>
+<span><span class="co">## 3  0.0000000 0.1822620</span></span>
+<span><span class="co">## 4  0.0000000 0.2894959</span></span>
+<span><span class="co">## 5  0.0000000 0.2520673</span></span>
+<span><span class="co">## 6  0.0000000 0.4614610</span></span>
+<span><span class="co">## 7  0.0000000 0.4021449</span></span>
+<span><span class="co">## 8  0.0000000 0.4845239</span></span>
+<span><span class="co">## 9  0.0000000 0.4716548</span></span>
+<span><span class="co">## 10 0.0000000 0.6320595</span></span>
+<span><span class="co">## 11 0.0000000 0.7193951</span></span>
+<span><span class="co">## 12 0.0000000 0.9066211</span></span>
+<span><span class="co">## 13 0.0000000 0.9488699</span></span>
+<span><span class="co">## 14 0.0000000 1.0863664</span></span>
+<span><span class="co">## 15 0.0000000 1.1446901</span></span>
+<span><span class="co">## 16 0.4316068 1.1702085</span></span>
+<span><span class="co">## 17 1.3611302 1.1358586</span></span>
+<span><span class="co">## 18 1.3824718 1.0844738</span></span>
+<span><span class="co">## 19 1.5585046 1.0206471</span></span>
+<span><span class="co">## 20 1.5105266 0.9517150</span></span>
+<span><span class="co">## 21 1.6881300 1.0333036</span></span>
+<span><span class="co">## 22 1.8266431 1.0743056</span></span>
+<span><span class="co">## 23 1.8739380 1.0843717</span></span>
+<span><span class="co">## 24 1.9760436 1.1348645</span></span>
+<span><span class="co">## 25 2.0570481 1.1562450</span></span>
+<span><span class="co">## 26 2.2017285 1.1674421</span></span>
+<span><span class="co">## 27 2.2502758 1.1443657</span></span>
+<span><span class="co">## 28 2.2419296 1.1315266</span></span>
+<span><span class="co">## 29 2.1508800 1.0766835</span></span>
+<span><span class="co">## 30 2.0449937 1.0091355</span></span>
+<span><span class="co">## 31 1.9626078 0.9626542</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>
@@ -774,16 +774,16 @@ to see what the model is doing:</p>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Column 'snowpack' was missing in 'sf'. Initializing empty snowpack.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Minimum bedrock porosity set to 0.1%.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.6s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.9s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[2.1s]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[2.5s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## • Hydrological model: TETIS</span></span>
 <span><span class="co">## • Number of grid cells: 3825 Number of target cells: 2573</span></span>
