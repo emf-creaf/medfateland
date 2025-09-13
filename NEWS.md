@@ -1,4 +1,4 @@
-# medfateland 2.7.2
+# medfateland 2.8.0
 - Daily substeps available for base flows
 - Aquifer (water table depth) effects on soil local water balance can be disabled
 - Aquifer water balance revised
