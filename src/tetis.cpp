@@ -352,7 +352,7 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   NumericVector LAI, LAIherb, LAIlive, LAIexpanded, LAIdead, Cm, LgroundPAR, LgroundSWR;
   NumericVector StructuralBalance, LabileBalance, PlantBalance, MortalityLoss, CohortBalance;
   NumericVector GrossPrimaryProduction, MaintenanceRespiration, SynthesisRespiration, NetPrimaryProduction;
-  NumericVector DFMC, CFMC_understory, CFMC_overstory, ROS_surface, I_b_surface, t_r_surface, FL_surface, Ic_ratio, ROS_crown, I_b_crown, t_r_crown, FL_crown, SFP, CFP;
+  NumericVector Loading_understory, Loading_overstory, CFMC_understory, CFMC_overstory, DFMC, ROS_surface, I_b_surface, t_r_surface, FL_surface, Ic_ratio, ROS_crown, I_b_crown, t_r_crown, FL_crown, SFP, CFP;
   if(standSummary) {
     DataFrame outStand = as<DataFrame>(output["WatershedStand"]);
     LAI = outStand[STCOM_LAI];
@@ -366,9 +366,11 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
   }
   if(fireHazardSummary) {
     DataFrame fireStand = as<DataFrame>(output["WatershedFireHazard"]);
-    DFMC = fireStand[FHCOM_DFMC];
-    CFMC_understory = fireStand[FHCOM_CFMC_understory];
+    Loading_overstory = fireStand[FHCOM_Loading_overstory];
+    Loading_understory = fireStand[FHCOM_Loading_understory];
     CFMC_overstory = fireStand[FHCOM_CFMC_overstory];
+    CFMC_understory = fireStand[FHCOM_CFMC_understory];
+    DFMC = fireStand[FHCOM_DFMC];
     ROS_surface = fireStand[FHCOM_ROS_surface];
     I_b_surface = fireStand[FHCOM_I_b_surface];
     t_r_surface = fireStand[FHCOM_t_r_surface];
@@ -520,9 +522,16 @@ void tetisSimulationWithOverlandFlows(String model, CharacterVector date, List i
         } 
         if(fireHazardSummary){
           NumericVector FireHazard = sr["FireHazard"];
-          DFMC[iCell] = FireHazard["DFMC [%]"];
+          //To avoid loss of back-compatibility
+          if(FireHazard.containsElementNamed("Loading_overstory [kg/m2]")) {
+            Loading_overstory[iCell] = FireHazard["Loading_overstory [kg/m2]"];
+          }
+          if(FireHazard.containsElementNamed("Loading_understory [kg/m2]")) {
+            Loading_understory[iCell] = FireHazard["Loading_understory [kg/m2]"];
+          }
           CFMC_understory[iCell] = FireHazard["CFMC_understory [%]"];
           CFMC_overstory[iCell] = FireHazard["CFMC_overstory [%]"];
+          DFMC[iCell] = FireHazard["DFMC [%]"];
           ROS_surface[iCell] = FireHazard["ROS_surface [m/min]"];
           I_b_surface[iCell] = FireHazard["I_b_surface [kW/m]"];
           t_r_surface[iCell] = FireHazard["t_r_surface [s]"];

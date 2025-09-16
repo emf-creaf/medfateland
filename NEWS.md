@@ -3,10 +3,9 @@
 
 # medfateland 2.8.0
 - Daily substeps available for base flows
-- Aquifer (water table depth) effects on soil local water balance can be disabled
 - Aquifer water balance revised
-- Negative aquifer correction introduced
-- Modification of vertical partitioning of interflow to avoid the need of aquifer correction
+- Negative aquifer correction introduced to detect when closing local water balance induces undue capillarity from the aquifer
+- Modification of vertical partitioning of interflow to alleviate the need of aquifer correction
 - shinyplot() functions renamed to S3 class-specific
 - Avoiding instabilities in outlet cells for watershed simulations
 - Bug correction: Channel routing in outlets without drainage basin

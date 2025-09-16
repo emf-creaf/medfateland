@@ -92,6 +92,21 @@ test_that("Can simulate three days over landscape with dates in column",{
                               SpParams = SpParamsMED, progress = FALSE), "growth_land")
 })
 
+test_that("Can simulate three days with additional summaries",{
+  local_control = defaultControl()
+  local_control$fireHazardResults = TRUE
+  yws_swpb_fh <- initialize_landscape(example_watershed, SpParams = SpParamsMED, local_control = local_control,
+                                   model = "spwb", progress = FALSE)
+  yws_growth_fh <- initialize_landscape(example_watershed, SpParams = SpParamsMED, local_control = local_control,
+                                     model = "growth", progress = FALSE)
+  
+  expect_s3_class(spwb_land(r, yws_swpb_fh[1:10,], meteo = examplemeteo2, dates = dates, summary_frequency = "month", 
+                            summary_blocks = c("FireHazard", "Stand","WaterBalance"),
+                            SpParams = SpParamsMED, progress = FALSE), "spwb_land")
+  expect_s3_class(growth_land(r, yws_growth_fh[1:10,], meteo = examplemeteo2, dates = dates, summary_frequency = "month", 
+                              summary_blocks = c("FireHazard", "Stand","WaterBalance", "CarbonBalance"),
+                              SpParams = SpParamsMED, progress = FALSE), "growth_land")
+})
 
 yws = example_watershed
 yws$crop_factor = NA

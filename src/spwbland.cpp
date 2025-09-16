@@ -47,20 +47,22 @@ const int STCOM_Cm = 5;
 const int STCOM_LgroundPAR = 6;
 const int STCOM_LgroundSWR = 7;
 
-const int FHCOM_DFMC = 0;
-const int FHCOM_CFMC_understory = 1;
+const int FHCOM_Loading_overstory = 0;
+const int FHCOM_Loading_understory = 1;
 const int FHCOM_CFMC_overstory = 2;
-const int FHCOM_ROS_surface = 3;
-const int FHCOM_I_b_surface = 4;
-const int FHCOM_t_r_surface = 5;
-const int FHCOM_FL_surface = 6;
-const int FHCOM_Ic_ratio = 7;
-const int FHCOM_ROS_crown = 8;
-const int FHCOM_I_b_crown = 9;
-const int FHCOM_t_r_crown = 10;
-const int FHCOM_FL_crown = 11;
-const int FHCOM_SFP = 12;
-const int FHCOM_CFP = 13;
+const int FHCOM_CFMC_understory = 3;
+const int FHCOM_DFMC = 4;
+const int FHCOM_ROS_surface = 5;
+const int FHCOM_I_b_surface = 6;
+const int FHCOM_t_r_surface = 7;
+const int FHCOM_FL_surface = 8;
+const int FHCOM_Ic_ratio = 9;
+const int FHCOM_ROS_crown = 10;
+const int FHCOM_I_b_crown = 11;
+const int FHCOM_t_r_crown = 12;
+const int FHCOM_FL_crown = 13;
+const int FHCOM_SFP = 14;
+const int FHCOM_CFP = 15;
 
 const int CBCOM_GrossPrimaryProduction = 0;
 const int CBCOM_MaintenanceRespiration = 1;
@@ -178,13 +180,15 @@ List createDayOutput(int nX,
     l.push_back(stand, "WatershedStand");
   }
   if(fireHazardSummary) {
-    int ncol_fire = 14;
+    int ncol_fire = 16;
     List out_fire(ncol_fire);
     CharacterVector colnames_fire(ncol_fire);
     for(int i = 0; i<ncol_fire; i++) out_fire[i] = NumericVector(nX, NA_REAL);
-    colnames_fire[FHCOM_DFMC] = "DFMC";
-    colnames_fire[FHCOM_CFMC_understory] = "CFMC_understory";
+    colnames_fire[FHCOM_Loading_overstory] = "Loading_overstory";
+    colnames_fire[FHCOM_Loading_understory] = "Loading_understory";
     colnames_fire[FHCOM_CFMC_overstory] = "CFMC_overstory";
+    colnames_fire[FHCOM_CFMC_understory] = "CFMC_understory";
+    colnames_fire[FHCOM_DFMC] = "DFMC";
     colnames_fire[FHCOM_ROS_surface] = "ROS_surface";
     colnames_fire[FHCOM_I_b_surface] = "I_b_surface";
     colnames_fire[FHCOM_t_r_surface] = "t_r_surface";

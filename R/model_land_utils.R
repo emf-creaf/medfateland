@@ -235,7 +235,7 @@
   return(c())
 }
 .vars_firehazard <- function(type = "all"){
-  varsFireHazard <- c("DFMC","CFMC_understory","CFMC_overstory","ROS_surface",
+  varsFireHazard <- c("Loading_overstory","Loading_understory","CFMC_overstory","CFMC_understory","DFMC","ROS_surface",
                       "I_b_surface","t_r_surface", "FL_surface","Ic_ratio",
                       "ROS_crown", "I_b_crown", "t_r_crown","FL_crown",       
                       "SFP","CFP")

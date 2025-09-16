@@ -1307,10 +1307,23 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   standSummary <- "Stand" %in% summary_blocks
   carbonBalanceSummary <- "CarbonBalance" %in% summary_blocks
   biomassBalanceSummary <- "BiomassBalance" %in% summary_blocks
+  fireHazardSummary <- "FireHazard" %in% summary_blocks
   
-  varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-  varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-  varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsSum <- .vars_summary("sum", standSummary = standSummary, 
+                           waterBalanceSummary = waterBalanceSummary, 
+                           fireHazardSummary = fireHazardSummary,
+                           carbonBalanceSummary = carbonBalanceSummary, 
+                           biomassBalanceSummary = biomassBalanceSummary)
+  varsMean <- .vars_summary("mean", standSummary = standSummary, 
+                            waterBalanceSummary = waterBalanceSummary, 
+                            fireHazardSummary = fireHazardSummary,
+                            carbonBalanceSummary = carbonBalanceSummary, 
+                            biomassBalanceSummary = biomassBalanceSummary)
+  varsState <- .vars_summary("state", standSummary = standSummary, 
+                             waterBalanceSummary = waterBalanceSummary, 
+                             fireHazardSummary = fireHazardSummary,
+                             carbonBalanceSummary = carbonBalanceSummary, 
+                             biomassBalanceSummary = biomassBalanceSummary)
   
   watershed_model <- match.arg(watershed_model, c("tetis", "serghei"))
   
