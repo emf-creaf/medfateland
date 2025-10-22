@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Caceres</h4>
             
-            <h4 data-toc-skip class="date">2025-09-15</h4>
+            <h4 data-toc-skip class="date">2025-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/runmodels/WatershedSimulations.Rmd" class="external-link"><code>vignettes/runmodels/WatershedSimulations.Rmd</code></a></small>
       <div class="d-none name"><code>WatershedSimulations.Rmd</code></div>
@@ -233,7 +233,7 @@ follows:</p>
 <code class="sourceCode R"><span><span class="va">example_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span>
 <span>                                     local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"buckets"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[14ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
 <pre><code><span><span class="co">## • Soil domains [buckets: 65, single: 0, dual: 0]</span></span></code></pre>
@@ -277,7 +277,7 @@ structure to the dominant species (see function
 <span>                                           local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>                                           reduce_to_dominant <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 65 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[7ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 65 state objects for model 'spwb'. <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
 <pre><code><span><span class="co">## • Soil domains [buckets: 0, single: 65, dual: 0]</span></span></code></pre>
@@ -348,16 +348,16 @@ analogous to those of functions <code>*_spatial()</code>:</p>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 66 × 11</span></span></span>
 <span><span class="co">##            geometry state            aquifer snowpack summary  result outlet</span></span>
 <span><span class="co">##  <span style="color: #BCBCBC;">*</span>      <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   5.08       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    0.059<span style="text-decoration: underline;">8</span>     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (402630 4672570) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   4.95       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (402330 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    0.059<span style="text-decoration: underline;">6</span>     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (402430 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.299      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.718      2.54 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   8.96       2.57 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  927.         3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  534.         3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.067<span style="text-decoration: underline;">1</span>     2.53 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.394      2.81 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    1.05       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (402530 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.713      3.24 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402630 4672470) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   8.75       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402730 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  925.         3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> TRUE  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (402830 4672470) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>  525.         3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (402230 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.067<span style="text-decoration: underline;">2</span>     3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (402330 4672370) <span style="color: #949494;">&lt;spwbInpt [19]&gt;</span>   0.394      3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (402430 4672370) <span style="color: #949494;">&lt;aspwbInp [4]&gt;</span>    1.04       3.56 <span style="color: #949494;">&lt;dbl[…]&gt;</span> <span style="color: #949494;">&lt;NULL&gt;</span> FALSE </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 56 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: channel &lt;lgl&gt;, target_outlet &lt;int&gt;, outlet_backlog &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   subwatershed &lt;int&gt;</span></span></span></code></pre>
@@ -374,33 +374,33 @@ in mm in the last column.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        dates       PET Precipitation      Rain Snow Snowmelt Interception</span></span>
-<span><span class="co">## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0    0.7754218</span></span>
-<span><span class="co">## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0    0.6090627</span></span>
-<span><span class="co">## 3 2001-01-03 1.3417718      0.000000  0.000000    0        0    0.0000000</span></span>
-<span><span class="co">## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0    0.7723790</span></span>
-<span><span class="co">## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0    0.4808826</span></span>
-<span><span class="co">## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0    0.8613997</span></span>
-<span><span class="co">##     NetRain Infiltration InfiltrationExcess SaturationExcess  CellRunon</span></span>
-<span><span class="co">## 1  4.093687     4.093687         0.00000000                0 0.00000000</span></span>
-<span><span class="co">## 2  1.889229     1.889229         0.00000000                0 0.00000000</span></span>
-<span><span class="co">## 3  0.000000     0.000000         0.00000000                0 0.00000000</span></span>
-<span><span class="co">## 4  5.024594     5.024594         0.00000000                0 0.00000000</span></span>
-<span><span class="co">## 5  1.403519     1.403519         0.00000000                0 0.00000000</span></span>
-<span><span class="co">## 6 12.498401    12.498401         0.05090607                0 0.05090607</span></span>
+<span><span class="co">## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0     1.524828</span></span>
+<span><span class="co">## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0     1.210543</span></span>
+<span><span class="co">## 3 2001-01-03 1.3417718      0.000000  0.000000    0        0     0.000000</span></span>
+<span><span class="co">## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0     1.515057</span></span>
+<span><span class="co">## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0     1.016077</span></span>
+<span><span class="co">## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0     1.704274</span></span>
+<span><span class="co">##      NetRain Infiltration InfiltrationExcess SaturationExcess  CellRunon</span></span>
+<span><span class="co">## 1  3.3442808    3.3442808         0.00000000                0 0.00000000</span></span>
+<span><span class="co">## 2  1.2877488    1.2877488         0.00000000                0 0.00000000</span></span>
+<span><span class="co">## 3  0.0000000    0.0000000         0.00000000                0 0.00000000</span></span>
+<span><span class="co">## 4  4.2819157    4.2819157         0.00000000                0 0.00000000</span></span>
+<span><span class="co">## 5  0.8683247    0.8683247         0.00000000                0 0.00000000</span></span>
+<span><span class="co">## 6 11.6555266   11.6555266         0.05090607                0 0.05090607</span></span>
 <span><span class="co">##   CellRunoff DeepDrainage CapillarityRise DeepAquiferLoss SoilEvaporation</span></span>
-<span><span class="co">## 1 0.00000000   0.07729253    0.000000e+00               0      0.38748895</span></span>
-<span><span class="co">## 2 0.00000000   0.04116736    0.000000e+00               0      0.15216127</span></span>
-<span><span class="co">## 3 0.00000000   0.00293939    5.400622e-06               0      0.14092976</span></span>
-<span><span class="co">## 4 0.00000000   0.09170048    0.000000e+00               0      0.12006498</span></span>
-<span><span class="co">## 5 0.00000000   0.03196001    0.000000e+00               0      0.11493412</span></span>
-<span><span class="co">## 6 0.05090607   0.15705210    3.178747e-05               0      0.09418046</span></span>
+<span><span class="co">## 1 0.00000000  0.077285504               0               0      0.26502076</span></span>
+<span><span class="co">## 2 0.00000000  0.041094767               0               0      0.16789385</span></span>
+<span><span class="co">## 3 0.00000000  0.002816163               0               0      0.18274377</span></span>
+<span><span class="co">## 4 0.00000000  0.091668854               0               0      0.09931928</span></span>
+<span><span class="co">## 5 0.00000000  0.031688356               0               0      0.14827048</span></span>
+<span><span class="co">## 6 0.05090607  0.157048292               0               0      0.11148804</span></span>
 <span><span class="co">##   Transpiration HerbTranspiration InterflowBalance BaseflowBalance</span></span>
-<span><span class="co">## 1     0.2846843                 0     0.000000e+00    2.082982e-18</span></span>
-<span><span class="co">## 2     0.5046007                 0     1.059758e-16   -2.250541e-19</span></span>
-<span><span class="co">## 3     0.4236566                 0    -1.951301e-16    1.504741e-18</span></span>
-<span><span class="co">## 4     0.1918742                 0     1.009294e-17    2.109266e-18</span></span>
-<span><span class="co">## 5     0.5180912                 0     1.177509e-16   -3.400452e-18</span></span>
-<span><span class="co">## 6     0.3812664                 0     2.153160e-16    1.765278e-17</span></span>
+<span><span class="co">## 1     0.4309517                 0     0.000000e+00   -5.174601e-18</span></span>
+<span><span class="co">## 2     0.7632100                 0    -5.046468e-17    3.195111e-18</span></span>
+<span><span class="co">## 3     0.6410802                 0     8.915427e-17    7.454711e-18</span></span>
+<span><span class="co">## 4     0.2894745                 0     1.286849e-16    9.317568e-18</span></span>
+<span><span class="co">## 5     0.7836103                 0     1.648513e-16    7.030887e-18</span></span>
+<span><span class="co">## 6     0.5764833                 0    -1.366752e-17   -5.986110e-18</span></span>
 <span><span class="co">##   AquiferExfiltration ChannelExport WatershedExport NegativeAquiferCorrection</span></span>
 <span><span class="co">## 1                   0             0               0                         0</span></span>
 <span><span class="co">## 2                   0             0               0                         0</span></span>
@@ -434,23 +434,23 @@ the console using a tailored <code><a href="https://rdrr.io/r/base/summary.html"
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Snowpack water balance components:</span></span>
-<span><span class="co">##     Snow fall (mm) 16.65  Snow melt (mm) 13.42</span></span>
+<span><span class="co">##     Snow fall (mm) 16.65  Snow melt (mm) 13.1</span></span>
 <span><span class="co">##   Soil water balance components:</span></span>
-<span><span class="co">##     Infiltration (mm) 63.31  Saturation excess (mm) 0</span></span>
-<span><span class="co">##     Deep drainage (mm) 51.54  Capillarity rise (mm) 0</span></span>
-<span><span class="co">##     Soil evaporation (mm) 1.56  Plant transpiration (mm) 10.08</span></span>
+<span><span class="co">##     Infiltration (mm) 54.71  Saturation excess (mm) 0</span></span>
+<span><span class="co">##     Deep drainage (mm) 39.33  Capillarity rise (mm) 0</span></span>
+<span><span class="co">##     Soil evaporation (mm) 1.59  Plant transpiration (mm) 15.23</span></span>
 <span><span class="co">##     Interflow balance (mm) 0</span></span>
 <span><span class="co">##   Aquifer water balance components:</span></span>
-<span><span class="co">##     Deep drainage (mm) 51.78  Capillarity rise (mm) 0</span></span>
-<span><span class="co">##     Exfiltration (mm) 28.52  Deep aquifer loss (mm) 0</span></span>
+<span><span class="co">##     Deep drainage (mm) 39.76  Capillarity rise (mm) 0</span></span>
+<span><span class="co">##     Exfiltration (mm) 16.8  Deep aquifer loss (mm) 0</span></span>
 <span><span class="co">##     Negative aquifer correction (mm) 0</span></span>
 <span><span class="co">##   Watershed water balance components:</span></span>
 <span><span class="co">##     Precipitation (mm) 74.75</span></span>
-<span><span class="co">##     Interception (mm) 8.13  Soil evaporation (mm) 1.54</span></span>
-<span><span class="co">##     Plant transpiration (mm) 9.92</span></span>
+<span><span class="co">##     Interception (mm) 16.29  Soil evaporation (mm) 1.56</span></span>
+<span><span class="co">##     Plant transpiration (mm) 15</span></span>
 <span><span class="co">##     Subsurface flow balance (mm) 0</span></span>
 <span><span class="co">##     Groundwater flow balance (mm) 0</span></span>
-<span><span class="co">##     Export runoff (mm) 28.52</span></span></code></pre>
+<span><span class="co">##     Export runoff (mm) 16.8</span></span></code></pre>
 <p>Analogously to plots available with package <strong>medfate</strong>,
 one can display time series of watershed-level water balance components
 using function <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
@@ -473,9 +473,9 @@ summaries for a given landscape cell using:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET     Rain     Snow      SWE</span></span>
-<span><span class="co">## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 1.699603</span></span>
-<span><span class="co">##                RWC  SoilVol      WTD      DTA</span></span>
-<span><span class="co">## 2001-01-01 108.363 583.1619 3288.197 15.47546</span></span></code></pre>
+<span><span class="co">## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 1.949332</span></span>
+<span><span class="co">##                 RWC SoilVol      WTD      DTA</span></span>
+<span><span class="co">## 2001-01-01 105.9293 570.065 3432.313 15.47638</span></span></code></pre>
 <p>Additional variables (water balance components, carbon balance
 components, etc.) can be added to summaries via parameter
 <code>summary_blocks</code>. Some of these summaries are temporal
@@ -583,38 +583,38 @@ importance:</p>
 <span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"before"</span> <span class="op">=</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span>, </span>
 <span>           <span class="st">"after"</span> <span class="op">=</span> <span class="va">res_ws3</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">$</span><span class="va">WatershedExport</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##       before     after</span></span>
-<span><span class="co">## 1  0.0000000 0.2045580</span></span>
-<span><span class="co">## 2  0.0000000 0.1886241</span></span>
-<span><span class="co">## 3  0.0000000 0.1822620</span></span>
-<span><span class="co">## 4  0.0000000 0.2894959</span></span>
-<span><span class="co">## 5  0.0000000 0.2520673</span></span>
-<span><span class="co">## 6  0.0000000 0.4614610</span></span>
-<span><span class="co">## 7  0.0000000 0.4021449</span></span>
-<span><span class="co">## 8  0.0000000 0.4845239</span></span>
-<span><span class="co">## 9  0.0000000 0.4716548</span></span>
-<span><span class="co">## 10 0.0000000 0.6320595</span></span>
-<span><span class="co">## 11 0.0000000 0.7193951</span></span>
-<span><span class="co">## 12 0.0000000 0.9066211</span></span>
-<span><span class="co">## 13 0.0000000 0.9488699</span></span>
-<span><span class="co">## 14 0.0000000 1.0863664</span></span>
-<span><span class="co">## 15 0.0000000 1.1446901</span></span>
-<span><span class="co">## 16 0.4316068 1.1702085</span></span>
-<span><span class="co">## 17 1.3611302 1.1358586</span></span>
-<span><span class="co">## 18 1.3824718 1.0844738</span></span>
-<span><span class="co">## 19 1.5585046 1.0206471</span></span>
-<span><span class="co">## 20 1.5105266 0.9517150</span></span>
-<span><span class="co">## 21 1.6881300 1.0333036</span></span>
-<span><span class="co">## 22 1.8266431 1.0743056</span></span>
-<span><span class="co">## 23 1.8739380 1.0843717</span></span>
-<span><span class="co">## 24 1.9760436 1.1348645</span></span>
-<span><span class="co">## 25 2.0570481 1.1562450</span></span>
-<span><span class="co">## 26 2.2017285 1.1674421</span></span>
-<span><span class="co">## 27 2.2502758 1.1443657</span></span>
-<span><span class="co">## 28 2.2419296 1.1315266</span></span>
-<span><span class="co">## 29 2.1508800 1.0766835</span></span>
-<span><span class="co">## 30 2.0449937 1.0091355</span></span>
-<span><span class="co">## 31 1.9626078 0.9626542</span></span></code></pre>
+<pre><code><span><span class="co">##       before      after</span></span>
+<span><span class="co">## 1  0.0000000 0.12816556</span></span>
+<span><span class="co">## 2  0.0000000 0.09986587</span></span>
+<span><span class="co">## 3  0.0000000 0.07090369</span></span>
+<span><span class="co">## 4  0.0000000 0.17218497</span></span>
+<span><span class="co">## 5  0.0000000 0.12998927</span></span>
+<span><span class="co">## 6  0.0000000 0.33157200</span></span>
+<span><span class="co">## 7  0.0000000 0.21527091</span></span>
+<span><span class="co">## 8  0.0000000 0.24910774</span></span>
+<span><span class="co">## 9  0.0000000 0.24349869</span></span>
+<span><span class="co">## 10 0.0000000 0.40573446</span></span>
+<span><span class="co">## 11 0.0000000 0.40353996</span></span>
+<span><span class="co">## 12 0.0000000 0.52421850</span></span>
+<span><span class="co">## 13 0.0000000 0.52801014</span></span>
+<span><span class="co">## 14 0.0000000 0.60477634</span></span>
+<span><span class="co">## 15 0.0000000 0.62605392</span></span>
+<span><span class="co">## 16 0.0000000 0.63996737</span></span>
+<span><span class="co">## 17 0.0000000 0.63444712</span></span>
+<span><span class="co">## 18 0.0000000 0.62184369</span></span>
+<span><span class="co">## 19 0.3766724 0.60503029</span></span>
+<span><span class="co">## 20 0.7494492 0.58443928</span></span>
+<span><span class="co">## 21 0.9717337 0.69000921</span></span>
+<span><span class="co">## 22 1.1772553 0.71876789</span></span>
+<span><span class="co">## 23 1.2670371 0.70530849</span></span>
+<span><span class="co">## 24 1.3620809 0.75554198</span></span>
+<span><span class="co">## 25 1.4573525 0.76373163</span></span>
+<span><span class="co">## 26 1.5647762 0.74564720</span></span>
+<span><span class="co">## 27 1.6437539 0.72447288</span></span>
+<span><span class="co">## 28 1.6449920 0.71724418</span></span>
+<span><span class="co">## 29 1.5856965 0.68262892</span></span>
+<span><span class="co">## 30 1.5163174 0.64161090</span></span>
+<span><span class="co">## 31 1.4789010 0.61954667</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="simulations-of-watershed-forest-dynamics">Simulations of watershed forest dynamics<a class="anchor" aria-label="anchor" href="#simulations-of-watershed-forest-dynamics"></a>
@@ -774,16 +774,16 @@ to see what the model is doing:</p>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[21ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Column 'snowpack' was missing in 'sf'. Initializing empty snowpack.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Minimum bedrock porosity set to 0.1%.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[4.6s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.9s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[2.9s]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[2.2s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## • Hydrological model: TETIS</span></span>
 <span><span class="co">## • Number of grid cells: 3825 Number of target cells: 2573</span></span>
