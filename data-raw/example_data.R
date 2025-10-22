@@ -58,10 +58,10 @@ example_watershed_burnin <- update_landscape(example_watershed_burnin, res2)
 
 
 #Example sf from IFN3 (original coordinates)
-ifn3 <- readRDS("/home/miquel/OneDrive/EMF_datasets/ForestInventories/IFN_medfateland/medfateland_ifn3_08_soilmod_WGS84.rds")
+ifn3 <- readRDS("/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/data/SpParamsMED/IFN3/Catalunya/IFN3_cat_final_ETRS89H31.rds")
 original_coords <- sf::read_sf("/home/miquel/OneDrive/EMF_datasets/ForestInventories/IFN_coordinates/IFN3_cat_original_ETRS89H31.gpkg")
 ifn3$land_cover_type <- "wildland"
-example_ifn <- ifn3[1001:1100, c("geometry","id", "elevation", "slope", "aspect", "land_cover_type", "soil", "forest")]
+example_ifn <- ifn3[1001:1100, c("geom","id", "elevation", "slope", "aspect", "land_cover_type", "soil", "forest")]
 example_ifn$forest <- lapply(example_ifn$forest, function(x){
   x$treeData$OrdenIf2 <- NULL
   x$treeData$OrdenIf3 <- NULL

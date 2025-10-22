@@ -19,7 +19,7 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/, https://github.com/emf-creaf/medfateland
 BugReports: https://github.com/emf-creaf/medfateland/issues
 LazyLoad: yes
-Depends: R (>= 4.1.0), medfate (>= 4.8.1)
+Depends: R (>= 4.1.0), medfate (>= 4.8.3)
 Imports: 
     cli,
     ggplot2,
