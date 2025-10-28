@@ -114,7 +114,7 @@
             init[i] = FALSE
             if(compareVersion(medfate_ver, "4.8.5") >= 0) {
               if("version" %in% names(x)) {
-                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x_i)
+                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x)
               } else {
                 medfate:::.spwbInputVersionUpdate(x)                
                 x[["version"]] <- medfate_ver
@@ -126,7 +126,7 @@
             init[i] = FALSE
             if(compareVersion(medfate_ver, "4.8.5") >= 0) {
               if("version" %in% names(x)) {
-                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x_i)
+                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x)
               } else {
                 medfate:::.spwbInputVersionUpdate(x)                
                 x[["version"]] <- medfate_ver

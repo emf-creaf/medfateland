@@ -71,6 +71,7 @@
 #' @importFrom tidyterra geom_spatraster
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr unnest
+#' @importFrom utils compareVersion packageVersion
 #' @useDynLib medfateland, .registration = TRUE
 ## usethis namespace: end
 NULL
