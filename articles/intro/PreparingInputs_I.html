@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.8.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Adriana Tovar / Víctor Granda</h4>
             
-            <h4 data-toc-skip class="date">2025-10-22</h4>
+            <h4 data-toc-skip class="date">2025-10-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_I.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_I.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_I.Rmd</code></div>
@@ -191,7 +191,7 @@ using package <code>terra</code>:</p>
 starting <code>sf</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">x</span>, dem <span class="op">=</span> <span class="va">dem</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_1</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 3 features and 4 fields</span></span>
@@ -597,7 +597,7 @@ topographic features from a digital elevation model (although the error
 in plot coordinates adds uncertainty into the result):</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/add_topography.html">add_topography</a></span><span class="op">(</span><span class="va">y_1</span>, dem <span class="op">=</span> <span class="va">dem</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
+<pre><code><span><span class="co">## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span></span></code></pre>
 <p><strong>Soil data</strong></p>
 <p>Soil data is not normally sampled in national forest inventory data,
 or it is difficult to harmonize. Therefore, we will normally resort on
