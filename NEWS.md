@@ -1,3 +1,6 @@
+# medfateland 2.8.2
+* Backwards compatibility of objects initialized with medfate ver. 4.8.3 and 4.8.4
+
 # medfateland 2.8.1
 - Add fire hazard to summary blocks for spwb_land and growth_land
 

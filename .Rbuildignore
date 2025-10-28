@@ -15,6 +15,7 @@
 ^vignettes/modelanalysis/*$
 ^vignettes/modelanalysis/computing_times/*$
 ^vignettes/runmodels/*$
+^initialized_objects/*$
 ^figures/*$
 ^pkgdown$
 ^man/figures/*$

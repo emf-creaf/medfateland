@@ -66,6 +66,7 @@
   local_control$verbose <- FALSE
   
   n <- nrow(y)
+  medfate_ver <- as.character(packageVersion("medfate"))
   forestlist <- y$forest
   soillist  <- y$soil
   if("land_cover_type" %in% names(y)) {
@@ -109,8 +110,30 @@
         if(inherits(f, "forest") && inherits(s, c("soil","data.frame"))) {
           init[i] <- TRUE
           x <- xlist[[i]]
-          if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
-          if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+          if(inherits(x,"spwbInput") && model=="spwb") {
+            init[i] = FALSE
+            if(compareVersion(medfate_ver, "4.8.5") >= 0) {
+              if("version" %in% names(x)) {
+                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x_i)
+              } else {
+                medfate:::.spwbInputVersionUpdate(x)                
+                x[["version"]] <- medfate_ver
+                xlist[[i]] <- x
+              }
+            }
+          }
+          if(inherits(x,"growthInput") && model=="growth") {
+            init[i] = FALSE
+            if(compareVersion(medfate_ver, "4.8.5") >= 0) {
+              if("version" %in% names(x)) {
+                if(compareVersion(x[["version"]],medfate_ver)<0) medfate:::.spwbInputVersionUpdate(x_i)
+              } else {
+                medfate:::.spwbInputVersionUpdate(x)                
+                x[["version"]] <- medfate_ver
+                xlist[[i]] <- x
+              }
+            }
+          }
         }
       } else if(landcover[i] == "agriculture") {
         if(inherits(soillist[[i]], c("soil","data.frame"))) {
