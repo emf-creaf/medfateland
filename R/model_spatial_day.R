@@ -25,23 +25,39 @@
   
   if(model=="spwb") {
     if(inherits(xi$x, "spwbInput")){
-      res<-medfate::spwb_day(xi$x, date, meteovec,
+      res <- tryCatch({
+        medfate::spwb_day(xi$x, date, meteovec,
                              latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                              modifyInput = TRUE)
+      }, error = function(e) {
+        simpleError(e$message,"spwb_day")
+      })
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, meteovec,
+      res <- tryCatch({
+        medfate::aspwb_day(xi$x, date, meteovec,
                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                        modifyInput = TRUE)
+      }, error = function(e) {
+        simpleError(e$message,"aspwb_day")
+      })
     }
   } else if(model=="growth") {
     if(inherits(xi$x, "growthInput")) {
-      res<-medfate::growth_day(xi$x, date, meteovec,
+      res<-tryCatch({
+        medfate::growth_day(xi$x, date, meteovec,
                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                                modifyInput = TRUE)
+      }, error = function(e) {
+        simpleError(e$message,"growth_day")
+      })
     } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day(xi$x, date, meteovec,
+      res <- tryCatch({
+        medfate::aspwb_day(xi$x, date, meteovec,
                         latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
                         modifyInput = TRUE)
+      }, error = function(e) {
+        simpleError(e$message,"aspwb_day")
+      })
       
     }
   } 
