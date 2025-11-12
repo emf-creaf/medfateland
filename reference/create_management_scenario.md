@@ -1,0 +1,131 @@
+# Create management scenario
+
+Defines a management scenario for simulations of forest dynamics
+
+## Usage
+
+``` r
+create_management_scenario(
+  units,
+  annual_demand_by_species = NULL,
+  extraction_rate_by_year = NULL,
+  default_management_arguments = NULL
+)
+```
+
+## Arguments
+
+- units:
+
+  Number of management units. Alternatively, a data frame with
+  management options (in columns) for a set of units (in rows). Options
+  not specified witl be taken from defaults.
+
+- annual_demand_by_species:
+
+  A vector or matrix of annual wood demand (m3) by medfate species names
+  (or groups of species names). If empty, the scenario is 'bottom-up'
+  (not based on demand). If a vector is supplied, the same wood demand
+  is applied for all simulated years. If a matrix is supplied, each row
+  should correspond to a different year.
+
+- extraction_rate_by_year:
+
+  A vector of extraction rates (%) per year of the simulation, starting
+  at the second year. If specified, the annual demand by species will be
+  applied for the first year of the simulation, but it will be rescaled
+  for the remaining years according to the growth observed and the
+  desired extraction rates.
+
+- default_management_arguments:
+
+  A list of arguments to be passed to the managementFunction. These
+  arguments will be taken as defaults copied for all management units
+  and can later be modified. If NULL, the result of calling function
+  [`defaultManagementArguments`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html)
+  will be taken.
+
+## Value
+
+A list with the following structure:
+
+- `scenario_type`: Either 'bottom-up' (no demand is specified),
+  'input_demand' (annual species demand is specified), or 'input_rate'
+  when extraction rates are also supplied.
+
+- `annual_demand_by_species`: A vector of annual wood demand (m3) by
+  species (or species groups) (for scenario_type 'bottom-up' or
+  'input_demand').
+
+- `extraction_rate_by_year`: A vector of extraction rate values per
+  year.
+
+- `units`: A data frame with as many rows as units and management
+  arguments as columns.
+
+## Details
+
+Three kinds of management scenarios are allowed:
+
+1.  `'bottom-up'` represents a scenario where forest stands belong to
+    different management units, each of them having possibly distinct
+    management prescriptions. However, there is no demand and the amount
+    of extracted wood emerges from the interplay between forest dynamics
+    and management prescriptions.
+
+2.  `'input_demand'` represents a scenario where a certain amount of
+    wood extraction is targeted for some species and each year. This
+    requires deciding which stands will actually undergo thinning
+    operations to fulfill the demand (stands managed following
+    prescriptions that indicate final regeneration cuts are managed
+    irrespective of demand).
+
+3.  `'input_rate'` represents a scenario similar to the previous one but
+    where total amount of wood targeted depends on (i.e. is a proportion
+    of) the growth observed in previous year.
+
+The kind of management scenario depends on the arguments supplied by the
+user when calling `create_management_scenario` (see examples). In all
+cases, management units need to be defined. Each management unit
+represents a group of forest stands following the same management
+prescriptions. Although the `create_management_scenario` function allows
+specifying the management arguments of each unit, the simulation of
+management scenarios also requires specifying, for each forest stand, to
+which management unit it belongs (see
+[`fordyn_scenario`](https://emf-creaf.github.io/medfateland/reference/fordyn_scenario.md)).
+
+## See also
+
+[`fordyn_scenario`](https://emf-creaf.github.io/medfateland/reference/fordyn_scenario.md),
+[`defaultManagementFunction`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html),
+[`defaultPrescriptionsBySpecies`](https://emf-creaf.github.io/medfateland/reference/defaultPrescriptionsBySpecies.md),
+[`create_fire_regime`](https://emf-creaf.github.io/medfateland/reference/create_fire_regime.md)
+
+## Author
+
+Miquel De Cáceres Ainsa, CREAF
+
+Aitor Améztegui, UdL
+
+## Examples
+
+``` r
+# A scenario with three management units and annual demand for two species
+scen_1 <- create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
+
+# A scenario like the former, but with total annual demand changing as a function of
+# prescribed extraction rates (second and third years)
+scen_2 <- create_management_scenario(3,  
+           c("Quercus ilex" = 1000, "Pinus nigra" = 2000),
+           c("2002" = 30, "2003" = 50))
+        
+# A scenario with as many management units as rows in 'defaultPrescriptionsBySpecies'
+# and not based on demand
+data("defaultPrescriptionsBySpecies")
+scen_3 <- create_management_scenario(defaultPrescriptionsBySpecies)
+
+# A scenario with three management units and annual demand for one species group 
+# and a third species
+scen_4 <- create_management_scenario(3,  c("Quercus ilex/Quercus pubescens" = 1000, 
+                                           "Pinus nigra" = 2000))
+```

@@ -1,0 +1,302 @@
+# Mediterranean landscape simulation
+
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/medfateland)](https://cran.r-project.org/package=medfateland)
+[![](https://cranlogs.r-pkg.org/badges/medfateland)](https://cran.rstudio.com/web/packages/medfateland/index.html)
+[![R-CMD-check](https://github.com/emf-creaf/medfateland/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/emf-creaf/medfateland/actions)
+
+## Introduction
+
+The R package **medfateland** has been designed to extend the
+capabilities of package
+[**medfate**](https://emf-creaf.github.io/medfate/) to a
+spatially-explicit context. It allows running the stand-level models
+available in medfate on points and cells within landscape or region,
+including the possibility of parallelization. Additionally, medfateland
+allows considering seed dispersal and lateral water transfer processes
+in forested watersheds. Hence, medfateland can be used as a tool for
+eco-hydrological applications.
+
+## Package installation
+
+Since both packages evolve together, installing **medfateland** normally
+requires an up-to-date version of
+[**medfate**](https://emf-creaf.github.io/medfate/).
+
+Package **medfateland** can be found at
+[CRAN](https://CRAN.R-project.org/package=medfateland), where it is
+updated every few months. Installation from CRAN can be done via:
+
+``` r
+install.packages("medfateland")
+```
+
+Users can also download and install the latest stable versions GitHub as
+follows (required package `remotes` should be installed/updated first):
+
+``` r
+remotes::install_github("emf-creaf/medfateland")
+```
+
+## Documentation and training
+
+- A number of *vignettes* illustrate how to initialize inputs and run
+  simulation models in **medfateland**. These can be found
+  [here](https://emf-creaf.github.io/medfateland/articles/). The user is
+  also advised to read the articles about package **medfate** included
+  [here](https://emf-creaf.github.io/medfate/articles/).
+
+- A complete documentation of both packages, including a *reference
+  book*, can be found at
+  <https://emf-creaf.github.io/medfatebook/index.html>.
+
+- Presentation slides for a course devoted to process-based forest
+  modelling using packages **medfate** and **medfateland** can be found
+  [here](https://emf.creaf.cat/training/medfate_course/).
+
+## Companion R packages
+
+The modelling tools included in **medfate** and **medfateland** are
+closely developed with another package:
+
+- Package [**traits4models**](https://emf-creaf.github.io/traits4models)
+  provides functions to help creating species parameter inputs for
+  process-based models such as those in for **medfate** and
+  **medfateland** functions.
+
+Two other R packages complete the simulation framework, but can be used
+for many other purposes beyond forest modelling:
+
+- Package [**meteoland**](https://emf-creaf.github.io/meteoland) allows
+  generating daily weather input for simulation models in **medfate**
+  and **medfateland**. Package **meteoland** is a dependency for
+  **medfate** and **medfateland**, but can be used independently to
+  obtain daily weather data.
+- Package [**forestables**](https://emf-creaf.github.io/forestables)
+  allows reading and harmonizing forest inventory data to a common data
+  structure. Initialization workflows in **medfateland** can use data
+  from **forestables**, but the data structures of the package can be
+  used for many studies beyond modelling.
+
+The relationships between the five packages are illustrated in the
+figure below, where black arrows indicate package dependencies and gray
+arrows indicate model parameter or data provision.
+
+![](reference/figures/packages.png)
+
+## Authorship
+
+Package **medfateland** is developed and maintained by the [*Ecosystem
+Modelling Facility*](https://emf.creaf.cat) unit at
+[*CREAF*](https://www.creaf.cat/) (in Spain), in close collaboration
+with researchers from
+[*URFM-INRAE*](https://www6.paca.inrae.fr/ecologie_des_forets_mediterraneennes/)
+(in France) and [*CTFC*](https://www.ctfc.cat/) (in Spain).
+
+![](reference/figures/institution_logos.png)
+
+## Funding
+
+- **Research project**: Boosting process-based models to project forest
+  dynamics and associated ecosystem services at stand-to-regional scales
+  (BOMFORES). **Financial Entity**: Ministerio de Ciencia e Innovación
+  (PID2021-126679OB-I00). **Duration from**: 01/09/2022 **to**:
+  31/08/2024. **PI**: Miquel De Cáceres.
+- **Research project**: Improving the modelling of key forest dynamic
+  processes to forecast long-term changes in Mediterranean forests under
+  climate change (IMPROMED). **Financial Entity**: Ministerio de Ciencia
+  e Innovación (PID2023-152644NB-I00). **Duration from**: 01/09/2024
+  **to**: 31/08/2025. **PI**: Miquel De Cáceres/Josep Mª Espelta.
+
+# Package index
+
+## Input preparation
+
+Functions to help preparing spatial inputs
+
+- [`add_topography()`](https://emf-creaf.github.io/medfateland/reference/add_topography.md)
+  [`add_land_cover()`](https://emf-creaf.github.io/medfateland/reference/add_topography.md)
+  : Add topography and land cover
+- [`check_topography()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
+  [`check_land_cover()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
+  [`check_forests()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
+  [`check_soils()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
+  : Check spatial inputs
+- [`add_forests()`](https://emf-creaf.github.io/medfateland/reference/add_forests.md)
+  : Add forests
+- [`impute_forests()`](https://emf-creaf.github.io/medfateland/reference/forest_parametrization.md)
+  [`modify_forest_structure()`](https://emf-creaf.github.io/medfateland/reference/forest_parametrization.md)
+  : Landscape forest parametrization
+- [`parse_forestable()`](https://emf-creaf.github.io/medfateland/reference/parse_forestable.md)
+  : Parse forestable
+- [`add_soilgrids()`](https://emf-creaf.github.io/medfateland/reference/soil_parametrization.md)
+  [`modify_soils()`](https://emf-creaf.github.io/medfateland/reference/soil_parametrization.md)
+  : Landscape soil parametrization
+- [`optimization_rock()`](https://emf-creaf.github.io/medfateland/reference/optimization_rock.md)
+  : Rock optimization
+
+## Example data
+
+Example data sets for distributed stands and watershed
+
+- [`example_ifn`](https://emf-creaf.github.io/medfateland/reference/example_ifn.md)
+  : Example of distributed forest inventory stands
+- [`example_watershed`](https://emf-creaf.github.io/medfateland/reference/example_watershed.md)
+  [`example_watershed_burnin`](https://emf-creaf.github.io/medfateland/reference/example_watershed.md)
+  : Example of watershed
+
+## Summary/extract functions for spatial classes
+
+Forest and soil summary functions for spatial classes
+
+- [`landscape_summary()`](https://emf-creaf.github.io/medfateland/reference/landscape_summary.md)
+  : Forest and soil summaries over space
+- [`extract_variables()`](https://emf-creaf.github.io/medfateland/reference/extract_variables.md)
+  [`plot_variable()`](https://emf-creaf.github.io/medfateland/reference/extract_variables.md)
+  : Landscape variables
+
+## Default parameters
+
+Defaults for model inputs
+
+- [`default_dispersal_control()`](https://emf-creaf.github.io/medfateland/reference/default_dispersal_control.md)
+  : Default control parameters for dispersal
+- [`default_watershed_control()`](https://emf-creaf.github.io/medfateland/reference/default_watershed_control.md)
+  : Default control parameters for watershed processes
+- [`default_volume_function()`](https://emf-creaf.github.io/medfateland/reference/default_volume_function.md)
+  : Default volume function
+- [`create_management_scenario()`](https://emf-creaf.github.io/medfateland/reference/create_management_scenario.md)
+  : Create management scenario
+- [`create_fire_regime()`](https://emf-creaf.github.io/medfateland/reference/create_fire_regime.md)
+  : Create fire regime
+- [`fire_regime_instance()`](https://emf-creaf.github.io/medfateland/reference/fire_regime_instance.md)
+  : Fire regime instance
+- [`defaultPrescriptionsBySpecies`](https://emf-creaf.github.io/medfateland/reference/defaultPrescriptionsBySpecies.md)
+  : Default prescriptions by species
+
+## Simulation
+
+Simulation model functions
+
+- [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+  [`growth_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+  [`fordyn_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+  [`summary(`*`<spwb_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+  [`summary(`*`<growth_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+  : Watershed simulations
+- [`spwb_land_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_land_day.md)
+  [`growth_land_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_land_day.md)
+  : One-day watershed simulations
+- [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
+  [`growth_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
+  [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
+  : Simulations for spatially-distributed forest stands
+- [`spwb_spatial_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial_day.md)
+  [`growth_spatial_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial_day.md)
+  : One-day simulation for spatially-distributed forest stands
+- [`fordyn_scenario()`](https://emf-creaf.github.io/medfateland/reference/fordyn_scenario.md)
+  : Scenario of forest dynamics
+- [`update_landscape()`](https://emf-creaf.github.io/medfateland/reference/update_landscape.md)
+  : Updates the state of a landscape object
+- [`initialize_landscape()`](https://emf-creaf.github.io/medfateland/reference/initialize_landscape.md)
+  : Initialization of model inputs for spatially-distributed forest
+  stands
+- [`overland_routing()`](https://emf-creaf.github.io/medfateland/reference/overland_routing.md)
+  [`cell_neighbors()`](https://emf-creaf.github.io/medfateland/reference/overland_routing.md)
+  : Overland routing for TETIS sub-model
+- [`dispersal()`](https://emf-creaf.github.io/medfateland/reference/dispersal.md)
+  : Seed production, dispersal and seed bank dynamics
+
+## Post-processing
+
+Plot and summary functions for simulation results
+
+- [`plot(`*`<spwb_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/plot.spwb_land.md)
+  [`plot(`*`<growth_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/plot.spwb_land.md)
+  [`plot(`*`<fordyn_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/plot.spwb_land.md)
+  : Displays watershed-level simulation results
+- [`plot_summary()`](https://emf-creaf.github.io/medfateland/reference/plot_summary.md)
+  : Displays spatial simulation summaries
+- [`unnest_summary()`](https://emf-creaf.github.io/medfateland/reference/unnest_summary.md)
+  : Extracts cell simulation summaries
+- [`simulation_summary()`](https://emf-creaf.github.io/medfateland/reference/simulation_summary.md)
+  : Summarizes spatial simulation results
+- [`shinyplot(`*`<sf>`*`)`](https://emf-creaf.github.io/medfateland/reference/shinyplot.sf.md)
+  : Shiny app with interactive plots and maps
+- [`shinyplot(`*`<spwb_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/shinyplot.spwb_land.md)
+  [`shinyplot(`*`<growth_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/shinyplot.spwb_land.md)
+  [`shinyplot(`*`<fordyn_land>`*`)`](https://emf-creaf.github.io/medfateland/reference/shinyplot.spwb_land.md)
+  : Shiny app with interactive plots and maps of watershed simulation
+  results
+
+# Articles
+
+### Introduction
+
+Package overview and model inputs
+
+- [Package
+  overview](https://emf-creaf.github.io/medfateland/articles/intro/PackageOverview.md):
+
+  An introduction to the package and its main functions
+
+- [Preparing inputs I: forest inventory
+  plots](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_I.md):
+
+  Instructions to create model inputs from forest inventory data
+
+- [Preparing inputs II: arbitrary
+  locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.md):
+
+  Instructions to create model inputs in a set of arbitrary locations
+
+### Running simulation models
+
+Learn how to conduct simulations
+
+- [Spatially-uncoupled
+  simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/SpatiallyUncoupledSimulations.md):
+
+  Learn how to conduct simulations over multiple sites without spatial
+  processes
+
+- [Watershed
+  simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/WatershedSimulations.md):
+
+  Learn how to conduct simulations over a watershed with lateral water
+  flows
+
+- [Management
+  scenarios](https://emf-creaf.github.io/medfateland/articles/runmodels/ManagementScenarios.md):
+
+  Learn how to conduct simulations of forest dynamics over a region
+  using management scenarios
+
+### Model analysis
+
+Articles explaining advanced modelling tasks
+
+- [Computing time
+  estimates](https://emf-creaf.github.io/medfateland/articles/modelanalysis/ComputingTime.md):
+
+  Estimates of approximate computing time
+
+- [Sensitivity to watershed
+  parameters](https://emf-creaf.github.io/medfateland/articles/modelanalysis/TetisWatershedParameters.md):
+
+  Explore the sensitivity of TETIS watershed parameters on watershed
+  simulation outputs
+
+### Model performance evaluation
+
+Model benchmark evaluation
+
+- [Evaluation of regional-level forest dynamics with forest inventory
+  data](https://emf-creaf.github.io/medfateland/articles/evaluation/RegionalLevelEvaluation.md):
+
+  Benchmark evaluation at regional level, using forest inventory data
+  from Catalonia
+
+- [Evaluation of watershed-level runoff against river gauge
+  data](https://emf-creaf.github.io/medfateland/articles/evaluation/WatershedLevelEvaluation.md):
+
+  Benchmark evaluation at watershed level using river gauge data
