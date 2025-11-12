@@ -10,6 +10,8 @@
 #' The output should be a matrix with dates as rows and variables in columns. 
 #' An example of suitable function is \code{\link[medfate]{summary.spwb}}.
 #' 
+#' Functions \code{\link{plot_summary}} and \code{\link{unnest_summary}} can be later used to plot and reformat summaries, respectively.
+#' 
 #' @return An object of class \code{\link[sf]{sf}}, with the following two elements:
 #'  \itemize{
 #'    \item{\code{geometry}: Spatial geometry.}
@@ -19,7 +21,7 @@
 #'
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{spwb_spatial}}, \code{\link{plot_summary}}
+#' @seealso \code{\link{spwb_spatial}}, \code{\link{plot_summary}}, \code{\link{unnest_summary}}
 #' 
 #' @name simulation_summary
 #' @export

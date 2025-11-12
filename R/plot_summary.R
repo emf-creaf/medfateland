@@ -128,9 +128,9 @@ unnest_summary <- function(x) {
     df$date <- row.names(df)
     row.names(df) <- NULL
     df <- df |>
-      dplyr::relocate(date)
+      dplyr::relocate("date")
     return(df)
   }
   y$summary <- lapply(y$summary, to_data_frame)
-  return(tidyr::unnest(y, cols=c("geometry", "summary")) |> dplyr::relocate(geometry))
+  return(tidyr::unnest(y, cols=c("geometry", "summary")) |> dplyr::relocate("geometry"))
 }

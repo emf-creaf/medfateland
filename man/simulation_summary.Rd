@@ -28,9 +28,11 @@ Creates spatial objects containing summaries of simulations
 The function supplied should take as input an object of local simulation function, i.e. \code{\link[medfate]{spwb}}, \code{\link[medfate]{growth}}, or \code{\link[medfate]{fordyn}}.
 The output should be a matrix with dates as rows and variables in columns.
 An example of suitable function is \code{\link[medfate]{summary.spwb}}.
+
+Functions \code{\link{plot_summary}} and \code{\link{unnest_summary}} can be later used to plot and reformat summaries, respectively.
 }
 \seealso{
-\code{\link{spwb_spatial}}, \code{\link{plot_summary}}
+\code{\link{spwb_spatial}}, \code{\link{plot_summary}}, \code{\link{unnest_summary}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
