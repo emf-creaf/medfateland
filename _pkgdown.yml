@@ -100,5 +100,6 @@ reference:
   contents: 
   - starts_with("plot.spwb_land")
   - starts_with("plot_summary")
+  - starts_with("unnest_summary")
   - starts_with("simulation_summary")
   - starts_with("shinyplot")

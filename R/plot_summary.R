@@ -55,22 +55,22 @@
 #' 
 #' Produces graphical output of the summaries of a simulation models
 #' 
-#' @param x An object of class \code{\link[sf]{sf}}, with simulation summaries.
+#' @param x An object of class \code{\link[sf]{sf}}, with simulation summaries. Alternatively an object of class  \code{\link{spwb_land}}, \code{\link{growth_land}} or \code{\link{fordyn_land}}.
 #' @param variable The variable to be drawn.
 #' @param date The date of the summary to be plotted.
 #' @param r An object of class \code{\link[terra]{SpatRaster}}, defining the raster topology.
 #' @param ... Additional parameters (passed to scale definition, such as \code{limits}).
 #' 
-#' @details Appropriate values for \code{x} can originate from calls to \code{\link{simulation_summary}}. 
+#' @details Appropriate input objects for \code{x} can be originated from calls to \code{\link{simulation_summary}}. 
 #' Alternatively, if summary functions were specified at the time of performing simulations, 
 #' the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}}) 
-#' will already contain the summaries. A special case is made for \code{\link{spwb_land}} and \code{\link{growth_land}}, 
-#' that are accepted inputs as \code{x}, because its element 'sf' is used.
+#' will already contain the summaries. A special case is made for \code{\link{spwb_land}}, \code{\link{growth_land}},
+#' and \code{\link{fordyn_land}}, that are accepted inputs as \code{x}, because their child element 'sf' is used.
 #' 
 #' @return An object of class \code{\link[ggplot2]{ggplot}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' 
-#' @seealso \code{\link{spwb_spatial}}, \code{\link{simulation_summary}}
+#' @seealso \code{\link{unnest_summary}}, \code{\link{spwb_spatial}}, \code{\link{spwb_land}},  \code{\link{simulation_summary}}
 #' @export
 plot_summary<-function(x, variable, date, r = NULL, ...) {
   if(inherits(x, "spwb_land") || inherits(x, "growth_land"))  x <- x$sf
@@ -102,4 +102,35 @@ plot_summary<-function(x, variable, date, r = NULL, ...) {
       theme_bw()
   }
   return(g)
+}
+
+#' Extracts cell simulation summaries
+#'
+#' @param x An object of class \code{\link[sf]{sf}}, with simulation summaries. Alternatively an object of class  \code{\link{spwb_land}}, \code{\link{growth_land}} or \code{\link{fordyn_land}}.
+#'
+#' @details Appropriate input objects for \code{x} can be originated from calls to \code{\link{simulation_summary}}. 
+#' Alternatively, if summary functions were specified at the time of performing simulations, 
+#' the result of the spatial simulation function (e.g. \code{\link{spwb_spatial}}) 
+#' will already contain the summaries. A special case is made for \code{\link{spwb_land}}, \code{\link{growth_land}},
+#' and \code{\link{fordyn_land}}, that are accepted inputs as \code{x}, because their child element 'sf' is used.
+#' 
+#' @returns An sf object with all cell summaries.
+#' @export
+#'
+#' @seealso \code{\link{plot_summary}}, \code{\link{spwb_spatial}}, \code{\link{spwb_land}},  \code{\link{simulation_summary}}
+unnest_summary <- function(x) {
+  if(inherits(x, "spwb_land") || inherits(x, "growth_land"))  x <- x$sf
+  if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
+  if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")
+  y <- x[,"summary"]
+  to_data_frame <- function(m) {
+    df <- as.data.frame(m)
+    df$date <- row.names(df)
+    row.names(df) <- NULL
+    df <- df |>
+      dplyr::relocate(date)
+    return(df)
+  }
+  y$summary <- lapply(y$summary, to_data_frame)
+  return(tidyr::unnest(y, cols=c("geometry", "summary")) |> dplyr::relocate(geometry))
 }

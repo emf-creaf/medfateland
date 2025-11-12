@@ -189,6 +189,11 @@ Maps of variable summaries can be drawn from the result of function `spwb_land()
 plot_summary(res_ws1$sf, variable = "RWC", date = "2001-01-01", r = r)
 ```
 
+As for uncoupled simulations, we can use function `unnest_summary()` to reformat all cell summaries and facilitate post-processing:
+```{r}
+head(unnest_summary(res_ws1))
+```
+
 ### Full simulation results for specific cells
 
 The idea of generating summaries arises from the fact that local models can produce a large amount of results, of which only some are of interest at the landscape level. Nevertheless, it is possible to specify those cells for which full daily results are desired. This is done by adding a column `result_cell` in the input `sf` object:

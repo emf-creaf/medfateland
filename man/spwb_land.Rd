@@ -274,7 +274,7 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 \seealso{
 \code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{overland_routing}},
 \code{\link{spwb_land_day}}, \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
-\code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
+\code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}, \code{\link{unnest_summary}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.

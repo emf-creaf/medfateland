@@ -1089,7 +1089,7 @@
 #' @param CO2ByYear A named numeric vector with years as names and atmospheric CO2 concentration (in ppm) as values. Used to specify annual changes in CO2 concentration along the simulation (as an alternative to specifying daily values in \code{meteo}).
 #' @param summary_frequency Frequency in which cell summary will be produced (e.g. "years", "months", "weeks", ...) (see \code{\link{cut.Date}}).
 #'                          In \code{fordyn_land} summary frequency can only be "months" or "years". 
-#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance", "Stand" and "FireHazard". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.  
+#' @param summary_blocks A character vector with variable blocks for cell summaries (or \code{NULL} to retain only basic summaries). Accepted summary blocks for \code{spwb_land} are "WaterBalance", "Stand" and "FireHazard". For \code{growth_land} and \code{fordyn_land}, "CarbonBalance" and "BiomassBalance" are also accepted.
 #' @param local_control A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
 #'                      parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.
 #' @param watershed_control A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
@@ -1180,7 +1180,7 @@
 #' 
 #' @seealso \code{\link{default_watershed_control}}, \code{\link{initialize_landscape}}, \code{\link{overland_routing}},
 #' \code{\link{spwb_land_day}}, \code{\link[medfate]{spwb_day}},  \code{\link[medfate]{growth_day}},
-#' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}
+#' \code{\link{spwb_spatial}}, \code{\link{fordyn_spatial}}, \code{\link{dispersal}}, \code{\link{unnest_summary}}
 #' 
 #' @references 
 #' \enc{Francés}{Frances}, F., \enc{Vélez}{Velez}, J.I. & \enc{Vélez}{Velez}, J.J. (2007). Split-parameter structure for the automatic calibration of distributed hydrological models. Journal of Hydrology, 332, 226–240. 

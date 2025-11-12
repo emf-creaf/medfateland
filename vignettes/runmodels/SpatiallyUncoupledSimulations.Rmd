@@ -151,6 +151,13 @@ plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 
 To avoid displaying maps one by one, the package includes function `shinyplot()` that allows displaying maps of temporal summaries interactively.
 
+Finally, summary objects can be reformatted using function `unnest_summary()` to obtain an sf object more amenable for storing and data manipulation:
+
+```{r}
+unnest_summary(res_sum)
+```
+
+
 ### Simulation with integrated temporal summaries
 
 If one needs to save memory, it is possible with `spwb_spatial()` to generate temporal summaries automatically after the simulation of soil water balance of each stand, and storing those summaries instead of all the output of function `spwb()`. 
@@ -180,6 +187,12 @@ And one can produce maps with summary results directly from the output of the si
 plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
+or extract summary results using `unnest_summary()`:
+
+```{r}
+unnest_summary(res_2)
+```
+
 The possibility of running a summary function after the simulation of each stand is not limited to `summary.spwb()`. Users can define their own summary functions, provided the first argument is `object`, which will contain the result of the simulation (i.e., the result of calling `spwb()`, `growth()` or `fordyn()`). For example, the following function returns the data frame corresponding to plant drought stress:
 
 ```{r}
@@ -201,6 +214,7 @@ The drought stress summary of stand 3 is:
 head(res_3$summary[[3]])
 ```
 
+In this last case, function `unnest_summary()` will be only helpful if the summary columns have the same names for all cells.
 
 ### Continuing a previous simulation
 

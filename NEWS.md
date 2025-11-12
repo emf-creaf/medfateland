@@ -1,3 +1,6 @@
+# medfateland 2.8.3
+* New function unnest_summary() to extract cell summaries as unnested sf.
+
 # medfateland 2.8.2
 * Backwards compatibility of objects initialized with medfate ver. 4.8.3 and 4.8.4
 * Catching spwb_day and growth_day errors in simulations of spwb_spatial_day() and growth_spatial_day()
