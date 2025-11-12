@@ -56,6 +56,7 @@ test_that("Can simulate three days over landscape and watershed-level plots can 
     expect_s3_class(plot(s1, type), "ggplot")
     expect_s3_class(plot(g1, type), "ggplot")
   }
+  expect_s3_class(unnest_summary(g1), "sf")
 })
 
 test_that("Can simulate three days over agricultural landscape and watershed-level plots can be obtained",{
@@ -70,6 +71,7 @@ test_that("Can simulate three days over agricultural landscape and watershed-lev
     expect_s3_class(plot(s1, type), "ggplot")
     expect_s3_class(plot(g1, type), "ggplot")
   }
+  expect_s3_class(unnest_summary(g1), "sf")
 })
 
 test_that("Can simulate three days over rocky landscape and watershed-level plots can be obtained",{
@@ -126,8 +128,11 @@ yws$forest[[4]] <- f
 
 test_that("Can simulate one year of fordyn over landscape using new interpolator",{
   skip_on_cran()
-  expect_s3_class(fordyn_land(r, yws[1:10,], meteo = interpolator,
-                              SpParams = SpParamsMED, progress = FALSE), "fordyn_land")
+  g1 <- fordyn_land(r, yws[1:10,], meteo = interpolator,
+                    SpParams = SpParamsMED, progress = FALSE)
+  expect_s3_class(g1, "fordyn_land")
+  expect_s3_class(unnest_summary(g1), "sf")
+  
 })
 
 # The following test is too long for CRAN
