@@ -73,8 +73,8 @@
 #' @seealso \code{\link{unnest_summary}}, \code{\link{spwb_spatial}}, \code{\link{spwb_land}},  \code{\link{simulation_summary}}
 #' @export
 plot_summary<-function(x, variable, date, r = NULL, ...) {
-  if(inherits(x, "spwb_land") || inherits(x, "growth_land"))  x <- x$sf
-  if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
+  if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land"))  x <- x$sf
+  if(!inherits(x, "sf")) stop("'x' has to be an object of classes 'sf', 'spwb_land', 'growth_land' or 'fordyn_land'.")
   if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")
   match.arg(variable, .getSummaryMatrixVarNames(x))
   match.arg(date, .getSummaryMatrixDates(x))
@@ -119,8 +119,8 @@ plot_summary<-function(x, variable, date, r = NULL, ...) {
 #'
 #' @seealso \code{\link{plot_summary}}, \code{\link{spwb_spatial}}, \code{\link{spwb_land}},  \code{\link{simulation_summary}}
 unnest_summary <- function(x) {
-  if(inherits(x, "spwb_land") || inherits(x, "growth_land"))  x <- x$sf
-  if(!inherits(x, "sf")) stop("'x' has to be an object of class 'sf'.")
+  if(inherits(x, "spwb_land") || inherits(x, "growth_land") || inherits(x, "fordyn_land"))  x <- x$sf
+  if(!inherits(x, "sf")) stop("'x' has to be an object of classes 'sf', 'spwb_land', 'growth_land' or 'fordyn_land'.")
   if(!("summary" %in% names(x))) stop("Column 'summary' must be defined in 'x'.")
   y <- x[,"summary"]
   to_data_frame <- function(m) {
