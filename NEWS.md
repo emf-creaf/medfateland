@@ -1,5 +1,6 @@
 # medfateland 2.8.3
 * New function unnest_summary() to extract cell summaries as unnested sf.
+* Required medfate 4.9.0
 
 # medfateland 2.8.2
 * Backwards compatibility of objects initialized with medfate ver. 4.8.3 and 4.8.4

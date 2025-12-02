@@ -39,6 +39,7 @@
 
 ## This function is in R to use parallelization
 .watershedDaySerghei<- function(local_model,
+                                internalCommunication,
                                 lct, xList,
                                 snowpack,
                                 sf2cell,
@@ -98,7 +99,7 @@
   #A. Vertical and surface fluxes
   localResults <- vector("list", nX)
   for(i in 1:nX) {
-    localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model)
+    localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model, internalCommunication = internalCommunication)
   }
   for(i in 1:nX) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
@@ -145,6 +146,7 @@
   #                 gridMeteo, localResults,
   #                 sf2cell, serghei_interface)
 
+  print("done")
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
                              "MaxTemperature" = MaxTemperature, 
                              "PET" = PET, "Rain" = Rain, "Snow" = Snow,
@@ -396,6 +398,7 @@
                          patchsize = patchsize)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
+                                     internalCommunication = internalCommunication,
                                      lct = y$land_cover_type, xList = y$state,
                                      snowpack = y$snowpack,
                                      sf2cell = sf2cell,
@@ -1302,6 +1305,9 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   watershed_model <- watershed_control$watershed_model
   summary_frequency <- match.arg(summary_frequency, c("months", "years"))
   
+  #Recruitment modes are restricted in fordyn_land() to annual
+  local_control$recruitmentMode <- match.arg(local_control$recruitmentMode, c("stochastic", "deterministic","annual/stochastic", "annual/deterministic"))
+  
   # Summary flags
   waterBalanceSummary <- "WaterBalance" %in% summary_blocks
   standSummary <- "Stand" %in% summary_blocks
@@ -1582,18 +1588,14 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
             planted_forest <- management_result$planted_forest
             if(nrow(planted_forest$treeData)>0) {
               for(i in 1:nrow(planted_forest$treeData)) {
-                planted_forest$treeData$Z50[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"RecrZ50")
-                planted_forest$treeData$Z95[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"RecrZ95")
-                if(is.na(planted_forest$treeData$Z50[i])) planted_forest$treeData$Z50[i] <- 250
-                if(is.na(planted_forest$treeData$Z95[i])) planted_forest$treeData$Z95[i] <- 500
+                planted_forest$treeData$Z95[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"Z95")
+                planted_forest$treeData$Z50[i] <- exp(log(planted_forest$treeData$Z95[i])/1.4)
               }
             }
             if(nrow(planted_forest$shrubData)>0) {
               for(i in 1:nrow(planted_forest$shrubData)) {
-                planted_forest$shrubData$Z50[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"RecrZ50")
-                planted_forest$shrubData$Z95[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"RecrZ95")
-                if(is.na(planted_forest$shrubData$Z50[i])) planted_forest$shrubData$Z50[i] <- 100
-                if(is.na(planted_forest$shrubData$Z95[i])) planted_forest$shrubData$Z95[i] <- 300
+                planted_forest$shrubData$Z50[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"Z95")
+                planted_forest$shrubData$Z95[i] <- exp(log(planted_forest$shrubData$Z95[i])/1.4)
               }
             }
           
@@ -1847,6 +1849,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                        patchsize = patchsize)
   } else if(watershed_model=="serghei") {
     ws_day <- .watershedDaySerghei(local_model = local_model,
+                                   internalCommunication = internalCommunication,
                                    lct = y$land_cover_type, xList = y$state,
                                    snowpack = y$snowpack,
                                    sf2cell = sf2cell,
