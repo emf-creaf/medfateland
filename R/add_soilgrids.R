@@ -128,7 +128,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     if(progress) {
       cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers."))
     }
-    vars <- c("sand", "clay", "soc", "nitrogen", "bdod", "cfvo")
+    vars <- c("sand", "clay", "soc", "phh2o", "nitrogen", "bdod", "cfvo")
     layers <- c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm")
     m_var_list <- vector("list", length(vars)) 
     names(m_var_list) <- vars
@@ -146,8 +146,8 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     }
     for(i in 1:npoints) {
       if(land_cover_type[i] %in% c("wildland", "agriculture")) {
-        resSG = data.frame(matrix(nrow = 6, ncol = 6))
-        names(resSG) = c("widths", "clay", "sand", "om", "bd", "rfc")
+        resSG = data.frame(matrix(nrow = 6, ncol = 8))
+        names(resSG) = c("widths", "clay", "sand", "om", "nitrogen", "ph", "bd", "rfc")
         resSG$widths = c(50,100,150,300,400,1000)
         for(var in vars) {
           if(var=="clay") {
@@ -156,6 +156,8 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
             resSG$sand <- m_var_list[["sand"]][i,]/10
           } else if(var=="soc") {
             resSG$om <- m_var_list[["soc"]][i,]/100
+          } else if(var=="phh2o") {
+            resSG$ph <- m_var_list[["phh2o"]][i,]/10
           } else if(var=="bdod") {
             resSG$bd <- m_var_list[["bdod"]][i,]/100
           } else if(var=="cfvo") {
