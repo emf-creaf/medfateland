@@ -2,25 +2,23 @@
 #'
 #' Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021). 
 #' Function \code{modify_soils} modifies soil definition according to soil depth and depth to bedrock information.
-#' Function \code{check_soils} verifies that soil data does not contain missing values for key variables and, if so, assigns default values. 
 #'
 #' @param x An object of class \code{\link[sf]{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland" 
 #'          cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".
-#' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.
+#' @param soilgrids_path Path to SoilGrids rasters (see details). If missing, the SoilGrids in IRSIC (https://docs.isric.org/globaldata/soilgrids/) will be queried.
 #' @param widths A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.
 #' @param replace_existing A logical flag to force the replacement of existing soil data, when already present
-#' @param progress A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.
+#' @param progress A logical flag to include progress information.
 #'
 #' @details 
 #' 
-#' If \code{soilgrids_path = NULL} the function connects with the SoilGrids REST API (https://rest.isric.org)
+#' If \code{soilgrids_path = NULL} the function connects with SoilGrids data in IRSIC (https://docs.isric.org/globaldata/soilgrids/)
 #' to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007; Poggio et al. 2021), selected
-#' by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
-#' averages the values of soil grid layers depending on the overlap between soil layer definitions. Unfortunately,
-#' SoilGrids REST API queries are limited to a few points.
+#' by its coordinates. Also, in case the depths are not the default ones in the SoilGrids, the function uses
+#' averages the values of soil grid layers depending on the overlap between soil layer definitions. 
 #' 
 #' If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
-#' for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
+#' for each variable ("sand", "clay", "soc", "bdod", "cfvo", "phh2o" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
 #' 
 #' \emph{var}/\emph{var}_\emph{layer}_mean.tif
 #' 
@@ -52,14 +50,15 @@
 #'  \donttest{
 #'    library(sf)
 #'    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
-#'    x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
+#'    # Queries to IRSIC are rather slow
+#'    x_soil <- add_soilgrids(x)
 #'    x_soil
 #'    # See more complete examples in package vignettes 'Preparing inputs'
 #'  }
 #'
 add_soilgrids <- function(x, soilgrids_path = NULL, 
                           widths = NULL, replace_existing = TRUE, 
-                          progress = TRUE) {
+                          progress = FALSE) {
   if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   x_lonlat <- sf::st_transform(sf::st_geometry(x), 4326)
   coords <- sf::st_coordinates(x_lonlat)
@@ -72,110 +71,79 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
     if(progress) cli::cli_progress_step("Defining new column 'soil'")
     x$soil <- vector("list", npoints)
   }
-  if(is.null(soilgrids_path)) {
-    if(progress) {
-      cli::cli_progress_step(paste0("Querying ", nsoil," points to rest.isric.org:\n"))
-      cli::cli_progress_bar(name = "Points", total = npoints)
+  soil_target  <- rep(FALSE, npoints)
+  for(i in 1:npoints) {
+    if(land_cover_type[i] %in% c("wildland", "agriculture")) {
+      soil_target[i] <- is.null(x$soil[[i]]) || replace_existing
     }
-    url.base <- "https://rest.isric.org/soilgrids/v2.0/properties/query?"
-    
-    props_str <- "property=bdod&property=cfvo&property=clay&property=ocd&property=ocs&property=sand&property=silt&property=soc&property=nitrogen"
-    depths_str <- "depth=0-5cm&depth=0-30cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm"
-    for(i in 1:npoints) {
+  }
+  nsoil_target <- sum(soil_target)
+  if(progress) {
+    cli::cli_progress_step(paste0("Initializing ", nsoil_target," soils\n"))
+  }
+  for(i in 1:npoints) {
+    if(soil_target[i]) {
+      resSG <- data.frame(matrix(nrow = 6, ncol = 8))
+      names(resSG) <- c("widths", "clay", "sand", "om", "nitrogen", "ph", "bd", "rfc")
+      resSG$widths <- c(50,100,150,300,400,1000)
+      x$soil[[i]] = resSG
+    }
+  }
+  vars <- c("sand", "clay", "soc", "phh2o", "nitrogen", "bdod", "cfvo")
+  vars_dest <- c("sand", "clay", "om", "ph", "nitrogen", "bd", "rfc")
+  layers <- c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm")
+  nquery <- length(layers)*length(vars)
+  if(progress) {
+    cli::cli_progress_bar("Processing variables/layers", total = nquery)
+  }
+
+  ## From: https://docs.isric.org/globaldata/soilgrids/xy_info_from_R.html
+  webdav_path <- '/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data'
+  igh <- '+proj=igh +lat_0=0 +lon_0=0 +datum=WGS84 +units=m +no_defs'
+  x_igh <- st_transform(x, igh)
+  df_igh <- data.frame(st_coordinates(x_igh))
+  extract_pixel_values <- function(data,var,layer){
+    unlist(terra::extract(
+      x=terra::rast(paste0(webdav_path,"/",var,"/", var, "_", layer,"_mean.vrt")),
+      y=data[, c('X', 'Y'), drop = FALSE],
+      xy = FALSE,
+      ID = FALSE))
+  }
+
+  for(v in 1:length(vars)) {
+    var <- vars[v]
+    var_dest <- vars_dest[v]
+    for(l in 1:length(layers)) {
       if(progress) cli::cli_progress_update()
-      if(land_cover_type[i] %in% c("wildland", "agriculture")) {
-        tryCatch( {
-          resSG <- data.frame(matrix(nrow = 6, ncol = 6))
-          names(resSG) <- c("widths", "clay", "sand", "om", "bd", "rfc")
-          resSG$widths <- c(50,100,150,300,400,1000)
-          coord_str <- paste0("lon=",coords[i,1],"&lat=", coords[i,2])
-          dest <- paste(coord_str, props_str, depths_str,"value=mean",sep="&")
-          url1 <- paste0(url.base, dest)
-          path1 <- httr::GET(url1, httr::add_headers("accept"= "application/json"))
-          ans.text <- httr::content(path1, as = "text", encoding = "utf-8")
-          ans <- jsonlite::fromJSON(ans.text)
-          propNames <- ans$properties$layers$name
-          d_factors <- ans$properties$layers$unit_measure$d_factor
-          for(j in 1:length(propNames)) {
-            if(propNames[j]=="clay") {
-              resSG$clay = ans$properties$layers$depths[[j]]$values$mean/d_factors[j]
-            } else if(propNames[j]=="sand") {
-              resSG$sand = ans$properties$layers$depths[[j]]$values$mean/d_factors[j]
-            } else if(propNames[j]=="bdod") {
-              resSG$bd = ans$properties$layers$depths[[j]]$values$mean/d_factors[j]
-            } else if(propNames[j]=="soc") {
-              resSG$om = ans$properties$layers$depths[[j]]$values$mean/(d_factors[j]*10)
-            } else if(propNames[j]=="nitrogen") {
-              resSG$nitrogen = ans$properties$layers$depths[[j]]$values$mean/d_factors[j]
-            } else if(propNames[j]=="cfvo") {
-              resSG$rfc = ans$properties$layers$depths[[j]]$values$mean/d_factors[j]
-            }
-          }
-          if(is.null(x$soil[[i]]) || replace_existing) {
-            if(!is.null(widths)) {
-              x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
-            } else {
-              x$soil[[i]] = resSG
-            }
-          }
-        }, error  = function(cond) {
-          cli::cli_alert_warning(paste("Problems retrieving point",i,": ", cond,"\n"))
-        })
-      }
-    }
-    if(progress) cli::cli_progress_done()
-  } else {
-    if(progress) {
-      cli::cli_progress_step(paste0("Extracting ", nsoil," points from SoilGrids raster layers."))
-    }
-    vars <- c("sand", "clay", "soc", "phh2o", "nitrogen", "bdod", "cfvo")
-    layers <- c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm")
-    m_var_list <- vector("list", length(vars)) 
-    names(m_var_list) <- vars
-    for(v in 1:length(vars)) {
-      var <- vars[v]
-      m_var <- matrix(NA, nrow = nrow(x), ncol = length(layers))
-      for(l in 1:length(layers)) {
-        layer = layers[l]
+      layer <- layers[l]
+      if(is.null(soilgrids_path)) {
+        vals <- extract_pixel_values(df_igh, var, layer)
+      } else {
         tif_file <- paste0(soilgrids_path, var,"/", var, "_",layer,"_mean.tif")
         r <- terra::rast(tif_file)
         x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(r)))
-        m_var[,l] <- terra::extract(r, x_vect)[,2]
+        vals <- terra::extract(r, x_vect)[,2]
       }
-      m_var_list[[v]] <- m_var
-    }
-    for(i in 1:npoints) {
-      if(land_cover_type[i] %in% c("wildland", "agriculture")) {
-        resSG = data.frame(matrix(nrow = 6, ncol = 8))
-        names(resSG) = c("widths", "clay", "sand", "om", "nitrogen", "ph", "bd", "rfc")
-        resSG$widths = c(50,100,150,300,400,1000)
-        for(var in vars) {
-          if(var=="clay") {
-            resSG$clay <- m_var_list[["clay"]][i,]/10
-          } else if(var=="sand") {
-            resSG$sand <- m_var_list[["sand"]][i,]/10
-          } else if(var=="soc") {
-            resSG$om <- m_var_list[["soc"]][i,]/100
-          } else if(var=="phh2o") {
-            resSG$ph <- m_var_list[["phh2o"]][i,]/10
-          } else if(var=="bdod") {
-            resSG$bd <- m_var_list[["bdod"]][i,]/100
-          } else if(var=="cfvo") {
-            resSG$rfc <- m_var_list[["cfvo"]][i,]/10
-          } else if(var=="nitrogen") {
-            resSG$nitrogen <- m_var_list[["nitrogen"]][i,]/100
-          } 
-        }
-        if(is.null(x$soil[[i]]) || replace_existing) {
-          if(!is.null(widths)) {
-            x$soil[[i]] = medfate::soil_redefineLayers(resSG, widths)
-          } else {
-            x$soil[[i]] = resSG
-          }
+      if(var %in% c("soc")) {
+        vals <- vals/100
+      } else {
+        vals <- vals/10
+      } 
+      for(i in 1:npoints) {
+        if(soil_target[i]) {
+          x$soil[[i]][[var_dest]][l] <- vals[i]
         }
       }
     }
   }
+  if(!is.null(widths)) {
+    for(i in 1:npoints) {
+      if(soil_target[i]) {
+        x$soil[[i]] <- medfate::soil_redefineLayers(x$soil[[i]], widths)
+      }
+    }
+  }
+  if(progress) cli::cli_progress_done()
   return(sf::st_as_sf(tibble::as_tibble(x)))
 }
 
@@ -229,7 +197,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
 modify_soils <- function(x, soil_depth_map = NULL,
                          depth_to_bedrock_map = NULL, 
                          regolith_rfc = 97.5, full_rock_filling = TRUE,
-                         progress = TRUE) {
+                         progress = FALSE) {
   if(progress) cli::cli_progress_step("Checking inputs")
   if(!inherits(x, "sf"))  cli::cli_abort("Object 'x' has to be of class 'sf'")
   if(!("soil" %in% names(x))) cli_abort("Object 'x' should have a column called 'soil'")

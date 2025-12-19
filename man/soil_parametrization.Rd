@@ -12,7 +12,7 @@ add_soilgrids(
   soilgrids_path = NULL,
   widths = NULL,
   replace_existing = TRUE,
-  progress = TRUE
+  progress = FALSE
 )
 
 modify_soils(
@@ -21,20 +21,20 @@ modify_soils(
   depth_to_bedrock_map = NULL,
   regolith_rfc = 97.5,
   full_rock_filling = TRUE,
-  progress = TRUE
+  progress = FALSE
 )
 }
 \arguments{
 \item{x}{An object of class \code{\link[sf]{sf}} with a valid CRS definition. If it contains a column called 'land_cover_type', soils will be retrieved for "agriculture" and "wildland"
 cover types only. Otherwise, soils are retrieved for all locations. For functions \code{modify_soils} or \code{check_soils}, \code{x} should already contain a column named "soil".}
 
-\item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids REST API (https://rest.isric.org) will be queried.}
+\item{soilgrids_path}{Path to SoilGrids rasters (see details). If missing, the SoilGrids in IRSIC (https://docs.isric.org/globaldata/soilgrids/) will be queried.}
 
 \item{widths}{A numeric vector indicating the desired layer widths, in \emph{mm}. If \code{NULL} the default soil grids layer definition is returned.}
 
 \item{replace_existing}{A logical flag to force the replacement of existing soil data, when already present}
 
-\item{progress}{A logical flag to include a progress bar while processing the output of the query to the SoilGrids REST API.}
+\item{progress}{A logical flag to include progress information.}
 
 \item{soil_depth_map}{An object of class \code{\link[terra]{SpatRaster}} or \code{\link[terra]{SpatVector}} with the soil depth (in \emph{mm}) values.}
 
@@ -50,17 +50,15 @@ A modified object of class \code{\link[sf]{sf}} with column 'soil'.
 \description{
 Function \code{add_soilgrids} fills column 'soil' with physical soil characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et al. 2021).
 Function \code{modify_soils} modifies soil definition according to soil depth and depth to bedrock information.
-Function \code{check_soils} verifies that soil data does not contain missing values for key variables and, if so, assigns default values.
 }
 \details{
-If \code{soilgrids_path = NULL} the function connects with the SoilGrids REST API (https://rest.isric.org)
+If \code{soilgrids_path = NULL} the function connects with SoilGrids data in IRSIC (https://docs.isric.org/globaldata/soilgrids/)
 to retrieve the soil physical and chemical characteristics for a site (Hengl \emph{et al}. 2007; Poggio et al. 2021), selected
-by its coordinates. Also, in case the depths are not the default ones in the SoilGrids API, the function uses
-averages the values of soil grid layers depending on the overlap between soil layer definitions. Unfortunately,
-SoilGrids REST API queries are limited to a few points.
+by its coordinates. Also, in case the depths are not the default ones in the SoilGrids, the function uses
+averages the values of soil grid layers depending on the overlap between soil layer definitions.
 
 If \code{soilgrids_path != NULL} the function will read SoilGrid rasters from the file disk. Folders need to be defined
-for each variable ("sand", "clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
+for each variable ("sand", "clay", "soc", "bdod", "cfvo", "phh2o" and "nitrogen"). File paths from \code{soilgrids_path} should be named:
 
 \emph{var}/\emph{var}_\emph{layer}_mean.tif
 
@@ -75,7 +73,8 @@ If regional maps of soil depth are not available, users are recommended to resor
  \donttest{
    library(sf)
    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
-   x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
+   # Queries to IRSIC are rather slow
+   x_soil <- add_soilgrids(x)
    x_soil
    # See more complete examples in package vignettes 'Preparing inputs'
  }
