@@ -16,38 +16,6 @@ MedFateSourceData sources;
 
 #endif
 
-// Extract source data from Rcpp and populate MedFateSourceData struct
-// MedFateSourceData convertSourceListToStruct(List uptakeList, NumericVector throughfallVec, int NC, int NZ) {
-//     MedFateSourceData sources;
-//     sources.NC = NC;
-//     sources.NZ = NZ;
-// 
-//     // Allocate flat arrays
-//     std::vector<real>* uptakeVec = new std::vector<real>(NC * NZ);
-//     std::vector<real>* throughfallVecCopy = new std::vector<real>(NC);
-// 
-//     // Extract uptake data
-//     for (int i = 0; i < NC; i++) {
-//         if (uptakeList[i] == R_NilValue) continue;
-// 
-//         NumericVector uptakeCell = as<NumericVector>(uptakeList[i]);
-//         for (int l = 0; l < NZ; l++) {
-//             int idx = i * NZ + l;
-//             (*uptakeVec)[idx] = uptakeCell[l];
-//         }
-//     }
-// 
-//     // Copy throughfall data
-//     for (int i = 0; i < NC; i++) {
-//         (*throughfallVecCopy)[i] = throughfallVec[i];
-//     }
-// 
-//     sources.uptake = uptakeVec->data();
-//     sources.tfall = throughfallVecCopy->data();
-// 
-//     return sources;
-// }
-
 
 // [[Rcpp::export(".initSerghei")]]
 void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
