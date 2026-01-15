@@ -4,11 +4,104 @@
 #include <medfate.h>
 #include "spwbland.h"
 #if SERGHEI_COUPLING
-#include "/home/miquel/serghei-master/src/MedFateLand_Serghei.h"
+// Relative path to SERGHEI headers (from medfateland/src/ to ../../src/)
+#include "../../src/MedFateLand_Serghei.h"
 #endif
 using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
+
+#if SERGHEI_COUPLING
+// =============================================================================
+// Conversion helpers: Rcpp → Native C++ structs
+// =============================================================================
+
+// Extract soil data from Rcpp List and populate MedFateSoilData struct
+// The Rcpp List structure: soilList[[i]] contains W, dVec, VG_alpha, VG_theta_res, VG_theta_sat, VG_n, Ksat
+MedFateSoilData convertSoilListToStruct(List soilList, int NC, int NZ) {
+    MedFateSoilData soil;
+    soil.NC = NC;
+    soil.NZ = NZ;
+
+    // Allocate flat arrays (caller is responsible for memory management)
+    std::vector<real>* waterVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* dVecVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* VGalphaVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* VGthetaResVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* VGthetaSatVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* VGnVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* KsatVec = new std::vector<real>(NC * NZ);
+
+    // Extract data from Rcpp Lists
+    for (int i = 0; i < NC; i++) {
+        if (soilList[i] == R_NilValue) continue;
+
+        List soilCell = as<List>(soilList[i]);
+
+        NumericVector W = soilCell["W"];
+        NumericVector dVec = soilCell["dVec"];
+        NumericVector VGalpha = soilCell["VG_alpha"];
+        NumericVector VGthetaRes = soilCell["VG_theta_res"];
+        NumericVector VGthetaSat = soilCell["VG_theta_sat"];
+        NumericVector VGn = soilCell["VG_n"];
+        NumericVector Ksat = soilCell["Ksat"];
+
+        for (int l = 0; l < NZ; l++) {
+            int idx = i * NZ + l;
+            (*waterVec)[idx] = W[l];
+            (*dVecVec)[idx] = dVec[l];
+            (*VGalphaVec)[idx] = VGalpha[l];
+            (*VGthetaResVec)[idx] = VGthetaRes[l];
+            (*VGthetaSatVec)[idx] = VGthetaSat[l];
+            (*VGnVec)[idx] = VGn[l];
+            (*KsatVec)[idx] = Ksat[l];
+        }
+    }
+
+    // Set pointers (note: this creates ownership that needs cleanup)
+    soil.water = waterVec->data();
+    soil.dVec = dVecVec->data();
+    soil.VGalpha = VGalphaVec->data();
+    soil.VGtheta_res = VGthetaResVec->data();
+    soil.VGtheta_sat = VGthetaSatVec->data();
+    soil.VGn = VGnVec->data();
+    soil.Ksat = KsatVec->data();
+
+    return soil;
+}
+
+// Extract source data from Rcpp and populate MedFateSourceData struct
+MedFateSourceData convertSourceListToStruct(List uptakeList, NumericVector throughfallVec, int NC, int NZ) {
+    MedFateSourceData sources;
+    sources.NC = NC;
+    sources.NZ = NZ;
+
+    // Allocate flat arrays
+    std::vector<real>* uptakeVec = new std::vector<real>(NC * NZ);
+    std::vector<real>* throughfallVecCopy = new std::vector<real>(NC);
+
+    // Extract uptake data
+    for (int i = 0; i < NC; i++) {
+        if (uptakeList[i] == R_NilValue) continue;
+
+        NumericVector uptakeCell = as<NumericVector>(uptakeList[i]);
+        for (int l = 0; l < NZ; l++) {
+            int idx = i * NZ + l;
+            (*uptakeVec)[idx] = uptakeCell[l];
+        }
+    }
+
+    // Copy throughfall data
+    for (int i = 0; i < NC; i++) {
+        (*throughfallVecCopy)[i] = throughfallVec[i];
+    }
+
+    sources.uptake = uptakeVec->data();
+    sources.tfall = throughfallVecCopy->data();
+
+    return sources;
+}
+#endif
 
 // [[Rcpp::export(".initSerghei")]]
 List initSerghei(NumericVector limits, int nrow, int ncol,

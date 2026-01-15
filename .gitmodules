@@ -1,0 +1,4 @@
+[submodule "serghei"]
+	path = serghei
+	url = git@gitlab.com:serghei-model/vegetation-workgroup/serghei-medfate/serghei.git
+	branch = fix-history
