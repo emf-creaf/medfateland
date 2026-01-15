@@ -146,25 +146,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // initSerghei
-List initSerghei(NumericVector limits, int nrow, int ncol, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
-RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
+void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers, IntegerVector sf2cell, List xList, String input_dir, String output_dir);
+RcppExport SEXP _medfateland_initSerghei(SEXP limitsSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP nlayersSEXP, SEXP sf2cellSEXP, SEXP xListSEXP, SEXP input_dirSEXP, SEXP output_dirSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type limits(limitsSEXP);
     Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
     Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< int >::type nlayers(nlayersSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
     Rcpp::traits::input_parameter< List >::type xList(xListSEXP);
     Rcpp::traits::input_parameter< String >::type input_dir(input_dirSEXP);
     Rcpp::traits::input_parameter< String >::type output_dir(output_dirSEXP);
-    rcpp_result_gen = Rcpp::wrap(initSerghei(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir));
-    return rcpp_result_gen;
+    initSerghei(limits, nrow, ncol, nlayers, sf2cell, xList, input_dir, output_dir);
+    return R_NilValue;
 END_RCPP
 }
 // callSergheiDay
-void callSergheiDay(CharacterVector lct, List xList, DataFrame gridMeteo, List localResults, IntegerVector sf2cell, List serghei_interface);
-RcppExport SEXP _medfateland_callSergheiDay(SEXP lctSEXP, SEXP xListSEXP, SEXP gridMeteoSEXP, SEXP localResultsSEXP, SEXP sf2cellSEXP, SEXP serghei_interfaceSEXP) {
+void callSergheiDay(CharacterVector lct, List xList, DataFrame gridMeteo, List localResults, IntegerVector sf2cell);
+RcppExport SEXP _medfateland_callSergheiDay(SEXP lctSEXP, SEXP xListSEXP, SEXP gridMeteoSEXP, SEXP localResultsSEXP, SEXP sf2cellSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type lct(lctSEXP);
@@ -172,8 +172,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DataFrame >::type gridMeteo(gridMeteoSEXP);
     Rcpp::traits::input_parameter< List >::type localResults(localResultsSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type sf2cell(sf2cellSEXP);
-    Rcpp::traits::input_parameter< List >::type serghei_interface(serghei_interfaceSEXP);
-    callSergheiDay(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface);
+    callSergheiDay(lct, xList, gridMeteo, localResults, sf2cell);
     return R_NilValue;
 END_RCPP
 }
@@ -403,8 +402,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_willBurnWhenHitFloor", (DL_FUNC) &_medfateland_willBurnWhenHitFloor, 2},
     {"_medfateland_fireBrandBurningTimeFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandBurningTimeFromCanopyStructure, 1},
     {"_medfateland_fireBrandFlameHeightFromCanopyStructure", (DL_FUNC) &_medfateland_fireBrandFlameHeightFromCanopyStructure, 2},
-    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 7},
-    {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 6},
+    {"_medfateland_initSerghei", (DL_FUNC) &_medfateland_initSerghei, 8},
+    {"_medfateland_callSergheiDay", (DL_FUNC) &_medfateland_callSergheiDay, 5},
     {"_medfateland_finishSerghei", (DL_FUNC) &_medfateland_finishSerghei, 0},
     {"_medfateland_copySnowpackToSoil", (DL_FUNC) &_medfateland_copySnowpackToSoil, 1},
     {"_medfateland_copySnowpackFromSoil", (DL_FUNC) &_medfateland_copySnowpackFromSoil, 1},

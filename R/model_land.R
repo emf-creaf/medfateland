@@ -142,9 +142,9 @@
     }
   }
   # B. Calls SERGHEI
-  # .callSergheiDay(lct, xList,
-  #                 gridMeteo, localResults,
-  #                 sf2cell, serghei_interface)
+  .callSergheiDay(lct, xList,
+                  gridMeteo, localResults,
+                  sf2cell)
 
   print("done")
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
@@ -352,13 +352,14 @@
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
     serghei_parameters <- watershed_control[["serghei_parameters"]]
-    serghei_interface <- .initSerghei(limits = as.vector(terra::ext(r)),
-                                      nrow = terra::nrow(r),
-                                      ncol = terra::ncol(r),
-                                      sf2cell = sf2cell,
-                                      y$state,
-                                      input_dir = serghei_parameters[["input_dir"]],
-                                      output_dir = serghei_parameters[["output_dir"]])
+    .initSerghei(limits = as.vector(terra::ext(r)),
+                 nrow = terra::nrow(r),
+                 ncol = terra::ncol(r),
+                 nlayers = 3,
+                 sf2cell = sf2cell,
+                 y$state,
+                 input_dir = serghei_parameters[["input_dir"]],
+                 output_dir = serghei_parameters[["output_dir"]])
   } else if(watershed_model == "tetis") {
     # INITIAL STATE
     initialSoilContent <- 0 

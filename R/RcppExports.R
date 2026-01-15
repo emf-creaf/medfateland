@@ -41,12 +41,12 @@
     .Call(`_medfateland_fireBrandFlameHeightFromCanopyStructure`, crownLength, LAIc)
 }
 
-.initSerghei <- function(limits, nrow, ncol, sf2cell, xList, input_dir, output_dir) {
-    .Call(`_medfateland_initSerghei`, limits, nrow, ncol, sf2cell, xList, input_dir, output_dir)
+.initSerghei <- function(limits, nrow, ncol, nlayers, sf2cell, xList, input_dir, output_dir) {
+    invisible(.Call(`_medfateland_initSerghei`, limits, nrow, ncol, nlayers, sf2cell, xList, input_dir, output_dir))
 }
 
-.callSergheiDay <- function(lct, xList, gridMeteo, localResults, sf2cell, serghei_interface) {
-    invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell, serghei_interface))
+.initSerghei <- function(lct, xList, gridMeteo, localResults, sf2cell) {
+    invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell))
 }
 
 .finishSerghei <- function() {
