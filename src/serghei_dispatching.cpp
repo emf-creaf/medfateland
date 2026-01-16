@@ -81,7 +81,7 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
         DataFrame soilCell = Rcpp::as<Rcpp::List>(x["soil"]);
 
         NumericVector W = soilCell["W"];
-        NumericVector dVec = soilCell["dVec"];
+        NumericVector dVec = soilCell["widths"];
         NumericVector VGalpha = soilCell["VG_alpha"];
         NumericVector VGthetaRes = soilCell["VG_theta_res"];
         NumericVector VGthetaSat = soilCell["VG_theta_sat"];
@@ -107,7 +107,9 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
   char** argv = nullptr;
 
   // Call SERGHEI using the new C API
+  Rcout << "before starting serghei\n";
   int ret = MedFateLand_startFromMedFate(argc, argv, &soil_C, &sources);
+  Rcout << "after starting serghei\n";
   if (ret != 0) {
     Rcpp::stop("SERGHEI initialization failed with code: " + std::to_string(ret));
   }
