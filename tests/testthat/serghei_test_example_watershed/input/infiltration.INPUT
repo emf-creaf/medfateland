@@ -1,0 +1,12 @@
+InfModel: horton              // possible models are none, constant
+InfiltrationClasses: 1 
+
+// Parameters for the constant model
+rate :      0.0                // constant infiltration rate [mm/s]
+
+// Parameters for the Horton model
+k :  4                            // Horton shape factor 
+fc : 0.00025                            // asymptotic infiltration capacity [mm/s]
+f0 : 0.0025                            // initial infiltration capacity [mm/s]
+
+

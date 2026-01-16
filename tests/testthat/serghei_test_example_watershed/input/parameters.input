@@ -1,0 +1,8 @@
+simLength  : 75600.0    
+cfl        : 0.5      
+outFreq    : 10600.0      	
+obsFreq    : 10600.0
+parNx      : 1       
+parNy      : 1        
+outFormat  : VTK
+BCtype 	  : TRANSMISSIVE 
