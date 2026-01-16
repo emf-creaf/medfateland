@@ -1,0 +1,11 @@
+# SERGHEI path configuration
+SERGHEI_PATH = $(HOME)/Rpackages/medfateland/serghei
+
+# Preprocessor flags: include SERGHEI headers and enable coupling
+PKG_CPPFLAGS = -I$(SERGHEI_PATH)/src -DSERGHEI_MEDFATELAND=1
+
+# Linker flags: link against libserghei.so with rpath
+PKG_LIBS = -L$(SERGHEI_PATH)/lib -lserghei -Wl,-rpath,$(SERGHEI_PATH)/lib
+
+# C++ standard
+PKG_CXXFLAGS = -O3 -std=c++17

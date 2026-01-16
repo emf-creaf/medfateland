@@ -45,7 +45,7 @@
     invisible(.Call(`_medfateland_initSerghei`, limits, nrow, ncol, nlayers, sf2cell, xList, input_dir, output_dir))
 }
 
-.initSerghei <- function(lct, xList, gridMeteo, localResults, sf2cell) {
+.callSergheiDay <- function(lct, xList, gridMeteo, localResults, sf2cell) {
     invisible(.Call(`_medfateland_callSergheiDay`, lct, xList, gridMeteo, localResults, sf2cell))
 }
 
