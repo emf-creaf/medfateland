@@ -8,23 +8,24 @@ using namespace medfate;
 using namespace meteoland;
 
 #if SERGHEI_MEDFATELAND
-// Relative path to SERGHEI headers (adjust if needed)
-#include "../serghei/src/MedFateLand_Serghei.h"
+// Include the THIN public API header (no MPI, no Kokkos dependencies)
+#include "../serghei/src/MedFateLand_API.h"
 
 // Global structs for MEDFATE data (allocated in initSerghei, freed in finishSerghei)
-MedFateSoilData soil;
-MedFateSourceData sources;
+// Now using the public POD structs from the API
+std::vector<double>* waterVec = nullptr;
+std::vector<double>* dVecVec = nullptr;
+std::vector<double>* VGalphaVec = nullptr;
+std::vector<double>* VGthetaResVec = nullptr;
+std::vector<double>* VGthetaSatVec = nullptr;
+std::vector<double>* VGnVec = nullptr;
+std::vector<double>* KsatVec = nullptr;
+std::vector<double>* uptakeVec = nullptr;
+std::vector<double>* throughfallVecCopy = nullptr;
 
-// Vectors for memory management (owned by this module, pointers passed to SERGHEI)
-std::vector<real>* waterVec = nullptr;
-std::vector<real>* dVecVec = nullptr;
-std::vector<real>* VGalphaVec = nullptr;
-std::vector<real>* VGthetaResVec = nullptr;
-std::vector<real>* VGthetaSatVec = nullptr;
-std::vector<real>* VGnVec = nullptr;
-std::vector<real>* KsatVec = nullptr;
-std::vector<real>* uptakeVec = nullptr;
-std::vector<real>* throughfallVecCopy = nullptr;
+// Public API structs (allocated here, pointers passed to SERGHEI)
+MedFateSoilData_C soil_C;
+MedFateSourceData_C sources;
 
 #endif
 
@@ -34,33 +35,41 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
                  String input_dir, String output_dir) {
 #if SERGHEI_MEDFATELAND
 
-  
   // "rock" should have a soil with all rock and zero Ksat
   // "artificial" should have a missing soil
   // "water", "agriculture" and "wildland" should have normal soil
   int nTargetCells = xList.size();
   int nGridCells = nrow*ncol;
 
-  soil.NC = nGridCells;
-  soil.NZ = nlayers;
+  // Allocate flat arrays for soil data for the full grid
+  // FIX: Use soil_C.NC and soil_C.NZ after initialization
+  waterVec = new std::vector<double>(nGridCells * nlayers);
+  dVecVec = new std::vector<double>(nGridCells * nlayers);
+  VGalphaVec = new std::vector<double>(nGridCells * nlayers);
+  VGthetaResVec = new std::vector<double>(nGridCells * nlayers);
+  VGthetaSatVec = new std::vector<double>(nGridCells * nlayers);
+  VGnVec = new std::vector<double>(nGridCells * nlayers);
+  KsatVec = new std::vector<double>(nGridCells * nlayers);
+
+  // Allocate flat arrays for sources for the full grid
+  uptakeVec = new std::vector<double>(nGridCells * nlayers);
+  throughfallVecCopy = new std::vector<double>(nGridCells);
+
+  // Initialize the public API structs
+  soil_C.NC = nGridCells;
+  soil_C.NZ = nlayers;
+  soil_C.water = waterVec->data();
+  soil_C.dVec = dVecVec->data();
+  soil_C.VGalpha = VGalphaVec->data();
+  soil_C.VGtheta_res = VGthetaResVec->data();
+  soil_C.VGtheta_sat = VGthetaSatVec->data();
+  soil_C.VGn = VGnVec->data();
+  soil_C.Ksat = KsatVec->data();
 
   sources.NC = nGridCells;
   sources.NZ = nlayers;
-
-  // Allocate flat arrays for soil data for the full grid
-  // FIX: Use soil.NC instead of undefined NC variable
-  waterVec = new std::vector<real>(soil.NC * soil.NZ);
-  dVecVec = new std::vector<real>(soil.NC * soil.NZ);
-  VGalphaVec = new std::vector<real>(soil.NC * soil.NZ);
-  VGthetaResVec = new std::vector<real>(soil.NC * soil.NZ);
-  VGthetaSatVec = new std::vector<real>(soil.NC * soil.NZ);
-  VGnVec = new std::vector<real>(soil.NC * soil.NZ);
-  KsatVec = new std::vector<real>(soil.NC * soil.NZ);
-
-  // Allocate flat arrays for sources for the full grid
-  uptakeVec = new std::vector<real>(sources.NC * sources.NZ);
-  throughfallVecCopy = new std::vector<real>(sources.NC);
-
+  sources.uptake = uptakeVec->data();
+  sources.tfall = throughfallVecCopy->data();
 
   // Extract data from Rcpp Lists
   for (int i = 0; i < nTargetCells; i++) {
@@ -79,8 +88,8 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
         NumericVector VGn = soilCell["VG_n"];
         NumericVector Ksat = soilCell["Ksat"];
 
-        for (int l = 0; l < soil.NZ; l++) {
-          int idx = i_grid * soil.NZ + l;
+        for (int l = 0; l < soil_C.NZ; l++) {
+          int idx = i_grid * soil_C.NZ + l;
           (*waterVec)[idx] = W[l];
           (*dVecVec)[idx] = dVec[l];
           (*VGalphaVec)[idx] = VGalpha[l];
@@ -93,29 +102,16 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
     }
   }
 
-  // Set pointers in struct
-  soil.water = waterVec->data();
-  soil.dVec = dVecVec->data();
-  soil.VGalpha = VGalphaVec->data();
-  soil.VGtheta_res = VGthetaResVec->data();
-  soil.VGtheta_sat = VGthetaSatVec->data();
-  soil.VGn = VGnVec->data();
-  soil.Ksat = KsatVec->data();
-
-  sources.uptake = uptakeVec->data();
-  sources.tfall = throughfallVecCopy->data();
-
   // Prepare argc, argv for SERGHEI (empty for now)
-  int argc = 1;
-  char argv[] = "serghei";
-  char* argvPtr[] = {argv};
+  int argc = 0;
+  char** argv = nullptr;
 
-  // FIX: Use static API method instead of instance method
-  Rcout << "Initializing serghei...\n";
-  MedFateLand_Serghei::startFromMedFate(argc, argvPtr, soil, sources);
-  
-#else
-  stop("Can initialize SERGHEI (not coupled)\n");
+  // Call SERGHEI using the new C API
+  int ret = MedFateLand_startFromMedFate(argc, argv, &soil_C, &sources);
+  if (ret != 0) {
+    Rcpp::stop("SERGHEI initialization failed with code: " + std::to_string(ret));
+  }
+
 #endif
 }
 
@@ -125,16 +121,17 @@ void callSergheiDay(CharacterVector lct, List xList,
                     IntegerVector sf2cell) {
 
 #if SERGHEI_MEDFATELAND
-  
-  int nX = xList.size();
 
+  int nX = xList.size();
+  int nlayers = soil_C.NZ;
+  
   NumericVector precVec = gridMeteo["Precipitation"];
 
   //B.1 - Fill uptake and throughfall arrays
   for(int i=0;i<nX;i++) {
+    int i_grid = sf2cell[i] - 1;
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
-      int i_grid = sf2cell[i] - 1;
-
+      
       List loc_res_i = localResults[i];
       List res_i = loc_res_i["simulation_results"];
       NumericVector DB = res_i["WaterBalance"];
@@ -153,7 +150,7 @@ void callSergheiDay(CharacterVector lct, List xList,
       //Copy throughfall
       sources.tfall[i_grid] = DB["NetRain"];
       for(int l=0;l<nlayers;l++) {
-        int idx = i_grid * soil.NZ + l;
+        int idx = i_grid * soil_C.NZ + l;
         double vup = -1.0*(EherbVec[l] + ExtractionVec[l]); // uptake from herbs and plants are negative flows (outflow)
         if(l==0) vup += Snowmelt - Esoil; //snowmelt is a positive flow (inflow) and soil evaporation a negative flow (outflow)
         sources.uptake[idx] = vup;
@@ -162,20 +159,20 @@ void callSergheiDay(CharacterVector lct, List xList,
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"
       sources.tfall[i_grid] = precVec[i_grid];
 
-      // FIX: Define nlayers before using
-      int nlayers = soil.NZ;
+      // Define nlayers before using
       for(int l=0;l<nlayers;l++) {
-        int idx = i_grid * soil.NZ + l;
+        int idx = i_grid * soil_C.NZ + l;
         sources.uptake[idx] = 0.0;
       }
     }
 
   }
 
-  // CALL SERGHEI using static API
-  // FIX: Use evolveFromMedFate instead of compute_daily_step
-  Rcout << "Calling serghei...\n";
-  MedFateLand_Serghei::evolveFromMedFate(sources);
+  // CALL SERGHEI using the new C API
+  int ret = MedFateLand_evolveFromMedFate(&sources);
+  if (ret != 0) {
+    Rcpp::stop("SERGHEI evolve step failed with code: " + std::to_string(ret));
+  }
 
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between
   //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
@@ -189,14 +186,13 @@ void callSergheiDay(CharacterVector lct, List xList,
           NumericVector W_soil = soil_i["W"];
           NumericVector W_soilSerghei(nlayers, 0.0);
           for(int l=0;l<nlayers;l++) {
-            int idx = i_grid * soil.NZ + l;
-            // FIX: Use soil.water instead of soil.waterVec
-            W_soilSerghei[l] = soil.water[idx];
+            int idx = i_grid * soil_C.NZ + l;
+            // FIX: Use soil.water (not soil.waterVec)
+            W_soilSerghei[l] = soil_C.water[idx];
           }
           // Estimate difference between current soil and serghei soil
           NumericVector W_diff = W_soilSerghei - W_soil;
           for(int l=0; l<W_soil.size();l++) {
-            //Add difference to overall soil
             // FIX: Use l instead of i
             W_soil[l] = W_soil[l] + W_diff[l];
           }
@@ -216,8 +212,6 @@ void callSergheiDay(CharacterVector lct, List xList,
       }
     }
   }
-#else
-  stop("Can run SERGHEI (not coupled)\n");
 #endif
 }
 
@@ -225,10 +219,11 @@ void callSergheiDay(CharacterVector lct, List xList,
 // [[Rcpp::export(".finishSerghei")]]
 void finishSerghei() {
 #if SERGHEI_MEDFATELAND
-  // FIX: Use static API method
-  Rcout << "Finalizing serghei...\n";
-  
-  MedFateLand_Serghei::finishFromMedFate();
+  // Call SERGHEI using the new C API
+  int ret = MedFateLand_finishFromMedFate();
+  if (ret != 0) {
+    Rcpp::warning("SERGHEI finalization failed with code: " + std::to_string(ret));
+  }
 
   // Clean up allocated memory
   delete waterVec;
@@ -250,8 +245,5 @@ void finishSerghei() {
   KsatVec = nullptr;
   uptakeVec = nullptr;
   throughfallVecCopy = nullptr;
-
-#else
-  stop("Can finalize SERGHEI (not coupled)\n");
 #endif
 }
