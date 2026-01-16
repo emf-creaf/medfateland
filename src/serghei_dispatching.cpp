@@ -11,11 +11,9 @@ using namespace meteoland;
 // Relative path to SERGHEI headers 
 #include "../serghei/src/MedFateLand_Serghei.h"
 
-MedFateSoilData soil;
-MedFateSourceData sources;
+MedFateLand_Serghei serghei_interface;
 
 #endif
-
 
 // [[Rcpp::export(".initSerghei")]]
 void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
@@ -81,18 +79,18 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
   }
   
   
-  soil.water = waterVec->data();
-  soil.dVec = dVecVec->data();
-  soil.VGalpha = VGalphaVec->data();
-  soil.VGtheta_res = VGthetaResVec->data();
-  soil.VGtheta_sat = VGthetaSatVec->data();
-  soil.VGn = VGnVec->data();
-  soil.Ksat = KsatVec->data();
+  serghei_interface.soilData.water = waterVec->data();
+  serghei_interface.soilData.dVec = dVecVec->data();
+  serghei_interface.soilData.VGalpha = VGalphaVec->data();
+  serghei_interface.soilData.VGtheta_res = VGthetaResVec->data();
+  serghei_interface.soilData.VGtheta_sat = VGthetaSatVec->data();
+  serghei_interface.soilData.VGn = VGnVec->data();
+  serghei_interface.soilData.Ksat = KsatVec->data();
   
-  sources.uptake = uptakeVec->data();
-  sources.tfall = throughfallVecCopy->data();
+  serghei_interface.sources.uptake = uptakeVec->data();
+  serghei_interface.sources.tfall = throughfallVecCopy->data();
   
-  MedFateLand_Serghei::start();
+  serghei_interface.start();
 
 #endif  
 }
@@ -136,22 +134,22 @@ void callSergheiDay(CharacterVector lct, List xList,
         int idx = i_grid * NZ + l;
         double vup = -1.0*(EherbVec[l] + ExtractionVec[l]); // uptake from herbs and plants are negative flows (outflow)
         if(l==0) vup += Snowmelt - Esoil; //snowmelt is a positive flow (inflow) and soil evaporation a negative flow (outflow)
-        sources.uptake[idx] = vup;
+        serghei_interface.sources.uptake[idx] = vup;
       }
     } else {
       // No interception (i.e. throughfall = rain) in "rock", "artificial" or "water"
-      sources.tfall[i_grid] = precVec[i_grid]; //indices in R
+      serghei_interface.sources.tfall[i_grid] = precVec[i_grid]; //indices in R
       // No uptake in "rock", "artificial" or "water"
       for(int l=0;l<vup.size();l++) {
         int idx = i_grid * NZ + l;
-        sources.uptake[idx] = 0.0;
+        serghei_interface.sources.uptake[idx] = 0.0;
       }
     }
     
   }
   
   // CALL SERGHEI (call to interface function)
-  MedFateLand_Serghei::compute_daily_step();
+  serghei_interface.compute_daily_step();
   
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between 
   //SERGHEI and MEDFATE and apply the differences to the soil moisture (overall or water pools)
@@ -166,7 +164,7 @@ void callSergheiDay(CharacterVector lct, List xList,
           NumericVector W_soilSerghei(nlayers, 0.0);
           for(int l=0;l<nlayers;l++) {
             int idx = i_grid * NZ + l;
-            W_soilSerghei[l] = soil.waterVec[idx];
+            W_soilSerghei[l] = MedFateLand.soil.waterVec[idx];
           }
           // Estimate difference between current soil and serghei soil
           NumericVector W_diff = W_soilSerghei - W_soil;
@@ -198,6 +196,6 @@ void callSergheiDay(CharacterVector lct, List xList,
 // [[Rcpp::export(".finishSerghei")]]
 void finishSerghei() {
 #if SERGHEI_COUPLING
-  MedFateLand_Serghei::finalise();
+  serghei_interface.finalise();
 #endif
 }

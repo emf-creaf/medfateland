@@ -391,6 +391,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_unif_module();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_genros", (DL_FUNC) &_medfateland_genros, 8},
     {"_medfateland_ellipseROS", (DL_FUNC) &_medfateland_ellipseROS, 4},
@@ -418,6 +420,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_medfateland_tetisSimulationWithOverlandFlows", (DL_FUNC) &_medfateland_tetisSimulationWithOverlandFlows, 18},
     {"_medfateland_tetisWatershedDay", (DL_FUNC) &_medfateland_tetisWatershedDay, 15},
     {"_medfateland_tetisChannelRouting", (DL_FUNC) &_medfateland_tetisChannelRouting, 12},
+    {"_rcpp_module_boot_unif_module", (DL_FUNC) &_rcpp_module_boot_unif_module, 0},
     {NULL, NULL, 0}
 };
 
