@@ -27,7 +27,11 @@ data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-01"), by="day")
 
 ws_control <- default_watershed_control("serghei")
+ws_control$serghei_parameters$input_dir <- "/home/miquel/Rpackages/medfateland/tests/testthat/serghei_test_example_watershed/input/"
+ws_control$serghei_parameters$output_dir <- "/home/miquel/Rpackages/medfateland/tests/testthat/serghei_test_example_watershed/output/"
 
+print(dir.exists(ws_control$serghei_parameters$input_dir))
+# dir.exists(ws_control$serghei_parameters$output_dir)
 test_that("Can simulate three days over landscape and watershed-level plots can be obtained",{
   s1 <- spwb_land(r, yws_swpb, meteo = examplemeteo, dates = dates, summary_frequency = "month", 
                   watershed_control = ws_control, SpParams = SpParamsMED, progress = FALSE)

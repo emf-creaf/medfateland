@@ -103,11 +103,23 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
   }
 
   // Prepare argc, argv for SERGHEI (empty for now)
-  int argc = 0;
-  char** argv = nullptr;
+  int argc = 4;
+  char* argv[4];
+  std::string inputDir = std::string(input_dir);
+  std::string outputDir = std::string(output_dir);
+  std::string numSteps = "1";
 
+  argv[1] = const_cast<char*>(inputDir.c_str());
+  argv[2] = const_cast<char*>(outputDir.c_str());
+  argv[3] = const_cast<char*>(numSteps.c_str());
+  // int argc = 0; 
+  // char** argv = nullptr;
   // Call SERGHEI using the new C API
   Rcout << "before starting serghei\n";
+  Rcout << argv[1] <<"\n";
+  Rcout << argv[2] <<"\n";
+  Rcout << argv[3] <<"\n";
+  // stop("kk");
   int ret = MedFateLand_startFromMedFate(argc, argv, &soil_C, &sources);
   Rcout << "after starting serghei\n";
   if (ret != 0) {
