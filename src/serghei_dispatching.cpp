@@ -7,9 +7,9 @@ using namespace Rcpp;
 using namespace medfate;
 using namespace meteoland;
 
-#if SERGHEI_COUPLING
+#if SERGHEI_MEDFATELAND
 // Relative path to SERGHEI headers (adjust if needed)
-#include "../../src/MedFateLand_Serghei.h"
+#include "../serghei/src/MedFateLand_Serghei.h"
 
 // Global structs for MEDFATE data (allocated in initSerghei, freed in finishSerghei)
 MedFateSoilData soil;
@@ -32,8 +32,9 @@ std::vector<real>* throughfallVecCopy = nullptr;
 void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
                  IntegerVector sf2cell, List xList,
                  String input_dir, String output_dir) {
-#if SERGHEI_COUPLING
+#if SERGHEI_MEDFATELAND
 
+  
   // "rock" should have a soil with all rock and zero Ksat
   // "artificial" should have a missing soil
   // "water", "agriculture" and "wildland" should have normal soil
@@ -110,8 +111,11 @@ void initSerghei(NumericVector limits, int nrow, int ncol, int nlayers,
   char* argvPtr[] = {argv};
 
   // FIX: Use static API method instead of instance method
+  Rcout << "Initializing serghei...\n";
   MedFateLand_Serghei::startFromMedFate(argc, argvPtr, soil, sources);
-
+  
+#else
+  stop("Can initialize SERGHEI (not coupled)\n");
 #endif
 }
 
@@ -120,8 +124,8 @@ void callSergheiDay(CharacterVector lct, List xList,
                     DataFrame gridMeteo, List localResults,
                     IntegerVector sf2cell) {
 
-#if SERGHEI_COUPLING
-
+#if SERGHEI_MEDFATELAND
+  
   int nX = xList.size();
 
   NumericVector precVec = gridMeteo["Precipitation"];
@@ -170,6 +174,7 @@ void callSergheiDay(CharacterVector lct, List xList,
 
   // CALL SERGHEI using static API
   // FIX: Use evolveFromMedFate instead of compute_daily_step
+  Rcout << "Calling serghei...\n";
   MedFateLand_Serghei::evolveFromMedFate(sources);
 
   //B.3 - Recover new soil moisture state from SERGHEI, calculate the difference between
@@ -211,14 +216,18 @@ void callSergheiDay(CharacterVector lct, List xList,
       }
     }
   }
+#else
+  stop("Can run SERGHEI (not coupled)\n");
 #endif
 }
 
 
 // [[Rcpp::export(".finishSerghei")]]
 void finishSerghei() {
-#if SERGHEI_COUPLING
+#if SERGHEI_MEDFATELAND
   // FIX: Use static API method
+  Rcout << "Finalizing serghei...\n";
+  
   MedFateLand_Serghei::finishFromMedFate();
 
   // Clean up allocated memory
@@ -241,5 +250,8 @@ void finishSerghei() {
   KsatVec = nullptr;
   uptakeVec = nullptr;
   throughfallVecCopy = nullptr;
+
+#else
+  stop("Can finalize SERGHEI (not coupled)\n");
 #endif
 }

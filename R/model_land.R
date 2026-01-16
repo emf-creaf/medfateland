@@ -146,7 +146,6 @@
                   gridMeteo, localResults,
                   sf2cell)
 
-  print("done")
   waterBalance <- data.frame("MinTemperature" = MinTemperature,
                              "MaxTemperature" = MaxTemperature, 
                              "PET" = PET, "Rain" = Rain, "Snow" = Snow,
@@ -208,6 +207,16 @@
   datesStarsList <- .get_dates_stars_list(meteo)
   datesMeteo <- .get_dates_meteo(y, meteo)
   
+  vars <- .vars_summary("all", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
+  varsWaterBalance <- .vars_waterbalance("all")
+  varsCarbonBalance <- .vars_carbonbalance("all")
+  varsStand <- .vars_stand("all")
+  varsFireHazard <- .vars_firehazard("all")
+  varsBiomassBalance <- .vars_biomassbalance("all")
+  
   #Output matrices
   if(watershed_model =="tetis") {
     channel_cells <- which(sf_routing$channel)
@@ -220,16 +229,6 @@
     ChannelExport <- matrix(0,nrow = nDays, ncol = length(channel_cells))
     colnames(ChannelExport) <- channel_cells
     rownames(ChannelExport) <- as.character(dates)
-    
-    vars <- .vars_summary("all", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsSum <- .vars_summary("sum", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsMean <- .vars_summary("mean", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsState <- .vars_summary("state", standSummary = standSummary, waterBalanceSummary = waterBalanceSummary, fireHazardSummary = fireHazardSummary, carbonBalanceSummary = carbonBalanceSummary, biomassBalanceSummary = biomassBalanceSummary)
-    varsWaterBalance <- .vars_waterbalance("all")
-    varsCarbonBalance <- .vars_carbonbalance("all")
-    varsStand <- .vars_stand("all")
-    varsFireHazard <- .vars_firehazard("all")
-    varsBiomassBalance <- .vars_biomassbalance("all")
     
     LandscapeBalance <- data.frame(dates = dates,
                                    PET = rep(0, nDays),
@@ -279,14 +278,14 @@
                                        AquiferExfiltration = rep(0, nDays))
   }
   if(watershed_model =="serghei") {
-    vars <- c("MinTemperature","MaxTemperature","PET", 
-              "Rain", "NetRain", "Snow",
-              "Snowmelt","Interception",
-              "SoilEvaporation", "Transpiration", "SWE", "SoilVol","RWC")
-    varsSum <- c("PET","Rain", "NetRain", "Snow", "Snowmelt",
-                 "SoilEvaporation", "Transpiration")
-    varsMean <- c( "MinTemperature", "MaxTemperature")
-    varsState <- c("SWE", "RWC", "SoilVol")
+    # vars <- c("MinTemperature","MaxTemperature","PET", 
+    #           "Rain", "NetRain", "Snow",
+    #           "Snowmelt","Interception",
+    #           "SoilEvaporation", "Transpiration", "SWE", "SoilVol","RWC")
+    # varsSum <- c("PET","Rain", "NetRain", "Snow", "Snowmelt",
+    #              "SoilEvaporation", "Transpiration")
+    # varsMean <- c( "MinTemperature", "MaxTemperature")
+    # varsState <- c("SWE", "RWC", "SoilVol")
     LandscapeBalance <- data.frame(dates = dates,
                                    Precipitation = rep(0, nDays),
                                    Snow = rep(0, nDays),
@@ -349,7 +348,6 @@
   }
   
   # INIT SERGHEI INTERFACE
-  serghei_interface <-NULL
   if(watershed_model=="serghei") {
     serghei_parameters <- watershed_control[["serghei_parameters"]]
     .initSerghei(limits = as.vector(terra::ext(r)),
