@@ -19,6 +19,7 @@
 ^figures/*$
 ^pkgdown$
 ^man/figures/*$
+^serghei/*$
 CRAN-SUBMISSION
 cran-comments.md
 ^CRAN-SUBMISSION$
