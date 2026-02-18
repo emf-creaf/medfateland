@@ -1,4 +1,5 @@
 library(medfateland)
+library(meteoland)
 
 data("example_ifn")
 ypts_swpb <- initialize_landscape(example_ifn[1:2,], SpParams = SpParamsMED, local_control = defaultControl(),
