@@ -157,6 +157,66 @@
               "LocalResults" = localResults))
 }
 
+.watershedDayTetis<- function(output,
+                              internalCommunication,
+                              local_model,
+                              y,
+                              sf_routing,
+                              watershed_control,
+                              watershed_runner,
+                              date,
+                              gridMeteo,
+                              latitude,
+                              standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary,
+                              patchsize) {
+  
+  
+  .resetWaterBalanceDayOutput(output[["WatershedWaterBalance"]])
+  
+  
+  # A. Landscape interflow
+  if(watershed_control$tetis_parameters$interflow) {
+    .tetisInterFlow(output[["WatershedWaterBalance"]], y, 
+                    sf_routing$waterOrder, sf_routing$queenNeigh, sf_routing$waterQ,
+                    watershed_control,
+                    patchsize)
+  }
+  
+  # B. Simulation of soil cells, non-soil cells and overland flows
+  .copySnowpackToSoil(y)
+  .tetisModifyKsat(y, watershed_control, FALSE)
+  
+  waterTableDepth = pmax(0.0, y$depth_to_bedrock - (y$aquifer/y$bedrock_porosity))
+  
+  watershed_runner$run_day(date, gridMeteo, 
+                           waterTableDepth, 
+                           output,
+                           watershed_control$tetis_parameters$rock_max_infiltration,
+                           watershed_control$tetis_parameters$free_drainage_outlets,
+                           standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary)
+  for(i in 1:nrow(y)) {
+    if(y$result_cell[i]) res$result[[i]] <- watershed_runner$get_output_at(i)
+    if(y$land_cover_type[i] %in% c("wildland", "agriculture")) watershed_runner$update_input_at(i, y$state[[i]])
+  }
+  
+  .copySnowpackFromSoil(y)
+  .tetisModifyKsat(y, watershed_control, TRUE)
+  
+  # C. Baseflow
+  if(watershed_control$tetis_parameters$baseflow) {
+    .tetisBaseFlow(output[["WatershedWaterBalance"]],
+                   y,
+                   sf_routing$waterOrder, sf_routing$queenNeigh, sf_routing$waterQ,
+                   sf_routing$channel, sf_routing$outlet,
+                   watershed_control,
+                   patchsize)
+  }
+  
+  # D. Applies drainage from aquifer to a deeper aquifer
+  .tetisDeepAquiferLossToAquifer(output[["WatershedWaterBalance"]], 
+                                 y, watershed_control)
+  
+}
 
 .simulate_land_inner <- function(local_model = "spwb", 
                                  r, y, sf_routing, 
@@ -277,6 +337,8 @@
                                        HerbTranspiration = rep(0, nDays),
                                        InterflowBalance = rep(0, nDays),
                                        AquiferExfiltration = rep(0, nDays))
+    
+ 
   }
   if(watershed_model =="serghei") {
     vars <- c("MinTemperature","MaxTemperature","PET", 
@@ -300,6 +362,8 @@
   }
   resultlist <- vector("list", nCells)
   summarylist <- vector("list", nCells)
+
+  
   for(i in 1:nCells) {
     # summaries
     m <- matrix(NA, nrow = nSummary, ncol = length(vars))
@@ -371,6 +435,12 @@
     initialSnowContent <- sum(y$snowpack, na.rm=TRUE)/nCells
     initialAquiferContent <- sum(y$aquifer, na.rm=TRUE)/nCells
     initialLandscapeContent <- initialSoilContent*(nSoil/nCells)+initialAquiferContent+initialSnowContent
+  
+    # Create runner
+    watershed_runner <- new(medfate::runners$watershed_runner, 
+                            y$state, 
+                            latitude, y$elevation, y$slope, y$aspect,
+                            sf_routing)
   }
   
   if(progress) {
@@ -385,12 +455,13 @@
                                        CO2ByYear)
     
     if(watershed_model=="tetis") {
-      .tetisWatershedDay(output = ws_day,
+      .watershedDayTetis(output = ws_day,
                          internalCommunication = internalCommunication,
                          local_model = local_model,
                          y = y,
                          sf_routing = sf_routing,
                          watershed_control = watershed_control,
+                         watershed_runner = watershed_runner,
                          date = datechar,
                          gridMeteo = gridMeteo,
                          latitude = latitude,
@@ -1825,6 +1896,14 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                                       y$state,
                                       input_dir = serghei_parameters[["input_dir"]],
                                       output_dir = serghei_parameters[["output_dir"]])
+  } else {
+    # Create runner
+    print("init runner")
+    watershed_runner <- new(medfate::runners$watershed_runner, 
+                            y$state, 
+                            latitude, y$elevation, y$slope, y$aspect,
+                            sf_routing)
+    print("done")
   }
 
   meteo_mapping <- .get_meteo_mapping(r, y, meteo, sf_coords, sf2cell, 
@@ -1837,12 +1916,13 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   ws_day  <- .createDayOutput(nCells, FALSE, FALSE, FALSE, FALSE)
   
   if(watershed_model=="tetis") {
-    .tetisWatershedDay(output = ws_day,
+    .watershedDayTetis(output = ws_day,
                        internalCommunication = internalCommunication,
                        local_model = local_model,
                        y = y,
                        sf_routing = sf_routing,
                        watershed_control = watershed_control,
+                       watershed_runner = watershed_runner,
                        date = datechar,
                        gridMeteo = gridMeteo,
                        latitude = latitude,
