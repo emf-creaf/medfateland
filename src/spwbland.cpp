@@ -1,6 +1,6 @@
 // [[Rcpp::depends(medfate,meteoland)]]
 #include <numeric>
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include <meteoland.h>
 #include <medfate.h>
 using namespace Rcpp;

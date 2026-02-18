@@ -1,4 +1,4 @@
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 
 #ifndef TETIS_CHANNEL_H
 #define TETIS_CHANNEL_H

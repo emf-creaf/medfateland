@@ -1,5 +1,5 @@
 // [[Rcpp::depends(medfate,meteoland)]]
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include <meteoland.h>
 #include <medfate.h>
 #include "spwbland.h"

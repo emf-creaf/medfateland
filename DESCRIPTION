@@ -19,7 +19,7 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/medfateland/, https://github.com/emf-creaf/medfateland
 BugReports: https://github.com/emf-creaf/medfateland/issues
 LazyLoad: yes
-Depends: R (>= 4.1.0), medfate (>= 4.9.0)
+Depends: R (>= 4.1.0), medfate (>= 5.0.0)
 Imports: 
     cli,
     ggplot2,
@@ -28,7 +28,7 @@ Imports:
     jsonlite, 
     lifecycle,
     methods,
-    meteoland (>= 2.0.2),
+    meteoland (>= 2.2.6),
     rlang,
     Rcpp (>= 0.12.12),
     parallel,
@@ -44,7 +44,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-LinkingTo: Rcpp, meteoland, medfate
+LinkingTo: Rcpp, RcppArmadillo, RcppParallel, meteoland, medfate
 Encoding: UTF-8
 NeedsCompilation: yes
 LazyData: true
