@@ -61,24 +61,12 @@
     invisible(.Call(`_medfateland_copySnowpackFromSoil`, y))
 }
 
-.copyStateFromResults <- function(y, localResults) {
-    invisible(.Call(`_medfateland_copyStateFromResults`, y, localResults))
-}
-
 .createDayOutput <- function(nX, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary) {
     .Call(`_medfateland_createDayOutput`, nX, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary)
 }
 
 .resetWaterBalanceDayOutput <- function(outWB) {
     invisible(.Call(`_medfateland_resetWaterBalanceDayOutput`, outWB))
-}
-
-.fcpp_landunit_day <- function(xi, model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary) {
-    .Call(`_medfateland_fcpp_landunit_day`, xi, model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary)
-}
-
-.tetisModifyKsat <- function(y, watershed_control, reverse) {
-    invisible(.Call(`_medfateland_tetisModifyKsat`, y, watershed_control, reverse))
 }
 
 .tetisInterFlow <- function(outWB, y, waterOrder, queenNeigh, waterQ, watershed_control, patchsize) {
@@ -91,14 +79,6 @@
 
 .tetisDeepAquiferLossToAquifer <- function(outWB, y, watershed_control) {
     invisible(.Call(`_medfateland_tetisDeepAquiferLossToAquifer`, outWB, y, watershed_control))
-}
-
-.tetisSimulationWithOverlandFlows <- function(model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug) {
-    invisible(.Call(`_medfateland_tetisSimulationWithOverlandFlows`, model, date, internalCommunication, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary, output, y, latitude, gridMeteo, waterOrder, queenNeigh, waterQ, isOutlet, isChannel, watershed_control, debug))
-}
-
-.tetisWatershedDay <- function(output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary = FALSE, fireHazardSummary = FALSE, carbonBalanceSummary = FALSE, biomassBalanceSummary = FALSE, patchsize = NA_real_, debug = FALSE) {
-    invisible(.Call(`_medfateland_tetisWatershedDay`, output, internalCommunication, local_model, y, sf_routing, watershed_control, date, gridMeteo, latitude, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary, patchsize, debug))
 }
 
 .tetisChannelRouting <- function(ChannelExport, WatershedExport, elevation, slope, isChannel, isOutlet, target_outlet, distance_to_outlet, outlet_backlog, watershed_control, patchsize, debug = FALSE) {

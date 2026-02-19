@@ -94,15 +94,15 @@ provided by \code{\link[medfate]{growth_day}}.}
 See details in \code{\link{spwb_land}}. Subwatershed units and parallelization are not possible, at present, for single-day watershed simulations.
 }
 \examples{
-# Load example watershed data after burnin period
-data("example_watershed_burnin")
+# Load example watershed data
+data("example_watershed")
 
 # Set request for daily model results in cells number 3, 6 (outlet) and 9
-example_watershed_burnin$result_cell <- FALSE
-example_watershed_burnin$result_cell[c(3,6,9)] <- TRUE
+example_watershed$result_cell <- FALSE
+example_watershed$result_cell[c(3,6,9)] <- TRUE
 
 # Get bounding box to determine limits
-b <- sf::st_bbox(example_watershed_burnin)
+b <- sf::st_bbox(example_watershed)
 b
 
 # Define a raster topology, using terra package, 
@@ -122,7 +122,7 @@ ws_control <- default_watershed_control("tetis")
 
 # Launch simulation 
 date <- "2001-03-01"
-sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo, 
                         date = date, 
                         watershed_control = ws_control)
 
