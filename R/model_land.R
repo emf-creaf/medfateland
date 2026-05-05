@@ -1,45 +1,6 @@
-.f_landunit_day<-function(xi, model, date, internalCommunication){
-  out <- NA
-  if(model=="spwb") {
-    if(inherits(xi$x, "spwbInput")){
-      medfate::spwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
-                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
-                                modifyInput = TRUE)
-      res <- medfate::copy_model_output(internalCommunication, xi$x, "spwb")
-      out <- list("final_state" = xi$x, "simulation_results" = res)
-    } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
-                        latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                        runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
-                        modifyInput = TRUE)
-      out <- list("final_state" = xi$x, "simulation_results" = res)
-    }
-  } else if(model=="growth") {
-    if(inherits(xi$x, "growthInput")) {
-      medfate::growth_day_inner(internalCommunication, xi$x, date, xi$meteovec,
-                               latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                               runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
-                               modifyInput = TRUE)
-      res <- medfate::copy_model_output(internalCommunication, xi$x, "growth")
-      out <- list("final_state" = xi$x, "simulation_results" = res)
-    } else if(inherits(xi$x, "aspwbInput")) {
-      res <- medfate::aspwb_day_inner(internalCommunication, xi$x, date, xi$meteovec,
-                                latitude = xi$latitude, elevation = xi$elevation, slope = xi$slope, aspect = xi$aspect, 
-                                runon = xi$runon, lateralFlows = xi$lateralFlows, waterTableDepth = xi$waterTableDepth, 
-                                modifyInput = TRUE)
-      out <- list("final_state" = xi$x, "simulation_results" = res)
-    }
-  } 
-  return(out)
-}
-
-
-
 
 ## This function is in R to use parallelization
 .watershedDaySerghei<- function(local_model,
-                                internalCommunication,
                                 lct, xList,
                                 snowpack,
                                 sf2cell,
@@ -98,9 +59,9 @@
   
   #A. Vertical and surface fluxes
   localResults <- vector("list", nX)
-  for(i in 1:nX) {
-    localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model, internalCommunication = internalCommunication)
-  }
+  # for(i in 1:nX) {
+  #   localResults[[i]] = .f_landunit_day(XI[[i]], date = date, model = local_model, internalCommunication = internalCommunication)
+  # }
   for(i in 1:nX) {
     if((lct[i]=="wildland") || (lct[i]=="agriculture")) {
       res <- localResults[[i]]$simulation_results
@@ -158,7 +119,6 @@
 }
 
 .watershedDayTetis<- function(output,
-                              internalCommunication,
                               local_model,
                               y,
                               sf_routing,
@@ -253,7 +213,7 @@
   biomassBalanceSummary <- "BiomassBalance" %in% summary_blocks
   
   # Define communication structures
-  internalCommunication <- .defineInternalCommunication(y, local_model)
+  # internalCommunication <- .defineInternalCommunication(y, local_model)
   ws_day  <- .createDayOutput(nCells, standSummary, fireHazardSummary, carbonBalanceSummary, biomassBalanceSummary)
 
   meteo_mapping <- .get_meteo_mapping(r, y, meteo, sf_coords, sf2cell, 
@@ -453,7 +413,6 @@
     
     if(watershed_model=="tetis") {
       .watershedDayTetis(output = ws_day,
-                         internalCommunication = internalCommunication,
                          local_model = local_model,
                          y = y,
                          sf_routing = sf_routing,
@@ -466,7 +425,6 @@
                          patchsize = patchsize)
     } else if(watershed_model=="serghei") {
       ws_day <- .watershedDaySerghei(local_model = local_model,
-                                     internalCommunication = internalCommunication,
                                      lct = y$land_cover_type, xList = y$state,
                                      snowpack = y$snowpack,
                                      sf2cell = sf2cell,
@@ -1884,9 +1842,7 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
     cli::cli_progress_step(paste0( initialized_cells, " cells needed initialization"))
   }
 
-  # Define communication structures
-  internalCommunication <- .defineInternalCommunication(y, local_model)
-  
+
   serghei_interface <-NULL
   if(watershed_model=="serghei") {
     serghei_parameters <- watershed_control[["serghei_parameters"]]
@@ -1919,7 +1875,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
   
   if(watershed_model=="tetis") {
     .watershedDayTetis(output = ws_day,
-                       internalCommunication = internalCommunication,
                        local_model = local_model,
                        y = y,
                        sf_routing = sf_routing,
@@ -1932,7 +1887,6 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
                        patchsize = patchsize)
   } else if(watershed_model=="serghei") {
     ws_day <- .watershedDaySerghei(local_model = local_model,
-                                   internalCommunication = internalCommunication,
                                    lct = y$land_cover_type, xList = y$state,
                                    snowpack = y$snowpack,
                                    sf2cell = sf2cell,

@@ -82,7 +82,7 @@ The relationships between the five packages are illustrated in the
 figure below, where black arrows indicate package dependencies and gray
 arrows indicate model parameter or data provision.
 
-<img src="man/figures/packages.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/packages.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 ## Authorship
 
@@ -93,7 +93,7 @@ with researchers from
 [*URFM-INRAE*](https://www6.paca.inrae.fr/ecologie_des_forets_mediterraneennes/)
 (in France) and [*CTFC*](https://www.ctfc.cat/) (in Spain).
 
-<img src="man/figures/institution_logos.png" width="60%" style="display: block; margin: auto;" />
+<img src="man/figures/institution_logos.png" alt="" width="60%" style="display: block; margin: auto;" />
 
 ## Funding
 
@@ -106,4 +106,4 @@ with researchers from
   processes to forecast long-term changes in Mediterranean forests under
   climate change (IMPROMED). **Financial Entity**: Ministerio de Ciencia
   e Innovación (PID2023-152644NB-I00). **Duration from**: 01/09/2024
-  **to**: 31/08/2025. **PI**: Miquel De Cáceres/Josep Mª Espelta.
+  **to**: 31/08/2027. **PI**: Miquel De Cáceres/Josep Mª Espelta.
