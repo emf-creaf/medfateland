@@ -1,0 +1,46 @@
+---
+title: "Using medfateland with SERGHEI"
+author: "Miquel De Cáceres / Mario Morales / Daniel Caviedes-Voullieme"
+date: "`r Sys.Date()`"
+description: >
+   Instructions to compile and link package medfateland with SERGHEI model
+output: 
+  rmarkdown::html_document:
+    toc: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Aim
+
+SERGHEI (Simulation Environment for Geomorphology, Hydrodynamics and Ecohydrology in Integrated form) is a modelling environment distributed at https://gitlab.com/serghei-model/serghei. CRAN distribution of package `medfateland` does not include SERGHEI. Therefore, users willing to run watershed simulations (i.e. functions `spwb_land()`, `growth_land()` or `fordyn_land()`) along with SERGHEI, should compile the two models together. This vignette is intended to guide users throughout the installation process.
+
+## 1. Downloading medfateland and SERGHEI sources
+
+* medfateland branch
+* SERGHEI branch
+
+## 2. Building SERGHEI dynamic library
+
+
+## 3. Compiling and linking package medfateland with SERGHEI
+
+Makevars file:
+
+```{bash, eval = FALSE}
+# SERGHEI path configuration
+SERGHEI_PATH = $(HOME)/Rpackages/medfateland/serghei
+
+# Preprocessor flags: include SERGHEI headers and enable coupling
+PKG_CPPFLAGS = -I$(SERGHEI_PATH)/src -DSERGHEI_MEDFATELAND=1
+
+# Linker flags: link against libserghei.so with rpath
+PKG_LIBS = -L$(SERGHEI_PATH)/lib -lserghei -Wl,-rpath,$(SERGHEI_PATH)/lib
+
+# C++ standard
+PKG_CXXFLAGS = -O3 -std=c++17
+```
+
+## 4. Testing

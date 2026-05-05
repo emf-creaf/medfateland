@@ -26,3 +26,5 @@ cran-comments.md
 metadata.yml
 featured.png
 Rprof.out
+^\.positai$
+^\.claude$

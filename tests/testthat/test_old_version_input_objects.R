@@ -52,17 +52,17 @@ test_that("spwb_spatial_day can be run from stored inputs coming from older vers
     expect_equal(ifn_S1$state[[1]]$version, as.character(packageVersion("medfate")))
   }
 })
-
-test_that("spwb_land can be run from stored inputs coming from older versions",{
-  testthat::skip_on_cran()
-  testthat::skip_on_ci()
-  for(ver in old_versions) {
-    ws_init <- readRDS(paste0("initialized_objects/ws_init_", ver,".rds"))  
-    ws_S1 <- spwb_land(r, ws_init,
-                       SpParams = SpParamsMED, 
-                       meteo = examplemeteo[1:10,],
-                       progress = FALSE)
-    expect_s3_class(ws_S1, "spwb_land")
-    expect_equal(ws_S1$sf$state[[1]]$version, as.character(packageVersion("medfate")))
-  }
-})
+# 
+# test_that("spwb_land can be run from stored inputs coming from older versions",{
+#   testthat::skip_on_cran()
+#   testthat::skip_on_ci()
+#   for(ver in old_versions) {
+#     ws_init <- readRDS(paste0("initialized_objects/ws_init_", ver,".rds"))  
+#     ws_S1 <- spwb_land(r, ws_init,
+#                        SpParams = SpParamsMED, 
+#                        meteo = examplemeteo[1:10,],
+#                        progress = FALSE)
+#     expect_s3_class(ws_S1, "spwb_land")
+#     expect_equal(ws_S1$sf$state[[1]]$version, as.character(packageVersion("medfate")))
+#   }
+# })

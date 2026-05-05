@@ -1,6 +1,6 @@
 // [[Rcpp::depends(medfate,meteoland)]]
 #include <numeric>
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include <meteoland.h>
 #include <medfate.h>
 using namespace Rcpp;
@@ -82,10 +82,8 @@ void copySnowpackToSoil(List y) {
   NumericVector snowpack = y["snowpack"];
   int nX = xList.size();
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
-      List x = Rcpp::as<Rcpp::List>(xList[i]);
-      x["snowpack"] = snowpack[i];
-    }
+    List x = Rcpp::as<Rcpp::List>(xList[i]);
+    x["snowpack"] = snowpack[i];
   }
 }
 
@@ -97,24 +95,22 @@ void copySnowpackFromSoil(List y) {
   NumericVector snowpack = y["snowpack"];
   int nX = xList.size();
   for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
-      List x = Rcpp::as<Rcpp::List>(xList[i]);
-      snowpack[i] = x["snowpack"];
-    }
+    List x = Rcpp::as<Rcpp::List>(xList[i]);
+    snowpack[i] = x["snowpack"];
   }
 }
-// [[Rcpp::export(".copyStateFromResults")]]
-void copyStateFromResults(List y, List localResults) {
-  CharacterVector lct = y["land_cover_type"];
-  List xList = y["state"];
-  int nX = xList.size();
-  for(int i=0;i<nX;i++){
-    if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
-      List resList = Rcpp::as<Rcpp::List>(localResults[i]);
-      xList[i] = resList["final_state"];
-    }
-  }
-}
+// // [[Rcpp::export(".copyStateFromResults")]]
+// void copyStateFromResults(List y, List localResults) {
+//   CharacterVector lct = y["land_cover_type"];
+//   List xList = y["state"];
+//   int nX = xList.size();
+//   for(int i=0;i<nX;i++){
+//     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
+//       List resList = Rcpp::as<Rcpp::List>(localResults[i]);
+//       xList[i] = resList["final_state"];
+//     }
+//   }
+// }
 
 // [[Rcpp::export(".createDayOutput")]]
 List createDayOutput(int nX, 
@@ -243,82 +239,82 @@ void resetWaterBalanceDayOutput(DataFrame outWB) {
     for(int j=0;j<nr;j++) v[j] = 0.0;
   }
 }
-
-// [[Rcpp::export(".fcpp_landunit_day")]]
-List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, 
-                       bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
-  List res;
-  List x = xi["x"];
-  List control  = x["control"];
-  //This forces fire hazard estimation
-  control["fireHazardResults"] = fireHazardSummary;
-  String transpirationMode = control["transpirationMode"];
-  CharacterVector classString = x.attr("class");
-  NumericVector meteovec = xi["meteovec"];
-  bool result_cell = xi["result_cell"];
-  double latitude = xi["latitude"];
-  NumericVector lateralFlows = xi["lateralFlows"];
-  double waterTableDepth = xi["waterTableDepth"];
-  double runon = xi["runon"];
-  double elevation = xi["elevation"];
-  double slope = xi["slope"];
-  double aspect = xi["aspect"];
-  if(Rf_inherits(x, "aspwbInput")) {
-    res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
-                                   latitude, elevation, slope, aspect, 
-                                   runon, lateralFlows, waterTableDepth, 
-                                   true);
-  } else {
-    if(model=="spwb") {
-      medfate::spwb_day_inner(internalCommunication, x, date, meteovec,
-                              latitude, elevation, slope, aspect, 
-                              runon, lateralFlows, waterTableDepth, 
-                              true);
-    } else if(model=="growth") {
-      medfate::growth_day_inner(internalCommunication, x, date, meteovec,
-                                  latitude, elevation, slope, aspect, 
-                                  runon, lateralFlows, waterTableDepth, 
-                                  true);
-    } 
-    if(result_cell) {
-      if(model=="spwb") {
-        res = medfate::copy_model_output(internalCommunication, x, "spwb");
-      } else if(model=="growth") {
-        res = medfate::copy_model_output(internalCommunication, x, "growth");
-      }
-    } else {
-      List spwbOut;
-      if (transpirationMode=="Granier"){
-        spwbOut = internalCommunication["basicSPWBOutput"];
-      } else {
-        spwbOut = internalCommunication["advancedSPWBOutput"];
-      }
-      res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
-      if(standSummary && spwbOut.containsElementNamed("Stand")) {
-        res.push_back(clone(as<NumericVector>(spwbOut["Stand"])),"Stand");
-      }
-      if(fireHazardSummary && spwbOut.containsElementNamed("FireHazard")) {
-        res.push_back(clone(as<NumericVector>(spwbOut["FireHazard"])),"FireHazard");
-      }
-      if(model=="growth") {
-        List growthOut;
-        if (transpirationMode=="Granier"){
-          growthOut = internalCommunication["basicGROWTHOutput"];
-        } else {
-          growthOut = internalCommunication["advancedGROWTHOutput"];
-        }
-        if(carbonBalanceSummary && growthOut.containsElementNamed("CarbonBalance")) {
-          res.push_back(clone(as<NumericVector>(growthOut["CarbonBalance"])),"CarbonBalance");
-        }
-        if(biomassBalanceSummary && growthOut.containsElementNamed("PlantBiomassBalance")) {
-          res.push_back(clone(as<DataFrame>(growthOut["PlantBiomassBalance"])),"PlantBiomassBalance");
-        }
-      }
-    }
-  }
-
-  List out = List::create(_["final_state"] = x, 
-                          _["simulation_results"] = res);
-  return(out);
-}
-
+// 
+// // [[Rcpp::export(".fcpp_landunit_day")]]
+// List fcpp_landunit_day(List xi, String model, CharacterVector date, List internalCommunication, 
+//                        bool standSummary, bool fireHazardSummary, bool carbonBalanceSummary, bool biomassBalanceSummary) {
+//   List res;
+//   List x = xi["x"];
+//   List control  = x["control"];
+//   //This forces fire hazard estimation
+//   control["fireHazardResults"] = fireHazardSummary;
+//   String transpirationMode = control["transpirationMode"];
+//   CharacterVector classString = x.attr("class");
+//   NumericVector meteovec = xi["meteovec"];
+//   bool result_cell = xi["result_cell"];
+//   double latitude = xi["latitude"];
+//   NumericVector lateralFlows = xi["lateralFlows"];
+//   double waterTableDepth = xi["waterTableDepth"];
+//   double runon = xi["runon"];
+//   double elevation = xi["elevation"];
+//   double slope = xi["slope"];
+//   double aspect = xi["aspect"];
+//   if(Rf_inherits(x, "aspwbInput")) {
+//     res = medfate::aspwb_day_inner(internalCommunication, x, date, meteovec,
+//                                    latitude, elevation, slope, aspect, 
+//                                    runon, lateralFlows, waterTableDepth, 
+//                                    true);
+//   } else {
+//     if(model=="spwb") {
+//       medfate::spwb_day_inner(internalCommunication, x, date, meteovec,
+//                               latitude, elevation, slope, aspect, 
+//                               runon, lateralFlows, waterTableDepth, 
+//                               true);
+//     } else if(model=="growth") {
+//       medfate::growth_day_inner(internalCommunication, x, date, meteovec,
+//                                   latitude, elevation, slope, aspect, 
+//                                   runon, lateralFlows, waterTableDepth, 
+//                                   true);
+//     } 
+//     if(result_cell) {
+//       if(model=="spwb") {
+//         res = medfate::copy_model_output(internalCommunication, x, "spwb");
+//       } else if(model=="growth") {
+//         res = medfate::copy_model_output(internalCommunication, x, "growth");
+//       }
+//     } else {
+//       List spwbOut;
+//       if (transpirationMode=="Granier"){
+//         spwbOut = internalCommunication["basicSPWBOutput"];
+//       } else {
+//         spwbOut = internalCommunication["advancedSPWBOutput"];
+//       }
+//       res = List::create(_["WaterBalance"] = clone(as<NumericVector>(spwbOut["WaterBalance"])));
+//       if(standSummary && spwbOut.containsElementNamed("Stand")) {
+//         res.push_back(clone(as<NumericVector>(spwbOut["Stand"])),"Stand");
+//       }
+//       if(fireHazardSummary && spwbOut.containsElementNamed("FireHazard")) {
+//         res.push_back(clone(as<NumericVector>(spwbOut["FireHazard"])),"FireHazard");
+//       }
+//       if(model=="growth") {
+//         List growthOut;
+//         if (transpirationMode=="Granier"){
+//           growthOut = internalCommunication["basicGROWTHOutput"];
+//         } else {
+//           growthOut = internalCommunication["advancedGROWTHOutput"];
+//         }
+//         if(carbonBalanceSummary && growthOut.containsElementNamed("CarbonBalance")) {
+//           res.push_back(clone(as<NumericVector>(growthOut["CarbonBalance"])),"CarbonBalance");
+//         }
+//         if(biomassBalanceSummary && growthOut.containsElementNamed("PlantBiomassBalance")) {
+//           res.push_back(clone(as<DataFrame>(growthOut["PlantBiomassBalance"])),"PlantBiomassBalance");
+//         }
+//       }
+//     }
+//   }
+// 
+//   List out = List::create(_["final_state"] = x, 
+//                           _["simulation_results"] = res);
+//   return(out);
+// }
+// 
