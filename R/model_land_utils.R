@@ -24,28 +24,6 @@
   }
   return(soil_column)
 }
-# Define communication structures
-.defineInternalCommunication <- function(y, local_model) {
-  max_num_cohorts <- 1
-  max_num_soil_layers <- 1
-  max_num_canopy_layers <-1
-  max_num_timesteps <- 24
-  for(i in 1:nrow(y)) {
-    if((y$land_cover_type[i]=="wildland") && (!is.null(y$state[[i]]))) {
-      xi <- y$state[[i]]
-      max_num_cohorts <- max(max_num_cohorts, nrow(xi$cohorts))
-      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
-      max_num_canopy_layers <- max(max_num_canopy_layers, nrow(xi$canopy))
-      max_num_cohorts <- max(max_num_cohorts, xi$control$ndailysteps)
-    } else if((y$land_cover_type[i]=="agriculture") && (!is.null(y$state[[i]]))) {
-      xi <- y$state[[i]]
-      max_num_soil_layers <- max(max_num_soil_layers, nrow(xi$soil))
-    }
-  }
-  internalCommunication <- medfate::general_communication_structures(max_num_cohorts, max_num_soil_layers, max_num_canopy_layers, max_num_timesteps,
-                                                                     local_model);
-  return(internalCommunication)
-}
 
 .get_dates_stars_list <- function(meteo) {
   datesStarsList <- NULL
