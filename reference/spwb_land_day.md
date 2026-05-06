@@ -12,7 +12,7 @@ set of connected grid cells.
 - Function `growth_land_day` is similar to `spwb_land_day`, but includes
   daily local carbon balance, growth and mortality processes in grid
   cells, provided by
-  [`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html).
+  [`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html).
 
 ## Usage
 
@@ -77,7 +77,7 @@ growth_land_day(
   for function
   [`spwb_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html)
   or
-  [`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html).
+  [`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html).
 
 - watershed_control:
 
@@ -197,7 +197,7 @@ Development, 16, 977-1008.
 
 [`default_watershed_control`](https://emf-creaf.github.io/medfateland/reference/default_watershed_control.md),
 [`spwb_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
-[`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
+[`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html),
 [`spwb_land`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
 
 ## Author
@@ -213,15 +213,15 @@ Mario Morales-Hernández, Universidad de Zaragoza.
 ## Examples
 
 ``` r
-# Load example watershed data after burnin period
-data("example_watershed_burnin")
+# Load example watershed data
+data("example_watershed")
 
 # Set request for daily model results in cells number 3, 6 (outlet) and 9
-example_watershed_burnin$result_cell <- FALSE
-example_watershed_burnin$result_cell[c(3,6,9)] <- TRUE
+example_watershed$result_cell <- FALSE
+example_watershed$result_cell[c(3,6,9)] <- TRUE
 
 # Get bounding box to determine limits
-b <- sf::st_bbox(example_watershed_burnin)
+b <- sf::st_bbox(example_watershed)
 b
 #>    xmin    ymin    xmax    ymax 
 #>  401430 4671870  402830 4672570 
@@ -243,19 +243,19 @@ ws_control <- default_watershed_control("tetis")
 
 # Launch simulation 
 date <- "2001-03-01"
-sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
+sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo, 
                         date = date, 
                         watershed_control = ws_control)
 #> 
 #> ── Simulation of model 'spwb' over a watershed for day '2001-03-01' ────────────
 #> ℹ Checking topology
-#> ✔ Checking topology [27ms]
+#> ✔ Checking topology [9ms]
 #> 
 #> ℹ Checking 'sf' data
-#> ✔ Checking 'sf' data [61ms]
+#> ✔ Checking 'sf' data [35ms]
 #> 
 #> ℹ Determining neighbors and discharge for TETIS
-#> ✔ Determining neighbors and discharge for TETIS [55ms]
+#> ✔ Determining neighbors and discharge for TETIS [18ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -266,9 +266,9 @@ sf_out <- spwb_land_day(r, example_watershed_burnin, SpParamsMED, examplemeteo,
 #> • Number of channel cells: 0
 #> • Number of outlet cells: 1
 #> ℹ Building spwb input
-#> ✔ Building spwb input [16ms]
+#> ✔ Building spwb input [816ms]
 #> 
-#> ℹ 0 cells needed initialization
-#> ✔ 0 cells needed initialization [493ms]
+#> ℹ 66 cells needed initialization
+#> ✔ 66 cells needed initialization [106ms]
 #> 
 ```

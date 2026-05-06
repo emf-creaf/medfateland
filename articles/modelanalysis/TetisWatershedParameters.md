@@ -17,6 +17,7 @@ Here we load a small example watershed included with the package, that
 can be used to understand the inputs required:
 
 ``` r
+
 data("example_watershed_burnin")
 example_watershed_burnin
 ```
@@ -50,6 +51,7 @@ Another spatial input is needed to describe the grid topology, which in
 our case is an object of class `SpatRaster` from package **terra**:
 
 ``` r
+
 r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
                 nrow = 8, ncol = 15, crs = "epsg:32631")
 r
@@ -65,6 +67,7 @@ Finally, we load an example weather data set to be used as climate
 forcing, as well as the usual species parameter table:
 
 ``` r
+
 # Load example weather dataset
 data("examplemeteo")
 # Set simulation period
@@ -80,12 +83,14 @@ needs to decide which sub-model will be used for lateral water transfer
 processes, in this case:
 
 ``` r
+
 ws_control <- default_watershed_control("tetis")
 ```
 
 The default parameterization for the three scaling factors is:
 
 ``` r
+
 ws_control$tetis_parameters
 ```
 
@@ -141,6 +146,7 @@ the three scaling factors, one at a time.
 three scaling factors to one:
 
 ``` r
+
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
@@ -151,6 +157,7 @@ aquifer exfiltration, saturation excess and, finally, the sum of the two
 sources as export runoff.
 
 ``` r
+
 res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
                    dates = dates, summary_frequency = "month", summary_blocks = "WaterBalance",
                    watershed_control = ws_control, progress = FALSE)
@@ -165,6 +172,7 @@ We begin our sensitivity analysis by increasing the vertical
 conductivity five times:
 
 ``` r
+
 ws_control$tetis_parameters$R_localflow <- 5
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 1
@@ -185,6 +193,7 @@ We now focus on the lateral conductivity of subsurface fluxes
 (interflow):
 
 ``` r
+
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 5
 ws_control$tetis_parameters$R_baseflow <- 1
@@ -202,6 +211,7 @@ exfiltration.
 simulation with an increased groundwater conductivity:
 
 ``` r
+
 ws_control$tetis_parameters$R_localflow <- 1
 ws_control$tetis_parameters$R_interflow <- 1
 ws_control$tetis_parameters$R_baseflow <- 5
@@ -219,6 +229,7 @@ exfiltration.
 ### Flux rate series
 
 ``` r
+
 df1<- res_0$watershed_balance
 df1$Scenario <- "Baseline"
 df2<- res_L5$watershed_balance
@@ -234,6 +245,7 @@ df$Scenario <- factor(df$Scenario, levels = c("Baseline", "R_local x 5", "R_inte
 **Drainage**
 
 ``` r
+
 ggplot(df)+
   geom_line(aes(x=dates, y =DeepDrainage, col = Scenario, linetype = Scenario))+
   ylab("Deep drainage (mm)")+
@@ -245,6 +257,7 @@ ggplot(df)+
 **Aquifer exfiltration**
 
 ``` r
+
 ggplot(df)+
   geom_line(aes(x=dates, y =AquiferExfiltration, col = Scenario, linetype = Scenario))+
   ylab("Aquifer exfiltration (mm)")+
@@ -258,6 +271,7 @@ ggplot(df)+
 **Drainage to aquifer**
 
 ``` r
+
 g1 <- plot_summary(res_0$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "Baseline")
 g2 <- plot_summary(res_L5$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "R_local x 5")
 g3 <- plot_summary(res_I5$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 5")
@@ -270,6 +284,7 @@ cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 **Sub-surface balance**
 
 ``` r
+
 g1 <- plot_summary(res_0$sf, "InterflowBalance", date = "2001-04-01", r = r)+
   scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
   labs(title = "Baseline")
@@ -290,6 +305,7 @@ cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
 **Groundwater balance**
 
 ``` r
+
 g1 <- plot_summary(res_0$sf, "BaseflowBalance", date = "2001-04-01", r = r)+
   scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
   labs(title = "Baseline")

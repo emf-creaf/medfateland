@@ -1,9 +1,15 @@
 # Changelog
 
+## medfateland 3.0.0
+
+- Required medfate 5.0.0 and meteoland 2.6.6
+
 ## medfateland 2.8.3
 
 - New function unnest_summary() to extract cell summaries as unnested
   sf.
+- Required medfate 4.9.0
+- Revision of queries to irsic in add_soilgrids()
 
 ## medfateland 2.8.2
 

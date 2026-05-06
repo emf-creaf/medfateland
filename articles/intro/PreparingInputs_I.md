@@ -17,6 +17,7 @@ simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/Spatiall
 Let’s first load necessary libraries:
 
 ``` r
+
 library(medfate)
 library(medfateland)
 library(ggplot2)
@@ -32,11 +33,19 @@ because we will take an example data table from there. The package can
 be installed from GitHub:
 
 ``` r
+
 # remotes::install_github("emf-creaf/forestables")
 library(forestables)
 ```
 
     ## Loading required package: data.table
+
+    ## 
+    ## Attaching package: 'data.table'
+
+    ## The following object is masked from 'package:base':
+    ## 
+    ##     %notin%
 
     ## Loading required package: dtplyr
 
@@ -64,6 +73,7 @@ We begin by defining an `sf` object with the target locations and forest
 stand identifiers (column `id`):
 
 ``` r
+
 # Define sf with three stands
 cc <- rbind(c(1.0215, 41.3432),
             c(1.0219, 41.3443), 
@@ -98,6 +108,7 @@ raster for Catalonia at 30 m resolution, which we load using package
 `terra`:
 
 ``` r
+
 dataset_path <- "~/OneDrive/EMF_datasets/"
 dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"))
 dem
@@ -118,6 +129,7 @@ Having these inputs, we can use function
 to add topographic features to our starting `sf`:
 
 ``` r
+
 y_1 <- add_topography(x, dem = dem, progress = FALSE)
 y_1
 ```
@@ -137,6 +149,7 @@ y_1
 We can check that there are no missing values in topographic features:
 
 ``` r
+
 check_topography(y_1)
 ```
 
@@ -152,6 +165,7 @@ would read your own data from a file or data base, here we simply load
 the data from **medfate**:
 
 ``` r
+
 data(poblet_trees)
 head(poblet_trees)
 ```
@@ -175,6 +189,7 @@ in the package. Furthermore, we need to map the forest stand identifier.
 If we exclude `Indv.Ref`, the other variables would be mapped using:
 
 ``` r
+
 mapping <- c("id" = "Plot.Code", "Species.name" = "Species", "DBH" = "Diameter.cm")
 ```
 
@@ -183,6 +198,7 @@ Now we are ready to call function
 which should facilitate the creation of forest objects:
 
 ``` r
+
 y_2 <- add_forests(y_1, tree_table = poblet_trees, tree_mapping = mapping, 
                    SpParams = SpParamsMED)
 ```
@@ -198,6 +214,7 @@ is the reason why we provided it as an input). We correct the scientific
 name for downy oak and repeat to avoid losing tree records:
 
 ``` r
+
 poblet_trees$Species[poblet_trees$Species=="Quercus humilis"] <- "Quercus pubescens"
 y_2 <- add_forests(y_1, tree_table = poblet_trees, tree_mapping = mapping, 
                    SpParams = SpParamsMED)
@@ -212,14 +229,15 @@ y_2
     ## # A tibble: 3 × 6
     ##   id                   geometry elevation slope aspect forest      
     ##   <chr>             <POINT [°]>     <dbl> <dbl>  <dbl> <list>      
-    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [5]>
-    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [5]>
-    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [5]>
+    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [2]>
+    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [2]>
+    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [2]>
 
 The function has added a column `forest` with the tree data. We can
 check the metrics of the first forest stand using:
 
 ``` r
+
 summary(y_2$forest[[1]], SpParamsMED)
 ```
 
@@ -238,6 +256,7 @@ surface to correct density per hectare. In a 15-m radius plot, the
 sampled surface is 706.86 m2. We add this information in the data table:
 
 ``` r
+
 poblet_trees$PlotSurface <- 706.86
 ```
 
@@ -245,6 +264,7 @@ and we can repeat the read of forest inventory data after adding a new
 element to the mapping vector:
 
 ``` r
+
 mapping <- c(mapping, "plot.size" = "PlotSurface")
 y_2 <- add_forests(y_1, tree_table = poblet_trees, tree_mapping = mapping, SpParams = SpParamsMED)
 ```
@@ -253,6 +273,7 @@ If we check the forest again, we will see the change in density and
 basal area:
 
 ``` r
+
 summary(y_2$forest[[1]], SpParamsMED)
 ```
 
@@ -268,6 +289,7 @@ At this point, we may wonder whether we are finished. Function
 can help detecting missing data:
 
 ``` r
+
 check_forests(y_2)
 ```
 
@@ -283,6 +305,7 @@ While being overly simplistic, here we use one allometric equation for
 all species to estimate tree height in cm from diameter:
 
 ``` r
+
 poblet_trees$Height.cm <- 100 * 1.806*poblet_trees$Diameter.cm^0.518
 ```
 
@@ -290,6 +313,7 @@ Now we modify the mapping to include height and repeat the reading
 operation:
 
 ``` r
+
 mapping <- c(mapping, "Height" = "Height.cm")
 y_2 <- add_forests(y_1, tree_table = poblet_trees, tree_mapping = mapping, SpParams = SpParamsMED)
 ```
@@ -297,6 +321,7 @@ y_2 <- add_forests(y_1, tree_table = poblet_trees, tree_mapping = mapping, SpPar
 If we check the forest data again, we should encounter no more issues:
 
 ``` r
+
 check_forests(y_2)
 ```
 
@@ -330,6 +355,7 @@ extraction of SoilGrids data for our target locations is fast using this
 approach:
 
 ``` r
+
 soilgrids_path = paste0(dataset_path,"Soils/Global/SoilGrids/Spain/")
 y_3 <- add_soilgrids(y_2, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
@@ -337,6 +363,7 @@ y_3 <- add_soilgrids(y_2, soilgrids_path = soilgrids_path, progress = FALSE)
 And the result has an extra column `soil`:
 
 ``` r
+
 y_3
 ```
 
@@ -348,30 +375,32 @@ y_3
     ## # A tibble: 3 × 7
     ##   id                   geometry elevation slope aspect forest       soil        
     ##   <chr>             <POINT [°]>     <dbl> <dbl>  <dbl> <list>       <list>      
-    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [5]> <df [6 × 7]>
-    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [5]> <df [6 × 7]>
-    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [5]> <df [6 × 7]>
+    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [2]> <df [6 × 8]>
+    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [2]> <df [6 × 8]>
+    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [2]> <df [6 × 8]>
 
 The elements of the list are the usual data frames of soil properties in
 **medfate**:
 
 ``` r
+
 y_3$soil[[1]]
 ```
 
-    ##   widths clay sand   om   bd  rfc nitrogen
-    ## 1     50 25.3 32.1 7.24 1.05 16.8     5.07
-    ## 2    100 25.5 32.0 3.10 1.16 18.7     2.18
-    ## 3    150 29.9 31.2 1.96 1.25 19.8     1.35
-    ## 4    300 30.7 30.7 1.00 1.39 19.6     0.81
-    ## 5    400 30.4 30.2 0.89 1.49 20.4     0.58
-    ## 6   1000 32.0 30.2 0.62 1.50 21.5     0.44
+    ##   widths clay sand   om nitrogen  ph   bd  rfc
+    ## 1     50 25.3 32.1 7.24     50.7 6.6 10.5 16.8
+    ## 2    100 25.5 32.0 3.10     21.8 6.6 11.6 18.7
+    ## 3    150 29.9 31.2 1.96     13.5 6.6 12.5 19.8
+    ## 4    300 30.7 30.7 1.00      8.1 6.7 13.9 19.6
+    ## 5    400 30.4 30.2 0.89      5.8 6.6 14.9 20.4
+    ## 6   1000 32.0 30.2 0.62      4.4 6.8 15.0 21.5
 
 We can use function
 [`check_soils()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
 to detect whether there are missing values:
 
 ``` r
+
 check_soils(y_3)
 ```
 
@@ -393,6 +422,7 @@ al. (2017)](https://doi.org/10.1002/2016MS000686), which consists on
 three rasters:
 
 ``` r
+
 # Censored soil depth (cm)
 bdricm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
 # Probability of bedrock within first 2m [0-100]
@@ -405,6 +435,7 @@ In order to accelerate raster manipulations, we crop the global rasters
 to the extent of the target area:
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(bdricm)))
 x_ext <- terra::ext(x_vect)
 bdricm <- terra::crop(bdricm, x_ext, snap = "out")
@@ -419,6 +450,7 @@ two meters. Hence, we multiply the two layers and use it as a (crude)
 estimate of soil depth, expressing it in mm:
 
 ``` r
+
 soil_depth_mm <- (bdricm$BDRICM_M_250m_ll*10)*(1 - (bdrlog$BDRLOG_M_250m_ll/100))
 ```
 
@@ -426,6 +458,7 @@ and we take the depth to bedrock as appropriate, but change its units to
 mm as well:
 
 ``` r
+
 depth_to_bedrock_mm <- bdticm*10
 ```
 
@@ -434,6 +467,7 @@ We can now call function
 with the two rasters to perform the correction of soil characteristics:
 
 ``` r
+
 y_4 <- modify_soils(y_3, 
                     soil_depth_map = soil_depth_mm, 
                     depth_to_bedrock_map = depth_to_bedrock_mm,
@@ -446,22 +480,24 @@ the correction, the rock fragment content of the soil has changed
 substantially:
 
 ``` r
+
 y_4$soil[[1]]
 ```
 
-    ##   widths clay sand   om   bd      rfc nitrogen
-    ## 1     50 25.3 32.1 7.24 1.05 16.80000     5.07
-    ## 2    100 25.5 32.0 3.10 1.16 18.70000     2.18
-    ## 3    150 29.9 31.2 1.96 1.25 19.80000     1.35
-    ## 4    300 30.7 30.7 1.00 1.39 27.76899     0.81
-    ## 5    400 30.4 30.2 0.89 1.49 49.36709     0.58
-    ## 6   1000 32.0 30.2 0.62 1.50 92.56329     0.44
+    ##   widths clay sand   om nitrogen  ph   bd      rfc
+    ## 1     50 25.3 32.1 7.24     50.7 6.6 10.5 16.80000
+    ## 2    100 25.5 32.0 3.10     21.8 6.6 11.6 18.70000
+    ## 3    150 29.9 31.2 1.96     13.5 6.6 12.5 19.80000
+    ## 4    300 30.7 30.7 1.00      8.1 6.7 13.9 27.76899
+    ## 5    400 30.4 30.2 0.89      5.8 6.6 14.9 49.36709
+    ## 6   1000 32.0 30.2 0.62      4.4 6.8 15.0 92.56329
 
 Finally, we can call again
 [`check_soils()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
 to verify that everything is fine:
 
 ``` r
+
 check_soils(y_4)
 ```
 
@@ -476,11 +512,13 @@ function
 [`initialize_landscape()`](https://emf-creaf.github.io/medfateland/reference/initialize_landscape.md):
 
 ``` r
+
 z <- initialize_landscape(y_4, SpParamsMED, defaultControl(),
                           progress = FALSE)
 ```
 
 ``` r
+
 z
 ```
 
@@ -492,9 +530,9 @@ z
     ## # A tibble: 3 × 8
     ##   id                   geometry elevation slope aspect forest       soil        
     ## * <chr>             <POINT [°]>     <dbl> <dbl>  <dbl> <list>       <list>      
-    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [5]> <df [6 × 7]>
-    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [5]> <df [6 × 7]>
-    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [5]> <df [6 × 7]>
+    ## 1 POBL_CTL     (1.0215 41.3432)      853.  30.1   76.0 <forest [2]> <df [6 × 8]>
+    ## 2 POBL_THI_BEF (1.0219 41.3443)      814.  29.3   40.3 <forest [2]> <df [6 × 8]>
+    ## 3 POBL_THI_AFT (1.0219 41.3443)      814.  29.3   40.3 <forest [2]> <df [6 × 8]>
     ## # ℹ 1 more variable: state <list>
 
 Everything seems fine for simulations!
@@ -514,6 +552,7 @@ To illustrate this procedure, we first load an example data set given in
 the **forestables** package for the Spanish national forest inventory:
 
 ``` r
+
 data("ifn_output_example")
 ifn_output_example
 ```
@@ -540,6 +579,7 @@ ifn_output_example
 The dataset contains data from different forest inventory surveys:
 
 ``` r
+
 table(ifn_output_example$version)
 ```
 
@@ -550,6 +590,7 @@ table(ifn_output_example$version)
 Here we will use only data from the last survey (IFN4):
 
 ``` r
+
 ifn4_example <- ifn_output_example |>
   dplyr::filter(version == "ifn4")
 ifn4_example
@@ -583,6 +624,7 @@ and reshaping it for **medfateland**. In this example we will only
 transform the first 100 rows:
 
 ``` r
+
 y_1 <- parse_forestable(ifn4_example[1:100,])
 y_1
 ```
@@ -615,6 +657,7 @@ coordinates, and topography. Importantly, it defined a new column called
 If we check the forest data, we may encounter issues to be solved:
 
 ``` r
+
 check_forests(y_1)
 ```
 
@@ -637,6 +680,7 @@ features from a digital elevation model (although the error in plot
 coordinates adds uncertainty into the result):
 
 ``` r
+
 y_2 <- add_topography(y_1, dem = dem, progress = FALSE)
 ```
 
@@ -647,6 +691,7 @@ it is difficult to harmonize. Therefore, we will normally resort on
 SoilGrids as before:
 
 ``` r
+
 y_3 <- add_soilgrids(y_2, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
 
@@ -655,6 +700,7 @@ We can now call function
 with the two rasters to perform the correction of soil characteristics:
 
 ``` r
+
 y_4 <- modify_soils(y_3, 
                     soil_depth_map = soil_depth_mm, 
                     depth_to_bedrock_map = depth_to_bedrock_mm,
@@ -666,6 +712,7 @@ Finally, we can call
 to verify that everything is fine:
 
 ``` r
+
 check_soils(y_4)
 ```
 

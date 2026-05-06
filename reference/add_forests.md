@@ -142,6 +142,7 @@ Miquel De Cáceres Ainsa, CREAF
 ## Examples
 
 ``` r
+
 # Load tree data
 data(poblet_trees)
 
@@ -171,6 +172,8 @@ mapping <- c("id" = "Plot.Code", "Species.name" = "Species", "DBH" = "Diameter.c
 
 # Read tree data (warnings are raised)
 y_1 <- add_forests(x, tree_table = poblet_trees, tree_mapping = mapping, SpParams = SpParamsMED)
+#> Warning: Taxon names that were not matched: Quercus humilis.
+#> Warning: Taxon names that were not matched: Quercus humilis.
 
 # Correct scientific name for downy oak and repeat to avoid losing tree records
 poblet_trees$Species[poblet_trees$Species=="Quercus humilis"] <- "Quercus pubescens"

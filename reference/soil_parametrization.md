@@ -3,9 +3,7 @@
 Function `add_soilgrids` fills column 'soil' with physical soil
 characteristics drawn from SoilGrids 2.0 (Hengl et al. 2017; Poggio et
 al. 2021). Function `modify_soils` modifies soil definition according to
-soil depth and depth to bedrock information. Function `check_soils`
-verifies that soil data does not contain missing values for key
-variables and, if so, assigns default values.
+soil depth and depth to bedrock information.
 
 ## Usage
 
@@ -15,7 +13,7 @@ add_soilgrids(
   soilgrids_path = NULL,
   widths = NULL,
   replace_existing = TRUE,
-  progress = TRUE
+  progress = FALSE
 )
 
 modify_soils(
@@ -24,7 +22,7 @@ modify_soils(
   depth_to_bedrock_map = NULL,
   regolith_rfc = 97.5,
   full_rock_filling = TRUE,
-  progress = TRUE
+  progress = FALSE
 )
 ```
 
@@ -42,8 +40,8 @@ modify_soils(
 
 - soilgrids_path:
 
-  Path to SoilGrids rasters (see details). If missing, the SoilGrids
-  REST API (https://rest.isric.org) will be queried.
+  Path to SoilGrids rasters (see details). If missing, the SoilGrids in
+  IRSIC (https://docs.isric.org/globaldata/soilgrids/) will be queried.
 
 - widths:
 
@@ -57,8 +55,7 @@ modify_soils(
 
 - progress:
 
-  A logical flag to include a progress bar while processing the output
-  of the query to the SoilGrids REST API.
+  A logical flag to include progress information.
 
 - soil_depth_map:
 
@@ -94,18 +91,17 @@ A modified object of class
 
 ## Details
 
-If `soilgrids_path = NULL` the function connects with the SoilGrids REST
-API (https://rest.isric.org) to retrieve the soil physical and chemical
-characteristics for a site (Hengl *et al*. 2007; Poggio et al. 2021),
-selected by its coordinates. Also, in case the depths are not the
-default ones in the SoilGrids API, the function uses averages the values
-of soil grid layers depending on the overlap between soil layer
-definitions. Unfortunately, SoilGrids REST API queries are limited to a
-few points.
+If `soilgrids_path = NULL` the function connects with SoilGrids data in
+IRSIC (https://docs.isric.org/globaldata/soilgrids/) to retrieve the
+soil physical and chemical characteristics for a site (Hengl *et al*.
+2007; Poggio et al. 2021), selected by its coordinates. Also, in case
+the depths are not the default ones in the SoilGrids, the function uses
+averages the values of soil grid layers depending on the overlap between
+soil layer definitions.
 
 If `soilgrids_path != NULL` the function will read SoilGrid rasters from
 the file disk. Folders need to be defined for each variable ("sand",
-"clay", "soc", "bdod", "cfvo" and "nitrogen"). File paths from
+"clay", "soc", "bdod", "cfvo", "phh2o" and "nitrogen"). File paths from
 `soilgrids_path` should be named:
 
 *var*/*var*\_*layer*\_mean.tif
@@ -157,13 +153,8 @@ Miquel De Cáceres Ainsa, EMF-CREAF
  # \donttest{
    library(sf)
    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
-   x_soil <- add_soilgrids(x, widths = c(300, 700, 1000))
-#> ℹ Defining new column 'soil'
-#> ✔ Defining new column 'soil' [9ms]
-#> 
-#> ℹ Querying 1 points to rest.isric.org:
-#> ✔ Querying 1 points to rest.isric.org: [20ms]
-#> 
+   # Queries to IRSIC are rather slow
+   x_soil <- add_soilgrids(x)
    x_soil
 #> Simple feature collection with 1 feature and 1 field
 #> Geometry type: POINT
@@ -173,7 +164,7 @@ Miquel De Cáceres Ainsa, EMF-CREAF
 #> # A tibble: 1 × 2
 #>            geometry soil        
 #>         <POINT [°]> <list>      
-#> 1 (-5.6333 42.6667) <df [3 × 7]>
+#> 1 (-5.6333 42.6667) <df [6 × 8]>
    # See more complete examples in package vignettes 'Preparing inputs'
  # }
 ```

@@ -137,7 +137,7 @@ fordyn_spatial(
   for function
   [`spwb_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html)
   or
-  [`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html).
+  [`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html).
 
 - dates:
 
@@ -309,16 +309,16 @@ res <- spwb_spatial(example_subset, SpParamsMED, examplemeteo, dates = dates)
 #> 
 #> ── Simulation of model 'spwb' ──────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [18ms]
+#> ✔ Checking sf input [6ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [34ms]
+#> ✔ Checking meteo object input [10ms]
 #> 
 #> ℹ Creating 2 input objects for model 'spwb'
-#> ✔ Creating 2 input objects for model 'spwb' [259ms]
+#> ✔ Creating 2 input objects for model 'spwb' [48ms]
 #> 
 #> ℹ Performing 'spwb' simulations on 2 locations
-#> ✔ Performing 'spwb' simulations on 2 locations [12ms]
+#> ✔ Performing 'spwb' simulations on 2 locations [4ms]
 #> 
 #> ✔ No simulation errors detected
   
@@ -327,16 +327,14 @@ res_noman <- fordyn_spatial(example_subset, SpParamsMED, examplemeteo)
 #> 
 #> ── Simulation of model 'fordyn' ────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [16ms]
+#> ✔ Checking sf input [6ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [32ms]
+#> ✔ Checking meteo object input [10ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 2 locations
-#> ✔ Performing 'fordyn' simulations on 2 locations [30ms]
+#> ✔ Performing 'fordyn' simulations on 2 locations [10ms]
 #> 
-#> Stands ■■■■■■■■■■■■■■■■                  50% | ETA:  6s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> ✔ No simulation errors detected
 
 # }

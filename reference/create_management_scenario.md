@@ -110,6 +110,7 @@ Aitor Améztegui, UdL
 ## Examples
 
 ``` r
+
 # A scenario with three management units and annual demand for two species
 scen_1 <- create_management_scenario(3,  c("Quercus ilex" = 1000, "Pinus nigra" = 2000))
 

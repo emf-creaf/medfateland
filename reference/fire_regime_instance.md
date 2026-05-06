@@ -94,5 +94,5 @@ m2 <- fire_regime_instance(example_ifn, reg2)
 # Check number of plots burned
 colSums(!is.na(m2))
 #> 2002 2003 
-#>    2    3 
+#>    1    8 
 ```

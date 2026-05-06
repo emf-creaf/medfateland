@@ -26,6 +26,7 @@ simulations](https://emf-creaf.github.io/medfateland/articles/runmodels/Watershe
 Let’s first load necessary libraries:
 
 ``` r
+
 library(medfate)
 library(medfateland)
 library(ggplot2)
@@ -43,6 +44,7 @@ First we load a polygon data set describing watersheds in Spain and
 select our target watershed (Riera de Bianya \[river code “2005528”\]):
 
 ``` r
+
 dataset_path <- "~/OneDrive/EMF_datasets/"
 scchh <- terra::vect(paste0(dataset_path, "Hydrography/Spain/CuencasSubcuencas/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
@@ -65,6 +67,7 @@ We can draw a map with the location of the watershed within Catalonia
 using:
 
 ``` r
+
 dataset_path <- "~/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Catalunya/Comarques/comarques.shp"))
 ggplot()+
@@ -81,6 +84,7 @@ We intersect it with the watershed boundaries to keep the target
 locations:
 
 ``` r
+
 res <- 200
 r <-terra::rast(terra::ext(watershed), resolution = c(res,res), crs = "epsg:25831")
 v <- terra::intersect(terra::as.points(r), watershed)
@@ -89,6 +93,7 @@ v <- terra::intersect(terra::as.points(r), watershed)
 And finally we transform the result into a `sf` object:
 
 ``` r
+
 x <- sf::st_as_sf(v)[,"geometry", drop = FALSE]
 x
 ```
@@ -114,13 +119,14 @@ x
 We will use the raster definition for plots.
 
 ``` r
+
 rm(v)
 gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2473516 132.2    4089471 218.5  4089471 218.5
-    ## Vcells 4147797  31.7   10146329  77.5  8388428  64.0
+    ## Ncells 2517154 134.5    4440480 237.2  4440480 237.2
+    ## Vcells 4204037  32.1   10146329  77.5  8386639  64.0
 
 ## Topography and land cover type
 
@@ -134,6 +140,7 @@ raster for Catalonia at 30 m resolution, which we load using package
 `terra`:
 
 ``` r
+
 dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"))
 dem
 ```
@@ -153,48 +160,48 @@ Having a digital elevation model, we can use function
 to extract elevation and calculate aspect and slope:
 
 ``` r
+
 y_0 <- add_topography(x, dem = dem)
 ```
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [23ms]
+    ## ✔ Checking inputs [14ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [20ms]
+    ## ✔ Defining column 'id' [12ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [28ms]
+    ## ✔ Defining column 'elevation' [27ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [18ms]
+    ## ✔ Defining column 'slope' [19ms]
 
     ## 
 
     ## ℹ Defining column 'aspect'
 
-    ## ✔ Defining column 'aspect' [19ms]
+    ## ✔ Defining column 'aspect' [14ms]
 
     ## 
 
     ## ℹ Extracting topography from 'dem'
 
-    ## |---------|---------|---------|---------|=========================================                                          
-
-    ## ✔ Extracting topography from 'dem' [13.3s]
+    ## ✔ Extracting topography from 'dem' [5.3s]
 
     ## 
 
 ``` r
+
 y_0
 ```
 
@@ -222,6 +229,7 @@ We can check that there are no missing values in topographic features
 using:
 
 ``` r
+
 check_topography(y_0)
 ```
 
@@ -243,6 +251,7 @@ in this case we will use a land cover raster for Catalonia, issued in
 2018:
 
 ``` r
+
 lcm <- terra::rast(paste0(dataset_path,"LandCover/Catalunya/MapaCobertesSol2018/cobertes-sol-v1r0-2018.tif"))
 lcm
 ```
@@ -262,6 +271,7 @@ to map legend elements to the five land cover types used in
 the following vectors to perform the legend mapping:
 
 ``` r
+
 agriculture <- 1:6
 wildland <- c(7:17,20)
 rock <- 18:19
@@ -274,6 +284,7 @@ Having these inputs, we can use
 to add land cover to our starting `sf`:
 
 ``` r
+
 y_1 <- add_land_cover(y_0, 
                       land_cover_map = lcm, 
                       wildland = wildland, 
@@ -307,6 +318,7 @@ y_1
 As before, we can check for missing data:
 
 ``` r
+
 check_land_cover(y_1)
 ```
 
@@ -346,6 +358,7 @@ for the Girona province, which is in vector format, using package
 `terra`:
 
 ``` r
+
 forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/MFE_PROVINCES/MFE_17_class.gpkg"))
 forest_map
 ```
@@ -372,6 +385,7 @@ Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacional
 for Girona province (1455 forest plots):
 
 ``` r
+
 nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
 sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsES/IFN4/soilmod/IFN4_17_soilmod_WGS84.rds"))
 sf_nfi
@@ -409,11 +423,12 @@ use function
 to perform the imputation for us (this normally takes some time):
 
 ``` r
+
 y_2 <- impute_forests(y_1, sf_fi = sf_nfi, dem = dem, 
                       forest_map = forest_map, progress = FALSE)
 ```
 
-    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
+    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
 
     ## ! 12 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 165 target locations.
 
@@ -433,6 +448,7 @@ details can be found in the documentation of
 The resulting `sf` has an extra column named `forest`:
 
 ``` r
+
 y_2
 ```
 
@@ -460,6 +476,7 @@ y_2
 Only `wildland` locations will have a `forest` object, for example:
 
 ``` r
+
 y_2$forest[[1]]
 ```
 
@@ -503,6 +520,7 @@ suitable for simulations. This can be done using function
 [`check_forests()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md):
 
 ``` r
+
 check_forests(y_2)
 ```
 
@@ -529,6 +547,7 @@ d’interès
 comunitari*](https://agricultura.gencat.cat/ca/serveis/cartografia-sig/bases-cartografiques/habitats/habitats-catalunya/):
 
 ``` r
+
 veg_map <- terra::vect(paste0(dataset_path,"ForestMaps/Catalunya/Habitats_v2/Habitats_interes_com.shp"))
 veg_map
 ```
@@ -555,6 +574,7 @@ Catalonia described in [Casals et
 al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
 
 ``` r
+
 sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
 sf_sfi <- readRDS(paste0(sfi_path, "data/sf_combuscat.rds"))
 sf_sfi
@@ -591,6 +611,7 @@ vegetation class (`missing_class_imputation = TRUE`) and define a empty
 forest to be imputed in those (`missing_class_forest = emptyforest()`):
 
 ``` r
+
 y_3 <- impute_forests(y_2, sf_fi = sf_sfi, dem = dem, 
                       forest_map = veg_map, 
                       var_class = "TEXT_HIC1",
@@ -599,7 +620,7 @@ y_3 <- impute_forests(y_2, sf_fi = sf_sfi, dem = dem,
                       progress = FALSE)
 ```
 
-    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
+    ## |---------|---------|---------|---------|=========================================                                          
 
     ## ! 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.
 
@@ -611,6 +632,7 @@ to verify that there are no wildland cells without a `forest` object
 defined:
 
 ``` r
+
 check_forests(y_3)
 ```
 
@@ -640,6 +662,7 @@ derived from LiDAR flights in Catalonia (years 2016-2017). First we will
 load a mean tree height raster at 20-m resolution:
 
 ``` r
+
 height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif"))
 height_map
 ```
@@ -657,6 +680,7 @@ Hence, we aggregate the raster to the 40m resolution, while we crop to
 the target area:
 
 ``` r
+
 height_map_40 <- terra::aggregate(terra::crop(height_map, r), 
                                   fact = 2, fun = "mean", na.rm = TRUE)
 height_map_40
@@ -675,6 +699,7 @@ height_map_40
 Mean tree height data has the following distribution:
 
 ``` r
+
 names(height_map_40)<- "height"
 ggplot()+
   geom_spatraster(aes(fill=height), data=height_map_40)+
@@ -692,6 +717,7 @@ to correct mean tree height according to the LiDAR data (Note the
 correction of units: tree heights are in cm in **medfate**):
 
 ``` r
+
 height_map_40_cm <- height_map_40*100
 y_4 <- modify_forest_structure(y_3, height_map_40_cm, var = "mean_tree_height",
                                progress = FALSE)
@@ -703,6 +729,7 @@ preserved. If we inspect the same `forest` object again, we will be able
 to note changes in height and diameter values:
 
 ``` r
+
 y_4$forest[[1]]
 ```
 
@@ -746,6 +773,7 @@ In our case, we will use a raster of basal area, also derived from LiDAR
 flights:
 
 ``` r
+
 basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lidar/VariablesBiofisiques/RastersComplets/2016-2017/variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif"))
 basal_area_map
 ```
@@ -761,6 +789,7 @@ basal_area_map
 We perform the same aggregation done for heights:
 
 ``` r
+
 basal_area_map_40 <- terra::aggregate(terra::crop(basal_area_map, r), 
                                       fact = 2, fun = "mean", na.rm = TRUE)
 basal_area_map_40
@@ -779,6 +808,7 @@ basal_area_map_40
 Basal area geographic distribution looks as follows:
 
 ``` r
+
 names(basal_area_map_40)<- "basal_area"
 ggplot()+
   geom_spatraster(aes(fill=basal_area), data=basal_area_map_40)+
@@ -794,6 +824,7 @@ We now use the same function to correct basal area values (no unit
 conversion is needed in this case):
 
 ``` r
+
 y_5 <- modify_forest_structure(y_4, basal_area_map_40, var = "basal_area",
                                progress = FALSE)
 ```
@@ -804,6 +835,7 @@ on tree diameters. The correction of basal area operates on tree density
 values. As before, we can inspect changes in tree density:
 
 ``` r
+
 y_5$forest[[1]]
 ```
 
@@ -846,6 +878,7 @@ To finish this section, we will show the effect of imputation and
 correction on structural variables, compared with the LiDAR data.
 
 ``` r
+
 p1 <- plot_variable(y_3, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
@@ -856,6 +889,7 @@ p1 <- plot_variable(y_3, "basal_area", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 p2 <- plot_variable(y_4, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
@@ -866,6 +900,7 @@ p2 <- plot_variable(y_4, "basal_area", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 p3 <- plot_variable(y_5, "basal_area", r = r)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_continuous("m2/ha", limits = c(0,70), type = "viridis", na.value = NA)+
@@ -876,6 +911,7 @@ p3 <- plot_variable(y_5, "basal_area", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(basal_area_map_40)))
 x_vect$basal_area <- terra::extract(basal_area_map_40, x_vect)$basal_area
 r_ba<-terra::rasterize(x_vect, r, field = "basal_area")
@@ -902,6 +938,7 @@ We can quantitatively assess the relationship between predicted basal
 area and the observed one using:
 
 ``` r
+
 ba_5 <- extract_variables(y_5, "basal_area")$basal_area
 cor.test(ba_5, x_vect$basal_area)
 ```
@@ -922,6 +959,7 @@ We can also see the effect of the imputation and correction on mean tree
 height:
 
 ``` r
+
 p1 <- plot_variable(y_3, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -933,6 +971,7 @@ p1 <- plot_variable(y_3, "mean_tree_height", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 p2 <- plot_variable(y_4, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -944,6 +983,7 @@ p2 <- plot_variable(y_4, "mean_tree_height", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 p3 <- plot_variable(y_5, "mean_tree_height", r = r)+
   scale_fill_continuous("cm", limits = c(0,2600), type = "viridis", na.value = NA)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -955,6 +995,7 @@ p3 <- plot_variable(y_5, "mean_tree_height", r = r)+
     ## Adding another scale for fill, which will replace the existing scale.
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(height_map_40_cm)))
 x_vect$height <- terra::extract(height_map_40_cm, x_vect)$height
 r_ba<-terra::rasterize(x_vect, r, field = "height")
@@ -976,6 +1017,7 @@ height. The relationship between estimated and predicted mean tree
 height is:
 
 ``` r
+
 mth_5 <- extract_variables(y_5, "mean_tree_height")$mean_tree_height
 cor.test(mth_5, x_vect$height)
 ```
@@ -996,6 +1038,7 @@ Finally, we check again that forests are well-defined, using function
 [`check_forests()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md):
 
 ``` r
+
 check_forests(y_5)
 ```
 
@@ -1029,6 +1072,7 @@ extraction of SoilGrids data for our target cells is rather fast using
 this approach:
 
 ``` r
+
 soilgrids_path = paste0(dataset_path,"Soils/Global/SoilGrids/Spain/")
 y_6 <- add_soilgrids(y_5, soilgrids_path = soilgrids_path, progress = FALSE)
 ```
@@ -1036,6 +1080,7 @@ y_6 <- add_soilgrids(y_5, soilgrids_path = soilgrids_path, progress = FALSE)
 And the result has an extra column `soil`:
 
 ``` r
+
 y_6
 ```
 
@@ -1064,16 +1109,17 @@ The elements of the list are the usual data frames of soil properties in
 **medfate**:
 
 ``` r
+
 y_6$soil[[1]]
 ```
 
-    ##   widths clay sand   om   bd  rfc nitrogen
-    ## 1     50 21.5 38.4 8.69 1.12 18.0     5.16
-    ## 2    100 21.0 39.2 4.03 1.14 21.2     2.47
-    ## 3    150 22.7 38.6 2.59 1.27 19.1     1.95
-    ## 4    300 24.7 38.3 1.87 1.43 17.8     1.16
-    ## 5    400 25.2 40.0 1.40 1.52 18.2     1.06
-    ## 6   1000 25.0 39.1 0.88 1.54 19.4     0.97
+    ##   widths clay sand   om nitrogen  ph   bd  rfc
+    ## 1     50 21.5 38.4 8.69     51.6 6.1 11.2 18.0
+    ## 2    100 21.0 39.2 4.03     24.7 6.2 11.4 21.2
+    ## 3    150 22.7 38.6 2.59     19.5 6.2 12.7 19.1
+    ## 4    300 24.7 38.3 1.87     11.6 6.3 14.3 17.8
+    ## 5    400 25.2 40.0 1.40     10.6 6.3 15.2 18.2
+    ## 6   1000 25.0 39.1 0.88      9.7 6.4 15.4 19.4
 
 During data retrieval, there might be some locations where SoilGrids 2.0
 data was missing. We can use function
@@ -1081,6 +1127,7 @@ data was missing. We can use function
 to detect those cases and fill them with default values:
 
 ``` r
+
 y_7 <- check_soils(y_6, missing_action = "default")
 ```
 
@@ -1110,6 +1157,7 @@ al. (2017)](https://doi.org/10.1002/2016MS000686), which consists on
 three rasters:
 
 ``` r
+
 # Censored soil depth (cm)
 bdricm <- terra::rast(paste0(dataset_path, "Soils/Global/SoilDepth_Shangguan2017/BDRICM_M_250m_ll.tif"))
 # Probability of bedrock within first 2m [0-100]
@@ -1122,6 +1170,7 @@ In order to accelerate raster manipulations, we crop the global rasters
 to the extent of the target area:
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(bdricm)))
 x_ext <- terra::ext(x_vect)
 bdricm <- terra::crop(bdricm, x_ext, snap = "out")
@@ -1136,6 +1185,7 @@ two meters. Hence, we multiply the two layers and use it as a (crude)
 estimate of soil depth, expressing it in mm:
 
 ``` r
+
 soil_depth_mm <- (bdricm$BDRICM_M_250m_ll*10)*(1 - (bdrlog$BDRLOG_M_250m_ll/100))
 ```
 
@@ -1143,6 +1193,7 @@ and we take the depth to bedrock as appropriate, but change its units to
 mm as well:
 
 ``` r
+
 depth_to_bedrock_mm <- bdticm*10
 ```
 
@@ -1151,6 +1202,7 @@ We can now call function
 with the two rasters to perform the correction of soil characteristics:
 
 ``` r
+
 y_8 <- modify_soils(y_7, 
                     soil_depth_map = soil_depth_mm, 
                     depth_to_bedrock_map = depth_to_bedrock_mm,
@@ -1163,22 +1215,24 @@ the correction, the rock fragment content of the soil has changed
 substantially:
 
 ``` r
+
 y_8$soil[[1]]
 ```
 
-    ##   widths clay sand   om   bd      rfc nitrogen
-    ## 1     50 21.5 38.4 8.69 1.12 18.00000     5.16
-    ## 2    100 21.0 39.2 4.03 1.14 21.20000     2.47
-    ## 3    150 22.7 38.6 2.59 1.27 19.10000     1.95
-    ## 4    300 24.7 38.3 1.87 1.43 31.33929     1.16
-    ## 5    400 25.2 40.0 1.40 1.52 55.71429     1.06
-    ## 6   1000 25.0 39.1 0.88 1.54 97.50000     0.97
+    ##   widths clay sand   om nitrogen  ph   bd      rfc
+    ## 1     50 21.5 38.4 8.69     51.6 6.1 11.2 18.00000
+    ## 2    100 21.0 39.2 4.03     24.7 6.2 11.4 21.20000
+    ## 3    150 22.7 38.6 2.59     19.5 6.2 12.7 19.10000
+    ## 4    300 24.7 38.3 1.87     11.6 6.3 14.3 31.33929
+    ## 5    400 25.2 40.0 1.40     10.6 6.3 15.2 55.71429
+    ## 6   1000 25.0 39.1 0.88      9.7 6.4 15.4 97.50000
 
 We can compare the effect of the correction on the soil water capacity
 (in mm) by inspecting the following plots (note the change in magnitude
 and spatial pattern):
 
 ``` r
+
 p1 <- plot_variable(y_7, "soil_vol_extract", r = r)+ 
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
   scale_fill_distiller("mm", type = "seq", palette = "YlGnBu", direction = 1, na.value = NA)+
@@ -1200,6 +1254,7 @@ Finally, we can call again
 to verify that everything is fine:
 
 ``` r
+
 check_soils(y_8)
 ```
 
@@ -1229,6 +1284,7 @@ from 2018). We start by reading the crop map and subsetting it to the
 target area:
 
 ``` r
+
 file_crop_map <- paste0(dataset_path,"Agriculture/Catalunya/Cultius_DUN2018/Cultius_DUN2018.shp")
 crop_map <- sf::st_read(file_crop_map, options = "ENCODING=UTF-8")
 ```
@@ -1244,12 +1300,14 @@ crop_map <- sf::st_read(file_crop_map, options = "ENCODING=UTF-8")
     ## Projected CRS: ETRS89 / UTM zone 31N
 
 ``` r
+
 crop_map <- terra::crop(terra::vect(crop_map[,"Cultiu"]), r)
 ```
 
 Crops in the target watershed, occupy valley bottoms as expected:
 
 ``` r
+
 ggplot()+
   geom_spatvector(aes(fill=Cultiu), data=crop_map)+
   geom_spatvector(fill = NA, col = "black", linewidth = 0.5, data = watershed)+
@@ -1263,6 +1321,7 @@ To obtain our crop factors, we first extract the crop name corresponding
 to *agriculture* locations:
 
 ``` r
+
 sel_agr <- y_1$land_cover_type=="agriculture"
 x_agr <- sf::st_transform(sf::st_geometry(x)[sel_agr], terra::crs(crop_map))
 x_agr_crop <- terra::extract(crop_map, 
@@ -1273,6 +1332,7 @@ Some cells may have missing values, specially if the land cover map and
 the crop map are not consistent:
 
 ``` r
+
 df_agr_crop <- as.data.frame(x_agr_crop)
 table(is.na(df_agr_crop$Cultiu))
 ```
@@ -1285,6 +1345,7 @@ For simplicity we will assume the missing values correspond to
 Ray-grass, the most common crop in the area:
 
 ``` r
+
 df_agr_crop$Cultiu[is.na(df_agr_crop$Cultiu)] <- "RAY-GRASS"
 ```
 
@@ -1292,6 +1353,7 @@ In order to transform crop names into crop factors, we need a look-up
 table, which we prepared for Catalonia
 
 ``` r
+
 crop_lookup_table <- readxl::read_xlsx(paste0(dataset_path, "Agriculture/Catalunya/Coefficients_cultius/Kc_CAT_MOD.xlsx"))
 head(crop_lookup_table)
 ```
@@ -1310,6 +1372,7 @@ We join the two tables by the crop name column and get the crop factor
 (column `Kc`):
 
 ``` r
+
 df_agr_crop <- df_agr_crop |>
   left_join(crop_lookup_table, by=c("Cultiu"="Cultiu_map"))
 y_8$crop_factor <- NA
@@ -1338,6 +1401,7 @@ As estimate of depth to bedrock, one can use the same variable from
 already transformed to mm:
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(y_8), 
                                        terra::crs(depth_to_bedrock_mm)))
 y_8$depth_to_bedrock <-terra::extract(depth_to_bedrock_mm, x_vect)[,2, drop = TRUE]
@@ -1353,6 +1417,7 @@ conductivity, we suggest using the GLobal HYdrogeology MaPS, GLHYMPS 2.0
 ([Huscroft et al. 2021](https://doi.org/10.1002/2017GL075860)):
 
 ``` r
+
 glhymps_map <- terra::vect(paste0(dataset_path,"Geology/Global/GLHYMPS2/GLHYMPS_Spain.shp"))
 glhymps_map
 ```
@@ -1377,6 +1442,7 @@ glhymps_map
 We first extract the GLHYMPS 2.0 data on the target locations:
 
 ``` r
+
 x_vect <- terra::vect(sf::st_transform(sf::st_geometry(y_8), 
                                        terra::crs(glhymps_map)))
 x_glhymps <- terra::extract(glhymps_map, x_vect)
@@ -1409,12 +1475,14 @@ For porosity we simply divide the GLHYMPS 2.0 value by 100 to find the
 proportion:
 
 ``` r
+
 y_8$bedrock_porosity <- x_glhymps[,"Porosity_x", drop = TRUE]/100
 ```
 
 Its geographic distribution is quite simple:
 
 ``` r
+
 plot_variable(y_8, "bedrock_porosity", r = r)
 ```
 
@@ -1425,6 +1493,7 @@ GLHYMPS 2.0 provides permeability in the log scale, and the following
 operations are needed to obtain hydraulic conductivity in m/day:
 
 ``` r
+
 # Permeability m2
 k <- 10^(x_glhymps[,"logK_Ferr_", drop = TRUE]/100)
 # Water density kg·m-3
@@ -1442,12 +1511,14 @@ K_day <- K*3600*24
 Finally, we assign the conductivity values to the `sf` object:
 
 ``` r
+
 y_8$bedrock_conductivity <- K_day
 ```
 
 Its geographic distribution is very simple, again:
 
 ``` r
+
 plot_variable(y_8, "bedrock_conductivity", r = r)
 ```
 
@@ -1463,6 +1534,7 @@ of the channel network. We start by loading the river network from
 Catalonia (source: *Agència Catalana de l’Aigua*):
 
 ``` r
+
 rivers <-terra::vect(paste0(dataset_path, "Hydrography/Catalunya/HidrografiaACA/Rius/Rius_CARACT.shp"))
 ```
 
@@ -1471,6 +1543,7 @@ the [`is.na()`](https://rdrr.io/r/base/NA.html) function to distinguish
 river from other cells, independently of the river order:
 
 ``` r
+
 rivers_rast <- !is.na(terra::rasterize(rivers, r, field = "OBJECTID"))
 ```
 
@@ -1478,12 +1551,14 @@ Once we have this raster, we perform the extraction to fill column
 `channel`:
 
 ``` r
+
 y_8$channel <- terra::extract(rivers_rast, y_8, ID = FALSE)$OBJECTID
 ```
 
 Similarly to other variables, the river network can be visualized using:
 
 ``` r
+
 plot_variable(y_8, "channel", r = r)
 ```
 
@@ -1505,6 +1580,7 @@ the result as an RDS file, to be loaded at the time of performing
 simulations, e.g.
 
 ``` r
+
 saveRDS(y_8, "bianya.rds")
 ```
 
@@ -1512,6 +1588,7 @@ Since the data set corresponds to a watershed, we should also store the
 raster:
 
 ``` r
+
 r$value <- TRUE
 terra::writeRaster(r, "bianya_raster.tif", overwrite=TRUE)
 ```
@@ -1523,6 +1600,7 @@ function
 [`initialize_landscape()`](https://emf-creaf.github.io/medfateland/reference/initialize_landscape.md):
 
 ``` r
+
 z <- initialize_landscape(y_8, traits4models::SpParamsES, defaultControl(),
                           progress = FALSE)
 ```

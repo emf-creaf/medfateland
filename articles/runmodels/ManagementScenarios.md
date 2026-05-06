@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-2.8.3) to carry out simulations of forest dynamics on a set of forest
+3.0.0) to carry out simulations of forest dynamics on a set of forest
 stands while evaluating a demand-based management scenario. In
 particular, we will illustrate the use of functions
 [`create_management_scenario()`](https://emf-creaf.github.io/medfateland/reference/create_management_scenario.md)
@@ -20,6 +20,7 @@ forest stands. Here we begin by loading the example data set of 100
 forest stands distributed on points in the landscape:
 
 ``` r
+
 data("example_ifn")
 example_ifn
 ```
@@ -48,6 +49,7 @@ example_ifn
 To speed-up simulations in this vignette we select only stands 31 to 40:
 
 ``` r
+
 example_subset <- example_ifn[31:40, ]
 example_subset
 ```
@@ -81,6 +83,7 @@ data in two blocks (data frames), using the example weather data
 provided in **medfate** package:
 
 ``` r
+
 data("examplemeteo")
   
 meteo_01_02 <- rbind(examplemeteo, examplemeteo)
@@ -101,6 +104,7 @@ dominant tree species. The following code allows determining the
 dominant tree species in each of the 10 forest stands:
 
 ``` r
+
 example_subset$dominant_tree_species <- sapply(example_subset$forest,
                                                stand_dominantTreeSpecies, SpParamsMED)
 ```
@@ -108,6 +112,7 @@ example_subset$dominant_tree_species <- sapply(example_subset$forest,
 And the result is:
 
 ``` r
+
 example_subset$dominant_tree_species
 ```
 
@@ -119,14 +124,17 @@ Package **medfateland** includes a table with default prescription
 parameters for a set of species. This is loaded using:
 
 ``` r
+
 data("defaultPrescriptionsBySpecies")
 ```
 
 The columns of this data frame are the same as the parameter names
-required by function `defaultManagementFunction()` of package
-**medfate**:
+required by function
+[`defaultManagementFunction()`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html)
+of package **medfate**:
 
 ``` r
+
 names(defaultPrescriptionsBySpecies)
 ```
 
@@ -142,6 +150,7 @@ whereas the rows correspond to species or species groups, whose names
 are:
 
 ``` r
+
 defaultPrescriptionsBySpecies$Name
 ```
 
@@ -179,6 +188,7 @@ row number of `defaultPrescriptionsBySpecies` for stands dominated by
 each of the three species.
 
 ``` r
+
 example_subset$management_unit <- NA
 example_subset$management_unit[example_subset$dominant_tree_species=="Pinus halepensis"] <- 9
 example_subset$management_unit[example_subset$dominant_tree_species=="Pinus nigra"] <- 10
@@ -223,6 +233,7 @@ will require an annual extraction of 2300 m3 of Pinus nigra or P.
 sylvestris and 1000 m3 of P. halepensis:
 
 ``` r
+
 scen <- create_management_scenario(defaultPrescriptionsBySpecies, 
                                    c("Pinus nigra/Pinus sylvestris" = 1300,
                                      "Pinus halepensis" = 500))
@@ -239,6 +250,7 @@ prescription data frame.
 The scenario object is a list with the following elements.
 
 ``` r
+
 names(scen)
 ```
 
@@ -249,6 +261,7 @@ The first one specifies the type of scenario, which in this case is
 based on a fixed input demand:
 
 ``` r
+
 scen$scenario_type
 ```
 
@@ -257,6 +270,7 @@ scen$scenario_type
 The next element contains the demand values we entered:
 
 ``` r
+
 scen$annual_demand_by_species
 ```
 
@@ -268,6 +282,7 @@ demand-based scenarios where actual demand depends on observed growth
 and a desired rate of extraction:
 
 ``` r
+
 scen$extraction_rate_by_year
 ```
 
@@ -281,6 +296,7 @@ will make thinning operations more likely for all three species by
 lowering the basal area threshold that triggers them:
 
 ``` r
+
 scen$units[c(9,10,14),"thinningThreshold"] <-20
 ```
 
@@ -296,6 +312,7 @@ In this example, we will assume a constant area of 100 ha for all
 stands:
 
 ``` r
+
 example_subset$represented_area_ha <- 100
 ```
 
@@ -311,6 +328,7 @@ weather information. We also specify the management scenario and set
 also be important in real-case simulations.
 
 ``` r
+
 fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02, 
                          management_scenario = scen,
                          parallelize = TRUE)
@@ -322,13 +340,13 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [19ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [36ms]
+    ## ✔ Checking meteo object input [11ms]
 
     ## 
 
@@ -374,47 +392,47 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [13ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [26ms]
+    ## ✔ Checking meteo object input [11ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [24ms]
+    ## ✔ Preparing data for parallelization [13ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [29.4s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [7.2s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [23ms]
+    ## ✔ Retrieval of results [12ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 64078 m3
+    ## • Final volume: 64034 m3
 
     ## 
 
     ## ──  [ Year 2002 (2/2) ]
 
-    ## • Demand (incl. offset): 2763 m3
+    ## • Demand (incl. offset): 2761 m3
 
     ## • Determining available volumes and final cuts
 
-    ## • Demand (after final cuts): 2763 m3
+    ## • Demand (after final cuts): 2761 m3
 
     ## • Determining thinning operations
 
@@ -424,37 +442,37 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [17ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [20ms]
+    ## ✔ Checking meteo object input [11ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [23ms]
+    ## ✔ Preparing data for parallelization [12ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [23.5s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [13.3s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [19ms]
+    ## ✔ Retrieval of results [12ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 62220 m3
+    ## • Final volume: 62182 m3
 
     ## 
 
@@ -479,6 +497,7 @@ Function
 returns a list whose elements are:
 
 ``` r
+
 names(fs_12)
 ```
 
@@ -491,10 +510,13 @@ subsequent simulations (see next section).
 
 Stand-level results are available in element `result_sf`. The column
 names of this `sf` object should be easy to interpret if you have
-experience with functions `fordyn()` or
+experience with functions
+[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html)
+or
 [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md):
 
 ``` r
+
 fs_12$result_sf
 ```
 
@@ -506,16 +528,16 @@ fs_12$result_sf
     ## # A tibble: 10 × 9
     ##               geometry id        tree_table         shrub_table dead_tree_table
     ##            <POINT [°]> <chr>     <list>             <list>      <list>         
-    ##  1 (1.901727 41.96974) 081047_A1 <tibble [50 × 11]> <tibble>    <tibble>       
-    ##  2 (1.925861 41.96997) 081048_A1 <tibble [45 × 11]> <tibble>    <tibble>       
-    ##  3 (1.937928 41.97008) 081049_A1 <tibble [15 × 11]> <tibble>    <tibble>       
-    ##  4 (1.949995 41.97019) 081050_A1 <tibble [47 × 11]> <tibble>    <tibble>       
-    ##  5  (1.962062 41.9703) 081051_A1 <tibble [36 × 11]> <tibble>    <tibble>       
-    ##  6 (1.974129 41.97041) 081052_A1 <tibble [57 × 11]> <tibble>    <tibble>       
-    ##  7 (1.986197 41.97052) 081053_A1 <tibble [62 × 11]> <tibble>    <tibble>       
-    ##  8 (1.998264 41.97062) 081054_A1 <tibble [71 × 11]> <tibble>    <tibble>       
-    ##  9 (2.010331 41.97073) 081055_A1 <tibble [41 × 11]> <tibble>    <tibble>       
-    ## 10 (2.022399 41.97083) 081056_A1 <tibble [64 × 11]> <tibble>    <tibble>       
+    ##  1 (1.901727 41.96974) 081047_A1 <tibble [50 × 13]> <tibble>    <tibble>       
+    ##  2 (1.925861 41.96997) 081048_A1 <tibble [45 × 13]> <tibble>    <tibble>       
+    ##  3 (1.937928 41.97008) 081049_A1 <tibble [15 × 13]> <tibble>    <tibble>       
+    ##  4 (1.949995 41.97019) 081050_A1 <tibble [47 × 13]> <tibble>    <tibble>       
+    ##  5  (1.962062 41.9703) 081051_A1 <tibble [35 × 13]> <tibble>    <tibble>       
+    ##  6 (1.974129 41.97041) 081052_A1 <tibble [56 × 13]> <tibble>    <tibble>       
+    ##  7 (1.986197 41.97052) 081053_A1 <tibble [61 × 13]> <tibble>    <tibble>       
+    ##  8 (1.998264 41.97062) 081054_A1 <tibble [71 × 13]> <tibble>    <tibble>       
+    ##  9 (2.010331 41.97073) 081055_A1 <tibble [39 × 13]> <tibble>    <tibble>       
+    ## 10 (2.022399 41.97083) 081056_A1 <tibble [64 × 13]> <tibble>    <tibble>       
     ## # ℹ 4 more variables: dead_shrub_table <list>, cut_tree_table <list>,
     ## #   cut_shrub_table <list>, summary <list>
 
@@ -528,27 +550,29 @@ initial and final standing stock, the forest growth and the extracted
 wood:
 
 ``` r
+
 fs_12$result_volumes[,1:7]
 ```
 
     ## # A tibble: 2 × 7
     ##    Year initial growth mortality extracted  final cumulative_growth
     ##   <dbl>   <dbl>  <dbl>     <dbl>     <dbl>  <dbl>             <dbl>
-    ## 1  2001  66449.   870.      51.9     3190. 64078.              870.
-    ## 2  2002  64078.   786.      48.0     2595. 62220.             1656.
+    ## 1  2001  66449.   828.      51.8     3191. 64034.              828.
+    ## 2  2002  64034.   797.      47.8     2601. 62182.             1625.
 
 The same figures can be inspected, but corresponding to those species
 for which demand has been defined:
 
 ``` r
+
 fs_12$result_volumes[,c(1,8:11)]
 ```
 
     ## # A tibble: 2 × 5
     ##    Year cumulative_extraction initial_target growth_target mortality_target
     ##   <dbl>                 <dbl>          <dbl>         <dbl>            <dbl>
-    ## 1  2001                 3190.         62682.          846.             47.6
-    ## 2  2002                 5785.         62643.          770.             46.9
+    ## 1  2001                 3191.         62682.          806.             47.5
+    ## 2  2002                 5793.         62602.          782.             46.7
 
 Finally, we can display for each step what was the nominal demand
 (according to the input), the actual demand (once the offset of previous
@@ -559,14 +583,15 @@ columns mentioned are important to check whether simulations fulfilled
 the required demand in the long term.
 
 ``` r
+
 fs_12$result_volumes[,c(1, 12:16)]
 ```
 
     ## # A tibble: 2 × 6
     ##    Year extracted_target final_target nominal_demand demand_offset actual_demand
     ##   <dbl>            <dbl>        <dbl>          <dbl>         <dbl>         <dbl>
-    ## 1  2001             837.       64078.           1800            0          1800 
-    ## 2  2002            2595.       62220.           1800          963.         2763.
+    ## 1  2001             839.       64034.           1800            0          1800 
+    ## 2  2002            2601.       62182.           1800          961.         2761.
 
 ### Continuing a previous simulation
 
@@ -577,6 +602,7 @@ the previous one finished. The element `next_sf` contains the `sf`
 object corresponding to the final state of the simulation:
 
 ``` r
+
 fs_12$next_sf
 ```
 
@@ -606,15 +632,16 @@ On the other hand, in demand-based scenarios there may be demand offsets
 that need to be carried on to the next simulations:
 
 ``` r
+
 fs_12$next_demand
 ```
 
     ## $offset
     ## Pinus nigra/Pinus sylvestris             Pinus halepensis 
-    ##                    -29.81761                    197.03491 
+    ##                    -38.33606                    198.03999 
     ## 
     ## $last_growth
-    ## [1] 769.8502
+    ## [1] 782.0836
 
 In addition to the demand offset for each species or species group, note
 that `next_demand` also contains information about the last growth. This
@@ -628,6 +655,7 @@ along with the result of the previous simulation instead of the original
 `sf` object:
 
 ``` r
+
 fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03, 
                         management_scenario = scen,
                         parallelize = TRUE)
@@ -639,19 +667,19 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Recovering previous run
 
-    ## ✔ Recovering previous run [13ms]
+    ## ✔ Recovering previous run [5ms]
 
     ## 
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [25ms]
+    ## ✔ Checking sf input [10ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [19ms]
+    ## ✔ Checking meteo object input [10ms]
 
     ## 
 
@@ -669,7 +697,7 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## • Default volume function
 
-    ## • Initial volume: 62220 m3
+    ## • Initial volume: 62182 m3
 
     ## • Seed dispersal process included.
 
@@ -681,11 +709,11 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ──  [ Year 2003 (1/1) ]
 
-    ## • Demand (incl. offset): 1967 m3
+    ## • Demand (incl. offset): 1960 m3
 
     ## • Determining available volumes and final cuts
 
-    ## • Demand (after final cuts): 1967 m3
+    ## • Demand (after final cuts): 1960 m3
 
     ## • Determining thinning operations
 
@@ -695,37 +723,37 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [14ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [21ms]
+    ## ✔ Checking meteo object input [11ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [28ms]
+    ## ✔ Preparing data for parallelization [14ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [24.3s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [11.1s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [20ms]
+    ## ✔ Retrieval of results [12ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 62980 m3
+    ## • Final volume: 62901 m3
 
     ## 
 

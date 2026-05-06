@@ -28,14 +28,14 @@ Source:
 [`DESCRIPTION`](https://github.com/emf-creaf/medfateland/blob/HEAD/DESCRIPTION)
 
 De Cáceres M, Améztegui A, González M, Aquilué N, Caviedes-Voullième D,
-Morales-Hernández M (2025). *medfateland: Mediterranean Landscape
-Simulation*. R package version 2.8.3,
+Morales-Hernández M (2026). *medfateland: Mediterranean Landscape
+Simulation*. R package version 3.0.0,
 <https://emf-creaf.github.io/medfateland/>.
 
     @Manual{,
       title = {medfateland: Mediterranean Landscape Simulation},
       author = {Miquel {De Cáceres} and Aitor Améztegui and María González and Núria Aquilué and Daniel Caviedes-Voullième and Mario Morales-Hernández},
-      year = {2025},
-      note = {R package version 2.8.3},
+      year = {2026},
+      note = {R package version 3.0.0},
       url = {https://emf-creaf.github.io/medfateland/},
     }

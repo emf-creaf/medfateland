@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-2.8.3) to carry out simulations of forest function and dynamics on a set
+3.0.0) to carry out simulations of forest function and dynamics on a set
 of forest stands while including lateral water transfer processes. This
 is done using functions
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
@@ -25,7 +25,7 @@ and
 which are counterparts of
 [`spwb_day()`](https://emf-creaf.github.io/medfate/reference/spwb_day.html)
 and
-[`growth_day()`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
+[`growth_day()`](https://emf-creaf.github.io/medfate/reference/growth_day.html),
 respectively.
 
 ## Preparation
@@ -41,6 +41,7 @@ Here we load a small example watershed included with the package, that
 can be used to understand the inputs required:
 
 ``` r
+
 data("example_watershed")
 example_watershed
 ```
@@ -79,6 +80,7 @@ Simulations over watersheds normally include different land cover types.
 These are described in column `land_cover_type`:
 
 ``` r
+
 table(example_watershed$land_cover_type)
 ```
 
@@ -101,6 +103,7 @@ factors*, which will determine transpiration flow as a proportion of
 potential evapotranspiration:
 
 ``` r
+
 example_watershed$crop_factor = NA
 example_watershed$crop_factor[example_watershed$land_cover_type=="agriculture"] = 0.75
 ```
@@ -123,6 +126,7 @@ needed to describe the grid topology, which in our case is an object of
 class `SpatRaster` from package **terra**:
 
 ``` r
+
 r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
                 nrow = 8, ncol = 15, crs = "epsg:32631")
 r
@@ -145,6 +149,7 @@ attribute data is already included in the `sf` object.
 Combining the `r` and `sf` objects allows drawing rasterized maps:
 
 ``` r
+
 plot_variable(example_watershed, variable = "elevation", r = r)
 ```
 
@@ -159,6 +164,7 @@ decide which sub-model will be used for lateral water transfer processes
 **medfate**), by default “tetis”:
 
 ``` r
+
 ws_control <- default_watershed_control("tetis")
 ```
 
@@ -172,13 +178,14 @@ practical to perform this step separately. If we plan to use function
 watershed initialization would be as follows:
 
 ``` r
+
 example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
                                      local_control = defaultControl(soilDomains = "buckets"))
 ```
 
-    ## ℹ Creating 65 state objects for model 'spwb'.
+    ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 65 state objects for model 'spwb'. [17ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [15ms]
 
     ## 
 
@@ -187,6 +194,7 @@ example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
     ## • Soil domains [buckets: 65, single: 0, dual: 0]
 
 ``` r
+
 example_init
 ```
 
@@ -229,14 +237,15 @@ in package **medfate**). Hence, we can initialize using
 `reduce_to_dominant = TRUE`:
 
 ``` r
+
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
                                            local_control = defaultControl(soilDomains = "single"),
                                            reduce_to_dominant = TRUE)
 ```
 
-    ## ℹ Creating 65 state objects for model 'spwb'.
+    ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 65 state objects for model 'spwb'. [7ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [6ms]
 
     ## 
 
@@ -245,6 +254,7 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
     ## • Soil domains [buckets: 0, single: 65, dual: 0]
 
 ``` r
+
 example_simplified
 ```
 
@@ -283,6 +293,7 @@ To speed up calculations, we call function
 for a single month:
 
 ``` r
+
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
 res_ws1 <- spwb_land(r, example_simplified,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
@@ -304,6 +315,7 @@ and
 return a list with the following elements:
 
 ``` r
+
 names(res_ws1)
 ```
 
@@ -314,6 +326,7 @@ Where `sf` is an object of class `sf`, analogous to those of functions
 `*_spatial()`:
 
 ``` r
+
 res_ws1$sf
 ```
 
@@ -325,16 +338,16 @@ res_ws1$sf
     ## # A tibble: 66 × 11
     ##            geometry state            aquifer snowpack summary  result outlet
     ##  *      <POINT [m]> <list>             <dbl>    <dbl> <list>   <list> <lgl> 
-    ##  1 (402630 4672570) <spwbInpt [20]>   4.95       3.56 <dbl[…]> <NULL> FALSE 
-    ##  2 (402330 4672470) <aspwbInp [4]>    0.0596     3.56 <dbl[…]> <NULL> FALSE 
+    ##  1 (402630 4672570) <spwbInpt [20]>   5.08       3.56 <dbl[…]> <NULL> FALSE 
+    ##  2 (402330 4672470) <aspwbInp [4]>    0.0598     3.56 <dbl[…]> <NULL> FALSE 
     ##  3 (402430 4672470) <spwbInpt [20]>   0.299      3.56 <dbl[…]> <NULL> FALSE 
-    ##  4 (402530 4672470) <spwbInpt [20]>   0.713      3.24 <dbl[…]> <NULL> FALSE 
-    ##  5 (402630 4672470) <spwbInpt [20]>   8.75       3.56 <dbl[…]> <NULL> FALSE 
-    ##  6 (402730 4672470) <aspwbInp [4]>  925.         3.56 <dbl[…]> <NULL> TRUE  
-    ##  7 (402830 4672470) <aspwbInp [4]>  525.         3.56 <dbl[…]> <NULL> FALSE 
-    ##  8 (402230 4672370) <spwbInpt [20]>   0.0672     3.56 <dbl[…]> <NULL> FALSE 
-    ##  9 (402330 4672370) <spwbInpt [20]>   0.394      3.56 <dbl[…]> <NULL> FALSE 
-    ## 10 (402430 4672370) <aspwbInp [4]>    1.04       3.56 <dbl[…]> <NULL> FALSE 
+    ##  4 (402530 4672470) <spwbInpt [20]>   0.718      2.54 <dbl[…]> <NULL> FALSE 
+    ##  5 (402630 4672470) <spwbInpt [20]>   8.97       2.57 <dbl[…]> <NULL> FALSE 
+    ##  6 (402730 4672470) <aspwbInp [4]>  927.         3.56 <dbl[…]> <NULL> TRUE  
+    ##  7 (402830 4672470) <aspwbInp [4]>  534.         3.56 <dbl[…]> <NULL> FALSE 
+    ##  8 (402230 4672370) <spwbInpt [20]>   0.0671     2.53 <dbl[…]> <NULL> FALSE 
+    ##  9 (402330 4672370) <spwbInpt [20]>   0.394      2.81 <dbl[…]> <NULL> FALSE 
+    ## 10 (402430 4672370) <aspwbInp [4]>    1.05       3.56 <dbl[…]> <NULL> FALSE 
     ## # ℹ 56 more rows
     ## # ℹ 4 more variables: channel <lgl>, target_outlet <int>, outlet_backlog <dbl>,
     ## #   subwatershed <int>
@@ -350,37 +363,38 @@ daily elements of the water balance at the watershed level, including
 the amount of water exported in mm in the last column.
 
 ``` r
+
 head(res_ws1$watershed_balance)
 ```
 
     ##        dates       PET Precipitation      Rain Snow Snowmelt Interception
-    ## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0     1.524828
-    ## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0     1.210543
-    ## 3 2001-01-03 1.3417718      0.000000  0.000000    0        0     0.000000
-    ## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0     1.515057
-    ## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0     1.016077
-    ## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0     1.704274
-    ##      NetRain Infiltration InfiltrationExcess SaturationExcess  CellRunon
-    ## 1  3.3442808    3.3442808         0.00000000                0 0.00000000
-    ## 2  1.2877488    1.2877488         0.00000000                0 0.00000000
-    ## 3  0.0000000    0.0000000         0.00000000                0 0.00000000
-    ## 4  4.2819157    4.2819157         0.00000000                0 0.00000000
-    ## 5  0.8683247    0.8683247         0.00000000                0 0.00000000
-    ## 6 11.6555266   11.6555266         0.05090607                0 0.05090607
+    ## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0    0.7754218
+    ## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0    0.6090627
+    ## 3 2001-01-03 1.3417718      0.000000  0.000000    0        0    0.0000000
+    ## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0    0.7723790
+    ## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0    0.4808826
+    ## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0    0.8613997
+    ##     NetRain Infiltration InfiltrationExcess SaturationExcess  CellRunon
+    ## 1  4.093687     4.093687         0.00000000                0 0.00000000
+    ## 2  1.889229     1.889229         0.00000000                0 0.00000000
+    ## 3  0.000000     0.000000         0.00000000                0 0.00000000
+    ## 4  5.024594     5.024594         0.00000000                0 0.00000000
+    ## 5  1.403519     1.403519         0.00000000                0 0.00000000
+    ## 6 12.498401    12.498401         0.05090607                0 0.05090607
     ##   CellRunoff DeepDrainage CapillarityRise DeepAquiferLoss SoilEvaporation
-    ## 1 0.00000000  0.077285504               0               0      0.26502076
-    ## 2 0.00000000  0.041094767               0               0      0.16789385
-    ## 3 0.00000000  0.002816163               0               0      0.18274377
-    ## 4 0.00000000  0.091668854               0               0      0.09931928
-    ## 5 0.00000000  0.031688356               0               0      0.14827048
-    ## 6 0.05090607  0.157048292               0               0      0.11148804
+    ## 1 0.00000000  0.077292507    0.000000e+00               0      0.38748895
+    ## 2 0.00000000  0.041167986    0.000000e+00               0      0.15196376
+    ## 3 0.00000000  0.002941473    5.370935e-06               0      0.13948942
+    ## 4 0.00000000  0.091698549    0.000000e+00               0      0.12063798
+    ## 5 0.00000000  0.031963869    0.000000e+00               0      0.11228308
+    ## 6 0.05090607  0.157039918    3.179870e-05               0      0.09481544
     ##   Transpiration HerbTranspiration InterflowBalance BaseflowBalance
-    ## 1     0.4309517                 0     0.000000e+00   -5.174601e-18
-    ## 2     0.7632100                 0    -5.046468e-17    3.195111e-18
-    ## 3     0.6410802                 0     8.915427e-17    7.454711e-18
-    ## 4     0.2894745                 0     1.286849e-16    9.317568e-18
-    ## 5     0.7836103                 0     1.648513e-16    7.030887e-18
-    ## 6     0.5764833                 0    -1.366752e-17   -5.986110e-18
+    ## 1     0.2850782                 0     0.000000e+00   -1.273116e-18
+    ## 2     0.5053881                 0     7.401487e-17    5.611568e-18
+    ## 3     0.4244951                 0     2.018587e-17   -1.393036e-18
+    ## 4     0.1926099                 0     1.715799e-16    1.977848e-18
+    ## 5     0.5188417                 0     7.065056e-17    2.799213e-18
+    ## 6     0.3818268                 0    -1.799907e-16   -5.578713e-18
     ##   AquiferExfiltration ChannelExport WatershedExport NegativeAquiferCorrection
     ## 1                   0             0               0                         0
     ## 2                   0             0               0                         0
@@ -399,6 +413,7 @@ flow reaching each outlet cell each day (both in units of cubic meters
 per second):
 
 ``` r
+
 head(res_ws1$outlet_export_m3s)
 ```
 
@@ -417,33 +432,35 @@ console using a tailored
 [`summary()`](https://rdrr.io/r/base/summary.html) function:
 
 ``` r
+
 summary(res_ws1)
 ```
 
     ##   Snowpack water balance components:
-    ##     Snow fall (mm) 16.65  Snow melt (mm) 13.1
+    ##     Snow fall (mm) 16.65  Snow melt (mm) 13.42
     ##   Soil water balance components:
-    ##     Infiltration (mm) 54.71  Saturation excess (mm) 0
-    ##     Deep drainage (mm) 39.33  Capillarity rise (mm) 0
-    ##     Soil evaporation (mm) 1.59  Plant transpiration (mm) 15.23
+    ##     Infiltration (mm) 63.31  Saturation excess (mm) 0
+    ##     Deep drainage (mm) 51.52  Capillarity rise (mm) 0
+    ##     Soil evaporation (mm) 1.56  Plant transpiration (mm) 10.1
     ##     Interflow balance (mm) 0
     ##   Aquifer water balance components:
-    ##     Deep drainage (mm) 39.76  Capillarity rise (mm) 0
-    ##     Exfiltration (mm) 16.8  Deep aquifer loss (mm) 0
+    ##     Deep drainage (mm) 51.77  Capillarity rise (mm) 0
+    ##     Exfiltration (mm) 28.5  Deep aquifer loss (mm) 0
     ##     Negative aquifer correction (mm) 0
     ##   Watershed water balance components:
     ##     Precipitation (mm) 74.75
-    ##     Interception (mm) 16.29  Soil evaporation (mm) 1.56
-    ##     Plant transpiration (mm) 15
+    ##     Interception (mm) 8.13  Soil evaporation (mm) 1.53
+    ##     Plant transpiration (mm) 9.95
     ##     Subsurface flow balance (mm) 0
     ##     Groundwater flow balance (mm) 0
-    ##     Export runoff (mm) 16.8
+    ##     Export runoff (mm) 28.5
 
 Analogously to plots available with package **medfate**, one can display
 time series of watershed-level water balance components using function
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html), for example:
 
 ``` r
+
 plot(res_ws1, type = "Export")
 ```
 
@@ -452,6 +469,7 @@ plot(res_ws1, type = "Export")
 or the usual combination of hietograph and hydrograph using:
 
 ``` r
+
 plot(res_ws1, type = "Hydrograph")
 ```
 
@@ -469,13 +487,14 @@ For example, we can inspect the summaries for a given landscape cell
 using:
 
 ``` r
+
 res_ws1$sf$summary[[1]]
 ```
 
     ##            MinTemperature MaxTemperature      PET     Rain     Snow      SWE
-    ## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 1.949332
-    ##                 RWC SoilVol      WTD      DTA
-    ## 2001-01-01 105.9293 570.065 3432.313 15.47638
+    ## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 1.699603
+    ##                 RWC  SoilVol      WTD      DTA
+    ## 2001-01-01 108.3626 583.1601 3288.235 15.47546
 
 Additional variables (water balance components, carbon balance
 components, etc.) can be added to summaries via parameter
@@ -491,6 +510,7 @@ As an example we display a map of the average soil relative water
 content during the simulated month:
 
 ``` r
+
 plot_summary(res_ws1$sf, variable = "RWC", date = "2001-01-01", r = r)
 ```
 
@@ -501,6 +521,7 @@ As for uncoupled simulations, we can use function
 to reformat all cell summaries and facilitate post-processing:
 
 ``` r
+
 head(unnest_summary(res_ws1))
 ```
 
@@ -530,6 +551,7 @@ those cells for which full daily results are desired. This is done by
 adding a column `result_cell` in the input `sf` object:
 
 ``` r
+
 # Set request for daily model results in cells number 3 and 9
 example_simplified$result_cell <- FALSE
 example_simplified$result_cell[c(3,9)] <- TRUE
@@ -538,6 +560,7 @@ example_simplified$result_cell[c(3,9)] <- TRUE
 If we launch the simulations again (omitting progress information):
 
 ``` r
+
 res_ws1 <- spwb_land(r, example_simplified,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
@@ -547,6 +570,7 @@ We can now retrieve the results of the desired cell, e.g. the third one,
 in column `result` of `sf`:
 
 ``` r
+
 S <- res_ws1$sf$result[[3]]
 class(S)
 ```
@@ -561,6 +585,7 @@ or [`plot()`](https://rdrr.io/r/graphics/plot.default.html), for
 example:
 
 ``` r
+
 plot(S, "SoilRWC")
 ```
 
@@ -577,6 +602,7 @@ simulation, using function
 [`update_landscape()`](https://emf-creaf.github.io/medfateland/reference/update_landscape.md):
 
 ``` r
+
 example_watershed_mod <- update_landscape(example_watershed, res_ws1)
 names(example_watershed_mod)
 ```
@@ -592,6 +618,7 @@ Note that a new column `state` appears in now in the **sf** object. We
 can check the effect by drawing the relative water content:
 
 ``` r
+
 plot_variable(example_watershed_mod, variable = "soil_rwc_curr", r = r)
 ```
 
@@ -600,6 +627,7 @@ plot_variable(example_watershed_mod, variable = "soil_rwc_curr", r = r)
 Now we can continue our simulation, in this case adding an extra month:
 
 ``` r
+
 dates <- seq(as.Date("2001-02-01"), as.Date("2001-02-28"), by="day")
 res_ws3 <- spwb_land(r, example_watershed_mod,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
@@ -620,6 +648,7 @@ with a copy of the example watershed, where burn-in period has already
 been simulated. This can be seen by inspecting the aquifer level:
 
 ``` r
+
 data("example_watershed_burnin")
 plot_variable(example_watershed_burnin, variable = "aquifer", r = r)
 ```
@@ -631,6 +660,7 @@ the output before and after the burn-in period to illustrate its
 importance:
 
 ``` r
+
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
 res_ws3 <- spwb_land(r, example_watershed_burnin,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
@@ -639,38 +669,38 @@ data.frame("before" = res_ws1$watershed_balance$WatershedExport,
            "after" = res_ws3$watershed_balance$WatershedExport)
 ```
 
-    ##       before      after
-    ## 1  0.0000000 0.12816556
-    ## 2  0.0000000 0.09986587
-    ## 3  0.0000000 0.07090369
-    ## 4  0.0000000 0.17218497
-    ## 5  0.0000000 0.12998927
-    ## 6  0.0000000 0.33157200
-    ## 7  0.0000000 0.21527091
-    ## 8  0.0000000 0.24910774
-    ## 9  0.0000000 0.24349869
-    ## 10 0.0000000 0.40573446
-    ## 11 0.0000000 0.40353996
-    ## 12 0.0000000 0.52421850
-    ## 13 0.0000000 0.52801014
-    ## 14 0.0000000 0.60477634
-    ## 15 0.0000000 0.62605392
-    ## 16 0.0000000 0.63996737
-    ## 17 0.0000000 0.63444712
-    ## 18 0.0000000 0.62184369
-    ## 19 0.3766724 0.60503029
-    ## 20 0.7494492 0.58443928
-    ## 21 0.9717337 0.69000921
-    ## 22 1.1772553 0.71876789
-    ## 23 1.2670371 0.70530849
-    ## 24 1.3620809 0.75554198
-    ## 25 1.4573525 0.76373163
-    ## 26 1.5647762 0.74564720
-    ## 27 1.6437539 0.72447288
-    ## 28 1.6449920 0.71724418
-    ## 29 1.5856965 0.68262892
-    ## 30 1.5163174 0.64161090
-    ## 31 1.4789010 0.61954667
+    ##       before     after
+    ## 1  0.0000000 0.2262068
+    ## 2  0.0000000 0.2083878
+    ## 3  0.0000000 0.2023148
+    ## 4  0.0000000 0.3103002
+    ## 5  0.0000000 0.2795988
+    ## 6  0.0000000 0.4890522
+    ## 7  0.0000000 0.4329238
+    ## 8  0.0000000 0.5107486
+    ## 9  0.0000000 0.4993206
+    ## 10 0.0000000 0.6689889
+    ## 11 0.0000000 0.7627525
+    ## 12 0.0000000 0.9595364
+    ## 13 0.0000000 1.0539417
+    ## 14 0.0000000 1.1652521
+    ## 15 0.0000000 1.1976814
+    ## 16 0.4210184 1.2182564
+    ## 17 1.3585149 1.1760267
+    ## 18 1.3799082 1.1308172
+    ## 19 1.5584916 1.0720469
+    ## 20 1.5097788 1.0053697
+    ## 21 1.6880797 1.0869307
+    ## 22 1.8263474 1.1357407
+    ## 23 1.8735273 1.1581328
+    ## 24 1.9755543 1.2018253
+    ## 25 2.0566476 1.2067410
+    ## 26 2.2012949 1.2243603
+    ## 27 2.2499732 1.2043037
+    ## 28 2.2415807 1.1995977
+    ## 29 2.1504049 1.1451690
+    ## 30 2.0444135 1.0774509
+    ## 31 1.9619455 1.0307985
 
 ### Simulations of watershed forest dynamics
 
@@ -694,6 +724,7 @@ for a single year is given here, as an example, starting from the
 initial example watershed:
 
 ``` r
+
 res_ws4 <- fordyn_land(r, example_watershed,
                        SpParamsMED, examplemeteo,
                        watershed_control = ws_control, progress = FALSE)
@@ -712,6 +743,7 @@ inside watershed simulations. This can be done by supplying an
 **meteoland**. Here we use the example data provided in the package:
 
 ``` r
+
 interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
     meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
 ```
@@ -727,6 +759,7 @@ interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) 
 Once we have this object, using it is straightforward:
 
 ``` r
+
 res_ws5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, 
                      meteo = interpolator, summary_frequency = "month",
                      watershed_control = ws_control, progress = FALSE)
@@ -737,6 +770,7 @@ data. If we plot the minimum temperature, we will appreciate the spatial
 variation in climate:
 
 ``` r
+
 plot_summary(res_ws5$sf, variable = "MinTemperature", date = "2022-04-01", r = r)
 ```
 
@@ -747,6 +781,7 @@ become slow. One can then specify that interpolation is performed on a
 coarser grid, by using a watershed control parameter, for example:
 
 ``` r
+
 ws_control$weather_aggregation_factor <- 3
 ```
 
@@ -754,6 +789,7 @@ To illustrate its effect, we repeat the previous simulation and plot the
 minimum temperature:
 
 ``` r
+
 res_ws6 <- spwb_land(r, example_watershed_burnin, SpParamsMED, 
                      meteo = interpolator, summary_frequency = "month",
                      watershed_control = ws_control, progress = FALSE)
@@ -775,6 +811,7 @@ you can find the dataset in the **medfateland** GitHub repository).
 We begin by loading the raster and `sf` inputs for Bianya:
 
 ``` r
+
 r <- terra::rast("../intro/bianya_raster.tif")
 sf <- readRDS("../intro/bianya.rds")
 ```
@@ -783,6 +820,7 @@ If we draw the elevation map, we will visually identify two
 subwatersheds:
 
 ``` r
+
 plot_variable(sf, variable = "elevation", r = r)
 ```
 
@@ -794,6 +832,7 @@ to statically illustrate how overland runoff processes are dealt with
 (i.e. distribution of runoff among neighbors, channel routing, etc.).
 
 ``` r
+
 or <- overland_routing(r, sf)
 head(or)
 ```
@@ -819,6 +858,7 @@ head(or)
 In this function we can specifically ask for sub-watersheds, as follows:
 
 ``` r
+
 or <- overland_routing(r, sf, subwatersheds = TRUE,
                        max_overlap = 0.3)
 ```
@@ -831,6 +871,7 @@ identified three sub-watersheds, one of them being an isolated channel
 cell:
 
 ``` r
+
 plot(or[, "subwatershed"])
 ```
 
@@ -842,6 +883,7 @@ parallelization and subwatersheds. We begin by initializing the input
 `"single"` would be more appropriate).
 
 ``` r
+
 sf_init <- initialize_landscape(sf, SpParams = SpParamsMED,
                                 local_control = defaultControl(soilDomains = "buckets"),
                                 progress = FALSE)
@@ -852,6 +894,7 @@ follows (simulation functions internally call
 [`overland_routing()`](https://emf-creaf.github.io/medfateland/reference/overland_routing.md)):
 
 ``` r
+
 ws_control <- default_watershed_control("tetis")
 ws_control$tetis_parameters$subwatersheds <- TRUE
 ws_control$tetis_parameters$max_overlap <- 0.3
@@ -866,6 +909,7 @@ For simplicity, we only simulate five days. We ask for console output to
 see what the model is doing:
 
 ``` r
+
 dates <- seq(as.Date("2022-04-01"), as.Date("2022-04-05"), by="day")
 res_ws7 <- spwb_land(r, sf_init,
                     SpParamsMED, interpolator, dates = dates,
@@ -886,7 +930,7 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking raster topology
 
-    ## ✔ Checking raster topology [20ms]
+    ## ✔ Checking raster topology [16ms]
 
     ## 
 
@@ -896,10 +940,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [5.1s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [4.4s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [2.7s]
+    ## ✔ Determining neighbors and overland routing for TETIS [2.1s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573
@@ -942,6 +986,7 @@ As an example of the output, we show a map of woody plant transpiration
 `summary_blocks = "WaterBalance"`:
 
 ``` r
+
 plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
 ```
 

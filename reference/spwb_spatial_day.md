@@ -3,7 +3,7 @@
 Functions that allow calling local models
 [`spwb_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html)
 or
-[`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
+[`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html),
 for a set of forest stands distributed in specific locations and a given
 date. No spatial processes are simulated.
 
@@ -105,7 +105,7 @@ Simulation functions accept different formats for meteorological input
 ## See also
 
 [`spwb_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
-[`growth_day`](https://emf-creaf.github.io/medfate/reference/spwb_day.html),
+[`growth_day`](https://emf-creaf.github.io/medfate/reference/growth_day.html),
 [`spwb_spatial`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
 
 ## Author
@@ -131,20 +131,15 @@ res <- spwb_spatial_day(example_ifn, examplemeteo, date, SpParamsMED)
 #> 
 #> ── Simulation of model 'spwb' for date '2001-03-01' ────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [13ms]
+#> ✔ Checking sf input [7ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [22ms]
+#> ✔ Checking meteo object input [10ms]
 #> 
 #> ℹ Creating '100' input objects.
-#> ✔ Creating '100' input objects. [4.6s]
+#> ✔ Creating '100' input objects. [1.6s]
 #> 
 #> • Performing 'spwb' simulations.
-#> Stands ■■■■■■■■■■■■■■                    44% | ETA:  2s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% | ETA:  0s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  0s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> ✔ No simulation errors detected
 # }
 ```

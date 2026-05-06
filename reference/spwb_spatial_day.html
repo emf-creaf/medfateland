@@ -11,7 +11,7 @@ No spatial processes are simulated."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">medfateland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.8.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ No spatial processes are simulated."><meta property="og:image" content="https://
     </div>
 
     <div class="ref-description section level2">
-    <p>Functions that allow calling local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>,
+    <p>Functions that allow calling local models <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code> or <code><a href="https://emf-creaf.github.io/medfate/reference/growth_day.html" class="external-link">growth_day</a></code>,
 for a set of forest stands distributed in specific locations and a given date.
 No spatial processes are simulated.</p>
     </div>
@@ -64,7 +64,7 @@ No spatial processes are simulated.</p>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -76,7 +76,7 @@ No spatial processes are simulated.</p>
 <span>  meteo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">date</span>,</span>
 <span>  <span class="va">SpParams</span>,</span>
-<span>  local_control <span class="op">=</span> <span class="fu">defaultControl</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  parallelize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  num_cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -137,7 +137,7 @@ No spatial processes are simulated.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">growth_day</a></code>, <code><a href="spwb_spatial.html">spwb_spatial</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://emf-creaf.github.io/medfate/reference/spwb_day.html" class="external-link">spwb_day</a></code>, <code><a href="https://emf-creaf.github.io/medfate/reference/growth_day.html" class="external-link">growth_day</a></code>, <code><a href="spwb_spatial.html">spwb_spatial</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -162,20 +162,15 @@ No spatial processes are simulated.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation of model 'spwb' for date '2001-03-01'</span> <span style="color: #00BBBB;">────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking sf input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[13ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[22ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[10ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating '100' input objects.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating '100' input objects. <span style="color: #B2B2B2;">[4.6s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating '100' input objects. <span style="color: #B2B2B2;">[1.6s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Performing 'spwb' simulations.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No simulation errors detected</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>

@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-2.8.3) to carry out simulations of forest function and dynamics on a set
+3.0.0) to carry out simulations of forest function and dynamics on a set
 of spatial units, without taking into account spatial processes. This is
 done using functions
 [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
@@ -31,6 +31,7 @@ units represented. We begin by loading an example data set of 100 forest
 stands distributed on points in the landscape:
 
 ``` r
+
 data("example_ifn")
 example_ifn
 ```
@@ -75,6 +76,7 @@ elements are either lists or data.frames. For example, the forest
 corresponding to the first stand is:
 
 ``` r
+
 example_ifn$forest[[3]]
 ```
 
@@ -101,6 +103,7 @@ example_ifn$forest[[3]]
 and the soil is:
 
 ``` r
+
 example_ifn$soil[[3]]
 ```
 
@@ -118,6 +121,7 @@ functions for spatial landscape objects, we can draw maps of some
 variables using:
 
 ``` r
+
 plot_variable(example_ifn, "basal_area")
 ```
 
@@ -146,6 +150,7 @@ to assume the same weather for all stands. We will supply a single data
 frame with daily weather for all plots:
 
 ``` r
+
 data("examplemeteo")
 head(examplemeteo)
 ```
@@ -176,6 +181,7 @@ Since it builds on **medfate**, simulations using **medfateland**
 require species parameters and control parameters for local simulations:
 
 ``` r
+
 data("SpParamsMED")
 local_control <- defaultControl()
 ```
@@ -210,6 +216,7 @@ can be done as follows (here we use parameter `dates` restrict the
 simulation period to january and february):
 
 ``` r
+
 dates <- seq(as.Date("2001-01-01"), as.Date("2001-02-28"), by="day")
 res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, 
                     dates = dates, local_control = local_control,  
@@ -228,31 +235,31 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [16ms]
+    ## ✔ Checking meteo object input [14ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [3.3s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.9s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [20ms]
+    ## ✔ Preparing data for parallelization [17ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [12.9s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [11.9s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [31ms]
+    ## ✔ Retrieval of results [17ms]
 
     ## 
 
@@ -272,6 +279,7 @@ The simulation result is also an object of class **sf** with the
 following columns:
 
 ``` r
+
 names(res)
 ```
 
@@ -297,6 +305,7 @@ from package **medfate**, to display the simulation results on a
 particular plot:
 
 ``` r
+
 plot(res$result[[1]], "Evapotranspiration")
 ```
 
@@ -309,24 +318,25 @@ stand, we can use function
 from package **medfate**:
 
 ``` r
+
 summary(res$result[[1]], freq="months",FUN=sum, output="WaterBalance")
 ```
 
-    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 25.2741773 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.1438663  5.552842
+    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
     ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    38.367183                  0                0      0     23.66144
-    ## 2001-02-01     5.696708                  0                0      0      0.00000
+    ## 2001-01-01    54.009813                  0                0      0     32.66692
+    ## 2001-02-01     6.502505                  0                0      0     10.07321
     ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           53.47314    32.824661       1.9335526
-    ## 2001-02-01               0           40.87854     2.313993       0.3902857
+    ## 2001-01-01               0           30.13352    17.182031        5.207952
+    ## 2001-02-01               0           19.09617     1.508196        1.657386
     ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        18.71492      18.71492
-    ## 2001-02-01                 0        38.17426      38.17426
+    ## 2001-01-01                 0        7.743532      7.743532
+    ## 2001-02-01                 0       15.930589     15.930589
     ##            HydraulicRedistribution
-    ## 2001-01-01              0.04912138
-    ## 2001-02-01              0.01156521
+    ## 2001-01-01             0.015837658
+    ## 2001-02-01             0.009286815
 
 However, a more convenient way of generating summaries is by calculating
 them on all forest stands in one step, using function
@@ -334,6 +344,7 @@ them on all forest stands in one step, using function
 on objects issued from simulations:
 
 ``` r
+
 res_sum <- simulation_summary(res, summary_function = summary.spwb, 
                               freq="months", output="WaterBalance")
 ```
@@ -346,6 +357,7 @@ is again an object of class `sf` that contains the spatial geometry and
 the list of summaries for all stands:
 
 ``` r
+
 names(res_sum)
 ```
 
@@ -355,30 +367,32 @@ The summary for the first stand can now be accessed through the first
 element of column `summary`:
 
 ``` r
+
 res_sum$summary[[1]]
 ```
 
-    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 25.2741773 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.1438663  5.552842
+    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
     ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    38.367183                  0                0      0     23.66144
-    ## 2001-02-01     5.696708                  0                0      0      0.00000
+    ## 2001-01-01    54.009813                  0                0      0     32.66692
+    ## 2001-02-01     6.502505                  0                0      0     10.07321
     ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           53.47314    32.824661       1.9335526
-    ## 2001-02-01               0           40.87854     2.313993       0.3902857
+    ## 2001-01-01               0           30.13352    17.182031        5.207952
+    ## 2001-02-01               0           19.09617     1.508196        1.657386
     ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        18.71492      18.71492
-    ## 2001-02-01                 0        38.17426      38.17426
+    ## 2001-01-01                 0        7.743532      7.743532
+    ## 2001-02-01                 0       15.930589     15.930589
     ##            HydraulicRedistribution
-    ## 2001-01-01              0.04912138
-    ## 2001-02-01              0.01156521
+    ## 2001-01-01             0.015837658
+    ## 2001-02-01             0.009286815
 
 Summary objects are handy because their
 [`plot_summary()`](https://emf-creaf.github.io/medfateland/reference/plot_summary.md)
 function allows us to display maps of summaries for specific dates:
 
 ``` r
+
 plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
 ```
 
@@ -386,6 +400,7 @@ plot_summary(res_sum, "Transpiration", "2001-01-01", limits=c(0,45))
 dates](SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-14-1.png)
 
 ``` r
+
 plot_summary(res_sum, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
@@ -401,6 +416,7 @@ Finally, summary objects can be reformatted using function
 to obtain an sf object more amenable for storing and data manipulation:
 
 ``` r
+
 unnest_summary(res_sum)
 ```
 
@@ -412,16 +428,16 @@ unnest_summary(res_sum)
     ## # A tibble: 200 × 21
     ##               geometry date         PET Precipitation  Rain  Snow NetRain
     ##            <POINT [°]> <chr>      <dbl>         <dbl> <dbl> <dbl>   <dbl>
-    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   25.3  
-    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.144
-    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   32.6  
-    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.548
-    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   52.1  
-    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   1.88 
-    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   38.9  
-    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   0.575
-    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   46.0  
-    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   1.28 
+    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   40.9  
+    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.950
+    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   33.7  
+    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.619
+    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   58.0  
+    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.44 
+    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   57.9  
+    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   2.44 
+    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   55.7  
+    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   2.22 
     ## # ℹ 190 more rows
     ## # ℹ 14 more variables: Snowmelt <dbl>, Infiltration <dbl>,
     ## #   InfiltrationExcess <dbl>, SaturationExcess <dbl>, Runoff <dbl>,
@@ -442,6 +458,7 @@ For example the following code will keep temporal summaries of water
 balance components instead of simulation results:
 
 ``` r
+
 res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo, 
                   dates = dates, local_control = local_control,                  
                   keep_results = FALSE, parallelize = TRUE,
@@ -454,37 +471,37 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [11ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [19ms]
+    ## ✔ Checking meteo object input [12ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [4.3s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.9s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [18ms]
+    ## ✔ Preparing data for parallelization [16ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [12.6s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [11.5s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [21ms]
+    ## ✔ Retrieval of results [19ms]
 
     ## 
 
@@ -499,6 +516,7 @@ to perform and store summaries before discarding the results of any
 stand. The output has slightly different column names:
 
 ``` r
+
 names(res_2)
 ```
 
@@ -508,29 +526,31 @@ In particular, `result` is not included. Now the temporal summaries can
 be directly accessed through the column `summary`:
 
 ``` r
+
 res_2$summary[[1]]
 ```
 
-    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 25.2741773 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.1438663  5.552842
+    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
     ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    38.367183                  0                0      0     23.66144
-    ## 2001-02-01     5.696708                  0                0      0      0.00000
+    ## 2001-01-01    54.009813                  0                0      0     32.66692
+    ## 2001-02-01     6.502505                  0                0      0     10.07321
     ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           53.47314    32.824661       1.9335526
-    ## 2001-02-01               0           40.87854     2.313993       0.3902857
+    ## 2001-01-01               0           30.13352    17.182031        5.207952
+    ## 2001-02-01               0           19.09617     1.508196        1.657386
     ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        18.71492      18.71492
-    ## 2001-02-01                 0        38.17426      38.17426
+    ## 2001-01-01                 0        7.743532      7.743532
+    ## 2001-02-01                 0       15.930589     15.930589
     ##            HydraulicRedistribution
-    ## 2001-01-01              0.04912138
-    ## 2001-02-01              0.01156521
+    ## 2001-01-01             0.015837658
+    ## 2001-02-01             0.009286815
 
 And one can produce maps with summary results directly from the output
 of the simulation function:
 
 ``` r
+
 plot_summary(res_2, "Transpiration", "2001-02-01", limits=c(0,45))
 ```
 
@@ -541,6 +561,7 @@ or extract summary results using
 [`unnest_summary()`](https://emf-creaf.github.io/medfateland/reference/unnest_summary.md):
 
 ``` r
+
 unnest_summary(res_2)
 ```
 
@@ -552,16 +573,16 @@ unnest_summary(res_2)
     ## # A tibble: 200 × 21
     ##               geometry date         PET Precipitation  Rain  Snow NetRain
     ##            <POINT [°]> <chr>      <dbl>         <dbl> <dbl> <dbl>   <dbl>
-    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   25.3  
-    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.144
-    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   32.6  
-    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.548
-    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   52.1  
-    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   1.88 
-    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   38.9  
-    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   0.575
-    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   46.0  
-    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   1.28 
+    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   40.9  
+    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.950
+    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   33.7  
+    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.619
+    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   58.0  
+    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.44 
+    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   57.9  
+    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   2.44 
+    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   55.7  
+    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   2.22 
     ## # ℹ 190 more rows
     ## # ℹ 14 more variables: Snowmelt <dbl>, Infiltration <dbl>,
     ## #   InfiltrationExcess <dbl>, SaturationExcess <dbl>, Runoff <dbl>,
@@ -583,6 +604,7 @@ For example, the following function returns the data frame corresponding
 to plant drought stress:
 
 ``` r
+
 f_stress <- function(object, ...) {
   return(object$Plants$PlantStress)
 }
@@ -591,6 +613,7 @@ f_stress <- function(object, ...) {
 Now we can call again `spwb_spatial`:
 
 ``` r
+
 res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
                   dates = dates, local_control = local_control,
                   keep_results = FALSE, parallelize = TRUE,
@@ -603,37 +626,37 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [11ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [19ms]
+    ## ✔ Checking meteo object input [12ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [4.7s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.9s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [22ms]
+    ## ✔ Preparing data for parallelization [15ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [13.3s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [10.6s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [21ms]
+    ## ✔ Retrieval of results [15ms]
 
     ## 
 
@@ -642,16 +665,17 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 The drought stress summary of stand 3 is:
 
 ``` r
+
 head(res_3$summary[[3]])
 ```
 
     ##            T1_171      S1_165 S2_188 S3_183 S4_79
     ## 2001-01-01      0 0.003088161      0      0     0
-    ## 2001-01-02      0 0.002881234      0      0     0
-    ## 2001-01-03      0 0.002876106      0      0     0
-    ## 2001-01-04      0 0.002990765      0      0     0
-    ## 2001-01-05      0 0.002811394      0      0     0
-    ## 2001-01-06      0 0.002824311      0      0     0
+    ## 2001-01-02      0 0.002857868      0      0     0
+    ## 2001-01-03      0 0.002832776      0      0     0
+    ## 2001-01-04      0 0.002913315      0      0     0
+    ## 2001-01-05      0 0.002777472      0      0     0
+    ## 2001-01-06      0 0.002774509      0      0     0
 
 In this last case, function
 [`unnest_summary()`](https://emf-creaf.github.io/medfateland/reference/unnest_summary.md)
@@ -669,6 +693,7 @@ simulation, using function
 [`update_landscape()`](https://emf-creaf.github.io/medfateland/reference/update_landscape.md):
 
 ``` r
+
 example_ifn_mod <- update_landscape(example_ifn, res)
 names(example_ifn_mod)
 ```
@@ -681,8 +706,12 @@ Note that a new column `state` appears in now in the **sf** object. We
 can check the effect by drawing the soil water potential:
 
 ``` r
+
 plot_variable(example_ifn_mod, "soil_psi_curr")
 ```
+
+    ## Warning: Removed 5 rows containing missing values or values outside the scale range
+    ## (`geom_sf()`).
 
 ![Map of soil water
 potential](SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-25-1.png)
@@ -691,6 +720,7 @@ By using this new object as input we can now simulate water balance in
 the set of stands for an extra month:
 
 ``` r
+
 dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-31"), by="day")
 res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo, 
                       dates = dates, local_control = local_control, 
@@ -704,7 +734,7 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [12ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
@@ -712,27 +742,25 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [29ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [13ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [35ms]
+    ## ✔ Preparing data for parallelization [21ms]
     ## 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [11.7s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [10.5s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [24ms]
+    ## ✔ Retrieval of results [20ms]
     ## 
     ## ✔ No simulation errors detected
 
 And display a map with the resulting month transpiration:
 
 ``` r
+
 plot_summary(res_3, "Transpiration", "2001-03-01", limits=c(0,45))
 ```
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_sf()`).
 
 ![Map of month
 transpiration](SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-27-1.png)
@@ -749,6 +777,7 @@ object (or a list of them), as defined in package **meteoland**. Here we
 use the example data provided in the package:
 
 ``` r
+
 interpolator <- meteoland::with_meteo(meteoland_meteo_example, verbose = FALSE) |>
     meteoland::create_meteo_interpolator(params = defaultInterpolationParams())
 ```
@@ -765,6 +794,7 @@ Once we have this object, using it is straightforward, via parameter
 `meteo`:
 
 ``` r
+
 res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator, 
                       local_control = local_control, 
                       summary_function = summary.spwb, summary_arguments = list(freq = "months"),
@@ -777,7 +807,7 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [10ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
@@ -785,17 +815,14 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [20ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [14ms]
     ## 
     ## ℹ Performing 'spwb' simulations on 100 locations
-    ## ✔ Performing 'spwb' simulations on 100 locations [17ms]
+    ## ✔ Performing 'spwb' simulations on 100 locations [12ms]
     ## 
-    ## Stands ■■■                                5% | ETA: 21s
-    ## Stands ■■■■■■                            16% | ETA: 19s
-    ## Stands ■■■■■■■■■                         28% | ETA: 17s
-    ## Stands ■■■■■■■■■■■■■■■                   45% | ETA: 12s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  7s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  4s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
+    ## Stands ■■■■                              10% | ETA: 13s
+    ## Stands ■■■■■■■■■■■■                      36% | ETA:  8s
+    ## Stands ■■■■■■■■■■■■■■■■■■■               61% | ETA:  5s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% | ETA:  2s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
     ## ✔ No simulation errors detected
