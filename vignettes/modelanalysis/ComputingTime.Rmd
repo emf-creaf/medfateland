@@ -21,6 +21,8 @@ The aim of this vignette is to provide users with a rough estimation of computin
 
 The results presented here were obtained using **3 months of simulation** with the **example watershed** on a laptop (16 GiB memory and 11th Gen Inter Core I5 processor @ 2.40 GHz x 8) with Ubuntu Linux OS. 
 
+Several submodel choices are tested for the bulk soil water movement (`buckets`, `single` or `dual`), whereas transpiration model is kept to `Granier` and rhizosphereOverlap is set to `total`.
+
 ```{r, include = FALSE, echo = FALSE}
 medfate_ver <- packageVersion("medfate")
 ```
@@ -59,10 +61,11 @@ if(!file.exists(file_out)) {
   #spwb
   df_res_spwb <- data.frame(model = "spwb",
                        transpirationMode = c(rep("Granier", 3)),
+                       rhizosphereOverlap = c(rep("total", 3)),
                        soilDomains = rep(c("buckets", "single", "dual"),1),
                        Elapsed_time_sec = NA)
   for(i in 1:nrow(df_res_spwb)) {
-    control <- defaultControl(df_res_spwb$transpirationMode[i], df_res_spwb$soilDomains[i])
+    control <- defaultControl(df_res_spwb$transpirationMode[i], df_res_spwb$soilDomains[i], rhizosphereOverlap = df_res_spwb$rhizosphereOverlap[i])
     control$verbose <- FALSE
     st <- system.time({spwb_land(r, example_watershed, SpParamsMED, examplemeteo, 
                        dates = dates, summary_frequency = "month",
@@ -73,10 +76,11 @@ if(!file.exists(file_out)) {
   #growth
   df_res_growth <- data.frame(model = "growth",
                        transpirationMode = c(rep("Granier", 3)),
+                       rhizosphereOverlap = c(rep("total", 3)),
                        soilDomains = rep(c("buckets", "single", "dual"),1),
                        Elapsed_time_sec = NA)
   for(i in 1:nrow(df_res_growth)) {
-    control <- defaultControl(df_res_growth$transpirationMode[i], df_res_growth$soilDomains[i])
+    control <- defaultControl(df_res_growth$transpirationMode[i], df_res_growth$soilDomains[i], rhizosphereOverlap = df_res_growth$rhizosphereOverlap[i])
     control$verbose <- FALSE
     st <- system.time({growth_land(r, example_watershed, SpParamsMED, examplemeteo, 
                        dates = dates, summary_frequency = "month",
@@ -85,7 +89,7 @@ if(!file.exists(file_out)) {
     df_res_growth$Elapsed_time_sec[i] <- st[[3]]
   }
   df_res <- dplyr::bind_rows(df_res_spwb, df_res_growth)
-  names(df_res)[4] <- as.character(medfate_ver)
+  names(df_res)[5] <- as.character(medfate_ver)
   write.csv2(df_res, file = file_out, row.names = FALSE)
 }
 ```
@@ -99,12 +103,17 @@ files <- list.files("computing_times/", full.names = TRUE)
 df_res <- NULL
 for(i in 1:length(files)) {
   df_res_i <- read.csv2(files[i])
-  names(df_res_i)[4] <- substr(names(df_res_i)[4], 2, nchar(names(df_res_i)[4]))
+  if(!("rhizosphereOverlap" %in% names(df_res_i))) {
+    df_res_i <- df_res_i |>
+      dplyr::mutate(rhizosphereOverlap = "total") |>
+      dplyr::relocate("rhizosphereOverlap", .before = soilDomains)
+  }
+  names(df_res_i)[5] <- substr(names(df_res_i)[5], 2, nchar(names(df_res_i)[5]))
   if(is.null(df_res)) {
     df_res <- df_res_i
   } else {
     df_res <- df_res |>
-      dplyr::left_join(df_res_i, by = c("model", "transpirationMode", "soilDomains"))
+      dplyr::left_join(df_res_i, by = c("model", "transpirationMode", "rhizosphereOverlap", "soilDomains"))
   }
 }
 df_res |>
