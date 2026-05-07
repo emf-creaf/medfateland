@@ -299,7 +299,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> ✔ Checking sf input [6ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [12ms]
+#> ✔ Checking meteo object input [11ms]
 #> 
 #> 
 #> ── Scenario parameters ──
@@ -323,10 +323,10 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> • Seed bank dynamics and seed dispersal...
 #> • Calling fordyn_spatial...
 #> ℹ Checking sf input
-#> ✔ Checking sf input [8ms]
+#> ✔ Checking sf input [7ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [26ms]
+#> ✔ Checking meteo object input [11ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 3 locations
 #> ✔ Performing 'fordyn' simulations on 3 locations [11ms]

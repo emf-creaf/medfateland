@@ -2,6 +2,8 @@
 
 ## medfateland 3.0.0
 
+CRAN release: 2026-05-06
+
 - Required medfate 5.0.0 and meteoland 2.6.6
 
 ## medfateland 2.8.3

@@ -11,17 +11,21 @@ simulation** with the **example watershed** on a laptop (16 GiB memory
 and 11th Gen Inter Core I5 processor @ 2.40 GHz x 8) with Ubuntu Linux
 OS.
 
+Several submodel choices are tested for the bulk soil water movement
+(`buckets`, `single` or `dual`), whereas transpiration model is kept to
+`Granier` and rhizosphereOverlap is set to `total`.
+
 ## Table of computational times
 
 Computational times were estimated using
 [`system.time()`](https://rdrr.io/r/base/system.time.html), are in
 **seconds** and are shown by **medfate** package version.
 
-| function | transpirationMode | soilDomains | 4.4.0 | 4.7.0 | 4.8.0 | 4.8.1 | 4.8.2 | 4.8.3 | 4.8.4 | 4.8.5 | 5.0.0 |
-|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| spwb | Granier | buckets | 21.743 | 13.303 | 7.780 | 7.878 | 8.156 | 5.805 | 6.024 | 8.228 | 2.114 |
-| spwb | Granier | single | 28.205 | 21.361 | 13.876 | 14.477 | 13.512 | 11.119 | 11.002 | 20.171 | 4.090 |
-| spwb | Granier | dual | 56.278 | 52.047 | 40.410 | 36.956 | 37.777 | 33.687 | 39.278 | 57.635 | 21.442 |
-| growth | Granier | buckets | 45.589 | 31.272 | 19.963 | 17.741 | 17.420 | 15.259 | 17.669 | 29.019 | 3.534 |
-| growth | Granier | single | 56.588 | 41.292 | 27.064 | 24.189 | 22.957 | 20.823 | 25.616 | 42.198 | 5.531 |
-| growth | Granier | dual | 71.757 | 61.228 | 56.788 | 45.290 | 47.656 | 43.666 | 60.693 | 94.553 | 23.709 |
+| function | transpirationMode | rhizosphereOverlap | soilDomains | 4.4.0 | 4.7.0 | 4.8.0 | 5.0.0 |
+|:---|:---|:---|:---|---:|---:|---:|---:|
+| spwb | Granier | total | buckets | 21.743 | 13.303 | 7.780 | 2.279 |
+| spwb | Granier | total | single | 28.205 | 21.361 | 13.876 | 4.490 |
+| spwb | Granier | total | dual | 56.278 | 52.047 | 40.410 | 24.695 |
+| growth | Granier | total | buckets | 45.589 | 31.272 | 19.963 | 3.689 |
+| growth | Granier | total | single | 56.588 | 41.292 | 27.064 | 5.796 |
+| growth | Granier | total | dual | 71.757 | 61.228 | 56.788 | 26.972 |

@@ -125,8 +125,8 @@ gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2517154 134.5    4440480 237.2  4440480 237.2
-    ## Vcells 4204037  32.1   10146329  77.5  8386639  64.0
+    ## Ncells 2517154 134.5    4440330 237.2  4440330 237.2
+    ## Vcells 4204037  32.1   10146329  77.5  8388452  64.0
 
 ## Topography and land cover type
 
@@ -166,37 +166,37 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [14ms]
+    ## ✔ Checking inputs [13ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [12ms]
+    ## ✔ Defining column 'id' [10ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [27ms]
+    ## ✔ Defining column 'elevation' [14ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [19ms]
+    ## ✔ Defining column 'slope' [10ms]
 
     ## 
 
     ## ℹ Defining column 'aspect'
 
-    ## ✔ Defining column 'aspect' [14ms]
+    ## ✔ Defining column 'aspect' [10ms]
 
     ## 
 
     ## ℹ Extracting topography from 'dem'
 
-    ## ✔ Extracting topography from 'dem' [5.3s]
+    ## ✔ Extracting topography from 'dem' [5.5s]
 
     ## 
 
@@ -620,7 +620,7 @@ y_3 <- impute_forests(y_2, sf_fi = sf_sfi, dem = dem,
                       progress = FALSE)
 ```
 
-    ## |---------|---------|---------|---------|=========================================                                          
+    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
 
     ## ! 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.
 

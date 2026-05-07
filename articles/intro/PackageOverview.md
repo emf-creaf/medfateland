@@ -92,20 +92,17 @@ simulations](https://emf-creaf.github.io/medfateland/articles/SpatiallyUncoupled
 
 In package **medfate**, the local soil water balance of a forest is
 primarily used to predict forest water flows and plant drought stress;
-and the main simulation function is called
-[`spwb()`](https://emf-creaf.github.io/medfate/reference/spwb.html).
-Package **medfateland** extends the former function by allowing the
-simulation of soil water balance for multiple stands distributed
-spatially over a given time period using function
+and the main simulation function is called `spwb()`. Package
+**medfateland** extends the former function by allowing the simulation
+of soil water balance for multiple stands distributed spatially over a
+given time period using function
 [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
-which makes internal calls to
-[`spwb()`](https://emf-creaf.github.io/medfate/reference/spwb.html) on
-elements the spatial classes introduced above. Function
+which makes internal calls to `spwb()` on elements the spatial classes
+introduced above. Function
 [`spwb_spatial_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial_day.md)
 is analogous to the former, but is used for the simulation of a single
-day, using internal calls to function
-[`spwb_day()`](https://emf-creaf.github.io/medfate/reference/spwb_day.html)
-of **medfate**. Function
+day, using internal calls to function `spwb_day()` of **medfate**.
+Function
 [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
 and its one-day counterpart may be used to:
 
@@ -139,19 +136,15 @@ an increase in dead leaf area and affecting carbon and water fluxes.
 
 Package **medfate** allows simulating carbon balance, growth and
 mortality of a set of plant cohorts (competing for light and water) in a
-single forest stand using function
-[`growth()`](https://emf-creaf.github.io/medfate/reference/growth.html).
-Package **medfateland** extends the former function by providing
-function
+single forest stand using function `growth()`. Package **medfateland**
+extends the former function by providing function
 [`growth_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
 which operates on spatial classes and makes internal calls to function
-[`growth()`](https://emf-creaf.github.io/medfate/reference/growth.html).
-Function
+`growth()`. Function
 [`growth_spatial_day()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial_day.md)
 is analogous to the former, but are used for the simulation of a single
-day, using internal calls to function
-[`growth_day()`](https://emf-creaf.github.io/medfate/reference/growth_day.html)
-of **medfate**. Function
+day, using internal calls to function `growth_day()` of **medfate**.
+Function
 [`growth_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md)
 and its one-day counterpart may be used to:
 
@@ -173,14 +166,13 @@ natural demographic processes (growth, mortality and recruitment) and
 natural or anthropogenic disturbances, including the effects of forest
 management.
 
-Package **medfate** includes function
-[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html),
-which allows simulating these processes at yearly time steps on a given
-forest stand, building on previous models. Package **medfateland**
-extends the former function by providing function
+Package **medfate** includes function `fordyn()`, which allows
+simulating these processes at yearly time steps on a given forest stand,
+building on previous models. Package **medfateland** extends the former
+function by providing function
 [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
 which operates on spatial classes and make internal calls to function
-[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html).
+`fordyn()`.
 
 ### Spatial coordination via management scenarios
 
@@ -272,10 +264,7 @@ may be used to:
 Function
 [`fordyn_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
 includes seed dispersal as an additional landscape process. Similarly to
-the relationship between
-[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html)
-and
-[`growth()`](https://emf-creaf.github.io/medfate/reference/growth.html),
+the relationship between `fordyn()` and `growth()`,
 [`fordyn_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
 makes a call, once a year, to
 [`growth_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
