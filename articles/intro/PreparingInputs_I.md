@@ -114,14 +114,14 @@ dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/M
 dem
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 9282, 9391, 1  (nrow, ncol, nlyr)
     ## resolution  : 30, 30  (x, y)
     ## extent      : 258097.5, 539827.5, 4485488, 4763948  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ## source      : MET30m_ETRS89_UTM31_ICGC.tif 
-    ## name        : met15v20as0f0118Bmr1r050 
-    ## min value   :                   -7.120 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## source      : MET30m_ETRS89_UTM31_ICGC.tif
+    ## name        : met15v20as0f0118Bmr1r050
+    ## min value   :                    -7.12
     ## max value   :                 3133.625
 
 Having these inputs, we can use function

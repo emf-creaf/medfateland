@@ -117,7 +117,7 @@ optimization_rock(example_subset, SpParamsMED, examplemeteo)
 #> ✔ Checking meteo object input [5ms]
 #> 
 #> ℹ Rock optimization on 2 locations
-#> ✔ Rock optimization on 2 locations [10ms]
+#> ✔ Rock optimization on 2 locations [11ms]
 #> 
 #> Stands ■■■■■■■■■■■■■■■■                  50% | ETA:  3s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s

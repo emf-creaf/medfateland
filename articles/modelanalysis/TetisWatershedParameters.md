@@ -57,7 +57,7 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
 r
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 8, 15, 1  (nrow, ncol, nlyr)
     ## resolution  : 100, 100  (x, y)
     ## extent      : 401380, 402880, 4671820, 4672620  (xmin, xmax, ymin, ymax)

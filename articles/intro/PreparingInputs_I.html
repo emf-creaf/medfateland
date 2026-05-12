@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / Adriana Tovar / Víctor Granda</h4>
             
-            <h4 data-toc-skip class="date">2026-05-07</h4>
+            <h4 data-toc-skip class="date">2026-05-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/intro/PreparingInputs_I.Rmd" class="external-link"><code>vignettes/intro/PreparingInputs_I.Rmd</code></a></small>
       <div class="d-none name"><code>PreparingInputs_I.Rmd</code></div>
@@ -182,14 +182,14 @@ using package <code>terra</code>:</p>
 <code class="sourceCode R"><span><span class="va">dataset_path</span> <span class="op">&lt;-</span> <span class="st">"~/OneDrive/EMF_datasets/"</span></span>
 <span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset_path</span>,<span class="st">"Topography/Catalunya/MET30_ETRS89_ICGC/MET30m_ETRS89_UTM31_ICGC.tif"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dem</span></span></code></pre></div>
-<pre><code><span><span class="co">## class       : SpatRaster </span></span>
+<pre><code><span><span class="co">## class       : SpatRaster</span></span>
 <span><span class="co">## size        : 9282, 9391, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 30, 30  (x, y)</span></span>
 <span><span class="co">## extent      : 258097.5, 539827.5, 4485488, 4763948  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) </span></span>
-<span><span class="co">## source      : MET30m_ETRS89_UTM31_ICGC.tif </span></span>
-<span><span class="co">## name        : met15v20as0f0118Bmr1r050 </span></span>
-<span><span class="co">## min value   :                   -7.120 </span></span>
+<span><span class="co">## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)</span></span>
+<span><span class="co">## source      : MET30m_ETRS89_UTM31_ICGC.tif</span></span>
+<span><span class="co">## name        : met15v20as0f0118Bmr1r050</span></span>
+<span><span class="co">## min value   :                    -7.12</span></span>
 <span><span class="co">## max value   :                 3133.625</span></span></code></pre>
 <p>Having these inputs, we can use function
 <code><a href="../../reference/add_topography.html">add_topography()</a></code> to add topographic features to our

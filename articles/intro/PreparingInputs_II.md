@@ -51,17 +51,14 @@ watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
 ```
 
-    ##  class       : SpatVector 
-    ##  geometry    : polygons 
-    ##  dimensions  : 1, 8  (geometries, attributes)
-    ##  extent      : 444922.8, 459850.8, 4668354, 4678487  (xmin, xmax, ymin, ymax)
-    ##  coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ##  names       : OBJECTID COD_MAR cod_uni pfafrio       nom_rio_1 Cuen_Tipo
-    ##  type        :    <int>   <chr>   <int>   <chr>           <chr>     <chr>
-    ##  values      :    63564       M 1001395 2005528 RIERA DE BIANYA        NA
-    ##  Shape_Leng Shape_Area
-    ##       <num>      <num>
-    ##   4.905e+04  1.024e+08
+    ## class       : SpatVector
+    ## geometry    : polygons
+    ## dimensions  : 1, 8  (geometries, attributes)
+    ## extent      : 444922.8, 459850.8, 4668354, 4678487  (xmin, xmax, ymin, ymax)
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## names       : OBJECTID COD_MAR cod_uni pfafrio       nom_rio_1 Cuen_Tipo Shape_Leng  Shape_Area
+    ## type        :    <int>   <chr>   <int>   <chr>           <chr>     <chr>      <num>       <num>
+    ## values      :    63564       M 1001395 2005528 RIERA DE BIANYA        NA    49045.4 1.02373e+08
 
 We can draw a map with the location of the watershed within Catalonia
 using:
@@ -125,8 +122,8 @@ gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2517154 134.5    4440330 237.2  4440330 237.2
-    ## Vcells 4204037  32.1   10146329  77.5  8388452  64.0
+    ## Ncells 2516360 134.4    4432555 236.8  4432555 236.8
+    ## Vcells 4179550  31.9   10146329  77.5  8388117  64.0
 
 ## Topography and land cover type
 
@@ -145,14 +142,14 @@ dem <- terra::rast(paste0(dataset_path,"Topography/Catalunya/MET30_ETRS89_ICGC/M
 dem
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 9282, 9391, 1  (nrow, ncol, nlyr)
     ## resolution  : 30, 30  (x, y)
     ## extent      : 258097.5, 539827.5, 4485488, 4763948  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ## source      : MET30m_ETRS89_UTM31_ICGC.tif 
-    ## name        : met15v20as0f0118Bmr1r050 
-    ## min value   :                   -7.120 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## source      : MET30m_ETRS89_UTM31_ICGC.tif
+    ## name        : met15v20as0f0118Bmr1r050
+    ## min value   :                    -7.12
     ## max value   :                 3133.625
 
 Having a digital elevation model, we can use function
@@ -166,37 +163,37 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [13ms]
+    ## ✔ Checking inputs [16ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [10ms]
+    ## ✔ Defining column 'id' [12ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [14ms]
+    ## ✔ Defining column 'elevation' [17ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [10ms]
+    ## ✔ Defining column 'slope' [11ms]
 
     ## 
 
     ## ℹ Defining column 'aspect'
 
-    ## ✔ Defining column 'aspect' [10ms]
+    ## ✔ Defining column 'aspect' [11ms]
 
     ## 
 
     ## ℹ Extracting topography from 'dem'
 
-    ## ✔ Extracting topography from 'dem' [5.5s]
+    ## ✔ Extracting topography from 'dem' [6.6s]
 
     ## 
 
@@ -256,13 +253,13 @@ lcm <- terra::rast(paste0(dataset_path,"LandCover/Catalunya/MapaCobertesSol2018/
 lcm
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 259198, 267234, 1  (nrow, ncol, nlyr)
     ## resolution  : 1, 1  (x, y)
     ## extent      : 260170, 527404, 4488784, 4747982  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ## source      : cobertes-sol-v1r0-2018.tif 
-    ## color table : 1 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## source      : cobertes-sol-v1r0-2018.tif
+    ## color table : 1
     ## name        : cobertes-sol-v1r0-2018
 
 Users should examine the legend of their land cover map and decide how
@@ -363,17 +360,18 @@ forest_map <- terra::vect(paste0(dataset_path,"ForestMaps/Spain/MFE25/MFE_PROVIN
 forest_map
 ```
 
-    ##  class       : SpatVector 
-    ##  geometry    : polygons 
-    ##  dimensions  : 39512, 1  (geometries, attributes)
-    ##  extent      : 888326.9, 1021907, 4627085, 4720469  (xmin, xmax, ymin, ymax)
-    ##  source      : MFE_17_class.gpkg
-    ##  coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
-    ##  names       : Class
-    ##  type        : <chr>
-    ##  values      :    NA
-    ##                   NA
-    ##                   NA
+    ## class       : SpatVector
+    ## geometry    : polygons
+    ## dimensions  : 39512, 1  (geometries, attributes)
+    ## extent      : 888326.9, 1021907, 4627085, 4720469  (xmin, xmax, ymin, ymax)
+    ## source      : MFE_17_class.gpkg
+    ## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830)
+    ## names       : Class
+    ## type        : <chr>
+    ## values      :    NA
+    ##                  NA
+    ##                  NA
+    ##               ...
 
 Second, we need forest inventory data for imputations. Arguably, this is
 the hardest part. Let’s assume one has access to a such data already in
@@ -427,8 +425,6 @@ to perform the imputation for us (this normally takes some time):
 y_2 <- impute_forests(y_1, sf_fi = sf_nfi, dem = dem, 
                       forest_map = forest_map, progress = FALSE)
 ```
-
-    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
 
     ## ! 12 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 165 target locations.
 
@@ -552,22 +548,18 @@ veg_map <- terra::vect(paste0(dataset_path,"ForestMaps/Catalunya/Habitats_v2/Hab
 veg_map
 ```
 
-    ##  class       : SpatVector 
-    ##  geometry    : polygons 
-    ##  dimensions  : 61036, 42  (geometries, attributes)
-    ##  extent      : 260189, 526577.9, 4488766, 4747981  (xmin, xmax, ymin, ymax)
-    ##  source      : Habitats_interes_com.shp
-    ##  coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ##  names       :  OBJECTID  HIC1       TEXT_HIC1 RHIC1 SUP_HIC1  HIC2
-    ##  type        :     <num> <chr>           <chr> <num>    <num> <chr>
-    ##  values      : 4.218e+04  9340 Alzinars i car~    10     4.17    NA
-    ##                2.444e+04  9340 Alzinars i car~     5    23.56  9540
-    ##                 2.09e+04  9260     Castanyedes     4     5.02    NA
-    ##        TEXT_HIC2 RHIC2 SUP_HIC2  HIC3 (and 32 more)
-    ##            <chr> <num>    <num> <chr>              
-    ##               NA     0        0    NA              
-    ##  Pinedes medite~     5    23.56    NA              
-    ##               NA     0        0    NA
+    ## class       : SpatVector
+    ## geometry    : polygons
+    ## dimensions  : 61036, 42  (geometries, attributes)
+    ## extent      : 260189, 526577.9, 4488766, 4747981  (xmin, xmax, ymin, ymax)
+    ## source      : Habitats_interes_com.shp
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## names       : OBJECTID  HIC1       TEXT_HIC1 RHIC1 SUP_HIC1  HIC2       TEXT_HIC2 RHIC2 SUP_HIC2  HIC3   (and 32 more)
+    ## type        :    <num> <chr>           <chr> <num>    <num> <chr>           <chr> <num>    <num> <chr>
+    ## values      :    42175  9340 Alzinars i car~    10     4.17    NA              NA     0        0    NA
+    ##                  24438  9340 Alzinars i car~     5    23.56  9540 Pinedes medite~     5    23.56    NA
+    ##                  20902  9260     Castanyedes     4     5.02    NA              NA     0        0    NA
+    ##               ...
 
 In this case we use a database of 575 shrubland inventory plots in
 Catalonia described in [Casals et
@@ -620,8 +612,6 @@ y_3 <- impute_forests(y_2, sf_fi = sf_sfi, dem = dem,
                       progress = FALSE)
 ```
 
-    ## |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
-
     ## ! 8 forest classes were not represented in forest inventory data. Geographic/topographic criteria used for 65 target locations.
 
     ## ℹ Forest imputed on 143 out of 143 target wildland locations (100%).
@@ -667,12 +657,12 @@ height_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lidar/Va
 height_map
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 13100, 13400, 1  (nrow, ncol, nlyr)
     ## resolution  : 20, 20  (x, y)
     ## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ## source      : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## source      : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017.tif
     ## name        : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017
 
 This resolution is a bit finer than the size of forest inventory plots.
@@ -686,15 +676,15 @@ height_map_40 <- terra::aggregate(terra::crop(height_map, r),
 height_map_40
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 253, 374, 1  (nrow, ncol, nlyr)
     ## resolution  : 40, 40  (x, y)
     ## extent      : 444920, 459880, 4668360, 4678480  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
     ## source(s)   : memory
-    ## name        : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017 
-    ## min value   :                                                3.965 
-    ## max value   :                                               25.000
+    ## name        : variables-biofisiques-arbrat-v1r0-hmitjana-2016-2017
+    ## min value   :                                                3.965
+    ## max value   :                                                   25
 
 Mean tree height data has the following distribution:
 
@@ -778,12 +768,12 @@ basal_area_map <- terra::rast(paste0(dataset_path, "RemoteSensing/Catalunya/Lida
 basal_area_map
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 13100, 13400, 1  (nrow, ncol, nlyr)
     ## resolution  : 20, 20  (x, y)
     ## extent      : 260000, 528000, 4488000, 4750000  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
-    ## source      : variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
+    ## source      : variables-biofisiques-arbrat-v1r0-ab-2016-2017.tif
     ## name        : variables-biofisiques-arbrat-v1r0-ab-2016-2017
 
 We perform the same aggregation done for heights:
@@ -795,15 +785,15 @@ basal_area_map_40 <- terra::aggregate(terra::crop(basal_area_map, r),
 basal_area_map_40
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 253, 374, 1  (nrow, ncol, nlyr)
     ## resolution  : 40, 40  (x, y)
     ## extent      : 444920, 459880, 4668360, 4678480  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831) 
+    ## coord. ref. : ETRS89 / UTM zone 31N (EPSG:25831)
     ## source(s)   : memory
-    ## name        : variables-biofisiques-arbrat-v1r0-ab-2016-2017 
-    ## min value   :                                           3.48 
-    ## max value   :                                          60.00
+    ## name        : variables-biofisiques-arbrat-v1r0-ab-2016-2017
+    ## min value   :                                           3.48
+    ## max value   :                                             60
 
 Basal area geographic distribution looks as follows:
 
@@ -1422,22 +1412,18 @@ glhymps_map <- terra::vect(paste0(dataset_path,"Geology/Global/GLHYMPS2/GLHYMPS_
 glhymps_map
 ```
 
-    ##  class       : SpatVector 
-    ##  geometry    : polygons 
-    ##  dimensions  : 18954, 23  (geometries, attributes)
-    ##  extent      : -556597.5, 445486.2, 3637705, 4410471  (xmin, xmax, ymin, ymax)
-    ##  source      : GLHYMPS_Spain.shp
-    ##  coord. ref. : Cylindrical_Equal_Area 
-    ##  names       : OBJECTID_1 IDENTITY_ logK_Ice_x logK_Ferr_ Porosity_x K_stdev_x1
-    ##  type        :      <num>     <chr>      <num>      <num>      <num>      <num>
-    ##  values      :   9.43e+05   ESP3276      -1520      -1520         19        250
-    ##                  9.43e+05   ESP3282      -1180      -1180          6        150
-    ##                  9.43e+05   ESP3291      -1180      -1180          6        150
-    ##  OBJECTID Descriptio    XX    YY (and 13 more)
-    ##     <num>      <chr> <chr> <chr>              
-    ##         0         NA    NA    NA              
-    ##         0         NA    NA    NA              
-    ##         0         NA    NA    NA
+    ## class       : SpatVector
+    ## geometry    : polygons
+    ## dimensions  : 18954, 23  (geometries, attributes)
+    ## extent      : -556597.5, 445486.2, 3637705, 4410471  (xmin, xmax, ymin, ymax)
+    ## source      : GLHYMPS_Spain.shp
+    ## coord. ref. : Cylindrical_Equal_Area
+    ## names       : OBJECTID_1 IDENTITY_ logK_Ice_x logK_Ferr_ Porosity_x K_stdev_x1 OBJECTID Descriptio    XX    YY   (and 13 more)
+    ## type        :      <num>     <chr>      <num>      <num>      <num>      <num>    <num>      <chr> <chr> <chr>
+    ## values      :     943032   ESP3276      -1520      -1520         19        250        0         NA    NA    NA
+    ##                   943035   ESP3282      -1180      -1180          6        150        0         NA    NA    NA
+    ##                   943042   ESP3291      -1180      -1180          6        150        0         NA    NA    NA
+    ##               ...
 
 We first extract the GLHYMPS 2.0 data on the target locations:
 

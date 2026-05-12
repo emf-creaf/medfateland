@@ -132,7 +132,7 @@ r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620,
 r
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 8, 15, 1  (nrow, ncol, nlyr)
     ## resolution  : 100, 100  (x, y)
     ## extent      : 401380, 402880, 4671820, 4672620  (xmin, xmax, ymin, ymax)
@@ -185,7 +185,7 @@ example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [13ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [14ms]
 
     ## 
 
@@ -245,7 +245,7 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [5ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [6ms]
 
     ## 
 
@@ -940,10 +940,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.8s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [4.3s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [2.3s]
+    ## ✔ Determining neighbors and overland routing for TETIS [2.1s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573

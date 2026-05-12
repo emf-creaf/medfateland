@@ -241,25 +241,25 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.9s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.7s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [24ms]
+    ## ✔ Preparing data for parallelization [16ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [10.3s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [7.8s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [16ms]
+    ## ✔ Retrieval of results [20ms]
 
     ## 
 
@@ -483,25 +483,25 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.7s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.6s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [14ms]
+    ## ✔ Preparing data for parallelization [15ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [9.8s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [8.4s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [14ms]
+    ## ✔ Retrieval of results [18ms]
 
     ## 
 
@@ -638,7 +638,7 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.8s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.7s]
 
     ## 
 
@@ -650,13 +650,13 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [9.8s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [8.5s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [15ms]
+    ## ✔ Retrieval of results [16ms]
 
     ## 
 
@@ -742,16 +742,16 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [12ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [16ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [19ms]
+    ## ✔ Preparing data for parallelization [22ms]
     ## 
     ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [9.6s]
+    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [9.4s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [18ms]
+    ## ✔ Retrieval of results [17ms]
     ## 
     ## ✔ No simulation errors detected
 
@@ -818,11 +818,11 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
     ## ℹ Checking meteo object input✔ Checking meteo object input [12ms]
     ## 
     ## ℹ Performing 'spwb' simulations on 100 locations
-    ## ✔ Performing 'spwb' simulations on 100 locations [10ms]
+    ## ✔ Performing 'spwb' simulations on 100 locations [11ms]
     ## 
-    ## Stands ■■■                                8% | ETA: 12s
-    ## Stands ■■■■■■■■■■■                       32% | ETA:  8s
-    ## Stands ■■■■■■■■■■■■■■■■■■                57% | ETA:  5s
+    ## Stands ■■■                                7% | ETA: 14s
+    ## Stands ■■■■■■■■■■                        31% | ETA:  8s
+    ## Stands ■■■■■■■■■■■■■■■■■■                56% | ETA:  5s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  2s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
     ## ✔ No simulation errors detected
