@@ -86,7 +86,7 @@ arrows indicate model parameter or data provision.
 
 ## Authorship
 
-Package **medfate** is developed and maintained by the [*Ecosystem
+Package **medfateland** is developed and maintained by the [*Ecosystem
 Modelling Facility*](https://emf.creaf.cat) unit at
 [*CREAF*](https://www.creaf.cat/) with funding from
 [*CSIC*](https://www.csic.es/), in close collaboration with researchers

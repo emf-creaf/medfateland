@@ -122,6 +122,59 @@
   return(f)
 }
 
+.parse_deadwood <- function(f, deadwood) {
+  snags <- deadwood$deadwood_type %in% c("snag", "small_snag")
+  if(sum(snags)>0) {
+    dw_snag <- deadwood[snags, , drop = FALSE]
+    snagData <- dw_snag |>
+      dplyr::select(sp_name, sp_code, dbh, height_length) |>
+      dplyr::rename(Species = "sp_name",
+                    SpeciesCode = "sp_code") |>
+      dplyr::rename(DBH = "dbh") |>
+      dplyr::rename(Height = "height_length") |>
+      dplyr::mutate(DeadAge = as.numeric(NA),
+                    SmallBranches = 0,
+                    LargeWood = 0)
+    if("carbon_g_m2" %in% names(dw_snag)) {
+      snagData <- snagData |>
+        dplyr::mutate(LargeWood = dw_snag$carbon_g_m2,
+                      SmallBranches = dplyr::if_else(dw_snag$decay_class=="1", dw_snag$carbon_g_m2*0.1, 0))
+    }
+    
+    f[["snagData"]] <- snagData
+  }
+  downed <- deadwood$deadwood_type %in% c("log","branch", "slash", "stump")
+  if(sum(snags)>0) {
+    dw_downed <- deadwood[downed, , drop = FALSE]
+    litterData <- dw_downed |>
+      dplyr::select(sp_name, sp_code) |>
+      dplyr::rename(Species = "sp_name",
+                    SpeciesCode = "sp_code") |>
+      dplyr::mutate(Leaves = 0,
+                    Twigs = 0,
+                    SmallBranches = 0,
+                    LargeWood = 0,
+                    CoarseRoots = 0,
+                    FineRoots = 0)
+    if("carbon_g_m2" %in% names(dw_downed)) {
+      litterData <- litterData |>
+        dplyr::mutate(LargeWood = dw_downed$carbon_g_m2)
+    }
+    litterData <- litterData |>
+      dplyr::group_by(Species, SpeciesCode) |>
+      dplyr::summarise(Leaves = sum(Leaves, na.rm=TRUE),
+                       Twigs = sum(Twigs, na.rm=TRUE),
+                       SmallBranches = sum(SmallBranches, na.rm=TRUE),
+                       LargeWood = sum(LargeWood, na.rm=TRUE), 
+                       CoarseRoots = sum(CoarseRoots, na.rm=TRUE),
+                       FineRoots = sum(FineRoots, na.rm=TRUE),
+                       .groups = "drop")
+    
+    f[["litterData"]] <- litterData
+  }
+  return(f)
+}
+
 #' Parse forestable
 #' 
 #' Transforms a data frame or sf object issued from package forestables into an sf object
@@ -163,6 +216,10 @@ parse_forestable <- function(x,
   if("elev" %in% names(x)) forestables_vars <- c(forestables_vars, "elev")
   if("slope" %in% names(x)) forestables_vars <- c(forestables_vars, "slope")
   if("aspect" %in% names(x)) forestables_vars <- c(forestables_vars, "aspect")
+  parseDeadWood <- "deadwood" %in% names(x)
+  if(parseDeadWood) {
+    deadwood <- x[["deadwood"]]
+  }
   if(!inherits(x, "sf")) { # Taken from forestables (to avoid importing the package)
     x <- x[,c(forestables_vars, "coordx", "coordy", "crs", "coord_sys")]
     x <- x |>
@@ -195,6 +252,9 @@ parse_forestable <- function(x,
                        filterDeadTrees = filterDeadTrees,
                        filterCutTrees = filterCutTrees,
                        minimumTreeDBH = minimumTreeDBH)
+    if(parseDeadWood) {
+      f <- .parse_deadwood(f, deadwood = deadwood[[i]])
+    }
     if(!is.null(f)) x$forest[[i]] <- f
     if(keepUnfilteredCopy) {
       f_unfiltered <- .parse_forest(x$tree[[i]], x$understory[[i]], x$regen[[i]],
@@ -205,6 +265,9 @@ parse_forestable <- function(x,
                                     filterDeadTrees = FALSE,
                                     filterCutTrees = FALSE,
                                     minimumTreeDBH = 0.0)
+      if(parseDeadWood) {
+        f_unfiltered <- .parse_deadwood(f_unfiltered, deadwood = deadwood[[i]])
+      }
       if(!is.null(f)) x$forest_unfiltered[[i]] <- f_unfiltered
     }
     if(progress) cli::cli_progress_update()
