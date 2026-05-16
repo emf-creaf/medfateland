@@ -127,7 +127,7 @@
   if(sum(snags)>0) {
     dw_snag <- deadwood[snags, , drop = FALSE]
     snagData <- dw_snag |>
-      dplyr::select(sp_name, sp_code, dbh, height_length) |>
+      dplyr::select(.data$sp_name, .data$sp_code, .data$dbh, .data$height_length) |>
       dplyr::rename(Species = "sp_name",
                     SpeciesCode = "sp_code") |>
       dplyr::rename(DBH = "dbh") |>
@@ -147,7 +147,7 @@
   if(sum(snags)>0) {
     dw_downed <- deadwood[downed, , drop = FALSE]
     litterData <- dw_downed |>
-      dplyr::select(sp_name, sp_code) |>
+      dplyr::select(.data$sp_name, .data$sp_code) |>
       dplyr::rename(Species = "sp_name",
                     SpeciesCode = "sp_code") |>
       dplyr::mutate(Leaves = 0,
@@ -161,13 +161,13 @@
         dplyr::mutate(LargeWood = dw_downed$carbon_g_m2)
     }
     litterData <- litterData |>
-      dplyr::group_by(Species, SpeciesCode) |>
-      dplyr::summarise(Leaves = sum(Leaves, na.rm=TRUE),
-                       Twigs = sum(Twigs, na.rm=TRUE),
-                       SmallBranches = sum(SmallBranches, na.rm=TRUE),
-                       LargeWood = sum(LargeWood, na.rm=TRUE), 
-                       CoarseRoots = sum(CoarseRoots, na.rm=TRUE),
-                       FineRoots = sum(FineRoots, na.rm=TRUE),
+      dplyr::group_by(.data$Species, .data$SpeciesCode) |>
+      dplyr::summarise(Leaves = sum(.data$Leaves, na.rm=TRUE),
+                       Twigs = sum(.data$Twigs, na.rm=TRUE),
+                       SmallBranches = sum(.data$SmallBranches, na.rm=TRUE),
+                       LargeWood = sum(.data$LargeWood, na.rm=TRUE), 
+                       CoarseRoots = sum(.data$CoarseRoots, na.rm=TRUE),
+                       FineRoots = sum(.data$FineRoots, na.rm=TRUE),
                        .groups = "drop")
     
     f[["litterData"]] <- litterData
