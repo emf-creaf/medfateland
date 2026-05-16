@@ -1,5 +1,8 @@
+# medfateland 3.0.1
+* Allows parsing deadwood if present in forestable data
+
 # medfateland 3.0.0
-* Required medfate 5.0.0 and meteoland 2.6.6
+* Required medfate 5.0.0 and meteoland 2.2.6
 
 # medfateland 2.8.3
 * New function unnest_summary() to extract cell summaries as unnested sf.
