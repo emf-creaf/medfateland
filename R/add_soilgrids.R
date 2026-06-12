@@ -124,7 +124,7 @@ add_soilgrids <- function(x, soilgrids_path = NULL,
         x_vect <- terra::vect(sf::st_transform(sf::st_geometry(x), terra::crs(r)))
         vals <- terra::extract(r, x_vect)[,2]
       }
-      if(var %in% c("soc")) {
+      if(var %in% c("soc", "bdod", "nitrogen")) {
         vals <- vals/100
       } else {
         vals <- vals/10
