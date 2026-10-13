@@ -60,7 +60,7 @@ Using `plot_variable()` functions for spatial landscape objects, we can draw map
 plot_variable(example_ifn, "basal_area")
 ```
 
-The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot_land()` to display maps interactively.
+The set of maps available can be known by inspecting the help of function `extract_variables()`. Alternatively, the package provides function `shinyplot()` to display maps interactively from outputs of `spwb_land()`, `growth_land()` or `fordyn_land()`.
 
 ### Climate forcing
 

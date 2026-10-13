@@ -323,7 +323,7 @@ plot_summary(res_ws6$sf, variable = "MinTemperature", date = "2022-04-01", r = r
 
 ## Parallel simulations using subwatersheds
 
-Simulations can be rather slow even for moderately-sized watersheds. For these reason, **medfateland** now incorporates the possibility to perform parallel simulations in subwatersheds, and then aggregate the results. To illustrate this feature we will use  the data set of Bianya watershed  (see [Preparing inputs II: arbitrary locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html]); you can find the dataset in the **medfateland** GitHub repository). 
+Simulations can be rather slow even for moderately-sized watersheds. For these reason, **medfateland** now incorporates the possibility to perform parallel simulations in subwatersheds, and then aggregate the results. To illustrate this feature we will use  the data set of Bianya watershed  (see [Preparing inputs II: arbitrary locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html); you can find the dataset in the **medfateland** GitHub repository). 
 
 We begin by loading the raster and `sf` inputs for Bianya:
 

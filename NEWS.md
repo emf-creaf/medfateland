@@ -184,7 +184,7 @@
 - New function 'growthland' and 'plot.growthland'
 - New summary functions 'summary.spwbpoints'....
 - New plotting functions 'plot.summarypoints', 'plot.summarypixels' and 'plot.summarygrid'
-- New function 'shinyplot_land'
+- New functions 'shinyplot' for medfateland objects
 
 # medfateland 0.2.5
 - Update medfate 2.2
