@@ -122,8 +122,8 @@ gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2516360 134.4    4432555 236.8  4432555 236.8
-    ## Vcells 4179550  31.9   10146329  77.5  8388117  64.0
+    ## Ncells 2541706 135.8    4215497 225.2  4215497 225.2
+    ## Vcells 4200285  32.1   10146329  77.5  8388427  64.0
 
 ## Topography and land cover type
 
@@ -163,37 +163,37 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [16ms]
+    ## ✔ Checking inputs [19ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [12ms]
+    ## ✔ Defining column 'id' [15ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [17ms]
+    ## ✔ Defining column 'elevation' [19ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [11ms]
+    ## ✔ Defining column 'slope' [12ms]
 
     ## 
 
     ## ℹ Defining column 'aspect'
 
-    ## ✔ Defining column 'aspect' [11ms]
+    ## ✔ Defining column 'aspect' [12ms]
 
     ## 
 
     ## ℹ Extracting topography from 'dem'
 
-    ## ✔ Extracting topography from 'dem' [6.6s]
+    ## ✔ Extracting topography from 'dem' [4.1s]
 
     ## 
 
@@ -1104,12 +1104,12 @@ y_6$soil[[1]]
 ```
 
     ##   widths clay sand   om nitrogen  ph   bd  rfc
-    ## 1     50 21.5 38.4 8.69     51.6 6.1 11.2 18.0
-    ## 2    100 21.0 39.2 4.03     24.7 6.2 11.4 21.2
-    ## 3    150 22.7 38.6 2.59     19.5 6.2 12.7 19.1
-    ## 4    300 24.7 38.3 1.87     11.6 6.3 14.3 17.8
-    ## 5    400 25.2 40.0 1.40     10.6 6.3 15.2 18.2
-    ## 6   1000 25.0 39.1 0.88      9.7 6.4 15.4 19.4
+    ## 1     50 21.5 38.4 8.69     5.16 6.1 1.12 18.0
+    ## 2    100 21.0 39.2 4.03     2.47 6.2 1.14 21.2
+    ## 3    150 22.7 38.6 2.59     1.95 6.2 1.27 19.1
+    ## 4    300 24.7 38.3 1.87     1.16 6.3 1.43 17.8
+    ## 5    400 25.2 40.0 1.40     1.06 6.3 1.52 18.2
+    ## 6   1000 25.0 39.1 0.88     0.97 6.4 1.54 19.4
 
 During data retrieval, there might be some locations where SoilGrids 2.0
 data was missing. We can use function
@@ -1210,12 +1210,12 @@ y_8$soil[[1]]
 ```
 
     ##   widths clay sand   om nitrogen  ph   bd      rfc
-    ## 1     50 21.5 38.4 8.69     51.6 6.1 11.2 18.00000
-    ## 2    100 21.0 39.2 4.03     24.7 6.2 11.4 21.20000
-    ## 3    150 22.7 38.6 2.59     19.5 6.2 12.7 19.10000
-    ## 4    300 24.7 38.3 1.87     11.6 6.3 14.3 31.33929
-    ## 5    400 25.2 40.0 1.40     10.6 6.3 15.2 55.71429
-    ## 6   1000 25.0 39.1 0.88      9.7 6.4 15.4 97.50000
+    ## 1     50 21.5 38.4 8.69     5.16 6.1 1.12 18.00000
+    ## 2    100 21.0 39.2 4.03     2.47 6.2 1.14 21.20000
+    ## 3    150 22.7 38.6 2.59     1.95 6.2 1.27 19.10000
+    ## 4    300 24.7 38.3 1.87     1.16 6.3 1.43 31.33929
+    ## 5    400 25.2 40.0 1.40     1.06 6.3 1.52 55.71429
+    ## 6   1000 25.0 39.1 0.88     0.97 6.4 1.54 97.50000
 
 We can compare the effect of the correction on the soil water capacity
 (in mm) by inspecting the following plots (note the change in magnitude

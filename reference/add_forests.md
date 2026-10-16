@@ -183,9 +183,9 @@ y_1 <- add_forests(x, tree_table = poblet_trees, tree_mapping = mapping, SpParam
 summary(y_1$forest[[1]], SpParamsMED)
 #> Tree BA (m2/ha): 3.0179815  adult trees: 3.0179815  saplings: 0 
 #> Density (ind/ha) adult trees: 267  saplings: 0  shrubs (estimated): 0 
-#> Cover (%) adult trees: 42.3272186  saplings: 0  shrubs: 0  herbs: 0 
-#> LAI (m2/m2) total: 0.5419688  adult trees: 0.5419688  saplings: 0  shrubs: 0  herbs: 0 
-#> Fuel loading (kg/m2) total: 0.1414227  adult trees: 0.1414227  saplings: 0  shrubs: 0  herbs: 0 
+#> Cover (%) adult trees: 55.4453822  saplings: 0  shrubs: 0  herbs: 0 
+#> LAI (m2/m2) total: 0.5255162  adult trees: 0.5255162  saplings: 0  shrubs: 0  herbs: 0  mistletoe: 0 
+#> Fuel loading (kg/m2) total: 0.1396787  adult trees: 0.1396787  saplings: 0  shrubs: 0  herbs: 0 
 #> PAR ground (%): NA  SWR ground (%): NA 
 
 # Add sampled plot surface and repeat reading to correct tree density
@@ -197,8 +197,8 @@ summary(y_2$forest[[1]], SpParamsMED)
 #> Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 
 #> Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 
 #> Cover (%) adult trees: 100  saplings: 0  shrubs: 0  herbs: 0 
-#> LAI (m2/m2) total: 4.9189289  adult trees: 4.9189289  saplings: 0  shrubs: 0  herbs: 0 
-#> Fuel loading (kg/m2) total: 1.2992685  adult trees: 1.2992685  saplings: 0  shrubs: 0  herbs: 0 
+#> LAI (m2/m2) total: 4.7110444  adult trees: 4.7110444  saplings: 0  shrubs: 0  herbs: 0  mistletoe: 0 
+#> Fuel loading (kg/m2) total: 1.2854632  adult trees: 1.2854632  saplings: 0  shrubs: 0  herbs: 0 
 #> PAR ground (%): NA  SWR ground (%): NA 
 
 # Check forests (height is missing!)
@@ -218,9 +218,9 @@ summary(y_3$forest[[1]], SpParamsMED)
 #> Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 
 #> Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 
 #> Cover (%) adult trees: 100  saplings: 0  shrubs: 0  herbs: 0 
-#> LAI (m2/m2) total: 4.9189289  adult trees: 4.9189289  saplings: 0  shrubs: 0  herbs: 0 
-#> Fuel loading (kg/m2) total: 1.2992685  adult trees: 1.2992685  saplings: 0  shrubs: 0  herbs: 0 
-#> PAR ground (%): 6.6842854  SWR ground (%): 13.4793937 
+#> LAI (m2/m2) total: 4.7110444  adult trees: 4.7110444  saplings: 0  shrubs: 0  herbs: 0  mistletoe: 0 
+#> Fuel loading (kg/m2) total: 1.2854632  adult trees: 1.2854632  saplings: 0  shrubs: 0  herbs: 0 
+#> PAR ground (%): 7.4939482  SWR ground (%): 14.6707514 
 
 # Final check
 check_forests(y_3)

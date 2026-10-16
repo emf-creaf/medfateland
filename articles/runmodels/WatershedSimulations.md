@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-3.0.0) to carry out simulations of forest function and dynamics on a set
+3.0.1) to carry out simulations of forest function and dynamics on a set
 of forest stands while including lateral water transfer processes. This
 is done using functions
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
@@ -185,7 +185,7 @@ example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [14ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [18ms]
 
     ## 
 
@@ -245,7 +245,7 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [6ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [4ms]
 
     ## 
 
@@ -290,11 +290,11 @@ initialization in the next sections.
 
 To speed up calculations, we call function
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
-for a single month:
+for three months:
 
 ``` r
 
-dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 res_ws1 <- spwb_land(r, example_simplified,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
@@ -336,18 +336,18 @@ res_ws1$sf
     ## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570
     ## Projected CRS: WGS 84 / UTM zone 31N
     ## # A tibble: 66 × 11
-    ##            geometry state            aquifer snowpack summary  result outlet
-    ##  *      <POINT [m]> <list>             <dbl>    <dbl> <list>   <list> <lgl> 
-    ##  1 (402630 4672570) <spwbInpt [20]>   5.08       3.56 <dbl[…]> <NULL> FALSE 
-    ##  2 (402330 4672470) <aspwbInp [4]>    0.0598     3.56 <dbl[…]> <NULL> FALSE 
-    ##  3 (402430 4672470) <spwbInpt [20]>   0.299      3.56 <dbl[…]> <NULL> FALSE 
-    ##  4 (402530 4672470) <spwbInpt [20]>   0.718      2.54 <dbl[…]> <NULL> FALSE 
-    ##  5 (402630 4672470) <spwbInpt [20]>   8.97       2.57 <dbl[…]> <NULL> FALSE 
-    ##  6 (402730 4672470) <aspwbInp [4]>  927.         3.56 <dbl[…]> <NULL> TRUE  
-    ##  7 (402830 4672470) <aspwbInp [4]>  534.         3.56 <dbl[…]> <NULL> FALSE 
-    ##  8 (402230 4672370) <spwbInpt [20]>   0.0671     2.53 <dbl[…]> <NULL> FALSE 
-    ##  9 (402330 4672370) <spwbInpt [20]>   0.394      2.81 <dbl[…]> <NULL> FALSE 
-    ## 10 (402430 4672370) <aspwbInp [4]>    1.05       3.56 <dbl[…]> <NULL> FALSE 
+    ##            geometry state             aquifer snowpack summary  result outlet
+    ##  *      <POINT [m]> <list>              <dbl>    <dbl> <list>   <list> <lgl> 
+    ##  1 (402630 4672570) <spwbInpt [20]>  17.5            0 <dbl[…]> <NULL> FALSE 
+    ##  2 (402330 4672470) <aspwbInp [4]>    0.00842        0 <dbl[…]> <NULL> FALSE 
+    ##  3 (402430 4672470) <spwbInpt [20]>   0.0847         0 <dbl[…]> <NULL> FALSE 
+    ##  4 (402530 4672470) <spwbInpt [20]>   0.348          0 <dbl[…]> <NULL> FALSE 
+    ##  5 (402630 4672470) <spwbInpt [20]>  12.0            0 <dbl[…]> <NULL> FALSE 
+    ##  6 (402730 4672470) <aspwbInp [4]>  930              0 <dbl[…]> <NULL> TRUE  
+    ##  7 (402830 4672470) <aspwbInp [4]>  553.             0 <dbl[…]> <NULL> FALSE 
+    ##  8 (402230 4672370) <spwbInpt [20]>   0.00521        0 <dbl[…]> <NULL> FALSE 
+    ##  9 (402330 4672370) <spwbInpt [20]>   0.0420         0 <dbl[…]> <NULL> FALSE 
+    ## 10 (402430 4672370) <aspwbInp [4]>    0.248          0 <dbl[…]> <NULL> FALSE 
     ## # ℹ 56 more rows
     ## # ℹ 4 more variables: channel <lgl>, target_outlet <int>, outlet_backlog <dbl>,
     ## #   subwatershed <int>
@@ -368,33 +368,33 @@ head(res_ws1$watershed_balance)
 ```
 
     ##        dates       PET Precipitation      Rain Snow Snowmelt Interception
-    ## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0    0.7754218
-    ## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0    0.6090627
+    ## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0    0.9380404
+    ## 2 2001-01-02 1.5958674      2.498292  2.498292    0        0    0.7472594
     ## 3 2001-01-03 1.3417718      0.000000  0.000000    0        0    0.0000000
-    ## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0    0.7723790
-    ## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0    0.4808826
-    ## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0    0.8613997
+    ## 4 2001-01-04 0.6054039      5.796973  5.796973    0        0    0.9333051
+    ## 5 2001-01-05 1.6387324      1.884401  1.884401    0        0    0.6045918
+    ## 6 2001-01-06 1.2058183     13.359801 13.359801    0        0    1.0529122
     ##     NetRain Infiltration InfiltrationExcess SaturationExcess  CellRunon
-    ## 1  4.093687     4.093687         0.00000000                0 0.00000000
-    ## 2  1.889229     1.889229         0.00000000                0 0.00000000
+    ## 1  3.931068     3.931068         0.00000000                0 0.00000000
+    ## 2  1.751032     1.751032         0.00000000                0 0.00000000
     ## 3  0.000000     0.000000         0.00000000                0 0.00000000
-    ## 4  5.024594     5.024594         0.00000000                0 0.00000000
-    ## 5  1.403519     1.403519         0.00000000                0 0.00000000
-    ## 6 12.498401    12.498401         0.05090607                0 0.05090607
+    ## 4  4.863668     4.863668         0.00000000                0 0.00000000
+    ## 5  1.279810     1.279810         0.00000000                0 0.00000000
+    ## 6 12.306888    12.306888         0.05090607                0 0.05090607
     ##   CellRunoff DeepDrainage CapillarityRise DeepAquiferLoss SoilEvaporation
-    ## 1 0.00000000  0.077292507    0.000000e+00               0      0.38748895
-    ## 2 0.00000000  0.041167986    0.000000e+00               0      0.15196376
-    ## 3 0.00000000  0.002941473    5.370935e-06               0      0.13948942
-    ## 4 0.00000000  0.091698549    0.000000e+00               0      0.12063798
-    ## 5 0.00000000  0.031963869    0.000000e+00               0      0.11228308
-    ## 6 0.05090607  0.157039918    3.179870e-05               0      0.09481544
+    ## 1 0.00000000  0.077291946    0.000000e+00               0       0.3716236
+    ## 2 0.00000000  0.041151443    0.000000e+00               0       0.1669253
+    ## 3 0.00000000  0.002917123    0.000000e+00               0       0.1409551
+    ## 4 0.00000000  0.091692225    0.000000e+00               0       0.1217195
+    ## 5 0.00000000  0.031909603    0.000000e+00               0       0.1261008
+    ## 6 0.05090607  0.157067743    3.340105e-05               0       0.0996342
     ##   Transpiration HerbTranspiration InterflowBalance BaseflowBalance
-    ## 1     0.2850782                 0     0.000000e+00   -1.273116e-18
-    ## 2     0.5053881                 0     7.401487e-17    5.611568e-18
-    ## 3     0.4244951                 0     2.018587e-17   -1.393036e-18
-    ## 4     0.1926099                 0     1.715799e-16    1.977848e-18
-    ## 5     0.5188417                 0     7.065056e-17    2.799213e-18
-    ## 6     0.3818268                 0    -1.799907e-16   -5.578713e-18
+    ## 1     0.2981167                 0     0.000000e+00   -4.435373e-20
+    ## 2     0.5306152                 0     2.355019e-17    5.913830e-20
+    ## 3     0.4460424                 0     7.233271e-17   -2.966771e-18
+    ## 4     0.2019272                 0     6.476301e-17   -7.037458e-18
+    ## 5     0.5447445                 0    -4.037175e-17   -1.320755e-18
+    ## 6     0.4006704                 0    -2.859665e-17   -1.389093e-17
     ##   AquiferExfiltration ChannelExport WatershedExport NegativeAquiferCorrection
     ## 1                   0             0               0                         0
     ## 2                   0             0               0                         0
@@ -437,23 +437,23 @@ summary(res_ws1)
 ```
 
     ##   Snowpack water balance components:
-    ##     Snow fall (mm) 16.65  Snow melt (mm) 13.42
+    ##     Snow fall (mm) 19.19  Snow melt (mm) 19.19
     ##   Soil water balance components:
-    ##     Infiltration (mm) 63.31  Saturation excess (mm) 0
-    ##     Deep drainage (mm) 51.52  Capillarity rise (mm) 0
-    ##     Soil evaporation (mm) 1.56  Plant transpiration (mm) 10.1
+    ##     Infiltration (mm) 134.91  Saturation excess (mm) 0
+    ##     Deep drainage (mm) 123.11  Capillarity rise (mm) 0.01
+    ##     Soil evaporation (mm) 3.26  Plant transpiration (mm) 53.8
     ##     Interflow balance (mm) 0
     ##   Aquifer water balance components:
-    ##     Deep drainage (mm) 51.77  Capillarity rise (mm) 0
-    ##     Exfiltration (mm) 28.5  Deep aquifer loss (mm) 0
+    ##     Deep drainage (mm) 123.08  Capillarity rise (mm) 0.01
+    ##     Exfiltration (mm) 99.26  Deep aquifer loss (mm) 0
     ##     Negative aquifer correction (mm) 0
     ##   Watershed water balance components:
-    ##     Precipitation (mm) 74.75
-    ##     Interception (mm) 8.13  Soil evaporation (mm) 1.53
-    ##     Plant transpiration (mm) 9.95
+    ##     Precipitation (mm) 154.74
+    ##     Interception (mm) 20.04  Soil evaporation (mm) 3.21
+    ##     Plant transpiration (mm) 52.98
     ##     Subsurface flow balance (mm) 0
     ##     Groundwater flow balance (mm) 0
-    ##     Export runoff (mm) 28.5
+    ##     Export runoff (mm) 99.26
 
 Analogously to plots available with package **medfate**, one can display
 time series of watershed-level water balance components using function
@@ -491,10 +491,14 @@ using:
 res_ws1$sf$summary[[1]]
 ```
 
-    ##            MinTemperature MaxTemperature      PET     Rain     Snow      SWE
-    ## 2001-01-01      -3.203556       2.427977 31.14151 58.09884 16.65065 1.699603
-    ##                 RWC  SoilVol      WTD      DTA
-    ## 2001-01-01 108.3626 583.1601 3288.235 15.47546
+    ##            MinTemperature MaxTemperature      PET      Rain      Snow
+    ## 2001-01-01     -3.2035562       2.427977 31.14151 58.098839 16.650650
+    ## 2001-02-01     -3.0044133       4.505250 64.62632  2.457859  2.541571
+    ## 2001-03-01      0.5604289       7.930072 74.76898 74.994378  0.000000
+    ##                   SWE      RWC  SoilVol      WTD      DTA
+    ## 2001-01-01 1.69715898 108.0943 581.7163 3317.859 15.47560
+    ## 2001-02-01 0.29002670 102.7330 552.8641 3611.131 15.34909
+    ## 2001-03-01 0.01762496 104.8385 564.1947 3495.048 15.26267
 
 Additional variables (water balance components, carbon balance
 components, etc.) can be added to summaries via parameter
@@ -507,11 +511,11 @@ Maps of variable summaries can be drawn from the result of function
 in a similar way as done for
 [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md).
 As an example we display a map of the average soil relative water
-content during the simulated month:
+content during the third simulated month:
 
 ``` r
 
-plot_summary(res_ws1$sf, variable = "RWC", date = "2001-01-01", r = r)
+plot_summary(res_ws1$sf, variable = "RWC", date = "2001-03-01", r = r)
 ```
 
 ![](WatershedSimulations_files/figure-html/unnamed-chunk-18-1.png)
@@ -528,17 +532,17 @@ head(unnest_summary(res_ws1))
     ## Simple feature collection with 6 features and 11 fields
     ## Geometry type: POINT
     ## Dimension:     XY
-    ## Bounding box:  xmin: 402330 ymin: 4672470 xmax: 402730 ymax: 4672570
+    ## Bounding box:  xmin: 402330 ymin: 4672470 xmax: 402630 ymax: 4672570
     ## Projected CRS: WGS 84 / UTM zone 31N
     ## # A tibble: 6 × 12
     ##           geometry date       MinTemperature MaxTemperature   PET  Rain
     ##        <POINT [m]> <chr>               <dbl>          <dbl> <dbl> <dbl>
-    ## 1 (402630 4672570) 2001-01-01          -3.20           2.43  31.1  58.1
-    ## 2 (402330 4672470) 2001-01-01          -3.20           2.43  32.6  58.1
-    ## 3 (402430 4672470) 2001-01-01          -3.20           2.43  32.7  58.1
-    ## 4 (402530 4672470) 2001-01-01          -3.20           2.43  31.5  58.1
-    ## 5 (402630 4672470) 2001-01-01          -3.20           2.43  32.5  58.1
-    ## 6 (402730 4672470) 2001-01-01          -3.20           2.43  30.2  58.1
+    ## 1 (402630 4672570) 2001-01-01         -3.20            2.43  31.1 58.1 
+    ## 2 (402630 4672570) 2001-02-01         -3.00            4.51  64.6  2.46
+    ## 3 (402630 4672570) 2001-03-01          0.560           7.93  74.8 75.0 
+    ## 4 (402330 4672470) 2001-01-01         -3.20            2.43  32.6 58.1 
+    ## 5 (402330 4672470) 2001-02-01         -3.00            4.51  65.4  2.46
+    ## 6 (402330 4672470) 2001-03-01          0.560           7.93  77.4 75.0 
     ## # ℹ 6 more variables: Snow <dbl>, SWE <dbl>, RWC <dbl>, SoilVol <dbl>,
     ## #   WTD <dbl>, DTA <dbl>
 
@@ -628,7 +632,7 @@ Now we can continue our simulation, in this case adding an extra month:
 
 ``` r
 
-dates <- seq(as.Date("2001-02-01"), as.Date("2001-02-28"), by="day")
+dates <- seq(as.Date("2001-04-01"), as.Date("2001-04-30"), by="day")
 res_ws3 <- spwb_land(r, example_watershed_mod,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
@@ -661,7 +665,7 @@ importance:
 
 ``` r
 
-dates <- seq(as.Date("2001-01-01"), as.Date("2001-01-31"), by="day")
+dates <- seq(as.Date("2001-01-01"), as.Date("2001-03-31"), by="day")
 res_ws3 <- spwb_land(r, example_watershed_burnin,
                     SpParamsMED, examplemeteo, dates = dates, summary_frequency = "month",
                     watershed_control = ws_control, progress = FALSE)
@@ -669,38 +673,97 @@ data.frame("before" = res_ws1$watershed_balance$WatershedExport,
            "after" = res_ws3$watershed_balance$WatershedExport)
 ```
 
-    ##       before     after
-    ## 1  0.0000000 0.2262068
-    ## 2  0.0000000 0.2083878
-    ## 3  0.0000000 0.2023148
-    ## 4  0.0000000 0.3103002
-    ## 5  0.0000000 0.2795988
-    ## 6  0.0000000 0.4890522
-    ## 7  0.0000000 0.4329238
-    ## 8  0.0000000 0.5107486
-    ## 9  0.0000000 0.4993206
-    ## 10 0.0000000 0.6689889
-    ## 11 0.0000000 0.7627525
-    ## 12 0.0000000 0.9595364
-    ## 13 0.0000000 1.0539417
-    ## 14 0.0000000 1.1652521
-    ## 15 0.0000000 1.1976814
-    ## 16 0.4210184 1.2182564
-    ## 17 1.3585149 1.1760267
-    ## 18 1.3799082 1.1308172
-    ## 19 1.5584916 1.0720469
-    ## 20 1.5097788 1.0053697
-    ## 21 1.6880797 1.0869307
-    ## 22 1.8263474 1.1357407
-    ## 23 1.8735273 1.1581328
-    ## 24 1.9755543 1.2018253
-    ## 25 2.0566476 1.2067410
-    ## 26 2.2012949 1.2243603
-    ## 27 2.2499732 1.2043037
-    ## 28 2.2415807 1.1995977
-    ## 29 2.1504049 1.1451690
-    ## 30 2.0444135 1.0774509
-    ## 31 1.9619455 1.0307985
+    ##         before     after
+    ## 1  0.000000000 0.2262068
+    ## 2  0.000000000 0.2085164
+    ## 3  0.000000000 0.2025291
+    ## 4  0.000000000 0.3104773
+    ## 5  0.000000000 0.2797227
+    ## 6  0.000000000 0.4893145
+    ## 7  0.000000000 0.4332291
+    ## 8  0.000000000 0.5110283
+    ## 9  0.000000000 0.4997992
+    ## 10 0.000000000 0.6698140
+    ## 11 0.000000000 0.7638921
+    ## 12 0.000000000 0.9614345
+    ## 13 0.000000000 1.0573062
+    ## 14 0.000000000 1.1720088
+    ## 15 0.000000000 1.2027565
+    ## 16 0.003296728 1.2249634
+    ## 17 1.244013160 1.1816655
+    ## 18 1.264739351 1.1404007
+    ## 19 1.412478594 1.0831697
+    ## 20 1.410438158 1.0176502
+    ## 21 1.585887573 1.0993013
+    ## 22 1.733702163 1.1519370
+    ## 23 1.786698777 1.1724990
+    ## 24 1.876706795 1.2166497
+    ## 25 1.957604801 1.2232107
+    ## 26 2.097990606 1.2411013
+    ## 27 2.147450109 1.2227082
+    ## 28 2.132978066 1.2197891
+    ## 29 2.036463370 1.1677798
+    ## 30 1.933287975 1.1005479
+    ## 31 1.861711588 1.0540176
+    ## 32 1.787099163 1.0047281
+    ## 33 1.739526185 0.9803896
+    ## 34 1.760269861 1.0123702
+    ## 35 1.681990297 0.9614169
+    ## 36 1.608365059 0.9133267
+    ## 37 1.542686872 0.8832721
+    ## 38 1.482214965 0.8572909
+    ## 39 1.432339333 0.8458271
+    ## 40 1.360621689 0.8124125
+    ## 41 1.266596922 0.7487959
+    ## 42 1.234611829 0.7408404
+    ## 43 1.173627979 0.7100353
+    ## 44 1.128463736 0.6915913
+    ## 45 1.106978673 0.6965097
+    ## 46 1.106008595 0.7180878
+    ## 47 1.034699195 0.6659517
+    ## 48 0.992698238 0.6498653
+    ## 49 0.971694097 0.6488060
+    ## 50 0.914516054 0.6125139
+    ## 51 0.869879177 0.5844473
+    ## 52 0.832798571 0.5647062
+    ## 53 0.790801312 0.5440359
+    ## 54 0.747744036 0.5224185
+    ## 55 0.701723805 0.4986773
+    ## 56 0.661393384 0.4803643
+    ## 57 0.610657639 0.4510414
+    ## 58 0.574871689 0.4337277
+    ## 59 0.530948099 0.4069500
+    ## 60 0.492289150 0.3817915
+    ## 61 0.789134837 0.6938956
+    ## 62 0.797882747 0.6945724
+    ## 63 0.902439202 0.8899868
+    ## 64 1.003815660 0.9560584
+    ## 65 1.108297547 1.0166086
+    ## 66 1.190623252 1.1211539
+    ## 67 1.263790032 1.2324455
+    ## 68 1.309492677 1.2714010
+    ## 69 1.303356862 1.2626733
+    ## 70 1.264486226 1.2195848
+    ## 71 1.234427902 1.1758237
+    ## 72 1.583730630 1.5110293
+    ## 73 1.602889556 1.5148339
+    ## 74 1.729822913 1.6478214
+    ## 75 1.719558625 1.6092394
+    ## 76 1.791397440 1.6644542
+    ## 77 1.891912807 1.7459240
+    ## 78 1.841069909 1.7225032
+    ## 79 1.759117766 1.6546882
+    ## 80 1.672480543 1.5694983
+    ## 81 1.577664091 1.4762951
+    ## 82 1.487517131 1.3897281
+    ## 83 1.417213018 1.3232646
+    ## 84 1.351921556 1.2594131
+    ## 85 1.288431000 1.1972467
+    ## 86 1.227530942 1.1382768
+    ## 87 1.175196672 1.0889648
+    ## 88 1.130025457 1.0470653
+    ## 89 1.137784193 1.0574621
+    ## 90 1.078909564 1.0017474
 
 ### Simulations of watershed forest dynamics
 
@@ -805,7 +868,7 @@ these reason, **medfateland** now incorporates the possibility to
 perform parallel simulations in subwatersheds, and then aggregate the
 results. To illustrate this feature we will use the data set of Bianya
 watershed (see [Preparing inputs II: arbitrary
-locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html%5D);
+locations](https://emf-creaf.github.io/medfateland/articles/intro/PreparingInputs_II.html);
 you can find the dataset in the **medfateland** GitHub repository).
 
 We begin by loading the raster and `sf` inputs for Bianya:
@@ -884,7 +947,7 @@ parallelization and subwatersheds. We begin by initializing the input
 
 ``` r
 
-sf_init <- initialize_landscape(sf, SpParams = SpParamsMED,
+sf_init <- initialize_landscape(sf, SpParams = traits4models::SpParamsES,
                                 local_control = defaultControl(soilDomains = "buckets"),
                                 progress = FALSE)
 ```
@@ -930,7 +993,7 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking raster topology
 
-    ## ✔ Checking raster topology [15ms]
+    ## ✔ Checking raster topology [16ms]
 
     ## 
 
@@ -940,10 +1003,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [4.3s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.6s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [2.1s]
+    ## ✔ Determining neighbors and overland routing for TETIS [2.5s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573

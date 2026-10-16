@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-3.0.0) to carry out simulations of forest dynamics on a set of forest
+3.0.1) to carry out simulations of forest dynamics on a set of forest
 stands while evaluating a demand-based management scenario. In
 particular, we will illustrate the use of functions
 [`create_management_scenario()`](https://emf-creaf.github.io/medfateland/reference/create_management_scenario.md)
@@ -129,8 +129,9 @@ data("defaultPrescriptionsBySpecies")
 ```
 
 The columns of this data frame are the same as the parameter names
-required by function `defaultManagementFunction()` of package
-**medfate**:
+required by function
+[`defaultManagementFunction()`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html)
+of package **medfate**:
 
 ``` r
 
@@ -345,7 +346,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
@@ -397,41 +398,41 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [15ms]
+    ## ✔ Preparing data for parallelization [20ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
+    ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [8.3s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [5.5s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [13ms]
+    ## ✔ Retrieval of results [18ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 64034 m3
+    ## • Final volume: 63719 m3
 
     ## 
 
     ## ──  [ Year 2002 (2/2) ]
 
-    ## • Demand (incl. offset): 2761 m3
+    ## • Demand (incl. offset): 2766 m3
 
     ## • Determining available volumes and final cuts
 
-    ## • Demand (after final cuts): 2761 m3
+    ## • Demand (after final cuts): 2766 m3
 
     ## • Determining thinning operations
 
@@ -441,37 +442,37 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [10ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [14ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [13ms]
+    ## ✔ Preparing data for parallelization [16ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
+    ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [13.4s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [21.1s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [13ms]
+    ## ✔ Retrieval of results [16ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 62182 m3
+    ## • Final volume: 61560 m3
 
     ## 
 
@@ -509,7 +510,9 @@ subsequent simulations (see next section).
 
 Stand-level results are available in element `result_sf`. The column
 names of this `sf` object should be easy to interpret if you have
-experience with functions `fordyn()` or
+experience with functions
+[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html)
+or
 [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md):
 
 ``` r
@@ -554,8 +557,8 @@ fs_12$result_volumes[,1:7]
     ## # A tibble: 2 × 7
     ##    Year initial growth mortality extracted  final cumulative_growth
     ##   <dbl>   <dbl>  <dbl>     <dbl>     <dbl>  <dbl>             <dbl>
-    ## 1  2001  66449.   828.      51.8     3191. 64034.              828.
-    ## 2  2002  64034.   797.      47.8     2601. 62182.             1625.
+    ## 1  2001  66449.   506.      51.4     3185. 63719.              506.
+    ## 2  2002  63719.   457.      47.0     2570. 61560.              964.
 
 The same figures can be inspected, but corresponding to those species
 for which demand has been defined:
@@ -568,8 +571,8 @@ fs_12$result_volumes[,c(1,8:11)]
     ## # A tibble: 2 × 5
     ##    Year cumulative_extraction initial_target growth_target mortality_target
     ##   <dbl>                 <dbl>          <dbl>         <dbl>            <dbl>
-    ## 1  2001                 3191.         62682.          806.             47.5
-    ## 2  2002                 5793.         62602.          782.             46.7
+    ## 1  2001                 3185.         62682.          481.             47.1
+    ## 2  2002                 5754.         62282.          440.             45.9
 
 Finally, we can display for each step what was the nominal demand
 (according to the input), the actual demand (once the offset of previous
@@ -587,8 +590,8 @@ fs_12$result_volumes[,c(1, 12:16)]
     ## # A tibble: 2 × 6
     ##    Year extracted_target final_target nominal_demand demand_offset actual_demand
     ##   <dbl>            <dbl>        <dbl>          <dbl>         <dbl>         <dbl>
-    ## 1  2001             839.       64034.           1800            0          1800 
-    ## 2  2002            2601.       62182.           1800          961.         2761.
+    ## 1  2001             834.       63719.           1800            0          1800 
+    ## 2  2002            2570.       61560.           1800          966.         2766.
 
 ### Continuing a previous simulation
 
@@ -635,10 +638,10 @@ fs_12$next_demand
 
     ## $offset
     ## Pinus nigra/Pinus sylvestris             Pinus halepensis 
-    ##                    -38.33606                    198.03999 
+    ##                    -13.29753                    209.06410 
     ## 
     ## $last_growth
-    ## [1] 782.0836
+    ## [1] 439.6417
 
 In addition to the demand offset for each species or species group, note
 that `next_demand` also contains information about the last growth. This
@@ -664,19 +667,19 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Recovering previous run
 
-    ## ✔ Recovering previous run [6ms]
+    ## ✔ Recovering previous run [4ms]
 
     ## 
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [12ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
@@ -694,7 +697,7 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## • Default volume function
 
-    ## • Initial volume: 62182 m3
+    ## • Initial volume: 61560 m3
 
     ## • Seed dispersal process included.
 
@@ -706,11 +709,11 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ──  [ Year 2003 (1/1) ]
 
-    ## • Demand (incl. offset): 1960 m3
+    ## • Demand (incl. offset): 1996 m3
 
     ## • Determining available volumes and final cuts
 
-    ## • Demand (after final cuts): 1960 m3
+    ## • Demand (after final cuts): 1996 m3
 
     ## • Determining thinning operations
 
@@ -720,37 +723,37 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [16ms]
+    ## ✔ Preparing data for parallelization [20ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 2)
+    ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 2) [15.1s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [21s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [12ms]
+    ## ✔ Retrieval of results [18ms]
 
     ## 
 
     ## ✔ No simulation errors detected
 
-    ## • Final volume: 62901 m3
+    ## • Final volume: 61909 m3
 
     ## 
 

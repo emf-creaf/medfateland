@@ -3,7 +3,7 @@
 ## Aim
 
 The aim of this vignette is to illustrate how to use **medfateland** (v.
-3.0.0) to carry out simulations of forest function and dynamics on a set
+3.0.1) to carry out simulations of forest function and dynamics on a set
 of spatial units, without taking into account spatial processes. This is
 done using functions
 [`spwb_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
@@ -131,8 +131,13 @@ stands](SpatiallyUncoupledSimulations_files/figure-html/unnamed-chunk-4-1.png)
 The set of maps available can be known by inspecting the help of
 function
 [`extract_variables()`](https://emf-creaf.github.io/medfateland/reference/extract_variables.md).
-Alternatively, the package provides function `shinyplot_land()` to
-display maps interactively.
+Alternatively, the package provides function
+[`shinyplot()`](https://emf-creaf.github.io/medfate/reference/shinyplot.html)
+to display maps interactively from outputs of
+[`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
+[`growth_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+or
+[`fordyn_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md).
 
 ### Climate forcing
 
@@ -229,37 +234,37 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [10ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [14ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.7s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.1s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [16ms]
+    ## ✔ Preparing data for parallelization [26ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
+    ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [7.8s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.8s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [20ms]
+    ## ✔ Retrieval of results [26ms]
 
     ## 
 
@@ -322,21 +327,21 @@ from package **medfate**:
 summary(res$result[[1]], freq="months",FUN=sum, output="WaterBalance")
 ```
 
-    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
-    ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    54.009813                  0                0      0     32.66692
-    ## 2001-02-01     6.502505                  0                0      0     10.07321
-    ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           30.13352    17.182031        5.207952
-    ## 2001-02-01               0           19.09617     1.508196        1.657386
-    ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        7.743532      7.743532
-    ## 2001-02-01                 0       15.930589     15.930589
-    ##            HydraulicRedistribution
-    ## 2001-01-01             0.015837658
-    ## 2001-02-01             0.009286815
+    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 41.1143873 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.9343365  5.552842
+    ##            Runon Infiltration InfiltrationExcess SaturationExcess Runoff
+    ## 2001-01-01     0    54.207393                  0                0      0
+    ## 2001-02-01     0     6.487178                  0                0      0
+    ##            DeepDrainage CapillarityRise Evapotranspiration Interception
+    ## 2001-01-01     32.71515               0           29.92188    16.984451
+    ## 2001-02-01     10.23411               0           19.08781     1.523523
+    ##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration
+    ## 2001-01-01        5.186680                 0        7.750746      7.750746
+    ## 2001-02-01        1.637573                 0       15.926711     15.926711
+    ##            MistletoeTranspiration HydraulicRedistribution
+    ## 2001-01-01                      0             0.009573730
+    ## 2001-02-01                      0             0.007284279
 
 However, a more convenient way of generating summaries is by calculating
 them on all forest stands in one step, using function
@@ -371,21 +376,21 @@ element of column `summary`:
 res_sum$summary[[1]]
 ```
 
-    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
-    ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    54.009813                  0                0      0     32.66692
-    ## 2001-02-01     6.502505                  0                0      0     10.07321
-    ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           30.13352    17.182031        5.207952
-    ## 2001-02-01               0           19.09617     1.508196        1.657386
-    ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        7.743532      7.743532
-    ## 2001-02-01                 0       15.930589     15.930589
-    ##            HydraulicRedistribution
-    ## 2001-01-01             0.015837658
-    ## 2001-02-01             0.009286815
+    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 41.1143873 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.9343365  5.552842
+    ##            Runon Infiltration InfiltrationExcess SaturationExcess Runoff
+    ## 2001-01-01     0    54.207393                  0                0      0
+    ## 2001-02-01     0     6.487178                  0                0      0
+    ##            DeepDrainage CapillarityRise Evapotranspiration Interception
+    ## 2001-01-01     32.71515               0           29.92188    16.984451
+    ## 2001-02-01     10.23411               0           19.08781     1.523523
+    ##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration
+    ## 2001-01-01        5.186680                 0        7.750746      7.750746
+    ## 2001-02-01        1.637573                 0       15.926711     15.926711
+    ##            MistletoeTranspiration HydraulicRedistribution
+    ## 2001-01-01                      0             0.009573730
+    ## 2001-02-01                      0             0.007284279
 
 Summary objects are handy because their
 [`plot_summary()`](https://emf-creaf.github.io/medfateland/reference/plot_summary.md)
@@ -420,30 +425,31 @@ to obtain an sf object more amenable for storing and data manipulation:
 unnest_summary(res_sum)
 ```
 
-    ## Simple feature collection with 200 features and 20 fields
+    ## Simple feature collection with 200 features and 22 fields
     ## Geometry type: POINT
     ## Dimension:     XY
     ## Bounding box:  xmin: 1.817095 ymin: 41.93301 xmax: 2.142956 ymax: 41.99881
     ## Geodetic CRS:  WGS 84
-    ## # A tibble: 200 × 21
+    ## # A tibble: 200 × 23
     ##               geometry date         PET Precipitation  Rain  Snow NetRain
     ##            <POINT [°]> <chr>      <dbl>         <dbl> <dbl> <dbl>   <dbl>
-    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   40.9  
-    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.950
-    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   33.7  
-    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.619
-    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   58.0  
-    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.44 
-    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   57.9  
-    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   2.44 
-    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   55.7  
-    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   2.22 
+    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   41.1  
+    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.934
+    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   35.0  
+    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.687
+    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   56.6  
+    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.31 
+    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   53.1  
+    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   1.97 
+    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   52.8  
+    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   1.94 
     ## # ℹ 190 more rows
-    ## # ℹ 14 more variables: Snowmelt <dbl>, Infiltration <dbl>,
+    ## # ℹ 16 more variables: Snowmelt <dbl>, Runon <dbl>, Infiltration <dbl>,
     ## #   InfiltrationExcess <dbl>, SaturationExcess <dbl>, Runoff <dbl>,
     ## #   DeepDrainage <dbl>, CapillarityRise <dbl>, Evapotranspiration <dbl>,
     ## #   Interception <dbl>, SoilEvaporation <dbl>, HerbTranspiration <dbl>,
-    ## #   PlantExtraction <dbl>, Transpiration <dbl>, HydraulicRedistribution <dbl>
+    ## #   PlantExtraction <dbl>, Transpiration <dbl>, MistletoeTranspiration <dbl>,
+    ## #   HydraulicRedistribution <dbl>
 
 ### Simulation with integrated temporal summaries
 
@@ -471,37 +477,37 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [11ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.6s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.1s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [15ms]
+    ## ✔ Preparing data for parallelization [25ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
+    ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [8.4s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.9s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [18ms]
+    ## ✔ Retrieval of results [23ms]
 
     ## 
 
@@ -530,21 +536,21 @@ be directly accessed through the column `summary`:
 res_2$summary[[1]]
 ```
 
-    ##                 PET Precipitation      Rain      Snow   NetRain  Snowmelt
-    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 40.916807 13.093006
-    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.949663  5.552842
-    ##            Infiltration InfiltrationExcess SaturationExcess Runoff DeepDrainage
-    ## 2001-01-01    54.009813                  0                0      0     32.66692
-    ## 2001-02-01     6.502505                  0                0      0     10.07321
-    ##            CapillarityRise Evapotranspiration Interception SoilEvaporation
-    ## 2001-01-01               0           30.13352    17.182031        5.207952
-    ## 2001-02-01               0           19.09617     1.508196        1.657386
-    ##            HerbTranspiration PlantExtraction Transpiration
-    ## 2001-01-01                 0        7.743532      7.743532
-    ## 2001-02-01                 0       15.930589     15.930589
-    ##            HydraulicRedistribution
-    ## 2001-01-01             0.015837658
-    ## 2001-02-01             0.009286815
+    ##                 PET Precipitation      Rain      Snow    NetRain  Snowmelt
+    ## 2001-01-01 31.14173      74.74949 58.098839 16.650650 41.1143873 13.093006
+    ## 2001-02-01 64.19423       4.99943  2.457859  2.541571  0.9343365  5.552842
+    ##            Runon Infiltration InfiltrationExcess SaturationExcess Runoff
+    ## 2001-01-01     0    54.207393                  0                0      0
+    ## 2001-02-01     0     6.487178                  0                0      0
+    ##            DeepDrainage CapillarityRise Evapotranspiration Interception
+    ## 2001-01-01     32.71515               0           29.92188    16.984451
+    ## 2001-02-01     10.23411               0           19.08781     1.523523
+    ##            SoilEvaporation HerbTranspiration PlantExtraction Transpiration
+    ## 2001-01-01        5.186680                 0        7.750746      7.750746
+    ## 2001-02-01        1.637573                 0       15.926711     15.926711
+    ##            MistletoeTranspiration HydraulicRedistribution
+    ## 2001-01-01                      0             0.009573730
+    ## 2001-02-01                      0             0.007284279
 
 And one can produce maps with summary results directly from the output
 of the simulation function:
@@ -565,30 +571,31 @@ or extract summary results using
 unnest_summary(res_2)
 ```
 
-    ## Simple feature collection with 200 features and 20 fields
+    ## Simple feature collection with 200 features and 22 fields
     ## Geometry type: POINT
     ## Dimension:     XY
     ## Bounding box:  xmin: 1.817095 ymin: 41.93301 xmax: 2.142956 ymax: 41.99881
     ## Geodetic CRS:  WGS 84
-    ## # A tibble: 200 × 21
+    ## # A tibble: 200 × 23
     ##               geometry date         PET Precipitation  Rain  Snow NetRain
     ##            <POINT [°]> <chr>      <dbl>         <dbl> <dbl> <dbl>   <dbl>
-    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   40.9  
-    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.950
-    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   33.7  
-    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.619
-    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   58.0  
-    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.44 
-    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   57.9  
-    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   2.44 
-    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   55.7  
-    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   2.22 
+    ##  1 (2.130641 41.99872) 2001-01-01  31.1         74.7  58.1  16.7   41.1  
+    ##  2 (2.130641 41.99872) 2001-02-01  64.2          5.00  2.46  2.54   0.934
+    ##  3 (2.142714 41.99881) 2001-01-01  40.9         74.7  58.1  16.7   35.0  
+    ##  4 (2.142714 41.99881) 2001-02-01  67.0          5.00  2.46  2.54   0.687
+    ##  5 (1.828998 41.98704) 2001-01-01  30.4         74.7  58.1  16.7   56.6  
+    ##  6 (1.828998 41.98704) 2001-02-01  63.4          5.00  2.46  2.54   2.31 
+    ##  7 (1.841068 41.98716) 2001-01-01  33.7         74.7  58.1  16.7   53.1  
+    ##  8 (1.841068 41.98716) 2001-02-01  65.1          5.00  2.46  2.54   1.97 
+    ##  9 (1.853138 41.98728) 2001-01-01  30.5         74.7  58.1  16.7   52.8  
+    ## 10 (1.853138 41.98728) 2001-02-01  63.7          5.00  2.46  2.54   1.94 
     ## # ℹ 190 more rows
-    ## # ℹ 14 more variables: Snowmelt <dbl>, Infiltration <dbl>,
+    ## # ℹ 16 more variables: Snowmelt <dbl>, Runon <dbl>, Infiltration <dbl>,
     ## #   InfiltrationExcess <dbl>, SaturationExcess <dbl>, Runoff <dbl>,
     ## #   DeepDrainage <dbl>, CapillarityRise <dbl>, Evapotranspiration <dbl>,
     ## #   Interception <dbl>, SoilEvaporation <dbl>, HerbTranspiration <dbl>,
-    ## #   PlantExtraction <dbl>, Transpiration <dbl>, HydraulicRedistribution <dbl>
+    ## #   PlantExtraction <dbl>, Transpiration <dbl>, MistletoeTranspiration <dbl>,
+    ## #   HydraulicRedistribution <dbl>
 
 The possibility of running a summary function after the simulation of
 each stand is not limited to
@@ -626,37 +633,37 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [11ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Creating 100 input objects for model 'spwb'
 
-    ## ✔ Creating 100 input objects for model 'spwb' [1.7s]
+    ## ✔ Creating 100 input objects for model 'spwb' [1.5s]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [14ms]
+    ## ✔ Preparing data for parallelization [27ms]
 
     ## 
 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
+    ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [8.5s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [10.2s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [16ms]
+    ## ✔ Retrieval of results [19ms]
 
     ## 
 
@@ -669,13 +676,13 @@ The drought stress summary of stand 3 is:
 head(res_3$summary[[3]])
 ```
 
-    ##            T1_171      S1_165 S2_188 S3_183 S4_79
-    ## 2001-01-01      0 0.003088161      0      0     0
-    ## 2001-01-02      0 0.002857868      0      0     0
-    ## 2001-01-03      0 0.002832776      0      0     0
-    ## 2001-01-04      0 0.002913315      0      0     0
-    ## 2001-01-05      0 0.002777472      0      0     0
-    ## 2001-01-06      0 0.002774509      0      0     0
+    ##            T1_182      S1_176     S2_199 S3_194      S4_85
+    ## 2001-01-01      0 0.004541797 0.01292532      0 0.01379394
+    ## 2001-01-02      0 0.004210609 0.01282641      0 0.01374386
+    ## 2001-01-03      0 0.004178958 0.01281693      0 0.01373905
+    ## 2001-01-04      0 0.004307384 0.01320992      0 0.01421029
+    ## 2001-01-05      0 0.004095873 0.01279200      0 0.01372643
+    ## 2001-01-06      0 0.004096690 0.01279225      0 0.01372655
 
 In this last case, function
 [`unnest_summary()`](https://emf-creaf.github.io/medfateland/reference/unnest_summary.md)
@@ -742,16 +749,16 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [16ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [12ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [22ms]
+    ## ✔ Preparing data for parallelization [26ms]
     ## 
-    ## ℹ Launching parallel computation (cores = 7; chunk size = 14)
-    ## ✔ Launching parallel computation (cores = 7; chunk size = 14) [9.4s]
+    ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.8s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [17ms]
+    ## ✔ Retrieval of results [26ms]
     ## 
     ## ✔ No simulation errors detected
 
@@ -807,7 +814,7 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [9ms]
 
     ## 
 
@@ -815,14 +822,14 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [12ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [16ms]
     ## 
     ## ℹ Performing 'spwb' simulations on 100 locations
-    ## ✔ Performing 'spwb' simulations on 100 locations [11ms]
+    ## ✔ Performing 'spwb' simulations on 100 locations [14ms]
     ## 
-    ## Stands ■■■                                7% | ETA: 14s
-    ## Stands ■■■■■■■■■■                        31% | ETA:  8s
-    ## Stands ■■■■■■■■■■■■■■■■■■                56% | ETA:  5s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  2s
+    ## Stands ■■■■                              11% | ETA: 12s
+    ## Stands ■■■■■■■■■■■■■                     41% | ETA:  7s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■              64% | ETA:  4s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  1s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
     ## ✔ No simulation errors detected

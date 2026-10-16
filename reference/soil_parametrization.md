@@ -152,7 +152,6 @@ Miquel De Cáceres Ainsa, EMF-CREAF
 ``` r
  # \donttest{
    library(sf)
-#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
    x <- st_sf(geometry = st_sfc(st_point(c(-5.6333, 42.6667)), crs = 4326))
    # Queries to IRSIC are rather slow
    x_soil <- add_soilgrids(x)

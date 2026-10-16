@@ -49,6 +49,11 @@ library(forestables)
 
     ## Loading required package: dtplyr
 
+    ## Warning: ✖ mdbtools system utility not found.
+    ## ℹ mdbtools is needed to read Spanish inventory (IFN) data.
+    ## ℹ Please check your package manager (apt, brew, port...) to install it.
+    ## ℹ More info at https://github.com/mdbtools/mdbtools
+
 ## A. General procedure
 
 The functions introduced in this procedure are meant to be executed
@@ -243,9 +248,9 @@ summary(y_2$forest[[1]], SpParamsMED)
 
     ## Tree BA (m2/ha): 3.0179815  adult trees: 3.0179815  saplings: 0 
     ## Density (ind/ha) adult trees: 267  saplings: 0  shrubs (estimated): 0 
-    ## Cover (%) adult trees: 42.3272186  saplings: 0  shrubs: 0  herbs: 0 
-    ## LAI (m2/m2) total: 0.5419688  adult trees: 0.5419688  saplings: 0  shrubs: 0  herbs: 0 
-    ## Fuel loading (kg/m2) total: 0.1414227  adult trees: 0.1414227  saplings: 0  shrubs: 0  herbs: 0 
+    ## Cover (%) adult trees: 55.4453822  saplings: 0  shrubs: 0  herbs: 0 
+    ## LAI (m2/m2) total: 0.5255162  adult trees: 0.5255162  saplings: 0  shrubs: 0  herbs: 0  mistletoe: 0 
+    ## Fuel loading (kg/m2) total: 0.1396787  adult trees: 0.1396787  saplings: 0  shrubs: 0  herbs: 0 
     ## PAR ground (%): NA  SWR ground (%): NA
 
 Both density and tree basal area seem unusually low. This is because we
@@ -280,8 +285,8 @@ summary(y_2$forest[[1]], SpParamsMED)
     ## Tree BA (m2/ha): 42.6956049  adult trees: 42.6956049  saplings: 0 
     ## Density (ind/ha) adult trees: 3777.2684832  saplings: 0  shrubs (estimated): 0 
     ## Cover (%) adult trees: 100  saplings: 0  shrubs: 0  herbs: 0 
-    ## LAI (m2/m2) total: 4.9189289  adult trees: 4.9189289  saplings: 0  shrubs: 0  herbs: 0 
-    ## Fuel loading (kg/m2) total: 1.2992685  adult trees: 1.2992685  saplings: 0  shrubs: 0  herbs: 0 
+    ## LAI (m2/m2) total: 4.7110444  adult trees: 4.7110444  saplings: 0  shrubs: 0  herbs: 0  mistletoe: 0 
+    ## Fuel loading (kg/m2) total: 1.2854632  adult trees: 1.2854632  saplings: 0  shrubs: 0  herbs: 0 
     ## PAR ground (%): NA  SWR ground (%): NA
 
 At this point, we may wonder whether we are finished. Function
@@ -388,12 +393,12 @@ y_3$soil[[1]]
 ```
 
     ##   widths clay sand   om nitrogen  ph   bd  rfc
-    ## 1     50 25.3 32.1 7.24     50.7 6.6 10.5 16.8
-    ## 2    100 25.5 32.0 3.10     21.8 6.6 11.6 18.7
-    ## 3    150 29.9 31.2 1.96     13.5 6.6 12.5 19.8
-    ## 4    300 30.7 30.7 1.00      8.1 6.7 13.9 19.6
-    ## 5    400 30.4 30.2 0.89      5.8 6.6 14.9 20.4
-    ## 6   1000 32.0 30.2 0.62      4.4 6.8 15.0 21.5
+    ## 1     50 25.3 32.1 7.24     5.07 6.6 1.05 16.8
+    ## 2    100 25.5 32.0 3.10     2.18 6.6 1.16 18.7
+    ## 3    150 29.9 31.2 1.96     1.35 6.6 1.25 19.8
+    ## 4    300 30.7 30.7 1.00     0.81 6.7 1.39 19.6
+    ## 5    400 30.4 30.2 0.89     0.58 6.6 1.49 20.4
+    ## 6   1000 32.0 30.2 0.62     0.44 6.8 1.50 21.5
 
 We can use function
 [`check_soils()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
@@ -485,12 +490,12 @@ y_4$soil[[1]]
 ```
 
     ##   widths clay sand   om nitrogen  ph   bd      rfc
-    ## 1     50 25.3 32.1 7.24     50.7 6.6 10.5 16.80000
-    ## 2    100 25.5 32.0 3.10     21.8 6.6 11.6 18.70000
-    ## 3    150 29.9 31.2 1.96     13.5 6.6 12.5 19.80000
-    ## 4    300 30.7 30.7 1.00      8.1 6.7 13.9 27.76899
-    ## 5    400 30.4 30.2 0.89      5.8 6.6 14.9 49.36709
-    ## 6   1000 32.0 30.2 0.62      4.4 6.8 15.0 92.56329
+    ## 1     50 25.3 32.1 7.24     5.07 6.6 1.05 16.80000
+    ## 2    100 25.5 32.0 3.10     2.18 6.6 1.16 18.70000
+    ## 3    150 29.9 31.2 1.96     1.35 6.6 1.25 19.80000
+    ## 4    300 30.7 30.7 1.00     0.81 6.7 1.39 27.76899
+    ## 5    400 30.4 30.2 0.89     0.58 6.6 1.49 49.36709
+    ## 6   1000 32.0 30.2 0.62     0.44 6.8 1.50 92.56329
 
 Finally, we can call again
 [`check_soils()`](https://emf-creaf.github.io/medfateland/reference/check_inputs.md)
