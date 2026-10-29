@@ -112,7 +112,7 @@ When using TETIS watershed model, the following columns are OPTIONAL:
 In \code{fordyn_land} summary frequency can only be "months" or "years".}
 
 \item{local_control}{A list of control parameters (see \code{\link[medfate]{defaultControl}}) for function \code{\link[medfate]{spwb_day}} or \code{\link[medfate]{growth_day}}. By default,
-parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model. IMPORTANT: If \code{sf} has been already initialized, this parameter has no effect.}
+parameter \code{soilDomains} is set to \code{"single"}, meaning a single-domain Richards model; and \code{rhizosphereOverlap = "total"}, meaning that all plant cohorts share the same vertical water pools from soil layers. IMPORTANT: If \code{sf} has been already initialized, this parameter will have no effect.}
 
 \item{watershed_control}{A list of watershed control parameters (see \code{\link{default_watershed_control}}). Importantly, the sub-model used
 for lateral water flows - either \enc{Francés}{Frances} et al. (2007) or \enc{Caviedes-Voullième}{Caviedes-Voullieme} et al. (2023) - is specified there.}
@@ -195,7 +195,7 @@ and resprouting.}
 }
 }
 \details{
-IMPORTANT: Simulation function will normally call the initialization of state variables via an internal call to \code{\link{initialize_landscape}}, using parameters \code{local_control} and \code{SpParams} in this call. The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation.
+IMPORTANT: Simulation function will normally call the initialization of state variables via an internal call to \code{\link{initialize_landscape}}, using parameters \code{local_control} and \code{SpParams} in this call. The default \code{soilDomains = "single"} means that vertical bulk soil flows are simulated using a single permeability domain with Richards equation, whereas \code{rhizosphereOverlap = "total"} means that all plant cohorts share the same vertical water pools from soil layers.
 However, if object \code{sf} has been previously initialized, then the control parameters of this previous initialization will remain the same. In other words, parameters \code{local_control} and \code{SpParams} will have no effect in the call to the simulation routines if the \code{sf} has been previously initialized.
 
 Two sub-models are available for lateral water transfer processes (overland flow, sub-surface flow, etc.), either "TETIS"

@@ -57,6 +57,8 @@ Initialization is normally dealt automatically when calling simulation functions
 
 Options \code{merge_shrubs}, \code{merge_trees} and \code{reduce_to_dominant} have been implemented to allow simplification of forests during watershed simulations
 where focus is on runoff (e.g. calibration of watershed parameters or burnin periods). Elements identified as \code{result_cell} will not be simplified.
+
+IMPORTANT: the control options in \code{local_control} will have a strong effect on computation time for watershed simulations  (e.g. \code{\link{spwb_land}})
 }
 \examples{
 # Load example landscape data
