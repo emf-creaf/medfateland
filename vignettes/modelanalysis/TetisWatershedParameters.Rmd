@@ -64,6 +64,8 @@ The analysis considered the seven effective parameters of the lateral and vertic
 par_def <- data.frame(
   name  = c("n_interflow", "n_baseflow", "R_localflow", "R_interflow",
             "R_baseflow", "deep_aquifer_loss", "n_manning"),
+  label = c("n[interflow]", "n[baseflow]", "R[localflow]", "R[interflow]",
+            "R[baseflow]", "D[loss]", "n[Manning]"),
   log10 = c(TRUE,  FALSE, TRUE,  TRUE,  TRUE,  FALSE, FALSE),
   min   = c(0.01,  0.01,   0.1,   0.1,     0.1,   0,     0.01),
   max   = c(2,     2,     20,    20,   20,    5,     0.1),
@@ -110,14 +112,41 @@ Morris indices $\mu*$ and $\sigma$ were estimated using function `sensitivity::t
 
 ## Results
 
+We read the CSV corresponding to the normalized indices:
+
+```{r}
+morris_indices <- readr::read_csv(file.path(sensitivity_path, "morris_indices.csv"), show_col_types = FALSE)
+morris_indices
+```
+
 ### KGE
 
-```{r, out.width='90%', fig.align="center", echo=FALSE, fig.alt = "Morris sensitivity results for KGE"}
-knitr::include_graphics(file.path(sensitivity_path,"fig_morris_KGE.png"), rel_path = FALSE)
+
+```{r, out.width='90%', fig.align="center", echo=TRUE, fig.alt = "Morris sensitivity results for KGE"}
+d_kge <- subset(morris_indices, output == "KGE")
+ggplot(d_kge, aes(mu_star, sigma, label = label)) +
+    geom_abline(slope = 1, intercept = 0, linetype = 2, colour = "grey60") +
+    geom_point(size = 2.5) +
+    geom_text(parse = TRUE, vjust = -0.8, size = 3.5) +
+    labs(x = expression(mu^"*"), y = expression(sigma), title = "KGE (daily discharge)") +
+    theme_bw()
 ```
 
 ### Heatmap
 
-```{r, out.width='90%', fig.align="center", echo=FALSE, fig.alt = "Heat map with morris sensitivity results"}
-knitr::include_graphics(file.path(sensitivity_path,"fig_morris_heatmap.png"), rel_path = FALSE)
+```{r, out.width='90%', fig.align="center", echo=TRUE, fig.alt = "Heat map with morris sensitivity results"}
+heat_out <- c("RunoffRatio", "BFI", "Q5", "Q95", "ZeroFlowFrac", "RecessionK", "HalfFlowDate",
+                "ET_P", "SurfRunoff_P", "DeepDrainage_P", "DeepAqLoss_P", "Transpiration")
+d_heat <- subset(morris_indices, output %in% heat_out)
+d_heat$output <- factor(d_heat$output, levels = heat_out)
+d_heat$label  <- factor(d_heat$label, levels = rev(par_def$label))
+
+ggplot(d_heat, aes(output, label, fill = mu_star_norm)) +
+    geom_tile(colour = "white") +
+    scale_fill_gradient(low = "white", high = "#08519c", limits = c(0, 1),
+                        name = expression("Normalised " * mu^"*")) +
+    scale_y_discrete(labels = function(l) parse(text = l)) +
+    labs(x = NULL, y = NULL) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
