@@ -307,33 +307,33 @@ example_subset <- example_ifn[31:32, ]
 dates <- seq(as.Date("2001-03-01"), as.Date("2001-03-15"), by="day")
 res <- spwb_spatial(example_subset, SpParamsMED, examplemeteo, dates = dates)
 #> 
-#> ── Simulation of model 'spwb' ──────────────────────────────────────────────────
+#> ── Simulation of model 'spwb' ────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [6ms]
+#> ✔ Checking sf input [9ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [9ms]
+#> ✔ Checking meteo object input [14ms]
 #> 
 #> ℹ Creating 2 input objects for model 'spwb'
-#> ✔ Creating 2 input objects for model 'spwb' [74ms]
+#> ✔ Creating 2 input objects for model 'spwb' [181ms]
 #> 
 #> ℹ Performing 'spwb' simulations on 2 locations
-#> ✔ Performing 'spwb' simulations on 2 locations [4ms]
+#> ✔ Performing 'spwb' simulations on 2 locations [6ms]
 #> 
 #> ✔ No simulation errors detected
   
 # Perform fordyn simulation for one year (one stand) without management
 res_noman <- fordyn_spatial(example_subset, SpParamsMED, examplemeteo)
 #> 
-#> ── Simulation of model 'fordyn' ────────────────────────────────────────────────
+#> ── Simulation of model 'fordyn' ──────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [6ms]
+#> ✔ Checking sf input [9ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [9ms]
+#> ✔ Checking meteo object input [14ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 2 locations
-#> ✔ Performing 'fordyn' simulations on 2 locations [9ms]
+#> ✔ Performing 'fordyn' simulations on 2 locations [14ms]
 #> 
 #> ✔ No simulation errors detected
 

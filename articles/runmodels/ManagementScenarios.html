@@ -198,7 +198,7 @@ prescription parameters for a set of species. This is loaded using:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"defaultPrescriptionsBySpecies"</span><span class="op">)</span></span></code></pre></div>
 <p>The columns of this data frame are the same as the parameter names
-required by function <code><a href="https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html" class="external-link">defaultManagementFunction()</a></code> of package
+required by function <code>defaultManagementFunction()</code> of package
 <strong>medfate</strong>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">defaultPrescriptionsBySpecies</span><span class="op">)</span></span></code></pre></div>
@@ -390,13 +390,13 @@ simulations.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 10; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[5.7s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[6.6s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[16ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <pre><code><span><span class="co">## • Final volume: 63731 m3</span></span></code></pre>
@@ -409,19 +409,19 @@ simulations.</p>
 <pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[5ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 10; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[13.1s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[19.3s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <pre><code><span><span class="co">## • Final volume: 61583 m3</span></span></code></pre>
@@ -448,7 +448,7 @@ the actual simulation results, whereas the last two elements are used
 for subsequent simulations (see next section).</p>
 <p>Stand-level results are available in element <code>result_sf</code>.
 The column names of this <code>sf</code> object should be easy to
-interpret if you have experience with functions <code><a href="https://emf-creaf.github.io/medfate/reference/fordyn.html" class="external-link">fordyn()</a></code> or
+interpret if you have experience with functions <code>fordyn()</code> or
 <code><a href="../../reference/spwb_spatial.html">fordyn_spatial()</a></code>:</p>
 <div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fs_12</span><span class="op">$</span><span class="va">result_sf</span></span></code></pre></div>
@@ -570,7 +570,7 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">Scenario parameters</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
@@ -592,19 +592,19 @@ with the result of the previous simulation instead of the original
 <pre><code><span><span class="co">## • Seed bank dynamics and seed dispersal...</span></span></code></pre>
 <pre><code><span><span class="co">## • Calling fordyn_spatial...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking sf input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[6ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking sf input <span style="color: #B2B2B2;">[10ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking meteo object input</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[9ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking meteo object input <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Preparing data for parallelization</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[17ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Preparing data for parallelization <span style="color: #B2B2B2;">[26ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Launching parallel computation (cores = 10; chunk size = 2)</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[13.5s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Launching parallel computation (cores = 10; chunk size = 2) <span style="color: #B2B2B2;">[19.4s]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Retrieval of results</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[15ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Retrieval of results <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> No simulation errors detected</span></span></code></pre>
 <pre><code><span><span class="co">## • Final volume: 61962 m3</span></span></code></pre>

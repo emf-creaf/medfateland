@@ -129,12 +129,12 @@ data("SpParamsMED")
 date <- "2001-03-01"
 res <- spwb_spatial_day(example_ifn, examplemeteo, date, SpParamsMED)
 #> 
-#> ── Simulation of model 'spwb' for date '2001-03-01' ────────────────────────────
+#> ── Simulation of model 'spwb' for date '2001-03-01' ──────────────────────────────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [7ms]
+#> ✔ Checking sf input [10ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [9ms]
+#> ✔ Checking meteo object input [15ms]
 #> 
 #> ℹ Creating '100' input objects.
 #> ✔ Creating '100' input objects. [2.5s]

@@ -5,320 +5,223 @@
 The aim of this vignette is to illustrate the sensitivity of watershed
 ecohydrological simulations (e.g. via
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md))
-to variations in three watershed parameters for sub-model TETIS. These
-parameters are scaling factors of hydraulic conductivities for soil
-vertical fluxes, subsurface lateral fluxes and groundwater lateral
-fluxes, respectively. They are referred to as `R_localflow`,
-`R_interflow` and `R_baseflow`, respectively in the package.
+to variations in three watershed parameters for sub-model TETIS. A
+global sensitivity analysis was carried out to identify which parameters
+users should focus on when calibrating MEDFATELAND and which can be
+fixed at default values.
 
-## Preparation
+## Sensitivity analysis procedure
 
-Here we load a small example watershed included with the package, that
-can be used to understand the inputs required:
+### Synthetic catchment
+
+To characterise the hydrological behaviour of the model independently of
+a particular catchment, the analysis was performed on a synthetic
+catchment of 15 x 20 = 300 cells at 500 m resolution (750 ha),
+representing a linear valley with 5% slope and lateral hill slopes with
+25% slope. All cells had aforest consisting of a single cohort of Pinus
+nigra trees of 8m height, 20 cm DBH and stand LAI = 2; and a soil taken
+from a cell in Aiguadora catchment. Daily weather forcing was also taken
+from the same catchment. Watershed hydrology simulations were run using
+the
+[`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+function and included a warm-up period (2000-2010) followed by the
+analysis period (2011-2020).
+
+The following shows the `sf` object representing the synthetic
+catchment:
 
 ``` r
 
-data("example_watershed_burnin")
-example_watershed_burnin
+sensitivity_path = "~/mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/"
+ws_sf <- sf::st_as_sf(tibble::as_tibble(readRDS(file.path(sensitivity_path,"ws_sf.rds"))))
+ws_sf
 ```
 
-    ## Simple feature collection with 66 features and 15 fields
+    ## Simple feature collection with 300 features and 12 fields
     ## Geometry type: POINT
     ## Dimension:     XY
-    ## Bounding box:  xmin: 401430 ymin: 4671870 xmax: 402830 ymax: 4672570
+    ## Bounding box:  xmin: 400250 ymin: 4670250 xmax: 407250 ymax: 4679750
     ## Projected CRS: WGS 84 / UTM zone 31N
-    ## # A tibble: 66 × 16
+    ## # A tibble: 300 × 13
     ##            geometry    id elevation slope aspect land_cover_type
     ##         <POINT [m]> <int>     <dbl> <dbl>  <dbl> <chr>          
-    ##  1 (402630 4672570)     1      1162 11.3   79.2  wildland       
-    ##  2 (402330 4672470)     2      1214 12.4   98.7  agriculture    
-    ##  3 (402430 4672470)     3      1197 10.4  102.   wildland       
-    ##  4 (402530 4672470)     4      1180  8.12  83.3  wildland       
-    ##  5 (402630 4672470)     5      1164 13.9   96.8  wildland       
-    ##  6 (402730 4672470)     6      1146 11.2    8.47 agriculture    
-    ##  7 (402830 4672470)     7      1153  9.26 356.   agriculture    
-    ##  8 (402230 4672370)     8      1237 14.5   75.1  wildland       
-    ##  9 (402330 4672370)     9      1213 13.2   78.7  wildland       
-    ## 10 (402430 4672370)    10      1198  8.56  75.6  agriculture    
-    ## # ℹ 56 more rows
-    ## # ℹ 10 more variables: forest <list>, soil <list>, state <list>,
-    ## #   depth_to_bedrock <dbl>, bedrock_conductivity <dbl>, bedrock_porosity <dbl>,
-    ## #   snowpack <dbl>, aquifer <dbl>, crop_factor <dbl>, outlet_backlog <dbl>
+    ##  1 (400250 4679750)     1      1950 14.3    101. wildland       
+    ##  2 (400750 4679750)     2      1825 14.3    101. wildland       
+    ##  3 (401250 4679750)     3      1700 14.3    101. wildland       
+    ##  4 (401750 4679750)     4      1575 14.3    101. wildland       
+    ##  5 (402250 4679750)     5      1450 14.3    101. wildland       
+    ##  6 (402750 4679750)     6      1325 14.3    101. wildland       
+    ##  7 (403250 4679750)     7      1200 14.3    101. wildland       
+    ##  8 (403750 4679750)     8      1075  2.86   180  wildland       
+    ##  9 (404250 4679750)     9      1200 14.3    259. wildland       
+    ## 10 (404750 4679750)    10      1325 14.3    259. wildland       
+    ## # ℹ 290 more rows
+    ## # ℹ 7 more variables: forest <list>, soil <list>, depth_to_bedrock <dbl>,
+    ## #   bedrock_conductivity <dbl>, bedrock_porosity <dbl>, channel <lgl>,
+    ## #   result_cell <lgl>
 
-The watershed state is the result of a four-year burn-in period, in
-order to have aquifer and soil moisture at a (dynamic) equilibrium.
 Another spatial input is needed to describe the grid topology, which in
-our case is an object of class `SpatRaster` from package **terra**:
+our case is an object of class `SpatRaster` from package **terra**
+matching the coordinate definition in the `sf` object:
 
 ``` r
 
-r <-terra::rast(xmin = 401380, ymin = 4671820, xmax = 402880, ymax = 4672620, 
-                nrow = 8, ncol = 15, crs = "epsg:32631")
-r
+nx <- 15
+ny <- 20
+res <- 500
+xmin <- 400000
+ymin <- 4670000
+crs <- "epsg:32631"
+r <- terra::rast(xmin = xmin, xmax = xmin + nx * res,
+                   ymin = ymin, ymax = ymin + ny * res,
+                   nrows = ny, ncols = nx, crs = crs)
 ```
 
-    ## class       : SpatRaster
-    ## size        : 8, 15, 1  (nrow, ncol, nlyr)
-    ## resolution  : 100, 100  (x, y)
-    ## extent      : 401380, 402880, 4671820, 4672620  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : WGS 84 / UTM zone 31N (EPSG:32631)
-
-Finally, we load an example weather data set to be used as climate
-forcing, as well as the usual species parameter table:
+The topography of the synthetic watershed looks as follows:
 
 ``` r
 
-# Load example weather dataset
-data("examplemeteo")
-# Set simulation period
-dates <- seq(as.Date("2001-01-01"), as.Date("2001-06-30"), by="day")
-# Load default medfate parameters
-data("SpParamsMED")
+plot_variable(ws_sf, variable = "elevation", r = r)
 ```
 
-## Initial values for scaling factors
+![](TetisWatershedParameters_files/figure-html/unnamed-chunk-3-1.png)
 
-Watershed simulations have overall control parameters. Notably, the user
-needs to decide which sub-model will be used for lateral water transfer
-processes, in this case:
+### Design of parameter exploration
+
+The analysis considered the seven effective parameters of the lateral
+and vertical flow formulation: $`n_{\mathrm{interflow}}`$,
+$`n_{\mathrm{baseflow}}`$, $`R_{\mathrm{localflow}}`$,
+$`R_{\mathrm{interflow}}`$, $`R_{\mathrm{baseflow}}`$,
+$`D_{\mathrm{loss}}`$ and $`n_{\mathrm{Manning}}`$. The following table
+provides parameter limits for exploration, as well as default values for
+a reference run (see below), and indicates whether sampling is performed
+on a logarithmic scale:
 
 ``` r
 
-ws_control <- default_watershed_control("tetis")
+par_def <- data.frame(
+  name  = c("n_interflow", "n_baseflow", "R_localflow", "R_interflow",
+            "R_baseflow", "deep_aquifer_loss", "n_manning"),
+  log10 = c(TRUE,  FALSE, TRUE,  TRUE,  TRUE,  FALSE, FALSE),
+  min   = c(0.01,  0.01,   0.1,   0.1,     0.1,   0,     0.01),
+  max   = c(2,     2,     20,    20,   20,    5,     0.1),
+  ref   = c(0.08391252,   0.57094430,  0.87305020,     1.65763220,     
+            0.21474088,   3.73822300,  0.06943110), 
+  stringsAsFactors = FALSE
+)
+par_def
 ```
 
-The default parameterization for the three scaling factors is:
+    ##                name log10  min  max        ref
+    ## 1       n_interflow  TRUE 0.01  2.0 0.08391252
+    ## 2        n_baseflow FALSE 0.01  2.0 0.57094430
+    ## 3       R_localflow  TRUE 0.10 20.0 0.87305020
+    ## 4       R_interflow  TRUE 0.10 20.0 1.65763220
+    ## 5        R_baseflow  TRUE 0.10 20.0 0.21474088
+    ## 6 deep_aquifer_loss FALSE 0.00  5.0 3.73822300
+    ## 7         n_manning FALSE 0.01  0.1 0.06943110
+
+As procedure for sensitivity analysis we used the elementary effects
+method of Morris, implemented in function `morris()` (of package
+**sensitivity**), which provides a robust ranking of parameter
+importance at a small fraction of the cost of variance-based methods.
+Each parameter was sampled over the range given in the previous table,
+discretised into six levels, and $`r = 20`$ trajectories were generated,
+giving $`r(k+1) = 160`$ model runs for $`k = 7`$ parameters:
 
 ``` r
 
-ws_control$tetis_parameters
+r_traj <- 20 # Number of trajectories
+n_levels <- 6 # Number of levels for each parameter
+
+# Limits in the sampling scale (logarithmic for some parameters)
+binf <- ifelse(par_def$log10, log10(par_def$min), par_def$min)
+bsup <- ifelse(par_def$log10, log10(par_def$max), par_def$max)
+
+# Morris design
+mo <- sensitivity::morris(model = NULL, factors = par_def$name, r = r_traj,
+                          design = list(type = "oat", levels = n_levels,
+                                        grid.jump = n_levels / 2),
+                          binf = binf, bsup = bsup, scale = TRUE)
 ```
 
-    ## $R_localflow
-    ## [1] 1
-    ## 
-    ## $interflow
-    ## [1] TRUE
-    ## 
-    ## $R_interflow
-    ## [1] 50
-    ## 
-    ## $n_interflow
-    ## [1] 1
-    ## 
-    ## $baseflow
-    ## [1] TRUE
-    ## 
-    ## $R_baseflow
-    ## [1] 5
-    ## 
-    ## $n_baseflow
-    ## [1] 1
-    ## 
-    ## $free_drainage_outlets
-    ## [1] TRUE
-    ## 
-    ## $num_daily_substeps
-    ## [1] 1
-    ## 
-    ## $subwatersheds
-    ## [1] FALSE
-    ## 
-    ## $max_overlap
-    ## [1] 0.2
-    ## 
-    ## $rock_max_infiltration
-    ## [1] 10
-    ## 
-    ## $deep_aquifer_loss
-    ## [1] 0
-    ## 
-    ## $n_manning
-    ## [1] 0.035
-
-## Simulations
-
-Since watershed simulations are time consuming, here we will only
-perform four simulations, i.e. a baseline plus a modification of each of
-the three scaling factors, one at a time.
-
-**Baseline configuration** For the baseline configuration, we set the
-three scaling factors to one:
+    ## Registered S3 method overwritten by 'sensitivity':
+    ##   method    from 
+    ##   print.src dplyr
 
 ``` r
 
-ws_control$tetis_parameters$R_localflow <- 1
-ws_control$tetis_parameters$R_interflow <- 1
-ws_control$tetis_parameters$R_baseflow <- 1
+dim(mo$X)
 ```
 
-Now we launch the simulation. Focus on the values (in mm) predicted for
-aquifer exfiltration, saturation excess and, finally, the sum of the two
-sources as export runoff.
+    ## [1] 160   7
 
 ``` r
 
-res_0 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                   dates = dates, summary_frequency = "month", summary_blocks = "WaterBalance",
-                   watershed_control = ws_control, progress = FALSE)
+head(mo$X)
 ```
 
-In the following we compare these values to those issued from
-simulations with altered scaling factors.
+    ##      n_interflow n_baseflow R_localflow R_interflow R_baseflow
+    ## [1,]    0.301030      1.204   -0.539794    0.840824   1.301030
+    ## [2,]    0.301030      1.204   -0.539794    0.840824   1.301030
+    ## [3,]    0.301030      1.204   -0.539794   -0.539794   1.301030
+    ## [4,]   -1.079588      1.204   -0.539794   -0.539794   1.301030
+    ## [5,]   -1.079588      1.204   -0.539794   -0.539794  -0.079588
+    ## [6,]   -1.079588      1.204   -0.539794   -0.539794  -0.079588
+    ##      deep_aquifer_loss n_manning
+    ## [1,]                 2     0.082
+    ## [2,]                 2     0.028
+    ## [3,]                 2     0.028
+    ## [4,]                 2     0.028
+    ## [5,]                 2     0.028
+    ## [6,]                 5     0.028
 
-**Increasing local vertical conductivity**
+### Simulations
 
-We begin our sensitivity analysis by increasing the vertical
-conductivity five times:
+We first run
+[`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
+on the synthetic watershed with parameters calibrated for the Aiguadora
+catchment. Then, we made simulations for each of the 160 parameter
+combinations of the morris design. Each simulation included 11 years of
+warm-up simulation, followed by 10 years of simulation for analysis.
+Simulations were conducted using 1D Richards for local soil water flows
+(`soilDomains = "single"`), with a tolerance value
+`richards_tolerance = 0.00001`; and 24 daily substeps were specified for
+lateral processes, using the watershed control parameter
+`num_daily_substeps = 24`. For all these runs, we stored the simulated
+daily discharge, as well as water balance components (precipitation,
+transpiration, runoff…) averaged at the watershed level.
 
-``` r
+### Response variables
 
-ws_control$tetis_parameters$R_localflow <- 5
-ws_control$tetis_parameters$R_interflow <- 1
-ws_control$tetis_parameters$R_baseflow <- 1
-res_L5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
-                     watershed_control = ws_control, progress = FALSE)
-```
+Three groups of response variables were analysed. First, the Kling-Gupta
+efficiency (KGE) of simulated daily discharge was computed against the
+simulated discharge in reference simulation run, as an aggregate measure
+of how much each parameter modifies the hydrograph. Second, six
+hydrological signatures of the simulated discharge were used to identify
+which aspect of the hydrological response is controlled by each
+parameter. Third, the partitioning of precipitation into
+evapotranspiration, surface runoff, deep drainage and losses to the deep
+aquifer was analysed to assess whether hydrological parameters also
+affect the balance between green and blue water, and transpiration was
+included to evaluate their effect on vegetation functioning.
 
-Increasing `R_localflow` has the effect of increasing the drainage from
-soils to the aquifer (hence, decreasing soil moisture). It also
-increases capillarity rise due to the higher conductivity. Aquifer
-exfiltration increases downslope as a consequence of the larger recharge
-in upslope cells.
+### Morris indices
 
-**Increasing subsurface lateral conductivity**
+Morris indices $`\mu*`$ and $`\sigma`$ were estimated using function
+[`sensitivity::tell()`](https://rdrr.io/pkg/sensitivity/man/decoupling.html)
+for each response variable. $`\mu*`$ values were normalized by response
+variable to the \[0-1\] scale, in order to compare indices between
+response variables that have different units.
 
-We now focus on the lateral conductivity of subsurface fluxes
-(interflow):
+## Results
 
-``` r
+### KGE
 
-ws_control$tetis_parameters$R_localflow <- 1
-ws_control$tetis_parameters$R_interflow <- 5
-ws_control$tetis_parameters$R_baseflow <- 1
-res_I5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
-                     watershed_control = ws_control, progress = FALSE)
-```
+![Morris sensitivity results for
+KGE](../../../../mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/fig_morris_KGE.png)
 
-Increasing lateral conductivity for subsurface fluxes increases the rate
-of lateral exchange (i.e. the speed of the kinematic wave), resulting in
-a much larger saturation excess. It also impacts the amount of aquifer
-exfiltration.
+### Heatmap
 
-**Increasing groundwater lateral conductivity** Let’s now perform a
-simulation with an increased groundwater conductivity:
-
-``` r
-
-ws_control$tetis_parameters$R_localflow <- 1
-ws_control$tetis_parameters$R_interflow <- 1
-ws_control$tetis_parameters$R_baseflow <- 5
-res_B5 <- spwb_land(r, example_watershed_burnin, SpParamsMED, examplemeteo, 
-                     dates = dates, summary_frequency = "month",summary_blocks = "WaterBalance",
-                     watershed_control = ws_control, progress = FALSE)
-```
-
-Increasing the speed of groundwater fluxes leads to a much shallower
-water table downslope, significantly increasing the amount of
-exfiltration.
-
-## Comparing predicted fluxes
-
-### Flux rate series
-
-``` r
-
-df1<- res_0$watershed_balance
-df1$Scenario <- "Baseline"
-df2<- res_L5$watershed_balance
-df2$Scenario <- "R_local x 5"
-df3<- res_I5$watershed_balance
-df3$Scenario <- "R_inter x 5"
-df4<- res_B5$watershed_balance
-df4$Scenario <- "R_base x 5"
-df<- rbind(df1,df2,df3, df4)
-df$Scenario <- factor(df$Scenario, levels = c("Baseline", "R_local x 5", "R_inter x 5", "R_base x 5"))
-```
-
-**Drainage**
-
-``` r
-
-ggplot(df)+
-  geom_line(aes(x=dates, y =DeepDrainage, col = Scenario, linetype = Scenario))+
-  ylab("Deep drainage (mm)")+
-  theme_bw()
-```
-
-![](TetisWatershedParameters_files/figure-html/unnamed-chunk-12-1.png)
-
-**Aquifer exfiltration**
-
-``` r
-
-ggplot(df)+
-  geom_line(aes(x=dates, y =AquiferExfiltration, col = Scenario, linetype = Scenario))+
-  ylab("Aquifer exfiltration (mm)")+
-  theme_bw()
-```
-
-![](TetisWatershedParameters_files/figure-html/unnamed-chunk-13-1.png)
-
-### Flux rate maps
-
-**Drainage to aquifer**
-
-``` r
-
-g1 <- plot_summary(res_0$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "Baseline")
-g2 <- plot_summary(res_L5$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "R_local x 5")
-g3 <- plot_summary(res_I5$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B5$sf, "DeepDrainage", date = "2001-04-01", r = r, limits = c(0, 100))+labs(title = "R_base x 5")
-cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
-```
-
-![](TetisWatershedParameters_files/figure-html/unnamed-chunk-14-1.png)
-
-**Sub-surface balance**
-
-``` r
-
-g1 <- plot_summary(res_0$sf, "InterflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
-  labs(title = "Baseline")
-g2 <- plot_summary(res_L5$sf, "InterflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
-  labs(title = "R_local x 5")
-g3 <- plot_summary(res_I5$sf, "InterflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
-  labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B5$sf, "InterflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(limits = c(-100, 450), mid="gray", na.value = NA)+
-  labs(title = "R_base x 5")
-cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
-```
-
-![](TetisWatershedParameters_files/figure-html/unnamed-chunk-15-1.png)
-
-**Groundwater balance**
-
-``` r
-
-g1 <- plot_summary(res_0$sf, "BaseflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
-  labs(title = "Baseline")
-g2 <- plot_summary(res_L5$sf, "BaseflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
-  labs(title = "R_local x 5")
-g3 <- plot_summary(res_I5$sf, "BaseflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
-  labs(title = "R_inter x 5")
-g4 <- plot_summary(res_B5$sf, "BaseflowBalance", date = "2001-04-01", r = r)+
-  scale_fill_gradient2(mid="gray", limits = c(-50, 250), na.value = NA)+
-  labs(title = "R_base x 5")
-cowplot::plot_grid(g1, g2, g3, g4 , ncol = 1, nrow = 4)
-```
-
-![](TetisWatershedParameters_files/figure-html/unnamed-chunk-16-1.png)
+![Heat map with morris sensitivity
+results](../../../../mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/fig_morris_heatmap.png)
