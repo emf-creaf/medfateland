@@ -252,7 +252,7 @@ sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo,
 #> ✔ Checking topology [12ms]
 #> 
 #> ℹ Checking 'sf' data
-#> ✔ Checking 'sf' data [27ms]
+#> ✔ Checking 'sf' data [26ms]
 #> 
 #> ℹ Determining neighbors and discharge for TETIS
 #> ✔ Determining neighbors and discharge for TETIS [23ms]
@@ -266,9 +266,9 @@ sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo,
 #> • Number of channel cells: 0
 #> • Number of outlet cells: 1
 #> ℹ Building spwb input
-#> ✔ Building spwb input [935ms]
+#> ✔ Building spwb input [1.4s]
 #> 
 #> ℹ 66 cells needed initialization
-#> ✔ 66 cells needed initialization [84ms]
+#> ✔ 66 cells needed initialization [184ms]
 #> 
 ```

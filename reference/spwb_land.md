@@ -499,13 +499,13 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [13ms]
+#> ✔ Checking raster topology [14ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [42ms]
+#> ✔ Checking 'sf' data columns [59ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [22ms]
+#> ✔ Determining neighbors and overland routing for TETIS [24ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -521,78 +521,124 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INITIALISATION ──
 #> 
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [7ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [6ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■                            16% | ETA:  6s
-#> Daily simulations ■■■■■■                            17% | ETA:  6s
-#> Daily simulations ■■■■■■■                           20% | ETA:  6s
-#> Daily simulations ■■■■■■■■                          23% | ETA:  5s
-#> Daily simulations ■■■■■■■■■                         26% | ETA:  7s
-#> Daily simulations ■■■■■■■■■                         27% | ETA:  7s
-#> Daily simulations ■■■■■■■■■                         28% | ETA:  7s
-#> Daily simulations ■■■■■■■■■■                        31% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■                       34% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■■                      37% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■■■                     40% | ETA:  5s
-#> Daily simulations ■■■■■■■■■■■■■■                    43% | ETA:  5s
-#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 52% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■                56% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             66% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            69% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           72% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         79% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
+#> Daily simulations ■■■                                8% | ETA: 13s
+#> Daily simulations ■■■■                               9% | ETA: 13s
+#> Daily simulations ■■■■                              10% | ETA: 13s
+#> Daily simulations ■■■■                              11% | ETA: 13s
+#> Daily simulations ■■■■■                             12% | ETA: 13s
+#> Daily simulations ■■■■■                             13% | ETA: 13s
+#> Daily simulations ■■■■■                             14% | ETA: 13s
+#> Daily simulations ■■■■■■                            16% | ETA: 14s
+#> Daily simulations ■■■■■■                            17% | ETA: 19s
+#> Daily simulations ■■■■■■                            18% | ETA: 18s
+#> Daily simulations ■■■■■■■                           19% | ETA: 18s
+#> Daily simulations ■■■■■■■                           21% | ETA: 17s
+#> Daily simulations ■■■■■■■■                          22% | ETA: 16s
+#> Daily simulations ■■■■■■■■                          23% | ETA: 16s
+#> Daily simulations ■■■■■■■■                          24% | ETA: 16s
+#> Daily simulations ■■■■■■■■■                         26% | ETA: 15s
+#> Daily simulations ■■■■■■■■■                         27% | ETA: 15s
+#> Daily simulations ■■■■■■■■■                         28% | ETA: 15s
+#> Daily simulations ■■■■■■■■■■                        29% | ETA: 14s
+#> Daily simulations ■■■■■■■■■■                        30% | ETA: 14s
+#> Daily simulations ■■■■■■■■■■                        31% | ETA: 14s
+#> Daily simulations ■■■■■■■■■■■                       32% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■                       34% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■■                      36% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■                      37% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■                      38% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■■                     40% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■                    42% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■                    43% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  51% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 52% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 53% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 54% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■                57% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■                58% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               60% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               61% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              64% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            69% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            70% | ETA:  5s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           72% | ETA:  5s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           73% | ETA:  5s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           74% | ETA:  5s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          77% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          78% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         79% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -43.43 fluxes (mm): -43.43
-#> • Aquifer balance content (mm): 23.85 fluxes (mm): 23.85
-#> • Aquifer fluxes (mm) Drainage input: 125.78 Exfiltration: 101.92 Capillary
-#> rise: 0.01 Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): -18.93 fluxes (mm): -18.93
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 101.92
-#> Evapotransp.: 71.75 Negative aquifer correction: 0 Deep loss: 0
+#> • Soil balance content (mm): -10.14 fluxes (mm): -10.14
+#> • Aquifer balance content (mm): 23.86 fluxes (mm): 23.86
+#> • Aquifer fluxes (mm) Drainage input: 37.36 Exfiltration: 13.5 Capillary rise:
+#> 0 Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): 13.87 fluxes (mm): 13.87
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 65.44
+#> Evapotransp.: 75.43 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 67306
-#> • Final watershed export sum (m3): 67306
+#> • Final outlet sum (m3): 43214
+#> • Final watershed export sum (m3): 43214
                  
 # Print a summary of water balance components
 summary(res)
 #>   Snowpack water balance components:
 #>     Snow fall (mm) 19.19  Snow melt (mm) 19.19
 #>   Soil water balance components:
-#>     Infiltration (mm) 134.64  Saturation excess (mm) 0
-#>     Deep drainage (mm) 125.85  Capillarity rise (mm) 0.01
-#>     Soil evaporation (mm) 3.43  Plant transpiration (mm) 48.81
+#>     Infiltration (mm) 134.8  Saturation excess (mm) 52.9
+#>     Deep drainage (mm) 36.06  Capillarity rise (mm) 0
+#>     Soil evaporation (mm) 4.27  Plant transpiration (mm) 51.7
 #>     Interflow balance (mm) 0
 #>   Aquifer water balance components:
-#>     Deep drainage (mm) 125.78  Capillarity rise (mm) 0.01
-#>     Exfiltration (mm) 101.92  Deep aquifer loss (mm) 0
+#>     Deep drainage (mm) 37.36  Capillarity rise (mm) 0
+#>     Exfiltration (mm) 13.5  Deep aquifer loss (mm) 0
 #>     Negative aquifer correction (mm) 0
 #>   Watershed water balance components:
 #>     Precipitation (mm) 154.74
-#>     Interception (mm) 20.3  Soil evaporation (mm) 3.37
-#>     Plant transpiration (mm) 48.07
+#>     Interception (mm) 20.3  Soil evaporation (mm) 4.21
+#>     Plant transpiration (mm) 50.92
 #>     Subsurface flow balance (mm) 0
 #>     Groundwater flow balance (mm) 0
-#>     Export runoff (mm) 101.92
+#>     Export runoff (mm) 65.44
 
 # Option 'reduce_to_dominant = TRUE' in initialization, may be useful to speed up calculations
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
@@ -617,10 +663,10 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> ✔ Checking raster topology [6ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [23ms]
+#> ✔ Checking 'sf' data columns [25ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [12ms]
+#> ✔ Determining neighbors and overland routing for TETIS [15ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -641,26 +687,38 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA:  1s
+#> Daily simulations ■■■■■■■■■                         27% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■                        31% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■                      36% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■                     41% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 54% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            71% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -43.08 fluxes (mm): -43.08
-#> • Aquifer balance content (mm): 23.93 fluxes (mm): 23.93
-#> • Aquifer fluxes (mm) Drainage input: 130.91 Exfiltration: 106.97 Capillary
-#> rise: 0.02 Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): -18.5 fluxes (mm): -18.5
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 106.97
-#> Evapotransp.: 66.28 Negative aquifer correction: 0 Deep loss: 0
+#> • Soil balance content (mm): -10.72 fluxes (mm): -10.72
+#> • Aquifer balance content (mm): 24.28 fluxes (mm): 24.28
+#> • Aquifer fluxes (mm) Drainage input: 36.32 Exfiltration: 12.04 Capillary rise:
+#> 0 Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): 13.72 fluxes (mm): 13.72
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 70.72
+#> Evapotransp.: 70.31 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 70641
-#> • Final watershed export sum (m3): 70641
+#> • Final outlet sum (m3): 46701
+#> • Final watershed export sum (m3): 46701
 # }
 ```

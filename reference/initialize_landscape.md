@@ -147,8 +147,16 @@ example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED,
                                          local_control = local_control, 
                                          model = "spwb")
 #> ℹ Creating 100 state objects for model 'spwb'.
-#> ✔ Creating 100 state objects for model 'spwb'. [8ms]
+#> ✔ Creating 100 state objects for model 'spwb'. [7ms]
 #> 
+#> Stands ■■■■■■■■■■■■                      37% | ETA:  2s
+#> Stands ■■■■■■■■■■■■■                     39% | ETA:  2s
+#> Stands ■■■■■■■■■■■■■■■                   48% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         79% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Transpiration mode [Granier: 100, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 100, single: 0, dual: 0]
 ```
