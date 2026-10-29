@@ -17,7 +17,7 @@ spwb_land(
   CO2ByYear = numeric(0),
   summary_blocks = NULL,
   summary_frequency = "years",
-  local_control = defaultControl(soilDomains = "single"),
+  local_control = defaultControl(soilDomains = "single", rhizosphereOverlap = "total"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
   num_cores = parallel::detectCores() - 1,
@@ -33,7 +33,8 @@ growth_land(
   CO2ByYear = numeric(0),
   summary_blocks = NULL,
   summary_frequency = "years",
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   parallelize = FALSE,
   num_cores = parallel::detectCores() - 1,
@@ -49,7 +50,8 @@ fordyn_land(
   CO2ByYear = numeric(0),
   summary_blocks = NULL,
   summary_frequency = "years",
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   dispersal_control = default_dispersal_control(),
   management_function = NULL,

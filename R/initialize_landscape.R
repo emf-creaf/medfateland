@@ -102,6 +102,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
   n <- length(forestlist)
   transp_mode <- rep(NA, n)
   soil_domains <- rep(NA, n)
+  rhizo_overlap <- rep(NA, n)
   if(model %in% c("spwb", "growth")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
@@ -125,6 +126,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
               }
               soil_domains[i] <- x_i$control$soilDomains
               transp_mode[i] <- x_i$control$transpirationMode
+              rhizo_overlap[i] <- x_i$control$rhizosphereOverlap
             }
             if(inherits(x_i,"growthInput") && model=="growth") {
               init[i] <- FALSE
@@ -139,6 +141,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
               }
               soil_domains[i] <- x_i$control$soilDomains
               transp_mode[i] <- x_i$control$transpirationMode
+              rhizo_overlap[i] <- x_i$control$rhizosphereOverlap
             }
           }
         }
@@ -152,6 +155,7 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
               init[i] = FALSE
               soil_domains[i] <- x_i$control$soilDomains
               transp_mode[i] <- x_i$control$transpirationMode
+              rhizo_overlap[i] <- x_i$control$rhizosphereOverlap
             }
           }
         }
@@ -206,11 +210,14 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
             }
             soil_domains[i] <- local_control_i$soilDomains
             transp_mode[i] <- local_control_i$transpirationMode
+            rhizo_overlap[i] <- local_control_i$rhizosphereOverlap
+            
           }
         } else if(landcover[i] == "agriculture") {
           xlist[[i]] <- medfate::aspwbInput(crop_factor = cropfactor[i], control = local_control_i, soil = s)
           soil_domains[i] <- local_control_i$soilDomains
           transp_mode[i] <- local_control_i$transpirationMode
+          rhizo_overlap[i] <- local_control_i$rhizosphereOverlap
         } else if(landcover[i] %in% c("rock", "artificial", "water")) {
           xlist[[i]] <- medfate:::.nswbInput(landcover[i], snowpack[i])
         }
@@ -227,6 +234,9 @@ initialize_landscape<- function(x, SpParams, local_control, model = "spwb",
       cli::cli_li(paste0("Soil domains [buckets: ", sum(soil_domains=="buckets", na.rm=TRUE), 
                          ", single: ", sum(soil_domains=="single", na.rm=TRUE), 
                          ", dual: " , sum(soil_domains=="dual", na.rm=TRUE),"]"))
+      cli::cli_li(paste0("Rhizosphere overlap [total: ", sum(rhizo_overlap=="total", na.rm=TRUE), 
+                         ", partial: ", sum(rhizo_overlap=="partial", na.rm=TRUE), 
+                         ", none: " , sum(rhizo_overlap=="none", na.rm=TRUE),"]"))
     }
   } 
   x[["state"]] <- xlist

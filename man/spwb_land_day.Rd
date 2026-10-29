@@ -11,7 +11,8 @@ spwb_land_day(
   SpParams,
   meteo = NULL,
   date = NULL,
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   progress = TRUE
 )
@@ -22,7 +23,8 @@ growth_land_day(
   SpParams,
   meteo = NULL,
   date = NULL,
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   progress = TRUE
 )

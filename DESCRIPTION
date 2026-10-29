@@ -2,7 +2,7 @@ Package: medfateland
 Type: Package
 Title: Mediterranean Landscape Simulation
 Version: 3.0.1
-Date: 2026-05-16
+Date: 2026-10-29
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
