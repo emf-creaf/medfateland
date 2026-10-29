@@ -3,6 +3,7 @@
 ## medfateland 3.0.1
 
 - Allows parsing deadwood if present in forestable data
+- Default rhizosphereOverlap set to total in watershed simulations
 
 ## medfateland 3.0.0
 

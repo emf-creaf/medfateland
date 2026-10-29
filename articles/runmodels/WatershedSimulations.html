@@ -232,11 +232,12 @@ follows:</p>
 <code class="sourceCode R"><span><span class="va">example_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span>
 <span>                                     local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"buckets"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating 66 state objects for model 'spwb'.</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 66 state objects for model 'spwb'. <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Creating 66 state objects for model 'spwb'. <span style="color: #B2B2B2;">[11ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
 <pre><code><span><span class="co">## • Soil domains [buckets: 65, single: 0, dual: 0]</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## • Rhizosphere overlap [total: 0, partial: 65, none: 0]</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_init</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 14 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -271,7 +272,7 @@ structure to the dominant species (see function
 <code><a href="https://emf-creaf.github.io/medfate/reference/forest_simplification.html" class="external-link">forest_reduceToDominant()</a></code> in package
 <strong>medfate</strong>). Hence, we can initialize using
 <code>reduce_to_dominant = TRUE</code>:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_simplified</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, SpParams <span class="op">=</span> <span class="va">SpParamsMED</span>,</span>
 <span>                                           local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>,</span>
 <span>                                           reduce_to_dominant <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -280,7 +281,8 @@ structure to the dominant species (see function
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]</span></span></code></pre>
 <pre><code><span><span class="co">## • Soil domains [buckets: 0, single: 65, dual: 0]</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## • Rhizosphere overlap [total: 0, partial: 65, none: 0]</span></span></code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_simplified</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 14 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -315,7 +317,7 @@ initialization in the next sections.</p>
 </h3>
 <p>To speed up calculations, we call function <code><a href="../../reference/spwb_land.html">spwb_land()</a></code>
 for three months:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_simplified</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
@@ -331,13 +333,13 @@ decide which outputs are to be kept in summaries).</p>
 </h3>
 <p>Function <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../../reference/spwb_land.html">growth_land()</a></code>
 return a list with the following elements:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "watershed_control"      "sf"                     "watershed_balance"     </span></span>
 <span><span class="co">## [4] "watershed_soil_balance" "channel_export_m3s"     "outlet_export_m3s"</span></span></code></pre>
 <p>Where <code>sf</code> is an object of class <code>sf</code>,
 analogous to those of functions <code>*_spatial()</code>:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 66 features and 10 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -370,7 +372,7 @@ refer to watershed-level results. For example,
 <code>watershed_balance</code> contains the daily elements of the water
 balance at the watershed level, including the amount of water exported
 in mm in the last column.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">watershed_balance</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        dates       PET Precipitation      Rain Snow Snowmelt Interception</span></span>
 <span><span class="co">## 1 2001-01-01 0.9003872      4.869109  4.869109    0        0    0.9380404</span></span>
@@ -415,7 +417,7 @@ landscape. Data frame <code>watershed_soil_balance</code> is similar to
 each channel cell each day and <code>outlet_export_m3s</code> contains
 the average river flow reaching each outlet cell each day (both in units
 of cubic meters per second):</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">outlet_export_m3s</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##            6</span></span>
 <span><span class="co">## 2001-01-01 0</span></span>
@@ -430,7 +432,7 @@ of cubic meters per second):</p>
 </h3>
 <p>The components of watershed-level water balance can be displayed in
 the console using a tailored <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Snowpack water balance components:</span></span>
 <span><span class="co">##     Snow fall (mm) 19.19  Snow melt (mm) 19.19</span></span>
@@ -453,11 +455,11 @@ the console using a tailored <code><a href="https://rdrr.io/r/base/summary.html"
 <p>Analogously to plots available with package <strong>medfate</strong>,
 one can display time series of watershed-level water balance components
 using function <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_ws1</span>, type <span class="op">=</span> <span class="st">"Export"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>or the usual combination of hietograph and hydrograph using:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_ws1</span>, type <span class="op">=</span> <span class="st">"Hydrograph"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -469,7 +471,7 @@ arbitrarily generated <em>a posteriori</em> from simulation results,
 with <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> the summaries are always fixed and
 embedded with the simulation result. For example, we can inspect the
 summaries for a given landscape cell using:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">summary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##            MinTemperature MaxTemperature      PET      Rain      Snow</span></span>
 <span><span class="co">## 2001-01-01     -3.2035562       2.427977 31.14151 58.098839 16.650650</span></span>
@@ -490,13 +492,13 @@ variable.</p>
 <code><a href="../../reference/spwb_spatial.html">spwb_spatial()</a></code>. As an example we display a map of the
 average soil relative water content during the third simulated
 month:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span>, variable <span class="op">=</span> <span class="st">"RWC"</span>, date <span class="op">=</span> <span class="st">"2001-03-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>As for uncoupled simulations, we can use function
 <code><a href="../../reference/unnest_summary.html">unnest_summary()</a></code> to reformat all cell summaries and
 facilitate post-processing:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../../reference/unnest_summary.html">unnest_summary</a></span><span class="op">(</span><span class="va">res_ws1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 6 features and 11 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
@@ -524,19 +526,19 @@ interest at the landscape level. Nevertheless, it is possible to specify
 those cells for which full daily results are desired. This is done by
 adding a column <code>result_cell</code> in the input <code>sf</code>
 object:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set request for daily model results in cells number 3 and 9</span></span>
 <span><span class="va">example_simplified</span><span class="op">$</span><span class="va">result_cell</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">example_simplified</span><span class="op">$</span><span class="va">result_cell</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">9</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></code></pre></div>
 <p>If we launch the simulations again (omitting progress
 information):</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_simplified</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
 <span>                    watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>We can now retrieve the results of the desired cell, e.g. the third
 one, in column <code>result</code> of <code>sf</code>:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="va">res_ws1</span><span class="op">$</span><span class="va">sf</span><span class="op">$</span><span class="va">result</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "spwb" "list"</span></span></code></pre>
@@ -544,7 +546,7 @@ one, in column <code>result</code> of <code>sf</code>:</p>
 returned by function <code><a href="https://emf-creaf.github.io/medfate/reference/spwb.html" class="external-link">spwb()</a></code> of <strong>medfate</strong>.
 Hence, we can inspect daily results using functions
 <code><a href="https://emf-creaf.github.io/medfate/reference/shinyplot.html" class="external-link">shinyplot()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, for example:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span>, <span class="st">"SoilRWC"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -558,7 +560,7 @@ from the point where the first one ended. In order to do so, we need to
 update the state variables in spatial object with their values at the
 end of the simulation, using function
 <code><a href="../../reference/update_landscape.html">update_landscape()</a></code>:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_watershed_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/update_landscape.html">update_landscape</a></span><span class="op">(</span><span class="va">example_watershed</span>, <span class="va">res_ws1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">example_watershed_mod</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "geometry"             "id"                   "elevation"           </span></span>
@@ -570,12 +572,12 @@ end of the simulation, using function
 <p>Note that a new column <code>state</code> appears in now in the
 <strong>sf</strong> object. We can check the effect by drawing the
 relative water content:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed_mod</span>, variable <span class="op">=</span> <span class="st">"soil_rwc_curr"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-25-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>Now we can continue our simulation, in this case adding an extra
 month:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-04-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-04-30"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_mod</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
@@ -594,14 +596,14 @@ burn-in period, but this will depend on the size of the watershed. In
 <strong>medfate</strong> we provide users with a copy of the example
 watershed, where burn-in period has already been simulated. This can be
 seen by inspecting the aquifer level:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_watershed_burnin"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">example_watershed_burnin</span>, variable <span class="op">=</span> <span class="st">"aquifer"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-27-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>If we run a one-month simulation on this data set we can then compare
 the output before and after the burn-in period to illustrate its
 importance:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>, dates <span class="op">=</span> <span class="va">dates</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
@@ -715,7 +717,7 @@ make sense in this kind of simulation, since the focus is on forest
 dynamics.</p>
 <p>A call to <code><a href="../../reference/spwb_land.html">fordyn_land()</a></code> for a single year is given here,
 as an example, starting from the initial example watershed:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">fordyn_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed</span>,</span>
 <span>                       <span class="va">SpParamsMED</span>, <span class="va">examplemeteo</span>,</span>
 <span>                       watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -733,7 +735,7 @@ inside watershed simulations. This can be done by supplying an
 <strong>interpolator</strong> object (or a list of them), as defined in
 package <strong>meteoland</strong>. Here we use the example data
 provided in the package:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interpolator</span> <span class="op">&lt;-</span> <span class="fu">meteoland</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/meteoland/reference/with_meteo.html" class="external-link">with_meteo</a></span><span class="op">(</span><span class="va">meteoland_meteo_example</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">meteoland</span><span class="fu">::</span><span class="fu"><a href="https://emf-creaf.github.io/meteoland/reference/create_meteo_interpolator.html" class="external-link">create_meteo_interpolator</a></span><span class="op">(</span>params <span class="op">=</span> <span class="fu">defaultInterpolationParams</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating interpolator...</span></span></code></pre>
@@ -741,24 +743,24 @@ provided in the package:</p>
 <pre><code><span><span class="co">##   • Updating intial_Rp parameter with the actual stations mean distance...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Interpolator created.</span></span></code></pre>
 <p>Once we have this object, using it is straightforward:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, </span>
 <span>                     meteo <span class="op">=</span> <span class="va">interpolator</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
 <span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that we did not define dates, which are taken from the
 interpolator data. If we plot the minimum temperature, we will
 appreciate the spatial variation in climate:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws5</span><span class="op">$</span><span class="va">sf</span>, variable <span class="op">=</span> <span class="st">"MinTemperature"</span>, date <span class="op">=</span> <span class="st">"2022-04-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-32-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>For large watersheds and fine spatial resolution interpolation can
 become slow. One can then specify that interpolation is performed on a
 coarser grid, by using a watershed control parameter, for example:</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span><span class="op">$</span><span class="va">weather_aggregation_factor</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></code></pre></div>
 <p>To illustrate its effect, we repeat the previous simulation and plot
 the minimum temperature:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_ws6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">example_watershed_burnin</span>, <span class="va">SpParamsMED</span>, </span>
 <span>                     meteo <span class="op">=</span> <span class="va">interpolator</span>, summary_frequency <span class="op">=</span> <span class="st">"month"</span>,</span>
 <span>                     watershed_control <span class="op">=</span> <span class="va">ws_control</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -778,19 +780,19 @@ inputs II: arbitrary locations</a>; you can find the dataset in the
 <strong>medfateland</strong> GitHub repository).</p>
 <p>We begin by loading the raster and <code>sf</code> inputs for
 Bianya:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"../intro/bianya_raster.tif"</span><span class="op">)</span></span>
 <span><span class="va">sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../intro/bianya.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>If we draw the elevation map, we will visually identify two
 subwatersheds:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">sf</span>, variable <span class="op">=</span> <span class="st">"elevation"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-36-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>Package <strong>medfateland</strong> includes function
 <code><a href="../../reference/overland_routing.html">overland_routing()</a></code> to statically illustrate how overland
 runoff processes are dealt with (i.e. distribution of runoff among
 neighbors, channel routing, etc.).</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">or</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/overland_routing.html">overland_routing</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">sf</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">or</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simple feature collection with 6 features and 12 fields</span></span>
@@ -812,7 +814,7 @@ neighbors, channel routing, etc.).</p>
 <span><span class="co">## <span style="color: #949494;">#   subwatershed &lt;int&gt;</span></span></span></code></pre>
 <p>In this function we can specifically ask for sub-watersheds, as
 follows:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">or</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/overland_routing.html">overland_routing</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">sf</span>, subwatersheds <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                       max_overlap <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
 <p>In short, sub-watershed definition consists in: (a) finding the
@@ -821,21 +823,21 @@ basins until the overlap is less than the specified parameter; and (c)
 deciding to which sub-watershed each border cell belongs to. This
 function identified three sub-watersheds, one of them being an isolated
 channel cell:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">or</span><span class="op">[</span>, <span class="st">"subwatershed"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-39-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>Let’s now illustrate how to perform watershed simulations with
 parallelization and subwatersheds. We begin by initializing the input
 (here we used a <code>"buckets"</code> soil hydrology to speed up
 calculations, but <code>"single"</code> would be more appropriate).</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sf_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/initialize_landscape.html">initialize_landscape</a></span><span class="op">(</span><span class="va">sf</span>, SpParams <span class="op">=</span> <span class="fu">traits4models</span><span class="fu">::</span><span class="va"><a href="https://emf-creaf.github.io/traits4models/reference/SpParamsES.html" class="external-link">SpParamsES</a></span>,</span>
 <span>                                local_control <span class="op">=</span> <span class="fu"><a href="https://emf-creaf.github.io/medfate/reference/defaultControl.html" class="external-link">defaultControl</a></span><span class="op">(</span>soilDomains <span class="op">=</span> <span class="st">"buckets"</span><span class="op">)</span>,</span>
 <span>                                progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Subwatershed definition is controlled via watershed control options
 as follows (simulation functions internally call
 <code><a href="../../reference/overland_routing.html">overland_routing()</a></code>):</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ws_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/default_watershed_control.html">default_watershed_control</a></span><span class="op">(</span><span class="st">"tetis"</span><span class="op">)</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">subwatersheds</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">ws_control</span><span class="op">$</span><span class="va">tetis_parameters</span><span class="op">$</span><span class="va">max_overlap</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span></code></pre></div>
@@ -845,7 +847,7 @@ subwatershed independently, aggregating the results and, finally,
 performing channel routing.</p>
 <p>For simplicity, we only simulate five days. We ask for console output
 to see what the model is doing:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-04-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-04-05"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></span>
 <span><span class="va">res_ws7</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/spwb_land.html">spwb_land</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">sf_init</span>,</span>
 <span>                    <span class="va">SpParamsMED</span>, <span class="va">interpolator</span>, dates <span class="op">=</span> <span class="va">dates</span>,</span>
@@ -858,16 +860,16 @@ to see what the model is doing:</p>
 <pre><code><span><span class="co">## ── <span style="font-weight: bold;">INPUT CHECKING</span> ──</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking raster topology</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[18ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Checking raster topology <span style="color: #B2B2B2;">[19ms]</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Column 'snowpack' was missing in 'sf'. Initializing empty snowpack.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Minimum bedrock porosity set to 0.1%.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BBBB;">ℹ</span> Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.4s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Checking 'sf' data columns<span style="color: #00BB00;">✔</span> Checking 'sf' data columns <span style="color: #B2B2B2;">[3.6s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Determining neighbors and overland routing for TETIS</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[1.7s]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> Determining neighbors and overland routing for TETIS <span style="color: #B2B2B2;">[1.8s]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## • Hydrological model: TETIS</span></span>
 <span><span class="co">## • Number of grid cells: 3825 Number of target cells: 2573</span></span>
@@ -888,6 +890,7 @@ to see what the model is doing:</p>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> All state objects are already available for 'spwb'.</span></span>
 <span><span class="co">## • Transpiration mode [Granier: 2492, Sperry: 0, Sureau: 0]</span></span>
 <span><span class="co">## • Soil domains [buckets: 2492, single: 0, dual: 0]</span></span>
+<span><span class="co">## • Rhizosphere overlap [total: 0, partial: 2492, none: 0]</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ── <span style="font-weight: bold;">PARALLEL SIMULATION of 3 SUB-WATERSHEDS in 3 NODES</span> ──</span></span>
 <span><span class="co">## </span></span>
@@ -907,7 +910,7 @@ to see what the model is doing:</p>
 <p>As an example of the output, we show a map of woody plant
 transpiration (note that we asked for water balance components using
 <code>summary_blocks = "WaterBalance"</code>:</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_summary.html">plot_summary</a></span><span class="op">(</span><span class="va">res_ws7</span>, variable <span class="op">=</span> <span class="st">"Transpiration"</span>, date <span class="op">=</span> <span class="st">"2022-04-01"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
 <p><img src="WatershedSimulations_files/figure-html/unnamed-chunk-43-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>

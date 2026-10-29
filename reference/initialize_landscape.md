@@ -115,6 +115,10 @@ simulations where focus is on runoff (e.g. calibration of watershed
 parameters or burnin periods). Elements identified as `result_cell` will
 not be simplified.
 
+IMPORTANT: the control options in `local_control` will have a strong
+effect on computation time for watershed simulations (e.g.
+[`spwb_land`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md))
+
 ## See also
 
 [`spwb_spatial`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
@@ -149,17 +153,13 @@ example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED,
 #> ℹ Creating 100 state objects for model 'spwb'.
 #> ✔ Creating 100 state objects for model 'spwb'. [4ms]
 #> 
-#> Stands ■■■■■■■■■■■■                      36% | ETA:  2s
-#> Stands ■■■■■■■■■■■■                      37% | ETA:  2s
-#> Stands ■■■■■■■■■■■■■                     41% | ETA:  2s
-#> Stands ■■■■■■■■■■■■■■■                   48% | ETA:  2s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% | ETA:  0s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  0s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■                    42% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■                   46% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% | ETA:  0s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Transpiration mode [Granier: 100, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 100, single: 0, dual: 0]
+#> • Rhizosphere overlap [total: 0, partial: 100, none: 0]
 ```

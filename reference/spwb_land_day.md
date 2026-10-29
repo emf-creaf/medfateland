@@ -23,7 +23,8 @@ spwb_land_day(
   SpParams,
   meteo = NULL,
   date = NULL,
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   progress = TRUE
 )
@@ -34,7 +35,8 @@ growth_land_day(
   SpParams,
   meteo = NULL,
   date = NULL,
-  local_control = medfate::defaultControl(soilDomains = "single"),
+  local_control = medfate::defaultControl(soilDomains = "single", rhizosphereOverlap =
+    "total"),
   watershed_control = default_watershed_control(),
   progress = TRUE
 )
@@ -249,13 +251,13 @@ sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo,
 #> 
 #> ── Simulation of model 'spwb' over a watershed for day '2001-03-01' ────────────
 #> ℹ Checking topology
-#> ✔ Checking topology [7ms]
+#> ✔ Checking topology [11ms]
 #> 
 #> ℹ Checking 'sf' data
-#> ✔ Checking 'sf' data [14ms]
+#> ✔ Checking 'sf' data [20ms]
 #> 
 #> ℹ Determining neighbors and discharge for TETIS
-#> ✔ Determining neighbors and discharge for TETIS [12ms]
+#> ✔ Determining neighbors and discharge for TETIS [17ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -266,9 +268,9 @@ sf_out <- spwb_land_day(r, example_watershed, SpParamsMED, examplemeteo,
 #> • Number of channel cells: 0
 #> • Number of outlet cells: 1
 #> ℹ Building spwb input
-#> ✔ Building spwb input [1.4s]
+#> ✔ Building spwb input [1.1s]
 #> 
 #> ℹ 66 cells needed initialization
-#> ✔ 66 cells needed initialization [179ms]
+#> ✔ 66 cells needed initialization [58ms]
 #> 
 ```

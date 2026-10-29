@@ -185,13 +185,15 @@ example_init <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [18ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [11ms]
 
     ## 
 
     ## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 
     ## • Soil domains [buckets: 65, single: 0, dual: 0]
+
+    ## • Rhizosphere overlap [total: 0, partial: 65, none: 0]
 
 ``` r
 
@@ -252,6 +254,8 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
     ## • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 
     ## • Soil domains [buckets: 0, single: 65, dual: 0]
+
+    ## • Rhizosphere overlap [total: 0, partial: 65, none: 0]
 
 ``` r
 
@@ -993,7 +997,7 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking raster topology
 
-    ## ✔ Checking raster topology [18ms]
+    ## ✔ Checking raster topology [19ms]
 
     ## 
 
@@ -1003,10 +1007,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.4s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.6s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [1.7s]
+    ## ✔ Determining neighbors and overland routing for TETIS [1.8s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573
@@ -1027,6 +1031,7 @@ res_ws7 <- spwb_land(r, sf_init,
     ## ℹ All state objects are already available for 'spwb'.
     ## • Transpiration mode [Granier: 2492, Sperry: 0, Sureau: 0]
     ## • Soil domains [buckets: 2492, single: 0, dual: 0]
+    ## • Rhizosphere overlap [total: 0, partial: 2492, none: 0]
     ## 
     ## ── PARALLEL SIMULATION of 3 SUB-WATERSHEDS in 3 NODES ──
     ## 

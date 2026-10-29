@@ -112,10 +112,10 @@ seedbank_list <- dispersal(example_watershed_utm31, SpParamsMED)
 #> ✔ Seed production [17ms]
 #> 
 #> ℹ Kernel estimation
-#> ✔ Kernel estimation [824ms]
+#> ✔ Kernel estimation [772ms]
 #> 
 #> ℹ Seed dispersal
-#> ✔ Seed dispersal [2.9s]
+#> ✔ Seed dispersal [3.1s]
 #> 
 
 seedbank_list[[1]]
@@ -159,16 +159,16 @@ example_ifn_utm31 <- sf::st_transform(example_ifn, crs = 32631)
 # Estimate seed production and dispersal over the set of forest inventory plots
 seedbank_list <- dispersal(example_ifn_utm31, SpParamsMED)
 #> ℹ Seed bank mortality
-#> ✔ Seed bank mortality [15ms]
+#> ✔ Seed bank mortality [10ms]
 #> 
 #> ℹ Seed production
-#> ✔ Seed production [36ms]
+#> ✔ Seed production [23ms]
 #> 
 #> ℹ Kernel estimation
-#> ✔ Kernel estimation [1s]
+#> ✔ Kernel estimation [730ms]
 #> 
 #> ℹ Seed dispersal
-#> ✔ Seed dispersal [11.8s]
+#> ✔ Seed dispersal [10.5s]
 #> 
 
 seedbank_list[[1]]

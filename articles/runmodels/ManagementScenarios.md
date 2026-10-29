@@ -392,7 +392,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
@@ -410,7 +410,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [6.8s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [5.7s]
 
     ## 
 
@@ -448,25 +448,25 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [9ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [9ms]
+    ## ✔ Preparing data for parallelization [8ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [15.1s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.1s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [12ms]
+    ## ✔ Retrieval of results [9ms]
 
     ## 
 
@@ -667,19 +667,19 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Recovering previous run
 
-    ## ✔ Recovering previous run [5ms]
+    ## ✔ Recovering previous run [4ms]
 
     ## 
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [10ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
@@ -723,31 +723,31 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [8ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [12ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [18ms]
+    ## ✔ Preparing data for parallelization [17ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [14.8s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.5s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [10ms]
+    ## ✔ Retrieval of results [15ms]
 
     ## 
 

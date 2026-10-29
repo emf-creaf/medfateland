@@ -124,6 +124,7 @@ and returns the modified object of class 'sf'.</p>
 <code><a href="spwb_spatial_day.html">spwb_spatial_day</a></code> or <code><a href="spwb_spatial_day.html">growth_spatial_day</a></code>. However, function <code>initialize_landscape</code>  allows separating initialization from model simulations.</p>
 <p>Options <code>merge_shrubs</code>, <code>merge_trees</code> and <code>reduce_to_dominant</code> have been implemented to allow simplification of forests during watershed simulations
 where focus is on runoff (e.g. calibration of watershed parameters or burnin periods). Elements identified as <code>result_cell</code> will not be simplified.</p>
+<p>IMPORTANT: the control options in <code>local_control</code> will have a strong effect on computation time for watershed simulations  (e.g. <code><a href="spwb_land.html">spwb_land</a></code>)</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -158,19 +159,15 @@ where focus is on runoff (e.g. calibration of watershed parameters or burnin per
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating 100 state objects for model 'spwb'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating 100 state objects for model 'spwb'. <span style="color: #B2B2B2;">[4ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% | ETA:  2s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% | ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% | ETA:  1s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  82% | ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  85% | ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  95% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stands <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Transpiration mode [Granier: 100, Sperry: 0, Sureau: 0]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Soil domains [buckets: 100, single: 0, dual: 0]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Rhizosphere overlap [total: 0, partial: 100, none: 0]</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

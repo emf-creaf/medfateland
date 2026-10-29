@@ -88,11 +88,11 @@ calibration:
 
 #### Time series
 
-**Daily**
+*Daily*
 
 ![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-11-1.png)
 
-**Monthly**
+*Monthly*
 
 ![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-12-1.png)
 
@@ -118,6 +118,23 @@ calibration:
 | 95% | 1.8500 | 2.176 | 1.7660 | 2.387 |
 | 99% | 3.7998 | 3.657 | 3.3616 | 4.254 |
 
+#### Computation times
+
+| medfateland_ver | medfate_ver | watershed | model | transpirationMode | soilDomains | rhizosphereOverlap | input | days | Elapsed_time_sec |
+|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | buckets | total | simplified | 30 | 2.786 |
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | single | total | simplified | 30 | 7.882 |
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | dual | total | simplified | 30 | 121.689 |
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | buckets | total | detailed | 30 | 4.688 |
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | single | total | detailed | 30 | 9.842 |
+| 3.0.1 | 5.2.0 | aiguadora | spwb | Granier | dual | total | detailed | 30 | 133.196 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | buckets | total | simplified | 30 | 3.634 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | single | total | simplified | 30 | 10.682 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | dual | total | simplified | 30 | 150.666 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | buckets | total | detailed | 30 | 9.430 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | single | total | detailed | 30 | 15.766 |
+| 3.0.1 | 5.2.0 | aiguadora | growth | Granier | dual | total | detailed | 30 | 157.929 |
+
 ### SIURANA watershed with TETIS and version 3.0.1
 
 #### Goodness-of-fit
@@ -131,19 +148,19 @@ calibration:
 
 #### Time series
 
-**Daily**
+*Daily*
 
-![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-25-1.png)
+![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-28-1.png)
 
-**Monthly**
+*Monthly*
 
-![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-26-1.png)
+![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-29-1.png)
 
 #### Hydrological analysis (daily scale)
 
 *Density distribution*
 
-![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-27-1.png)
+![](WatershedLevelEvaluation_files/figure-html/unnamed-chunk-30-1.png)
 
 *Percentiles*
 
@@ -160,3 +177,20 @@ calibration:
 | 90% | 0.3299600 | 0.402 | 0.2719856 | 0.679 |
 | 95% | 0.6722750 | 0.761 | 0.5070718 | 1.225 |
 | 99% | 2.0643371 | 2.181 | 1.9439456 | 3.739 |
+
+#### Computation times
+
+| medfateland_ver | medfate_ver | watershed | model | transpirationMode | soilDomains | rhizosphereOverlap | input | days | Elapsed_time_sec |
+|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | buckets | total | simplified | 30 | 1.544 |
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | single | total | simplified | 30 | 8.925 |
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | dual | total | simplified | 30 | 205.971 |
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | buckets | total | detailed | 30 | 2.494 |
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | single | total | detailed | 30 | 10.144 |
+| 3.0.1 | 5.2.0 | siurana | spwb | Granier | dual | total | detailed | 30 | 206.742 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | buckets | total | simplified | 30 | 2.028 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | single | total | simplified | 30 | 7.416 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | dual | total | simplified | 30 | 233.517 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | buckets | total | detailed | 30 | 5.485 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | single | total | detailed | 30 | 11.652 |
+| 3.0.1 | 5.2.0 | siurana | growth | Granier | dual | total | detailed | 30 | 225.333 |

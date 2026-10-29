@@ -45,7 +45,7 @@ select our target watershed (Riera de Bianya \[river code “2005528”\]):
 
 ``` r
 
-dataset_path <- "~/OneDrive/EMF_datasets/"
+dataset_path <- "/home/miquel/OneDrive/EMF_datasets/"
 scchh <- terra::vect(paste0(dataset_path, "Hydrography/Spain/CuencasSubcuencas/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
@@ -65,7 +65,7 @@ using:
 
 ``` r
 
-dataset_path <- "~/OneDrive/EMF_datasets/"
+dataset_path <- "/home/miquel/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Catalunya/Comarques/comarques.shp"))
 ggplot()+
   geom_spatvector(data = counties)+
@@ -122,8 +122,8 @@ gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2541741 135.8    4215678 225.2  4215678 225.2
-    ## Vcells 4200327  32.1   10146329  77.5  8388433  64.0
+    ## Ncells 2541919 135.8    4215677 225.2  4215677 225.2
+    ## Vcells 4200627  32.1   10146329  77.5  8388604  64.0
 
 ## Topography and land cover type
 
@@ -163,25 +163,25 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [10ms]
+    ## ✔ Checking inputs [12ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [8ms]
+    ## ✔ Defining column 'id' [9ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [11ms]
+    ## ✔ Defining column 'elevation' [12ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [7ms]
+    ## ✔ Defining column 'slope' [8ms]
 
     ## 
 
@@ -193,7 +193,7 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Extracting topography from 'dem'
 
-    ## ✔ Extracting topography from 'dem' [4.7s]
+    ## ✔ Extracting topography from 'dem' [4.2s]
 
     ## 
 
@@ -384,7 +384,7 @@ for Girona province (1455 forest plots):
 
 ``` r
 
-nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
+nfi_path <- "/home/miquel/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
 sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsES/IFN4/soilmod/IFN4_17_soilmod_WGS84.rds"))
 sf_nfi
 ```
@@ -567,7 +567,7 @@ al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
 
 ``` r
 
-sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
+sfi_path <- "/home/miquel/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
 sf_sfi <- readRDS(paste0(sfi_path, "data/sf_combuscat.rds"))
 sf_sfi
 ```
