@@ -118,26 +118,38 @@ validation_coefficients |>
 
 #### Time series
 
-**Daily**
+*Daily*
 
 ```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
-ggplot(Q_daily, aes(x=Date))+
-  geom_line(aes(y = Qobs), col = "black", linewidth = 0.8)+
-  geom_line(aes(y = Qcal), col = "blue")+
+ggplot(Q_daily |>
+         dplyr::select(-Qunc) |>
+         dplyr::rename(Observed = Qobs,
+                       Predicted = Qcal) |>
+         tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
+       , aes(x=Date))+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
   geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
   scale_y_continuous("Q (m3/s)")+
-  theme_bw()
+  scale_color_discrete(NULL, palette = c("black", "lightblue"))+
+  theme_bw()+
+  theme(legend.position = c(0.1,0.85), legend.background = element_blank())
 ```
 
-**Monthly**
+*Monthly*
 
 ```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
-ggplot(Q_monthly, aes(x=Date))+
-  geom_line(aes(y = Qobs), col = "black", linewidth = 0.8)+
-  geom_line(aes(y = Qcal), col = "blue")+
+ggplot(Q_monthly |>
+         dplyr::select(-Qunc) |>
+         dplyr::rename(Observed = Qobs,
+                       Predicted = Qcal) |>
+         tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
+       , aes(x=Date))+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5)+
   geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
   scale_y_continuous("Q (m3/s)")+
-  theme_bw()
+  scale_color_discrete(NULL, palette = c("black", "lightblue"))+
+  theme_bw()+
+  theme(legend.position = c(0.1,0.85), legend.background = element_blank())
 ```
 
 
@@ -148,14 +160,14 @@ ggplot(Q_monthly, aes(x=Date))+
 ```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
 g1<-ggplot(Q_daily_cal) +
   geom_density(aes(x=Qobs), col="black") +
-  geom_density(aes(x=Qcal), col="blue")+
-  scale_x_continuous("Daily Q (m3/s)")+
+  geom_density(aes(x=Qcal), col="lightblue")+
+  scale_x_continuous("Daily Q (m3/s)", transform = "log10")+
   labs(subtitle = "Calibration period")+
   theme_bw()
 g2<-ggplot(Q_daily_eval) +
   geom_density(aes(x=Qobs), col="black") +
-  geom_density(aes(x=Qcal), col="blue")+
-  scale_x_continuous("Daily Q (m3/s)")+
+  geom_density(aes(x=Qcal), col="lightblue")+
+  scale_x_continuous("Daily Q (m3/s)", transform = "log10")+
   labs(subtitle = "Evaluation period")+
   theme_bw()
 cowplot::plot_grid(g1, g2, ncol = 2)
