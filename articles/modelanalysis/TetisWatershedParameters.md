@@ -102,6 +102,8 @@ on a logarithmic scale:
 par_def <- data.frame(
   name  = c("n_interflow", "n_baseflow", "R_localflow", "R_interflow",
             "R_baseflow", "deep_aquifer_loss", "n_manning"),
+  label = c("n[interflow]", "n[baseflow]", "R[localflow]", "R[interflow]",
+            "R[baseflow]", "D[loss]", "n[Manning]"),
   log10 = c(TRUE,  FALSE, TRUE,  TRUE,  TRUE,  FALSE, FALSE),
   min   = c(0.01,  0.01,   0.1,   0.1,     0.1,   0,     0.01),
   max   = c(2,     2,     20,    20,   20,    5,     0.1),
@@ -112,14 +114,14 @@ par_def <- data.frame(
 par_def
 ```
 
-    ##                name log10  min  max        ref
-    ## 1       n_interflow  TRUE 0.01  2.0 0.08391252
-    ## 2        n_baseflow FALSE 0.01  2.0 0.57094430
-    ## 3       R_localflow  TRUE 0.10 20.0 0.87305020
-    ## 4       R_interflow  TRUE 0.10 20.0 1.65763220
-    ## 5        R_baseflow  TRUE 0.10 20.0 0.21474088
-    ## 6 deep_aquifer_loss FALSE 0.00  5.0 3.73822300
-    ## 7         n_manning FALSE 0.01  0.1 0.06943110
+    ##                name        label log10  min  max        ref
+    ## 1       n_interflow n[interflow]  TRUE 0.01  2.0 0.08391252
+    ## 2        n_baseflow  n[baseflow] FALSE 0.01  2.0 0.57094430
+    ## 3       R_localflow R[localflow]  TRUE 0.10 20.0 0.87305020
+    ## 4       R_interflow R[interflow]  TRUE 0.10 20.0 1.65763220
+    ## 5        R_baseflow  R[baseflow]  TRUE 0.10 20.0 0.21474088
+    ## 6 deep_aquifer_loss      D[loss] FALSE 0.00  5.0 3.73822300
+    ## 7         n_manning   n[Manning] FALSE 0.01  0.1 0.06943110
 
 As procedure for sensitivity analysis we used the elementary effects
 method of Morris, implemented in function `morris()` (of package
@@ -216,12 +218,64 @@ response variables that have different units.
 
 ## Results
 
+We read the CSV corresponding to the normalized indices:
+
+``` r
+
+morris_indices <- readr::read_csv(file.path(sensitivity_path, "morris_indices.csv"), show_col_types = FALSE)
+morris_indices
+```
+
+    ## # A tibble: 112 × 7
+    ##    output parameter         label             mu mu_star sigma mu_star_norm
+    ##    <chr>  <chr>             <chr>          <dbl>   <dbl> <dbl>        <dbl>
+    ##  1 KGE    n_interflow       n[interflow]  1.08     1.78  1.78         1    
+    ##  2 KGE    n_baseflow        n[baseflow]  -0.172    0.327 0.395        0.184
+    ##  3 KGE    R_localflow       R[localflow]  0.104    0.392 0.536        0.221
+    ##  4 KGE    R_interflow       R[interflow] -0.191    1.10  1.37         0.620
+    ##  5 KGE    R_baseflow        R[baseflow]   0.272    0.353 0.396        0.198
+    ##  6 KGE    deep_aquifer_loss D[loss]       0.110    0.325 0.466        0.183
+    ##  7 KGE    n_manning         n[Manning]    0        0     0            0    
+    ##  8 KGE_r  n_interflow       n[interflow]  0.135    0.546 0.614        1    
+    ##  9 KGE_r  n_baseflow        n[baseflow]   0.0410   0.204 0.315        0.375
+    ## 10 KGE_r  R_localflow       R[localflow] -0.0635   0.128 0.168        0.234
+    ## # ℹ 102 more rows
+
 ### KGE
 
+``` r
+
+d_kge <- subset(morris_indices, output == "KGE")
+ggplot(d_kge, aes(mu_star, sigma, label = label)) +
+    geom_abline(slope = 1, intercept = 0, linetype = 2, colour = "grey60") +
+    geom_point(size = 2.5) +
+    geom_text(parse = TRUE, vjust = -0.8, size = 3.5) +
+    labs(x = expression(mu^"*"), y = expression(sigma), title = "KGE (daily discharge)") +
+    theme_bw()
+```
+
 ![Morris sensitivity results for
-KGE](../../../../mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/fig_morris_KGE.png)
+KGE](TetisWatershedParameters_files/figure-html/unnamed-chunk-7-1.png)
 
 ### Heatmap
 
+``` r
+
+heat_out <- c("RunoffRatio", "BFI", "Q5", "Q95", "ZeroFlowFrac", "RecessionK", "HalfFlowDate",
+                "ET_P", "SurfRunoff_P", "DeepDrainage_P", "DeepAqLoss_P", "Transpiration")
+d_heat <- subset(morris_indices, output %in% heat_out)
+d_heat$output <- factor(d_heat$output, levels = heat_out)
+d_heat$label  <- factor(d_heat$label, levels = rev(par_def$label))
+
+ggplot(d_heat, aes(output, label, fill = mu_star_norm)) +
+    geom_tile(colour = "white") +
+    scale_fill_gradient(low = "white", high = "#08519c", limits = c(0, 1),
+                        name = expression("Normalised " * mu^"*")) +
+    scale_y_discrete(labels = function(l) parse(text = l)) +
+    labs(x = NULL, y = NULL) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 ![Heat map with morris sensitivity
-results](../../../../mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/fig_morris_heatmap.png)
+results](TetisWatershedParameters_files/figure-html/unnamed-chunk-8-1.png)
