@@ -129,8 +129,9 @@ data("defaultPrescriptionsBySpecies")
 ```
 
 The columns of this data frame are the same as the parameter names
-required by function `defaultManagementFunction()` of package
-**medfate**:
+required by function
+[`defaultManagementFunction()`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html)
+of package **medfate**:
 
 ``` r
 
@@ -339,13 +340,13 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [10ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
@@ -391,31 +392,31 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [10ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [18ms]
+    ## ✔ Preparing data for parallelization [15ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [6.7s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [6.8s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [15ms]
+    ## ✔ Retrieval of results [11ms]
 
     ## 
 
@@ -441,31 +442,31 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [9ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [14ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [16ms]
+    ## ✔ Preparing data for parallelization [9ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [21.7s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [15.1s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [11ms]
+    ## ✔ Retrieval of results [12ms]
 
     ## 
 
@@ -509,7 +510,9 @@ subsequent simulations (see next section).
 
 Stand-level results are available in element `result_sf`. The column
 names of this `sf` object should be easy to interpret if you have
-experience with functions `fordyn()` or
+experience with functions
+[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html)
+or
 [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md):
 
 ``` r
@@ -670,13 +673,13 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [9ms]
+    ## ✔ Checking sf input [10ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [8ms]
+    ## ✔ Checking meteo object input [12ms]
 
     ## 
 
@@ -720,31 +723,31 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [10ms]
+    ## ✔ Checking meteo object input [12ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [19ms]
+    ## ✔ Preparing data for parallelization [18ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [21.3s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [14.8s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [21ms]
+    ## ✔ Retrieval of results [10ms]
 
     ## 
 

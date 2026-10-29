@@ -9,22 +9,30 @@ of
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
 for the prediction of watershed outflow. To this aim, we simulate
 hydrological processes in a set of benchmark watersheds and compare the
-model predictions of watershed outflow against measurements obtained
-using river gauges at watershed outlets.
+model predictions of watershed outflow, after parameter calibration,
+against measurements obtained using river gauges at watershed outlets.
 
-### Simulation procedure
+### Calibration and simulation
 
 For each watershed, the following procedure has been conducted:
 
-1.  Initial warm-up simulation for a specified number of years
-2.  Simulation for the period with observed data **before** calibrating
-    watershed parameters
-3.  Manual calibration of watershed parameters (to be replaced with
-    automatized calibration)
-4.  Final simulation for the period with observed data **after**
-    calibrating watershed parameters.
+1.  Initial warm-up simulation with default parameters for a specified
+    number of years
+2.  Calibration of watershed parameters for a specific period (warm-up +
+    analysis) using a genetic algorithm and Kling–Gupta efficiency (KGE)
+    as optimization function.
+3.  Simulation with calibrated watershed parameters.
 
-### Goodness-of-fit statistics
+### Evaluation
+
+For each watershed, simulation results are compared to observed
+watershed outflow, differentiating between the period used for
+calibration and a posterior period used for independent evaluation. Note
+that the performance can decrease for the evaluation period because of
+vegetation growth not included in simulations, which may have reduced
+observed watershed outflow.
+
+**Goodness-of-fit statistics**
 
 The following goodness of fit statistics are calculated using package
 `hydroGOF`:
@@ -48,13 +56,17 @@ The following goodness of fit statistics are calculated using package
 - Root mean squared error (RMSE): The usual estimation of average model
   error (i.e. the square root of mean squared errors).
 
-### Hydrological analysis
+**Hydrological analysis**
+
+The density distribution and percentiles of daily discharge are compared
+between observations and predictions, for both the calibration and
+evaluation periods.
 
 ## Watershed (TETIS) parameters
 
-The following table contains the set of TETIS parameters employed in
-[`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
-simulations on all watersheds, before and after calibration:
+The following table contains the period of calibration and the set of
+TETIS parameters employed in simulations on all watersheds after
+calibration:
 
 | medfateland | medfate | model | watershed | Calibration_start | Calibration_end | R_localflow | R_interflow | R_baseflow | n_interflow | n_baseflow | num_daily_substeps | rock_max_infiltration | deep_aquifer_loss |
 |:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|

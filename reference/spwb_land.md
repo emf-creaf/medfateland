@@ -499,13 +499,13 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [14ms]
+#> ✔ Checking raster topology [7ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [59ms]
+#> ✔ Checking 'sf' data columns [37ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [24ms]
+#> ✔ Determining neighbors and overland routing for TETIS [12ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -521,7 +521,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INITIALISATION ──
 #> 
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [6ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [4ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
@@ -530,76 +530,79 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> 
 #> Daily simulations ■■■                                8% | ETA: 13s
 #> Daily simulations ■■■■                               9% | ETA: 13s
-#> Daily simulations ■■■■                              10% | ETA: 13s
-#> Daily simulations ■■■■                              11% | ETA: 13s
-#> Daily simulations ■■■■■                             12% | ETA: 13s
-#> Daily simulations ■■■■■                             13% | ETA: 13s
-#> Daily simulations ■■■■■                             14% | ETA: 13s
-#> Daily simulations ■■■■■■                            16% | ETA: 14s
-#> Daily simulations ■■■■■■                            17% | ETA: 19s
-#> Daily simulations ■■■■■■                            18% | ETA: 18s
-#> Daily simulations ■■■■■■■                           19% | ETA: 18s
-#> Daily simulations ■■■■■■■                           21% | ETA: 17s
-#> Daily simulations ■■■■■■■■                          22% | ETA: 16s
-#> Daily simulations ■■■■■■■■                          23% | ETA: 16s
-#> Daily simulations ■■■■■■■■                          24% | ETA: 16s
-#> Daily simulations ■■■■■■■■■                         26% | ETA: 15s
-#> Daily simulations ■■■■■■■■■                         27% | ETA: 15s
-#> Daily simulations ■■■■■■■■■                         28% | ETA: 15s
-#> Daily simulations ■■■■■■■■■■                        29% | ETA: 14s
-#> Daily simulations ■■■■■■■■■■                        30% | ETA: 14s
-#> Daily simulations ■■■■■■■■■■                        31% | ETA: 14s
-#> Daily simulations ■■■■■■■■■■■                       32% | ETA: 13s
-#> Daily simulations ■■■■■■■■■■■                       34% | ETA: 13s
-#> Daily simulations ■■■■■■■■■■■■                      36% | ETA: 12s
-#> Daily simulations ■■■■■■■■■■■■                      37% | ETA: 12s
-#> Daily simulations ■■■■■■■■■■■■                      38% | ETA: 12s
-#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA: 12s
-#> Daily simulations ■■■■■■■■■■■■■                     40% | ETA: 11s
-#> Daily simulations ■■■■■■■■■■■■■■                    42% | ETA: 11s
-#> Daily simulations ■■■■■■■■■■■■■■                    43% | ETA: 11s
-#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA: 10s
-#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA: 10s
-#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA: 10s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  9s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  9s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  51% | ETA:  9s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 52% | ETA:  9s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 53% | ETA:  8s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 54% | ETA:  8s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■                57% | ETA:  8s
+#> Daily simulations ■■■■                              10% | ETA: 14s
+#> Daily simulations ■■■■                              11% | ETA: 15s
+#> Daily simulations ■■■■■                             12% | ETA: 15s
+#> Daily simulations ■■■■■                             13% | ETA: 15s
+#> Daily simulations ■■■■■                             14% | ETA: 15s
+#> Daily simulations ■■■■■■                            16% | ETA: 16s
+#> Daily simulations ■■■■■■                            17% | ETA: 21s
+#> Daily simulations ■■■■■■                            18% | ETA: 21s
+#> Daily simulations ■■■■■■■                           19% | ETA: 20s
+#> Daily simulations ■■■■■■■                           20% | ETA: 20s
+#> Daily simulations ■■■■■■■                           21% | ETA: 19s
+#> Daily simulations ■■■■■■■■                          22% | ETA: 19s
+#> Daily simulations ■■■■■■■■                          23% | ETA: 18s
+#> Daily simulations ■■■■■■■■                          24% | ETA: 18s
+#> Daily simulations ■■■■■■■■■                         26% | ETA: 18s
+#> Daily simulations ■■■■■■■■■                         27% | ETA: 17s
+#> Daily simulations ■■■■■■■■■                         28% | ETA: 17s
+#> Daily simulations ■■■■■■■■■■                        29% | ETA: 16s
+#> Daily simulations ■■■■■■■■■■                        30% | ETA: 16s
+#> Daily simulations ■■■■■■■■■■■                       32% | ETA: 15s
+#> Daily simulations ■■■■■■■■■■■                       33% | ETA: 15s
+#> Daily simulations ■■■■■■■■■■■                       34% | ETA: 14s
+#> Daily simulations ■■■■■■■■■■■■                      36% | ETA: 14s
+#> Daily simulations ■■■■■■■■■■■■                      38% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■■■                     40% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■■■                     41% | ETA: 13s
+#> Daily simulations ■■■■■■■■■■■■■■                    43% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA: 12s
+#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■■                   48% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA: 11s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  51% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 52% | ETA: 10s
+#> Daily simulations ■■■■■■■■■■■■■■■■■                 53% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■                56% | ETA:  9s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■                57% | ETA:  9s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■                58% | ETA:  8s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  7s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■               60% | ETA:  7s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■               61% | ETA:  7s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  7s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              64% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               60% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               61% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  8s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              64% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             66% | ETA:  7s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  7s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  6s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            69% | ETA:  6s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            70% | ETA:  5s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            70% | ETA:  6s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            71% | ETA:  6s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           72% | ETA:  5s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           73% | ETA:  5s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           74% | ETA:  5s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          77% | ETA:  4s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          77% | ETA:  5s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          78% | ETA:  4s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         79% | ETA:  4s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  4s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  4s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  4s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% | ETA:  3s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% | ETA:  3s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% | ETA:  3s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  2s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% | ETA:  2s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  2s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  2s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
@@ -660,13 +663,13 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [6ms]
+#> ✔ Checking raster topology [10ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [25ms]
+#> ✔ Checking 'sf' data columns [35ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [15ms]
+#> ✔ Determining neighbors and overland routing for TETIS [18ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -687,24 +690,29 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
+#> Daily simulations ■■■■■■■■                          24% | ETA:  3s
 #> Daily simulations ■■■■■■■■■                         27% | ETA:  3s
 #> Daily simulations ■■■■■■■■■■                        31% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■                      36% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■                     41% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 54% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■               59% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■                       34% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■                    42% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA:  3s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  51% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■                56% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■               60% | ETA:  2s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            71% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            69% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           72% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           74% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          78% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
 #> • Soil balance content (mm): -10.72 fluxes (mm): -10.72

@@ -119,7 +119,7 @@ optimization_rock(example_subset, SpParamsMED, examplemeteo)
 #> ℹ Rock optimization on 2 locations
 #> ✔ Rock optimization on 2 locations [13ms]
 #> 
-#> Stands ■■■■■■■■■■■■■■■■                  50% | ETA:  6s
+#> Stands ■■■■■■■■■■■■■■■■                  50% | ETA:  5s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> Simple feature collection with 2 features and 8 fields
 #> Geometry type: POINT
