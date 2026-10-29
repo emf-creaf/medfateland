@@ -185,3 +185,12 @@ perc_df |>
   kbl() |>
   kable_styling()
 ```
+
+#### Computation times
+
+```{r, echo = FALSE}
+computation_times |>
+  kbl() |>
+  kable_styling()
+```
+

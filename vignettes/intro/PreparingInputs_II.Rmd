@@ -39,7 +39,7 @@ Any spatial data set should begin with the definition of spatial elements. Here 
 
 First we load a polygon data set describing watersheds in Spain and select our target watershed (Riera de Bianya [river code "2005528"]):
 ```{r}
-dataset_path <- "~/OneDrive/EMF_datasets/"
+dataset_path <- "/home/miquel/OneDrive/EMF_datasets/"
 scchh <- terra::vect(paste0(dataset_path, "Hydrography/Spain/CuencasSubcuencas/CuencasMedNorte_Pfafs/M_cuencas_rios_Med_Norte.shp"))
 watershed <-terra::project(scchh[scchh$pfafrio =="2005528",], "epsg:25831")
 watershed
@@ -48,7 +48,7 @@ watershed
 We can draw a map with the location of the watershed within Catalonia using:
 
 ```{r, fig.width=5, fig.height=5, fig.align="center", fig.alt="Location of the watershed within Catalonia"}
-dataset_path <- "~/OneDrive/EMF_datasets/"
+dataset_path <- "/home/miquel/OneDrive/EMF_datasets/"
 counties <- terra::vect(paste0(dataset_path, "PoliticalBoundaries/Catalunya/Comarques/comarques.shp"))
 ggplot()+
   geom_spatvector(data = counties)+
@@ -198,7 +198,7 @@ forest_map
 
 Second, we need forest inventory data for imputations. Arguably, this is the hardest part. Let's assume one has access to a such data already in format for package *medfateland* (how to build such data set will be illustrated in a different vignette). We also load an `sf_nfi` object that contains coordinates and forest objects corresponding to the [Fourth Spanish Forest Inventory](https://www.miteco.gob.es/es/biodiversidad/temas/inventarios-nacionales/inventario-forestal-nacional/cuarto_inventario.html) for Girona province (1455 forest plots):
 ```{r}
-nfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
+nfi_path <- "/home/miquel/mcaceres_work/model_initialisation/medfate_initialisation/IFN2medfate/"
 sf_nfi <- readRDS(paste0(nfi_path, "data/SpParamsES/IFN4/soilmod/IFN4_17_soilmod_WGS84.rds"))
 sf_nfi
 ```
@@ -251,7 +251,7 @@ veg_map
 In this case we use a database of 575 shrubland inventory plots in Catalonia described in [Casals et al. (2023)](https://doi.org/10.1186/s13595-023-01190-y):
 
 ```{r}
-sfi_path <- "/home/miquel/OneDrive/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
+sfi_path <- "/home/miquel/mcaceres_work/model_initialisation/medfate_initialisation/Shrublands/COMBUSCAT2medfate/"
 sf_sfi <- readRDS(paste0(sfi_path, "data/sf_combuscat.rds"))
 sf_sfi
 ```

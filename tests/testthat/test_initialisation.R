@@ -2,7 +2,7 @@ test_that("Can build from forestables",{
   testthat::skip_on_ci()
   testthat::skip_on_cran()
   testthat::skip_if_not_installed("forestables")
-  ifn4_deadwood <- readRDS("~/OneDrive/mcaceres_work/model_development/medfate_evaluation/DeadWoodEvaluation/Rdata/IFN4_deadwood_volume_carbon.rds")
+  ifn4_deadwood <- readRDS("~/mcaceres_work/model_development/medfate_evaluation/DeadWoodEvaluation/Rdata/IFN4_deadwood_volume_carbon.rds")
   ifn4_example <- forestables::ifn_output_example|>
     dplyr::filter(version == "ifn4")
   ifn4_example_deadwood <- ifn4_example |>

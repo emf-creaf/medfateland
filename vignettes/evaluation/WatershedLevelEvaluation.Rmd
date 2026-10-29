@@ -18,7 +18,7 @@ library(medfate)
 library(ggplot2)
 library(cowplot)
 library(hydroGOF)
-evalDIR = "~/OneDrive/mcaceres_work/model_development/medfate_evaluation/WatershedLevelEvaluation/"
+evalDIR = "~/mcaceres_work/model_development/medfate_evaluation/WatershedLevelEvaluation/"
 ```
 
 ```{r, echo = FALSE}
@@ -45,12 +45,14 @@ df$before <- vector("list", nrow(df))
 df$after <- vector("list", nrow(df))
 df$Q_daily <- vector("list", nrow(df))
 df$Q_monthly <- vector("list", nrow(df))
+df$ComputationTimes <- vector("list", nrow(df))
 for(r in 1:nrow(df)) {
   df$options[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibration_options.yaml"))
   df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
   df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibrated.yaml"))
   df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_daily.csv"))
   df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
+  df$ComputationTimes[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "computing_times.csv"))
 }
 ```
 
@@ -123,7 +125,7 @@ for(i in 1:nrow(df_params)) {
 }
 df_params |>
   dplyr::filter(Calibrated == "after") |>
-  dplyr::select(-Calibrated, -Params, -options) |>
+  dplyr::select(-Calibrated, -Params, -options, -ComputationTimes) |>
   kableExtra::kbl() |>
   kableExtra::kable_styling()
 ```
@@ -141,6 +143,7 @@ for(i in 1:nrow(df)) {
     dplyr::mutate(Date = as.Date(Date))
   Q_monthly <- df$Q_monthly[[i]] |>
     dplyr::mutate(Date = as.Date(Date))
+  computation_times <- df$ComputationTimes[[i]]
   res <- knitr::knit_child('_WLEvaluation_child.Rmd', quiet = TRUE)
   cat(res, sep = '\n')
 }
