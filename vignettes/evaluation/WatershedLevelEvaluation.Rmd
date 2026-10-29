@@ -40,11 +40,13 @@ for(medfateland_version in medfateland_versions) {
 df <- tibble::tibble(medfateland = medfateland_version_vec, 
                      medfate = NA,
                      model = model_vec, watershed = watershed_vec) 
+df$options <- vector("list", nrow(df))
 df$before <- vector("list", nrow(df))
 df$after <- vector("list", nrow(df))
 df$Q_daily <- vector("list", nrow(df))
 df$Q_monthly <- vector("list", nrow(df))
 for(r in 1:nrow(df)) {
+  df$options[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibration_options.yaml"))
   df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
   df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibrated.yaml"))
   df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_daily.csv"))
@@ -88,7 +90,9 @@ The following table contains the set of TETIS parameters employed in `spwb_land(
 ```{r, echo = FALSE}
 df_params <- df |> 
   dplyr::select(-Q_daily, -Q_monthly) |>
-  tidyr::pivot_longer(cols = c(before, after), names_to = "Calibration", values_to ="Params")
+  tidyr::pivot_longer(cols = c(before, after), names_to = "Calibrated", values_to ="Params")
+df_params$Calibration_start <- NA
+df_params$Calibration_end <- NA
 df_params$R_localflow <- NA
 df_params$R_interflow <- NA
 df_params$R_baseflow <- NA
@@ -98,6 +102,8 @@ df_params$num_daily_substeps <- NA
 df_params$rock_max_infiltration <- NA
 df_params$deep_aquifer_loss <- NA
 for(i in 1:nrow(df_params)) {
+  df_params$Calibration_start[i] <- df_params$options[[i]]$calibration_start
+  df_params$Calibration_end[i] <- df_params$options[[i]]$calibration_end
   df_params$medfateland[i] <- df_params$Params[[i]]$medfateland_version
   df_params$medfate[i] <- df_params$Params[[i]]$medfate_version
   df_params$R_localflow[i] <- df_params$Params[[i]]$tetis_parameters$R_localflow
@@ -110,7 +116,8 @@ for(i in 1:nrow(df_params)) {
   df_params$deep_aquifer_loss[i] <- df_params$Params[[i]]$tetis_parameters$deep_aquifer_loss
 }
 df_params |>
-  dplyr::select(-Params) |>
+  dplyr::filter(Calibrated == "after") |>
+  dplyr::select(-Calibrated, -Params, -options) |>
   kableExtra::kbl() |>
   kableExtra::kable_styling()
 ```
@@ -123,6 +130,7 @@ for(i in 1:nrow(df)) {
    medfateland_version <- df$medfateland[i] 
    model <- df$model[i]
    watershed <- df$watershed[i]
+   options <- df$options[[i]]
    Q_daily <- df$Q_daily[[i]] |>
     dplyr::mutate(Date = as.Date(Date))
   Q_monthly <- df$Q_monthly[[i]] |>
