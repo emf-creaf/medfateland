@@ -151,11 +151,12 @@ example_ifn_init <- initialize_landscape(example_ifn, SpParamsMED,
                                          local_control = local_control, 
                                          model = "spwb")
 #> ℹ Creating 100 state objects for model 'spwb'.
-#> ✔ Creating 100 state objects for model 'spwb'. [4ms]
+#> ✔ Creating 100 state objects for model 'spwb'. [5ms]
 #> 
+#> Stands ■■■■■■■■■■■■■                     39% | ETA:  2s
 #> Stands ■■■■■■■■■■■■■■■                   46% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■                   48% | ETA:  1s
-#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  0s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■          78% | ETA:  1s
+#> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% | ETA:  0s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  0s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s

@@ -500,7 +500,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
                  dates = dates, summary_frequency = "month",
                  watershed_control = ws_control)
 #> 
-#> ── Simulation of model 'spwb' over a watershed ───────────────────────────────────────────────────────────────────────────────
+#> ── Simulation of model 'spwb' over a watershed ─────────────────────────────────
 #> 
 #> ── INPUT CHECKING ──
 #> 
@@ -508,7 +508,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ✔ Checking raster topology [8ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [25ms]
+#> ✔ Checking 'sf' data columns [28ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
 #> ✔ Determining neighbors and overland routing for TETIS [14ms]
@@ -535,58 +535,47 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■                          24% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■                        29% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■                       33% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■                     39% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■                    43% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 53% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■                57% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             68% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           72% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          77% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         81% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■                    42% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -9.91 fluxes (mm): -9.91
-#> • Aquifer balance content (mm): 23.83 fluxes (mm): 23.83
-#> • Aquifer fluxes (mm) Drainage input: 33.76 Exfiltration: 9.93 Capillary rise: 0 Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): 14.07 fluxes (mm): 14.07
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 65.21 Evapotransp.: 75.47 Negative aquifer correction: 0 Deep
-#> loss: 0
+#> • Soil balance content (mm): -14.51 fluxes (mm): -14.51
+#> • Aquifer balance content (mm): 6.31 fluxes (mm): 6.31
+#> • Aquifer fluxes (mm) Drainage input: 6.31 Exfiltration: 0 Capillary rise: 0
+#> Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): -7.98 fluxes (mm): -7.98
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 86.57
+#> Evapotransp.: 76.16 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 43062
-#> • Final watershed export sum (m3): 43062
+#> • Final outlet sum (m3): 57166
+#> • Final watershed export sum (m3): 57166
                  
 # Print a summary of water balance components
 summary(res)
 #>   Snowpack water balance components:
 #>     Snow fall (mm) 19.19  Snow melt (mm) 19.19
 #>   Soil water balance components:
-#>     Infiltration (mm) 134.8  Saturation excess (mm) 56.3
-#>     Deep drainage (mm) 32.41  Capillarity rise (mm) 0
-#>     Soil evaporation (mm) 4.29  Plant transpiration (mm) 51.72
+#>     Infiltration (mm) 152.07  Saturation excess (mm) 105.33
+#>     Deep drainage (mm) 4.54  Capillarity rise (mm) 0
+#>     Soil evaporation (mm) 4.78  Plant transpiration (mm) 51.94
 #>     Interflow balance (mm) 0
 #>   Aquifer water balance components:
-#>     Deep drainage (mm) 33.76  Capillarity rise (mm) 0
-#>     Exfiltration (mm) 9.93  Deep aquifer loss (mm) 0
+#>     Deep drainage (mm) 6.31  Capillarity rise (mm) 0
+#>     Exfiltration (mm) 0  Deep aquifer loss (mm) 0
 #>     Negative aquifer correction (mm) 0
 #>   Watershed water balance components:
 #>     Precipitation (mm) 154.74
-#>     Interception (mm) 20.3  Soil evaporation (mm) 4.23
-#>     Plant transpiration (mm) 50.93
+#>     Interception (mm) 20.3  Soil evaporation (mm) 4.71
+#>     Plant transpiration (mm) 51.15
 #>     Subsurface flow balance (mm) 0
 #>     Groundwater flow balance (mm) 0
-#>     Export runoff (mm) 65.21
+#>     Export runoff (mm) 86.57
 
 # Option 'reduce_to_dominant = TRUE' in initialization, may be useful to speed up calculations
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
@@ -604,18 +593,18 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
                             dates = dates, summary_frequency = "month",
                             watershed_control = ws_control)
 #> 
-#> ── Simulation of model 'spwb' over a watershed ───────────────────────────────────────────────────────────────────────────────
+#> ── Simulation of model 'spwb' over a watershed ─────────────────────────────────
 #> 
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [6ms]
+#> ✔ Checking raster topology [7ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [24ms]
+#> ✔ Checking 'sf' data columns [25ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [12ms]
+#> ✔ Determining neighbors and overland routing for TETIS [14ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -637,38 +626,26 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■■                         26% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■                        30% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■                      36% | ETA:  3s
-#> Daily simulations ■■■■■■■■■■■■■                     40% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■                    44% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■                 53% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■                58% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  2s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■             67% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■            70% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■           73% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          77% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■                      38% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■                    42% | ETA:  2s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■          76% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% | ETA:  0s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -10.72 fluxes (mm): -10.72
-#> • Aquifer balance content (mm): 24.28 fluxes (mm): 24.28
-#> • Aquifer fluxes (mm) Drainage input: 36.32 Exfiltration: 12.04 Capillary rise: 0 Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): 13.72 fluxes (mm): 13.72
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 70.72 Evapotransp.: 70.31 Negative aquifer correction: 0 Deep
-#> loss: 0
+#> • Soil balance content (mm): -1.59 fluxes (mm): -1.59
+#> • Aquifer balance content (mm): 5.95 fluxes (mm): 5.95
+#> • Aquifer fluxes (mm) Drainage input: 5.95 Exfiltration: 0 Capillary rise: 0
+#> Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): 4.39 fluxes (mm): 4.39
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 79.22
+#> Evapotransp.: 71.14 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 46701
-#> • Final watershed export sum (m3): 46701
+#> • Final outlet sum (m3): 52313
+#> • Final watershed export sum (m3): 52313
 # }
 ```
