@@ -229,16 +229,16 @@ morris_indices
     ## # A tibble: 112 × 7
     ##    output parameter         label             mu mu_star sigma mu_star_norm
     ##    <chr>  <chr>             <chr>          <dbl>   <dbl> <dbl>        <dbl>
-    ##  1 KGE    n_interflow       n[interflow]  1.08     1.78  1.78         1    
-    ##  2 KGE    n_baseflow        n[baseflow]  -0.172    0.327 0.395        0.184
-    ##  3 KGE    R_localflow       R[localflow]  0.104    0.392 0.536        0.221
-    ##  4 KGE    R_interflow       R[interflow] -0.191    1.10  1.37         0.620
-    ##  5 KGE    R_baseflow        R[baseflow]   0.272    0.353 0.396        0.198
-    ##  6 KGE    deep_aquifer_loss D[loss]       0.110    0.325 0.466        0.183
-    ##  7 KGE    n_manning         n[Manning]    0        0     0            0    
-    ##  8 KGE_r  n_interflow       n[interflow]  0.135    0.546 0.614        1    
-    ##  9 KGE_r  n_baseflow        n[baseflow]   0.0410   0.204 0.315        0.375
-    ## 10 KGE_r  R_localflow       R[localflow] -0.0635   0.128 0.168        0.234
+    ##  1 KGE    n_interflow       n[interflow]  2.46     2.94  2.13        1     
+    ##  2 KGE    n_baseflow        n[baseflow]  -0.0742   0.176 0.261       0.0598
+    ##  3 KGE    R_localflow       R[localflow]  0.139    0.479 0.626       0.163 
+    ##  4 KGE    R_interflow       R[interflow] -0.728    1.53  1.99        0.522 
+    ##  5 KGE    R_baseflow        R[baseflow]   0.178    0.211 0.256       0.0719
+    ##  6 KGE    deep_aquifer_loss D[loss]       0.0181   0.225 0.310       0.0766
+    ##  7 KGE    n_manning         n[Manning]    0        0     0           0     
+    ##  8 KGE_r  n_interflow       n[interflow]  0.357    0.589 0.576       1     
+    ##  9 KGE_r  n_baseflow        n[baseflow]   0.0630   0.130 0.223       0.221 
+    ## 10 KGE_r  R_localflow       R[localflow] -0.0915   0.138 0.196       0.235 
     ## # ℹ 102 more rows
 
 ### KGE

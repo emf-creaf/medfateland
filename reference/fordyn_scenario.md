@@ -299,7 +299,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> ✔ Checking sf input [5ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [10ms]
+#> ✔ Checking meteo object input [9ms]
 #> 
 #> 
 #> ── Scenario parameters ──
@@ -326,10 +326,10 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> ✔ Checking sf input [6ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [9ms]
+#> ✔ Checking meteo object input [8ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 3 locations
-#> ✔ Performing 'fordyn' simulations on 3 locations [9ms]
+#> ✔ Performing 'fordyn' simulations on 3 locations [8ms]
 #> 
 #> ✔ No simulation errors detected
 #> • Final volume: 12185 m3
