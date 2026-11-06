@@ -21,11 +21,11 @@ Computational times were estimated using
 [`system.time()`](https://rdrr.io/r/base/system.time.html), are in
 **seconds** and are shown by **medfate** package version.
 
-| function | transpirationMode | rhizosphereOverlap | soilDomains |   5.2.0 |
-|:---------|:------------------|:-------------------|:------------|--------:|
-| spwb     | Granier           | total              | buckets     |   7.981 |
-| spwb     | Granier           | total              | single      |  18.584 |
-| spwb     | Granier           | total              | dual        |  87.985 |
-| growth   | Granier           | total              | buckets     |  15.938 |
-| growth   | Granier           | total              | single      |  29.837 |
-| growth   | Granier           | total              | dual        | 106.864 |
+| function | transpirationMode | rhizosphereOverlap | soilDomains |   5.2.0 | 5.2.1 |
+|:---------|:------------------|:-------------------|:------------|--------:|------:|
+| spwb     | Granier           | total              | buckets     |   7.981 | 3.998 |
+| spwb     | Granier           | total              | single      |  18.584 | 5.609 |
+| spwb     | Granier           | total              | dual        |  87.985 | 6.036 |
+| growth   | Granier           | total              | buckets     |  15.938 | 7.108 |
+| growth   | Granier           | total              | single      |  29.837 | 8.433 |
+| growth   | Granier           | total              | dual        | 106.864 | 9.493 |

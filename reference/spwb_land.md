@@ -505,13 +505,13 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [7ms]
+#> ✔ Checking raster topology [8ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [23ms]
+#> ✔ Checking 'sf' data columns [28ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [12ms]
+#> ✔ Determining neighbors and overland routing for TETIS [15ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -527,7 +527,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INITIALISATION ──
 #> 
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [3ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [4ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
@@ -535,9 +535,6 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■■■■■■■■                   46% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
 #> • Soil balance content (mm): -14.51 fluxes (mm): -14.51
 #> • Aquifer balance content (mm): 6.31 fluxes (mm): 6.31
@@ -579,7 +576,7 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
                                            local_control = defaultControl(soilDomains = "single"), 
                                            reduce_to_dominant = TRUE)
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [3ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [4ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
@@ -595,13 +592,13 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [6ms]
+#> ✔ Checking raster topology [7ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [22ms]
+#> ✔ Checking 'sf' data columns [26ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [12ms]
+#> ✔ Determining neighbors and overland routing for TETIS [14ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -623,10 +620,7 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■                   48% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% | ETA:  0s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  1s
 #> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
 #> • Soil balance content (mm): -1.59 fluxes (mm): -1.59
