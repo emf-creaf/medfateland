@@ -505,13 +505,13 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [8ms]
+#> ✔ Checking raster topology [13ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [28ms]
+#> ✔ Checking 'sf' data columns [48ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [15ms]
+#> ✔ Determining neighbors and overland routing for TETIS [25ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -527,7 +527,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INITIALISATION ──
 #> 
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [4ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [7ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
@@ -592,13 +592,13 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [7ms]
+#> ✔ Checking raster topology [6ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [26ms]
+#> ✔ Checking 'sf' data columns [24ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [14ms]
+#> ✔ Determining neighbors and overland routing for TETIS [15ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -620,8 +620,6 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
-#> Daily simulations ■■■■■■■■■■■■■■■■                  50% | ETA:  1s
-#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
 #> • Soil balance content (mm): -1.59 fluxes (mm): -1.59
 #> • Aquifer balance content (mm): 5.95 fluxes (mm): 5.95

@@ -68,10 +68,10 @@ The following table contains the period of calibration and the set of
 TETIS parameters employed in simulations on all watersheds after
 calibration:
 
-| medfateland | medfate | model | watershed | Calibration_start | Calibration_end | R_localflow | R_interflow | R_baseflow | n_interflow | n_baseflow | num_daily_substeps | rock_max_infiltration | deep_aquifer_loss |
-|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 3.0.1 | 5.2.0 | tetis | aiguadora | 2000-08-22 | 2010-08-22 | 0.9424477 | 2.828243 | 2.948424 | 0.1014878 | 1.2576093 | 24 | 10 | 3.608671 |
-| 3.0.1 | 5.2.0 | tetis | siurana | 2000-01-01 | 2009-12-31 | 0.1938123 | 1.704728 | 1.166648 | 0.0350404 | 0.4877026 | 24 | 10 | 3.472153 |
+| medfateland | medfate | model | watershed | Calibration_start | Calibration_end | R_localflow | R_interflow | R_baseflow | n_interflow | n_baseflow | n_manning | num_daily_substeps | rock_max_infiltration | deep_aquifer_loss |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 3.0.1 | 5.2.0 | tetis | aiguadora | 2000-08-22 | 2010-08-22 | 0.9424477 | 2.828243 | 2.948424 | 0.1014878 | 1.2576093 | 0.0647127 | 24 | 10 | 3.608671 |
+| 3.0.1 | 5.2.0 | tetis | siurana | 2000-01-01 | 2009-12-31 | 0.1938123 | 1.704728 | 1.166648 | 0.0350404 | 0.4877026 | 0.0736420 | 24 | 10 | 3.472153 |
 
 ## Evaluation results
 

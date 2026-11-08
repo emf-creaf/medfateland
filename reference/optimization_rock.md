@@ -114,10 +114,10 @@ data("SpParamsMED")
 example_subset <- example_ifn[31:32, ]
 optimization_rock(example_subset, SpParamsMED, examplemeteo)
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [5ms]
+#> ✔ Checking meteo object input [7ms]
 #> 
 #> ℹ Rock optimization on 2 locations
-#> ✔ Rock optimization on 2 locations [9ms]
+#> ✔ Rock optimization on 2 locations [16ms]
 #> 
 #> Stands ■■■■■■■■■■■■■■■■                  50% | ETA:  2s
 #> Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s

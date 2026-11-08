@@ -16,13 +16,13 @@ fixed at default values.
 
 To characterise the hydrological behaviour of the model independently of
 a particular catchment, the analysis was performed on a synthetic
-catchment of 15 x 20 = 300 cells at 500 m resolution (750 ha),
-representing a linear valley with 5% slope and lateral hill slopes with
-25% slope. All cells had aforest consisting of a single cohort of Pinus
-nigra trees of 8m height, 20 cm DBH and stand LAI = 2; and a soil taken
-from a cell in Aiguadora catchment. Daily weather forcing was also taken
-from the same catchment. Watershed hydrology simulations were run using
-the
+catchment of 21 x 40 = 800 cells at 500 m resolution (210 km2),
+representing a linear valley with a central axial channel over a 5%
+slope and lateral hill slopes with 25% slope. All cells had aforest
+consisting of a single cohort of Pinus nigra trees of 8m height, 20 cm
+DBH and stand LAI = 2; and a soil taken from a cell in Aiguadora
+catchment. Daily weather forcing was also taken from the same catchment.
+Watershed hydrology simulations were run using the
 [`spwb_land()`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md)
 function and included a warm-up period (2000-2010) followed by the
 analysis period (2011-2020).
@@ -37,25 +37,25 @@ ws_sf <- sf::st_as_sf(tibble::as_tibble(readRDS(file.path(sensitivity_path,"ws_s
 ws_sf
 ```
 
-    ## Simple feature collection with 300 features and 12 fields
+    ## Simple feature collection with 840 features and 12 fields
     ## Geometry type: POINT
     ## Dimension:     XY
-    ## Bounding box:  xmin: 400250 ymin: 4670250 xmax: 407250 ymax: 4679750
+    ## Bounding box:  xmin: 400250 ymin: 4670250 xmax: 410250 ymax: 4689750
     ## Projected CRS: WGS 84 / UTM zone 31N
-    ## # A tibble: 300 × 13
+    ## # A tibble: 840 × 13
     ##            geometry    id elevation slope aspect land_cover_type
     ##         <POINT [m]> <int>     <dbl> <dbl>  <dbl> <chr>          
-    ##  1 (400250 4679750)     1      1950 14.3    101. wildland       
-    ##  2 (400750 4679750)     2      1825 14.3    101. wildland       
-    ##  3 (401250 4679750)     3      1700 14.3    101. wildland       
-    ##  4 (401750 4679750)     4      1575 14.3    101. wildland       
-    ##  5 (402250 4679750)     5      1450 14.3    101. wildland       
-    ##  6 (402750 4679750)     6      1325 14.3    101. wildland       
-    ##  7 (403250 4679750)     7      1200 14.3    101. wildland       
-    ##  8 (403750 4679750)     8      1075  2.86   180  wildland       
-    ##  9 (404250 4679750)     9      1200 14.3    259. wildland       
-    ## 10 (404750 4679750)    10      1325 14.3    259. wildland       
-    ## # ℹ 290 more rows
+    ##  1 (400250 4689750)     1      2825  14.3   101. wildland       
+    ##  2 (400750 4689750)     2      2700  14.3   101. wildland       
+    ##  3 (401250 4689750)     3      2575  14.3   101. wildland       
+    ##  4 (401750 4689750)     4      2450  14.3   101. wildland       
+    ##  5 (402250 4689750)     5      2325  14.3   101. wildland       
+    ##  6 (402750 4689750)     6      2200  14.3   101. wildland       
+    ##  7 (403250 4689750)     7      2075  14.3   101. wildland       
+    ##  8 (403750 4689750)     8      1950  14.3   101. wildland       
+    ##  9 (404250 4689750)     9      1825  14.3   101. wildland       
+    ## 10 (404750 4689750)    10      1700  14.3   101. wildland       
+    ## # ℹ 830 more rows
     ## # ℹ 7 more variables: forest <list>, soil <list>, depth_to_bedrock <dbl>,
     ## #   bedrock_conductivity <dbl>, bedrock_porosity <dbl>, channel <lgl>,
     ## #   result_cell <lgl>
@@ -66,8 +66,8 @@ matching the coordinate definition in the `sf` object:
 
 ``` r
 
-nx <- 15
-ny <- 20
+nx <- 21
+ny <- 40
 res <- 500
 xmin <- 400000
 ymin <- 4670000
@@ -81,7 +81,9 @@ The topography of the synthetic watershed looks as follows:
 
 ``` r
 
-plot_variable(ws_sf, variable = "elevation", r = r)
+cowplot::plot_grid(
+  plot_variable(ws_sf, variable = "elevation", r = r),
+  plot_variable(ws_sf, variable = "channel", r = r), ncol=2)
 ```
 
 ![](TetisWatershedParameters_files/figure-html/unnamed-chunk-3-1.png)
@@ -227,18 +229,18 @@ morris_indices
 ```
 
     ## # A tibble: 112 × 7
-    ##    output parameter         label             mu mu_star sigma mu_star_norm
-    ##    <chr>  <chr>             <chr>          <dbl>   <dbl> <dbl>        <dbl>
-    ##  1 KGE    n_interflow       n[interflow]  2.46     2.94  2.13        1     
-    ##  2 KGE    n_baseflow        n[baseflow]  -0.0742   0.176 0.261       0.0598
-    ##  3 KGE    R_localflow       R[localflow]  0.139    0.479 0.626       0.163 
-    ##  4 KGE    R_interflow       R[interflow] -0.728    1.53  1.99        0.522 
-    ##  5 KGE    R_baseflow        R[baseflow]   0.178    0.211 0.256       0.0719
-    ##  6 KGE    deep_aquifer_loss D[loss]       0.0181   0.225 0.310       0.0766
-    ##  7 KGE    n_manning         n[Manning]    0        0     0           0     
-    ##  8 KGE_r  n_interflow       n[interflow]  0.357    0.589 0.576       1     
-    ##  9 KGE_r  n_baseflow        n[baseflow]   0.0630   0.130 0.223       0.221 
-    ## 10 KGE_r  R_localflow       R[localflow] -0.0915   0.138 0.196       0.235 
+    ##    output parameter         label             mu mu_star  sigma mu_star_norm
+    ##    <chr>  <chr>             <chr>          <dbl>   <dbl>  <dbl>        <dbl>
+    ##  1 KGE    n_interflow       n[interflow]  3.02    3.50   2.52         1     
+    ##  2 KGE    n_baseflow        n[baseflow]  -0.202   0.218  0.286        0.0622
+    ##  3 KGE    R_localflow       R[localflow]  0.131   0.385  0.531        0.110 
+    ##  4 KGE    R_interflow       R[interflow] -1.02    1.80   2.38         0.514 
+    ##  5 KGE    R_baseflow        R[baseflow]   0.115   0.140  0.190        0.0400
+    ##  6 KGE    deep_aquifer_loss D[loss]      -0.0457  0.166  0.242        0.0474
+    ##  7 KGE    n_manning         n[Manning]    0       0      0            0     
+    ##  8 KGE_r  n_interflow       n[interflow]  0.396   0.590  0.572        1     
+    ##  9 KGE_r  n_baseflow        n[baseflow]   0.0243  0.0815 0.130        0.138 
+    ## 10 KGE_r  R_localflow       R[localflow] -0.0182  0.0755 0.0990       0.128 
     ## # ℹ 102 more rows
 
 ### KGE

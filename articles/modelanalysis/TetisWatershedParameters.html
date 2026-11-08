@@ -79,7 +79,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / María González</h4>
             
-            <h4 data-toc-skip class="date">2026-11-06</h4>
+            <h4 data-toc-skip class="date">2026-11-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/modelanalysis/TetisWatershedParameters.Rmd" class="external-link"><code>vignettes/modelanalysis/TetisWatershedParameters.Rmd</code></a></small>
       <div class="d-none name"><code>TetisWatershedParameters.Rmd</code></div>
@@ -105,13 +105,14 @@ MEDFATELAND and which can be fixed at default values.</p>
 </h3>
 <p>To characterise the hydrological behaviour of the model independently
 of a particular catchment, the analysis was performed on a synthetic
-catchment of 15 x 20 = 300 cells at 500 m resolution (750 ha),
-representing a linear valley with 5% slope and lateral hill slopes with
-25% slope. All cells had aforest consisting of a single cohort of Pinus
-nigra trees of 8m height, 20 cm DBH and stand LAI = 2; and a soil taken
-from a cell in Aiguadora catchment. Daily weather forcing was also taken
-from the same catchment. Watershed hydrology simulations were run using
-the <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> function and included a warm-up period
+catchment of 21 x 40 = 800 cells at 500 m resolution (210 km2),
+representing a linear valley with a central axial channel over a 5%
+slope and lateral hill slopes with 25% slope. All cells had aforest
+consisting of a single cohort of Pinus nigra trees of 8m height, 20 cm
+DBH and stand LAI = 2; and a soil taken from a cell in Aiguadora
+catchment. Daily weather forcing was also taken from the same catchment.
+Watershed hydrology simulations were run using the
+<code><a href="../../reference/spwb_land.html">spwb_land()</a></code> function and included a warm-up period
 (2000-2010) followed by the analysis period (2011-2020).</p>
 <p>The following shows the <code>sf</code> object representing the
 synthetic catchment:</p>
@@ -119,25 +120,25 @@ synthetic catchment:</p>
 <code class="sourceCode R"><span><span class="va">sensitivity_path</span> <span class="op">=</span> <span class="st">"~/mcaceres_work/model_development/medfateland_sensitivity/data/SA_morris_results_single_DTB40000/"</span></span>
 <span><span class="va">ws_sf</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">sensitivity_path</span>,<span class="st">"ws_sf.rds"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ws_sf</span></span></code></pre></div>
-<pre><code><span><span class="co">## Simple feature collection with 300 features and 12 fields</span></span>
+<pre><code><span><span class="co">## Simple feature collection with 840 features and 12 fields</span></span>
 <span><span class="co">## Geometry type: POINT</span></span>
 <span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: 400250 ymin: 4670250 xmax: 407250 ymax: 4679750</span></span>
+<span><span class="co">## Bounding box:  xmin: 400250 ymin: 4670250 xmax: 410250 ymax: 4689750</span></span>
 <span><span class="co">## Projected CRS: WGS 84 / UTM zone 31N</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 300 × 13</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 840 × 13</span></span></span>
 <span><span class="co">##            geometry    id elevation slope aspect land_cover_type</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (400250 4679750)     1      <span style="text-decoration: underline;">1</span>950 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (400750 4679750)     2      <span style="text-decoration: underline;">1</span>825 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (401250 4679750)     3      <span style="text-decoration: underline;">1</span>700 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (401750 4679750)     4      <span style="text-decoration: underline;">1</span>575 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402250 4679750)     5      <span style="text-decoration: underline;">1</span>450 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402750 4679750)     6      <span style="text-decoration: underline;">1</span>325 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (403250 4679750)     7      <span style="text-decoration: underline;">1</span>200 14.3    101. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (403750 4679750)     8      <span style="text-decoration: underline;">1</span>075  2.86   180  wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (404250 4679750)     9      <span style="text-decoration: underline;">1</span>200 14.3    259. wildland       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> (404750 4679750)    10      <span style="text-decoration: underline;">1</span>325 14.3    259. wildland       </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 290 more rows</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> (400250 4689750)     1      <span style="text-decoration: underline;">2</span>825  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> (400750 4689750)     2      <span style="text-decoration: underline;">2</span>700  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> (401250 4689750)     3      <span style="text-decoration: underline;">2</span>575  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> (401750 4689750)     4      <span style="text-decoration: underline;">2</span>450  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> (402250 4689750)     5      <span style="text-decoration: underline;">2</span>325  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> (402750 4689750)     6      <span style="text-decoration: underline;">2</span>200  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> (403250 4689750)     7      <span style="text-decoration: underline;">2</span>075  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> (403750 4689750)     8      <span style="text-decoration: underline;">1</span>950  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> (404250 4689750)     9      <span style="text-decoration: underline;">1</span>825  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> (404750 4689750)    10      <span style="text-decoration: underline;">1</span>700  14.3   101. wildland       </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 830 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 7 more variables: forest &lt;list&gt;, soil &lt;list&gt;, depth_to_bedrock &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   bedrock_conductivity &lt;dbl&gt;, bedrock_porosity &lt;dbl&gt;, channel &lt;lgl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   result_cell &lt;lgl&gt;</span></span></span></code></pre>
@@ -146,8 +147,8 @@ in our case is an object of class <code>SpatRaster</code> from package
 <strong>terra</strong> matching the coordinate definition in the
 <code>sf</code> object:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nx</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
-<span><span class="va">ny</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<code class="sourceCode R"><span><span class="va">nx</span> <span class="op">&lt;-</span> <span class="fl">21</span></span>
+<span><span class="va">ny</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
 <span><span class="va">xmin</span> <span class="op">&lt;-</span> <span class="fl">400000</span></span>
 <span><span class="va">ymin</span> <span class="op">&lt;-</span> <span class="fl">4670000</span></span>
@@ -157,7 +158,9 @@ in our case is an object of class <code>SpatRaster</code> from package
 <span>                   nrows <span class="op">=</span> <span class="va">ny</span>, ncols <span class="op">=</span> <span class="va">nx</span>, crs <span class="op">=</span> <span class="va">crs</span><span class="op">)</span></span></code></pre></div>
 <p>The topography of the synthetic watershed looks as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">ws_sf</span>, variable <span class="op">=</span> <span class="st">"elevation"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">ws_sf</span>, variable <span class="op">=</span> <span class="st">"elevation"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../../reference/extract_variables.html">plot_variable</a></span><span class="op">(</span><span class="va">ws_sf</span>, variable <span class="op">=</span> <span class="st">"channel"</span>, r <span class="op">=</span> <span class="va">r</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TetisWatershedParameters_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -301,18 +304,18 @@ units.</p>
 <code class="sourceCode R"><span><span class="va">morris_indices</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">sensitivity_path</span>, <span class="st">"morris_indices.csv"</span><span class="op">)</span>, show_col_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">morris_indices</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 112 × 7</span></span></span>
-<span><span class="co">##    output parameter         label             mu mu_star sigma mu_star_norm</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> KGE    n_interflow       n[interflow]  2.46     2.94  2.13        1     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> KGE    n_baseflow        n[baseflow]  -<span style="color: #BB0000;">0.074</span><span style="color: #BB0000; text-decoration: underline;">2</span>   0.176 0.261       0.059<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> KGE    R_localflow       R[localflow]  0.139    0.479 0.626       0.163 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> KGE    R_interflow       R[interflow] -<span style="color: #BB0000;">0.728</span>    1.53  1.99        0.522 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> KGE    R_baseflow        R[baseflow]   0.178    0.211 0.256       0.071<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> KGE    deep_aquifer_loss D[loss]       0.018<span style="text-decoration: underline;">1</span>   0.225 0.310       0.076<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> KGE    n_manning         n[Manning]    0        0     0           0     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> KGE_r  n_interflow       n[interflow]  0.357    0.589 0.576       1     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> KGE_r  n_baseflow        n[baseflow]   0.063<span style="text-decoration: underline;">0</span>   0.130 0.223       0.221 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> KGE_r  R_localflow       R[localflow] -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">5</span>   0.138 0.196       0.235 </span></span>
+<span><span class="co">##    output parameter         label             mu mu_star  sigma mu_star_norm</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> KGE    n_interflow       n[interflow]  3.02    3.50   2.52         1     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> KGE    n_baseflow        n[baseflow]  -<span style="color: #BB0000;">0.202</span>   0.218  0.286        0.062<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> KGE    R_localflow       R[localflow]  0.131   0.385  0.531        0.110 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> KGE    R_interflow       R[interflow] -<span style="color: #BB0000;">1.02</span>    1.80   2.38         0.514 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> KGE    R_baseflow        R[baseflow]   0.115   0.140  0.190        0.040<span style="text-decoration: underline;">0</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> KGE    deep_aquifer_loss D[loss]      -<span style="color: #BB0000;">0.045</span><span style="color: #BB0000; text-decoration: underline;">7</span>  0.166  0.242        0.047<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> KGE    n_manning         n[Manning]    0       0      0            0     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> KGE_r  n_interflow       n[interflow]  0.396   0.590  0.572        1     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> KGE_r  n_baseflow        n[baseflow]   0.024<span style="text-decoration: underline;">3</span>  0.081<span style="text-decoration: underline;">5</span> 0.130        0.138 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> KGE_r  R_localflow       R[localflow] -<span style="color: #BB0000;">0.018</span><span style="color: #BB0000; text-decoration: underline;">2</span>  0.075<span style="text-decoration: underline;">5</span> 0.099<span style="text-decoration: underline;">0</span>       0.128 </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 102 more rows</span></span></span></code></pre>
 <div class="section level3">
 <h3 id="kge">KGE<a class="anchor" aria-label="anchor" href="#kge"></a>
