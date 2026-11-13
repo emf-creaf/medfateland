@@ -39,13 +39,14 @@ void tetisInterFlow(DataFrame outWB,
   double cellWidth = sqrt(patchsize); //cell width in m
   
   List x, soil, control;
-  NumericVector widths, Ksat;
+  NumericVector widths, Ksat, thetaSAT, thetaFC, rfc;
   
   //A1. Calculate soil water table elevation (heads)
   LogicalVector is_soil(nX, false);
   NumericVector K_inter_max(nX,NA_REAL); //Maximum interflow conductivity
   NumericVector D(nX,NA_REAL); //Soil depth (mm)
   NumericVector WTD(nX,NA_REAL); //Water table depth (mm)
+  NumericVector MeanPorosity(nX, NA_REAL); //Porosity (saturation - field capacity)
   NumericVector SoilSaturatedLayerElevation(nX,NA_REAL); //water table elevation (including cell elevation) in meters
   for(int i=0;i<nX;i++){
     if((lct[i]=="wildland") || (lct[i]=="agriculture") ) {
@@ -55,7 +56,11 @@ void tetisInterFlow(DataFrame outWB,
       widths = soil["widths"];
       Ksat = soil["Ksat"];
       control = x["control"];
+      rfc = soil["rfc"];
+      thetaSAT = medfate::soil_thetaSAT(soil, control["soilFunctions"]);
+      thetaFC = medfate::soil_thetaFC(soil, control["soilFunctions"]);
       D[i] = sum(widths); //Soil depth in mm
+      MeanPorosity[i] = sum((thetaSAT - thetaFC)*(1.0 - (rfc/100.0))*widths)/D[i]; //Mean porosity
       WTD[i] = medfate::soil_saturatedWaterDepth(soil, control["soilFunctions"]); //Depth to saturated layer in mm
       if(NumericVector::is_na(WTD[i])) WTD[i] = D[i]; //If missing, set to soil depth (should not create flow)
       SoilSaturatedLayerElevation[i] = elevation[i] - (WTD[i]/1000.0); //in m
@@ -89,7 +94,7 @@ void tetisInterFlow(DataFrame outWB,
           }
           double qntotal = sum(qni);
           if(qntotal>0.0) {
-            double qntotalallowed = std::min(qntotal, D[i]- WTD[i]); //avoid excessive outflow
+            double qntotalallowed = std::min(qntotal, MeanPorosity[i]*(D[i]- WTD[i])); //avoid excessive outflow
             double corrfactor = qntotalallowed/qntotal;
             if(NumericVector::is_na(corrfactor)) {
               Rcout<< D[i]<< " "<< WTD[i]<< " "<< qntotal<< " " << qntotalallowed << " " << corrfactor << "\n";
@@ -111,7 +116,7 @@ void tetisInterFlow(DataFrame outWB,
     for(int i=0;i<nX;i++){
       if(is_soil[i]) {
         // subtract input (to make it shallower) and add output (to make it deeper)
-        WTD[i] = WTD[i] - interflowInputStep[i] + interflowOutputStep[i];
+        WTD[i] = WTD[i] - (interflowInputStep[i] - interflowOutputStep[i])/MeanPorosity[i];
         SoilSaturatedLayerElevation[i] = elevation[i]-(WTD[i]/1000.0); //in m
         if(NumericVector::is_na(interflowInputStep[i])) stop("Missing interflowInputStep.");
         if(NumericVector::is_na(interflowOutputStep[i])) stop("Missing interflowOutputStep.");

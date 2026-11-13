@@ -106,6 +106,7 @@ df_params$R_interflow <- NA
 df_params$R_baseflow <- NA
 df_params$n_interflow <- NA
 df_params$n_baseflow <- NA
+df_params$n_manning <- NA
 df_params$num_daily_substeps <- NA
 df_params$rock_max_infiltration <- NA
 df_params$deep_aquifer_loss <- NA
@@ -119,6 +120,7 @@ for(i in 1:nrow(df_params)) {
   df_params$R_baseflow[i] <- df_params$Params[[i]]$tetis_parameters$R_baseflow
   df_params$n_interflow[i] <- df_params$Params[[i]]$tetis_parameters$n_interflow
   df_params$n_baseflow[i] <- df_params$Params[[i]]$tetis_parameters$n_baseflow
+  df_params$n_manning[i] <- df_params$Params[[i]]$tetis_parameters$n_manning
   df_params$num_daily_substeps[i] <- df_params$Params[[i]]$tetis_parameters$num_daily_substeps
   df_params$rock_max_infiltration[i] <- df_params$Params[[i]]$tetis_parameters$rock_max_infiltration
   df_params$deep_aquifer_loss[i] <- df_params$Params[[i]]$tetis_parameters$deep_aquifer_loss

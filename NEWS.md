@@ -1,6 +1,7 @@
 # medfateland 3.0.1
 * Allows parsing deadwood if present in forestable data
 * Default rhizosphereOverlap set to total in watershed simulations
+* Incorporation of mean soil porosity in interflow calculations
 
 # medfateland 3.0.0
 * Required medfate 5.0.0 and meteoland 2.2.6

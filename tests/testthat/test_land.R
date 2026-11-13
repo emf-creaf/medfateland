@@ -37,7 +37,10 @@ yws_rock$soil[yws_rock$land_cover_type=="agriculture"] <- list(NULL)
 yws_rock$land_cover_type[yws_rock$land_cover_type=="wildland"] <- "rock"
 yws_rock$land_cover_type[yws_rock$land_cover_type=="agriculture"] <- "rock"
 
-
+yws_nocohorts <- example_watershed
+for(i in 1:nrow(yws_nocohorts)) {
+  if(yws_nocohorts$land_cover_type[i]=="wildland")  yws_nocohorts$forest[[i]] <- emptyforest()
+}
 data("SpParamsMED")
 dates = seq(as.Date("2001-03-01"), as.Date("2001-03-01"), by="day")
 
@@ -130,6 +133,23 @@ test_that("Can simulate one year of fordyn over landscape using new interpolator
   skip_on_cran()
   g1 <- fordyn_land(r, yws[1:10,], meteo = interpolator,
                     SpParams = SpParamsMED, progress = FALSE)
+  expect_s3_class(g1, "fordyn_land")
+  expect_s3_class(unnest_summary(g1), "sf")
+  
+})
+
+test_that("Can simulate with fordyn over landscape when wildland cells have no cohorts",{
+  skip_on_cran()
+  meteo2001 <- examplemeteo
+  meteo2002 <- examplemeteo
+  meteo2002$Precipitation <- meteo2002$Precipitation/2
+  meteo2002$dates <- seq(as.Date("2002-01-01"), 
+                         as.Date("2002-12-31"), by="day")
+  meteo_01_02 <- rbind(meteo2001, meteo2002)
+  
+  g1 <- fordyn_land(r, yws_nocohorts[1:10,], meteo = meteo_01_02,
+                    dispersal_control = NULL,
+                    SpParams = SpParamsMED, progress = TRUE)
   expect_s3_class(g1, "fordyn_land")
   expect_s3_class(unnest_summary(g1), "sf")
   

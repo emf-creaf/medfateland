@@ -26,7 +26,7 @@ The aim of this vignette is to illustrate the sensitivity of watershed ecohydrol
 
 ### Synthetic catchment
 
-To characterise the hydrological behaviour of the model independently of a particular catchment, the analysis was performed on a synthetic catchment of 15 x 20 = 300  cells at 500 m resolution (750 ha), representing a linear valley with 5\% slope and lateral hill slopes with 25\% slope. All cells had aforest consisting of a single cohort of Pinus nigra trees of 8m height, 20 cm DBH and stand LAI = 2; and a soil taken from a cell in Aiguadora catchment. Daily weather forcing was also taken from the same catchment. Watershed hydrology simulations were run using the `spwb_land()` function and included a warm-up period (2000-2010) followed by the analysis period (2011-2020).
+To characterise the hydrological behaviour of the model independently of a particular catchment, the analysis was performed on a synthetic catchment of 21 x 40 = 800  cells at 500 m resolution (210 km2), representing a linear valley with a central axial channel over a 5\% slope and lateral hill slopes with 25\% slope. All cells had aforest consisting of a single cohort of Pinus nigra trees of 8m height, 20 cm DBH and stand LAI = 2; and a soil taken from a cell in Aiguadora catchment. Daily weather forcing was also taken from the same catchment. Watershed hydrology simulations were run using the `spwb_land()` function and included a warm-up period (2000-2010) followed by the analysis period (2011-2020).
 
 The following shows the `sf` object representing the synthetic catchment:
 
@@ -39,8 +39,8 @@ ws_sf
 Another spatial input is needed to describe the grid topology, which in our case is an object of class `SpatRaster` from package **terra** matching the coordinate definition in the `sf` object:
 
 ```{r}
-nx <- 15
-ny <- 20
+nx <- 21
+ny <- 40
 res <- 500
 xmin <- 400000
 ymin <- 4670000
@@ -53,7 +53,9 @@ r <- terra::rast(xmin = xmin, xmax = xmin + nx * res,
 The topography of the synthetic watershed looks as follows:
 
 ```{r,  fig.align='center', fig.width=7, height = 4}
-plot_variable(ws_sf, variable = "elevation", r = r)
+cowplot::plot_grid(
+  plot_variable(ws_sf, variable = "elevation", r = r),
+  plot_variable(ws_sf, variable = "channel", r = r), ncol=2)
 ```
 
 ### Design of parameter exploration
