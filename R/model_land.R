@@ -1613,15 +1613,15 @@ fordyn_land <- function(r, sf, SpParams, meteo = NULL, dates = NULL,
             # Retrieve plantation information
             planted_forest <- management_result$planted_forest
             if(nrow(planted_forest$treeData)>0) {
-              for(i in 1:nrow(planted_forest$treeData)) {
-                planted_forest$treeData$Z95[i] <- species_parameter(planted_forest$treeData$Species[i], SpParams,"Z95")
-                planted_forest$treeData$Z50[i] <- exp(log(planted_forest$treeData$Z95[i])/1.4)
+              for(j in 1:nrow(planted_forest$treeData)) {
+                planted_forest$treeData$Z95[j] <- species_parameter(planted_forest$treeData$Species[j], SpParams,"Z95")
+                planted_forest$treeData$Z50[j] <- exp(log(planted_forest$treeData$Z95[j])/1.4)
               }
             }
             if(nrow(planted_forest$shrubData)>0) {
-              for(i in 1:nrow(planted_forest$shrubData)) {
-                planted_forest$shrubData$Z50[i] <- species_parameter(planted_forest$shrubData$Species[i], SpParams,"Z95")
-                planted_forest$shrubData$Z95[i] <- exp(log(planted_forest$shrubData$Z95[i])/1.4)
+              for(j in 1:nrow(planted_forest$shrubData)) {
+                planted_forest$shrubData$Z50[j] <- species_parameter(planted_forest$shrubData$Species[j], SpParams,"Z95")
+                planted_forest$shrubData$Z95[j] <- exp(log(planted_forest$shrubData$Z95[j])/1.4)
               }
             }
           
