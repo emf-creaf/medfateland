@@ -358,7 +358,7 @@
   forestlist_out = vector("list",n)
   managementlist_out = vector("list",n)
 
-  if(model %in% c("spwb", "growth")) {
+  if(model %in% c("spwb", "growth", "fordyn")) {
     init<-rep(FALSE, n)
     for(i in 1:n) {
       if(landcover[i] == "wildland") {
@@ -368,7 +368,7 @@
           init[i] = TRUE
           x = xlist[[i]]
           if(inherits(x,"spwbInput") && model=="spwb") init[i] = FALSE
-          if(inherits(x,"growthInput") && model=="growth") init[i] = FALSE
+          if(inherits(x,"growthInput") && model %in% c("growth", "fordyn")) init[i] = FALSE
         }
       } else if(landcover[i] == "agriculture") {
         if(inherits(soillist[[i]], c("soil","data.frame"))) {
@@ -401,7 +401,7 @@
           if(inherits(f, "forest") && inherits(s, "soil")) {
             if(model=="spwb") {
               xlist[[i]] = medfate::spwbInput(f, s, SpParams, local_control_i)
-            } else if(model=="growth") {
+            } else if(model %in% c("growth", "fordyn")) {
               xlist[[i]] = medfate::growthInput(f, s, SpParams, local_control_i)
             }
           }
