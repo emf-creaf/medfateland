@@ -18,59 +18,99 @@ Q_monthly_eval <- Q_monthly |>
 
 ```{r, echo = FALSE}
 # Daily NSE
-nse_daily_cal<-hydroGOF::NSE(Q_daily_cal$Qcal,Q_daily_cal$Qobs,na.rm=TRUE)
-nse_daily_eval<-hydroGOF::NSE(Q_daily_eval$Qcal,Q_daily_eval$Qobs,na.rm=TRUE)
+nse_daily_cal_spwb<-hydroGOF::NSE(Q_daily_cal$Qcal_spwb,Q_daily_cal$Qobs,na.rm=TRUE)
+nse_daily_eval_spwb<-hydroGOF::NSE(Q_daily_eval$Qcal_spwb,Q_daily_eval$Qobs,na.rm=TRUE)
+nse_daily_cal_growth<-hydroGOF::NSE(Q_daily_cal$Qcal_growth,Q_daily_cal$Qobs,na.rm=TRUE)
+nse_daily_eval_growth<-hydroGOF::NSE(Q_daily_eval$Qcal_growth,Q_daily_eval$Qobs,na.rm=TRUE)
 
 # Monthly NSE
-nse_monthly_cal<-hydroGOF::NSE(Q_monthly_cal$Qcal,Q_monthly_cal$Qobs,na.rm=TRUE)
-nse_monthly_eval<-hydroGOF::NSE(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs,na.rm=TRUE)
+nse_monthly_cal_spwb<-hydroGOF::NSE(Q_monthly_cal$Qcal_spwb,Q_monthly_cal$Qobs,na.rm=TRUE)
+nse_monthly_eval_spwb<-hydroGOF::NSE(Q_monthly_eval$Qcal_spwb,Q_monthly_eval$Qobs,na.rm=TRUE)
+nse_monthly_cal_growth<-hydroGOF::NSE(Q_monthly_cal$Qcal_growth,Q_monthly_cal$Qobs,na.rm=TRUE)
+nse_monthly_eval_growth<-hydroGOF::NSE(Q_monthly_eval$Qcal_growth,Q_monthly_eval$Qobs,na.rm=TRUE)
 
 # Daily KGE
-KGE_daily_cal<-hydroGOF::KGE(Q_daily_cal$Qcal,Q_daily_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+KGE_daily_cal_spwb<-hydroGOF::KGE(Q_daily_cal$Qcal_spwb,Q_daily_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
                              out.type=c("full"), fun=NULL, 
                              epsilon.type=c("none"), 
                              epsilon.value=NA)
-KGE_daily_eval<-hydroGOF::KGE(Q_daily_eval$Qcal,Q_daily_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+KGE_daily_eval_spwb<-hydroGOF::KGE(Q_daily_eval$Qcal_spwb,Q_daily_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+                             out.type=c("full"), fun=NULL, 
+                             epsilon.type=c("none"), 
+                             epsilon.value=NA)
+KGE_daily_cal_growth<-hydroGOF::KGE(Q_daily_cal$Qcal_growth,Q_daily_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+                             out.type=c("full"), fun=NULL, 
+                             epsilon.type=c("none"), 
+                             epsilon.value=NA)
+KGE_daily_eval_growth<-hydroGOF::KGE(Q_daily_eval$Qcal_growth,Q_daily_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
                              out.type=c("full"), fun=NULL, 
                              epsilon.type=c("none"), 
                              epsilon.value=NA)
 
 # Monthly KGE
-KGE_monthly_cal<-hydroGOF::KGE(Q_monthly_cal$Qcal,Q_monthly_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+KGE_monthly_cal_spwb<-hydroGOF::KGE(Q_monthly_cal$Qcal_spwb,Q_monthly_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
                              out.type=c("full"), fun=NULL, 
                              epsilon.type=c("none"), 
                              epsilon.value=NA)
-KGE_monthly_eval<-hydroGOF::KGE(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+KGE_monthly_eval_spwb<-hydroGOF::KGE(Q_monthly_eval$Qcal_spwb,Q_monthly_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+                             out.type=c("full"), fun=NULL, 
+                             epsilon.type=c("none"), 
+                             epsilon.value=NA)
+KGE_monthly_cal_growth<-hydroGOF::KGE(Q_monthly_cal$Qcal_growth,Q_monthly_cal$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
+                             out.type=c("full"), fun=NULL, 
+                             epsilon.type=c("none"), 
+                             epsilon.value=NA)
+KGE_monthly_eval_growth<-hydroGOF::KGE(Q_monthly_eval$Qcal_growth,Q_monthly_eval$Qobs, s=c(1,1,1), na.rm=TRUE, method=c("2021"), 
                              out.type=c("full"), fun=NULL, 
                              epsilon.type=c("none"), 
                              epsilon.value=NA)
 
 # Index of agreement
-d_daily_cal<-hydroGOF::dr(Q_daily_cal$Qcal,Q_daily_cal$Qobs, na.rm = TRUE)
-d_daily_eval<-hydroGOF::dr(Q_daily_eval$Qcal,Q_daily_eval$Qobs, na.rm = TRUE)
+d_daily_cal_spwb<-hydroGOF::dr(Q_daily_cal$Qcal_spwb,Q_daily_cal$Qobs, na.rm = TRUE)
+d_daily_cal_growth<-hydroGOF::dr(Q_daily_cal$Qcal_growth,Q_daily_cal$Qobs, na.rm = TRUE)
+d_daily_eval_spwb<-hydroGOF::dr(Q_daily_eval$Qcal_spwb,Q_daily_eval$Qobs, na.rm = TRUE)
+d_daily_eval_growth<-hydroGOF::dr(Q_daily_eval$Qcal_growth,Q_daily_eval$Qobs, na.rm = TRUE)
 
-d_monthly_cal<-hydroGOF::dr(Q_monthly_cal$Qcal,Q_monthly_cal$Qobs, na.rm = TRUE)
-d_monthly_eval<-hydroGOF::dr(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs, na.rm = TRUE)
+d_monthly_cal_spwb<-hydroGOF::dr(Q_monthly_cal$Qcal_spwb,Q_monthly_cal$Qobs, na.rm = TRUE)
+d_monthly_cal_growth<-hydroGOF::dr(Q_monthly_cal$Qcal_growth,Q_monthly_cal$Qobs, na.rm = TRUE)
+d_monthly_eval_spwb<-hydroGOF::dr(Q_monthly_eval$Qcal_spwb,Q_monthly_eval$Qobs, na.rm = TRUE)
+d_monthly_eval_growth<-hydroGOF::dr(Q_monthly_eval$Qcal_growth,Q_monthly_eval$Qobs, na.rm = TRUE)
 
 # Volumetric efficiency
-ve_daily_cal<-hydroGOF::VE(Q_daily_cal$Qcal,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
+ve_daily_cal_spwb<-hydroGOF::VE(Q_daily_cal$Qcal_spwb,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
-ve_daily_eval<-hydroGOF::VE(Q_daily_eval$Qcal,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
+ve_daily_cal_growth<-hydroGOF::VE(Q_daily_cal$Qcal_growth,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+ve_daily_eval_spwb<-hydroGOF::VE(Q_daily_eval$Qcal_spwb,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+ve_daily_eval_growth<-hydroGOF::VE(Q_daily_eval$Qcal_growth,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
 
-ve_monthly_cal<-hydroGOF::VE(Q_monthly_cal$Qcal,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
+ve_monthly_cal_spwb<-hydroGOF::VE(Q_monthly_cal$Qcal_spwb,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
-ve_monthly_eval<-hydroGOF::VE(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
+ve_monthly_cal_growth<-hydroGOF::VE(Q_monthly_cal$Qcal_growth,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+ve_monthly_eval_spwb<-hydroGOF::VE(Q_monthly_eval$Qcal_spwb,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+ve_monthly_eval_growth<-hydroGOF::VE(Q_monthly_eval$Qcal_growth,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
 
 # RMSE
-rmse_daily_cal<-hydroGOF::rmse(Q_daily_cal$Qcal,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
+rmse_daily_cal_spwb<-hydroGOF::rmse(Q_daily_cal$Qcal_spwb,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
-rmse_daily_eval<-hydroGOF::rmse(Q_daily_eval$Qcal,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
+rmse_daily_cal_growth<-hydroGOF::rmse(Q_daily_cal$Qcal_growth,Q_daily_cal$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
-rmse_monthly_cal<-hydroGOF::rmse(Q_monthly_cal$Qcal,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
+rmse_daily_eval_spwb<-hydroGOF::rmse(Q_daily_eval$Qcal_spwb,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
-rmse_monthly_eval<-hydroGOF::rmse(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
+rmse_daily_eval_growth<-hydroGOF::rmse(Q_daily_eval$Qcal_growth,Q_daily_eval$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+rmse_monthly_cal_spwb<-hydroGOF::rmse(Q_monthly_cal$Qcal_spwb,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+rmse_monthly_cal_growth<-hydroGOF::rmse(Q_monthly_cal$Qcal_growth,Q_monthly_cal$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+rmse_monthly_eval_spwb<-hydroGOF::rmse(Q_monthly_eval$Qcal_spwb,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
+                       epsilon.type=c("none"), epsilon.value=NA)
+rmse_monthly_eval_growth<-hydroGOF::rmse(Q_monthly_eval$Qcal_growth,Q_monthly_eval$Qobs, na.rm=TRUE, fun=NULL,
                        epsilon.type=c("none"), epsilon.value=NA)
 ```
 
@@ -78,38 +118,59 @@ rmse_monthly_eval<-hydroGOF::rmse(Q_monthly_eval$Qcal,Q_monthly_eval$Qobs, na.rm
 
 ```{r, echo = FALSE}
 
-validation_coefficients<- data.frame(Scale = c("Daily", "Daily", "Monthly", "Monthly"),
-                                     Period =  c("Calibration","Evaluation","Calibration","Evaluation"),
+validation_coefficients<- data.frame(Scale = c("Daily", "Daily", "Daily","Daily","Monthly", "Monthly", "Monthly", "Monthly"),
+                                     Period =  c("Calibration","Calibration","Evaluation","Evaluation","Calibration","Calibration","Evaluation","Evaluation"),
+                                     Model = c("spwb", "growth", "spwb", "growth","spwb", "growth", "spwb", "growth"),
                                      NSE = NA,
                                      KGE = NA,
                                      d = NA,
                                      VE = NA,
                                      RMSE = NA)
 
-validation_coefficients$NSE[1]<-round(nse_daily_cal,3)
-validation_coefficients$NSE[2]<-round(nse_daily_eval,3)
-validation_coefficients$NSE[3]<-round(nse_monthly_cal,3)
-validation_coefficients$NSE[4]<-round(nse_monthly_eval,3)
+validation_coefficients$NSE[1]<-round(nse_daily_cal_spwb,3)
+validation_coefficients$NSE[2]<-round(nse_daily_cal_growth,3)
+validation_coefficients$NSE[3]<-round(nse_daily_eval_spwb,3)
+validation_coefficients$NSE[4]<-round(nse_daily_eval_growth,3)
+validation_coefficients$NSE[5]<-round(nse_monthly_cal_spwb,3)
+validation_coefficients$NSE[6]<-round(nse_monthly_cal_growth,3)
+validation_coefficients$NSE[7]<-round(nse_monthly_eval_spwb,3)
+validation_coefficients$NSE[8]<-round(nse_monthly_eval_growth,3)
 
-validation_coefficients$KGE[1]<-round(KGE_daily_cal[["KGE.value"]],3)
-validation_coefficients$KGE[2]<-round(KGE_daily_eval[["KGE.value"]],3)
-validation_coefficients$KGE[3]<-round(KGE_monthly_cal[["KGE.value"]],3)
-validation_coefficients$KGE[4]<-round(KGE_monthly_eval[["KGE.value"]],3)
+validation_coefficients$KGE[1]<-round(KGE_daily_cal_spwb[["KGE.value"]],3)
+validation_coefficients$KGE[2]<-round(KGE_daily_cal_growth[["KGE.value"]],3)
+validation_coefficients$KGE[3]<-round(KGE_daily_eval_spwb[["KGE.value"]],3)
+validation_coefficients$KGE[4]<-round(KGE_daily_eval_growth[["KGE.value"]],3)
+validation_coefficients$KGE[5]<-round(KGE_monthly_cal_spwb[["KGE.value"]],3)
+validation_coefficients$KGE[6]<-round(KGE_monthly_cal_growth[["KGE.value"]],3)
+validation_coefficients$KGE[7]<-round(KGE_monthly_eval_spwb[["KGE.value"]],3)
+validation_coefficients$KGE[8]<-round(KGE_monthly_eval_growth[["KGE.value"]],3)
 
-validation_coefficients$d[1]<-round(d_daily_cal,3)
-validation_coefficients$d[2]<-round(d_daily_eval,3)
-validation_coefficients$d[3]<-round(d_monthly_cal,3)
-validation_coefficients$d[4]<-round(d_monthly_eval,3)
+validation_coefficients$d[1]<-round(d_daily_cal_spwb,3)
+validation_coefficients$d[2]<-round(d_daily_cal_growth,3)
+validation_coefficients$d[3]<-round(d_daily_eval_spwb,3)
+validation_coefficients$d[4]<-round(d_daily_eval_growth,3)
+validation_coefficients$d[5]<-round(d_monthly_cal_spwb,3)
+validation_coefficients$d[6]<-round(d_monthly_cal_growth,3)
+validation_coefficients$d[7]<-round(d_monthly_eval_spwb,3)
+validation_coefficients$d[8]<-round(d_monthly_eval_growth,3)
 
-validation_coefficients$VE[1]<-round(ve_daily_cal,3)
-validation_coefficients$VE[2]<-round(ve_daily_eval,3)
-validation_coefficients$VE[3]<-round(ve_monthly_cal,3)
-validation_coefficients$VE[4]<-round(ve_monthly_eval,3)
+validation_coefficients$VE[1]<-round(ve_daily_cal_spwb,3)
+validation_coefficients$VE[2]<-round(ve_daily_cal_growth,3)
+validation_coefficients$VE[3]<-round(ve_daily_eval_spwb,3)
+validation_coefficients$VE[4]<-round(ve_daily_eval_growth,3)
+validation_coefficients$VE[5]<-round(ve_monthly_cal_spwb,3)
+validation_coefficients$VE[6]<-round(ve_monthly_cal_growth,3)
+validation_coefficients$VE[7]<-round(ve_monthly_eval_spwb,3)
+validation_coefficients$VE[8]<-round(ve_monthly_eval_growth,3)
 
-validation_coefficients$RMSE[1]<-round(rmse_daily_cal,3)
-validation_coefficients$RMSE[2]<-round(rmse_daily_eval,3)
-validation_coefficients$RMSE[3]<-round(rmse_monthly_cal,3)
-validation_coefficients$RMSE[4]<-round(rmse_monthly_eval,3)
+validation_coefficients$RMSE[1]<-round(rmse_daily_cal_spwb,3)
+validation_coefficients$RMSE[2]<-round(rmse_daily_cal_growth,3)
+validation_coefficients$RMSE[3]<-round(rmse_daily_eval_spwb,3)
+validation_coefficients$RMSE[4]<-round(rmse_daily_eval_growth,3)
+validation_coefficients$RMSE[5]<-round(rmse_monthly_cal_spwb,3)
+validation_coefficients$RMSE[6]<-round(rmse_monthly_cal_growth,3)
+validation_coefficients$RMSE[7]<-round(rmse_monthly_eval_spwb,3)
+validation_coefficients$RMSE[8]<-round(rmse_monthly_eval_growth,3)
 
 validation_coefficients |> 
   kbl() |>
@@ -120,36 +181,74 @@ validation_coefficients |>
 
 *Daily*
 
-```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
-ggplot(Q_daily |>
-         dplyr::select(-Qunc) |>
+```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 6, warning=FALSE}
+p1 <-ggplot(Q_daily |>
          dplyr::rename(Observed = Qobs,
-                       Predicted = Qcal) |>
+                       Predicted = Qcal_spwb) |>
          tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
        , aes(x=Date))+
   geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
   geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
   scale_y_continuous("Q (m3/s)")+
-  scale_color_discrete(NULL, palette = c("black", "lightblue"))+
+  scale_color_discrete(NULL, palette = c("black", "blue"))+
   theme_bw()+
+  labs(subtitle = "spwb vs. observed")+
   theme(legend.position = c(0.1,0.85), legend.background = element_blank())
+p2<-ggplot(Q_daily |>
+         dplyr::rename(Observed = Qobs,
+                       Predicted = Qcal_growth) |>
+         tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
+       , aes(x=Date))+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
+  geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
+  scale_y_continuous("Q (m3/s)")+
+  scale_color_discrete(NULL, palette = c("black", "green"))+
+  theme_bw()+
+  labs(subtitle = "growth vs. observed")+
+  theme(legend.position = c(0.1,0.85), legend.background = element_blank())
+cowplot::plot_grid(p1, p2, nrow=2)
 ```
 
 *Monthly*
 
-```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
-ggplot(Q_monthly |>
-         dplyr::select(-Qunc) |>
+```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 8, warning=FALSE}
+p1 <-ggplot(Q_monthly |>
          dplyr::rename(Observed = Qobs,
-                       Predicted = Qcal) |>
+                       Predicted = Qcal_spwb) |>
          tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
        , aes(x=Date))+
-  geom_line(aes(y = Q, col = type), linewidth = 0.5)+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
   geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
   scale_y_continuous("Q (m3/s)")+
-  scale_color_discrete(NULL, palette = c("black", "lightblue"))+
+  scale_color_discrete(NULL, palette = c("black", "blue"))+
   theme_bw()+
+  labs(subtitle = "spwb vs. observed")+
   theme(legend.position = c(0.1,0.85), legend.background = element_blank())
+p2<-ggplot(Q_monthly |>
+         dplyr::rename(Observed = Qobs,
+                       Predicted = Qcal_growth) |>
+         tidyr::pivot_longer(cols = c("Observed", "Predicted"), names_to = "type", values_to = "Q") 
+       , aes(x=Date))+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
+  geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
+  scale_y_continuous("Q (m3/s)")+
+  scale_color_discrete(NULL, palette = c("black", "green"))+
+  theme_bw()+
+  labs(subtitle = "growth vs. observed")+
+  theme(legend.position = c(0.1,0.85), legend.background = element_blank())
+p3<-ggplot(Q_monthly |>
+         dplyr::rename(spwb = Qcal_spwb,
+                       growth = Qcal_growth) |>
+         tidyr::pivot_longer(cols = c("spwb", "growth"), names_to = "type", values_to = "Q") 
+       , aes(x=Date))+
+  geom_line(aes(y = Q, col = type), linewidth = 0.5, alpha = 0.8)+
+  geom_vline(xintercept = as.Date(options$calibration_end), col = "darkgray", linetype = "dashed")+
+  scale_y_continuous("Q (m3/s)")+
+  scale_color_discrete(NULL, palette = c("green","blue"))+
+  theme_bw()+
+  labs(subtitle = "spwb vs. growth")+
+  theme(legend.position = c(0.1,0.85), legend.background = element_blank())
+cowplot::plot_grid(p1, p2, p3, nrow=3)
 ```
 
 
@@ -159,14 +258,16 @@ ggplot(Q_monthly |>
 
 ```{r, echo = FALSE, fig = TRUE, fig.width=8, fig.height = 3, warning=FALSE}
 g1<-ggplot(Q_daily_cal) +
-  geom_density(aes(x=Qobs), col="black") +
-  geom_density(aes(x=Qcal), col="lightblue")+
+  geom_density(aes(x=Qobs), col="black", alpha = 0.8) +
+  geom_density(aes(x=Qcal_spwb), col="blue", alpha = 0.8)+
+  geom_density(aes(x=Qcal_growth), col="green", alpha = 0.8)+
   scale_x_continuous("Daily Q (m3/s)", transform = "log10")+
   labs(subtitle = "Calibration period")+
   theme_bw()
 g2<-ggplot(Q_daily_eval) +
-  geom_density(aes(x=Qobs), col="black") +
-  geom_density(aes(x=Qcal), col="lightblue")+
+  geom_density(aes(x=Qobs), col="black", alpha = 0.8) +
+  geom_density(aes(x=Qcal_spwb), col="blue", alpha = 0.8)+
+  geom_density(aes(x=Qcal_growth), col="green", alpha = 0.8)+
   scale_x_continuous("Daily Q (m3/s)", transform = "log10")+
   labs(subtitle = "Evaluation period")+
   theme_bw()
@@ -177,10 +278,12 @@ cowplot::plot_grid(g1, g2, ncol = 2)
 
 ```{r, echo = FALSE}
 p = c(0.01,0.05,0.10,0.15,0.25,0.50,0.75,0.85,0.90,0.95, 0.99)
-perc_df <- data.frame("Observed/Calibration" = quantile(Q_daily_cal$Qobs, probs = p, na.rm=TRUE),
-                      "Simulated/Calibration" = round(quantile(Q_daily_cal$Qcal, probs = p, na.rm=TRUE),3),
-                      "Observed/Evaluation" = quantile(Q_daily_eval$Qobs, probs = p, na.rm=TRUE),
-                      "Simulated/Evaluation" = round(quantile(Q_daily_eval$Qcal, probs = p, na.rm=TRUE),3))
+perc_df <- data.frame("Observed/calibration" = round(quantile(Q_daily_cal$Qobs, probs = p, na.rm=TRUE),5),
+                      "spwb/calibration" = round(quantile(Q_daily_cal$Qcal_spwb, probs = p, na.rm=TRUE),5),
+                      "growth/calibration" = round(quantile(Q_daily_cal$Qcal_growth, probs = p, na.rm=TRUE),5),
+                      "Observed/Evaluation" = round(quantile(Q_daily_eval$Qobs, probs = p, na.rm=TRUE),5),
+                      "spwb/Evaluation" = round(quantile(Q_daily_eval$Qcal_spwb, probs = p, na.rm=TRUE),5),
+                      "growth/Evaluation" = round(quantile(Q_daily_eval$Qcal_growth, probs = p, na.rm=TRUE),5))
 perc_df |> 
   kbl() |>
   kable_styling()

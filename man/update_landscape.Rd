@@ -4,13 +4,20 @@
 \alias{update_landscape}
 \title{Updates the state of a landscape object}
 \usage{
-update_landscape(x, y)
+update_landscape(
+  x,
+  y,
+  columns = c("state", "soil", "forest", "management_arguments", "aquifer", "snowpack",
+    "outlet_backlog")
+)
 }
 \arguments{
 \item{x}{An object of class \code{\link[sf]{sf}} with the corresponding landscape columns.}
 
 \item{y}{The object resulting of a simulation previously carried on \code{x}
 using \code{\link{spwb_spatial}}, \code{\link{growth_spatial}}, \code{\link{spwb_land}}, etc.}
+
+\item{columns}{String vector with the names of columns to be modified}
 }
 \value{
 An object of class \code{\link[sf]{sf}} with modified state variables.

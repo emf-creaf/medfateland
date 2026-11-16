@@ -358,11 +358,11 @@ In short, sub-watershed definition consists in: (a) finding the drainage basin o
 plot(or[, "subwatershed"])
 ```
 
-Let's now illustrate how to perform watershed simulations with parallelization and subwatersheds. We begin by initializing the input (here we used a `"buckets"` soil hydrology to speed up calculations, but `"single"` would be more appropriate).
+Let's now illustrate how to perform watershed simulations with parallelization and subwatersheds. We begin by initializing the input:
 
 ```{r}
-sf_init <- initialize_landscape(sf, SpParams = traits4models::SpParamsES,
-                                local_control = defaultControl(soilDomains = "buckets"),
+sf_init <- initialize_landscape(sf, SpParams = traits4models::SpParamsES, model = "spwb",
+                                local_control = defaultControl(soilDomains = "single", rhizosphereOverlap = "total"),
                                 progress = FALSE)
 ```
 
@@ -386,8 +386,10 @@ res_ws7 <- spwb_land(r, sf_init,
                     parallelize = TRUE)
 ```
 
-As an example of the output, we show a map of woody plant transpiration (note that we asked for water balance components using `summary_blocks = "WaterBalance"`:
+As an example of the output, we show maps of potential evapotranspiration and woody plant transpiration (note that we asked for water balance components using `summary_blocks = "WaterBalance"`):
 
 ```{r, warning=FALSE, fig.align='center', fig.width=7}
-plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
+g1<-plot_summary(res_ws7, variable = "PET", date = "2022-04-01", r = r)
+g2<-plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
+cowplot::plot_grid(g1, g2, nrow = 2)
 ```

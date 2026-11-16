@@ -2,6 +2,7 @@
 * Allows parsing deadwood if present in forestable data
 * Default rhizosphereOverlap set to total in watershed simulations
 * Incorporation of mean soil porosity in interflow calculations
+* Improvement of function update_landscape() to control updated columns
 * Bug correction: plantation in fordyn_land
 * Bug correction: spwb-initialized objects in fordyn_spatial
 

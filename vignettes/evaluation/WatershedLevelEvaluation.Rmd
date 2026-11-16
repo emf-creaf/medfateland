@@ -41,15 +41,13 @@ df <- tibble::tibble(medfateland = medfateland_version_vec,
                      medfate = NA,
                      model = model_vec, watershed = watershed_vec) 
 df$options <- vector("list", nrow(df))
-df$before <- vector("list", nrow(df))
-df$after <- vector("list", nrow(df))
+df$Params <- vector("list", nrow(df))
 df$Q_daily <- vector("list", nrow(df))
 df$Q_monthly <- vector("list", nrow(df))
 df$ComputationTimes <- vector("list", nrow(df))
 for(r in 1:nrow(df)) {
   df$options[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibration_options.yaml"))
-  df$before[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "uncalibrated.yaml"))
-  df$after[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibrated.yaml"))
+  df$Params[[r]] <- yaml::read_yaml(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "calibrated.yaml"))
   df$Q_daily[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_daily.csv"))
   df$Q_monthly[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "Q_monthly.csv"))
   df$ComputationTimes[[r]] <- read.csv2(file.path(evalDIR, "data", "output", df$medfateland[r], df$model[r], df$watershed[r], "computing_times.csv"))
@@ -97,8 +95,7 @@ The following table contains the period of calibration and the set of TETIS para
 
 ```{r, echo = FALSE}
 df_params <- df |> 
-  dplyr::select(-Q_daily, -Q_monthly) |>
-  tidyr::pivot_longer(cols = c(before, after), names_to = "Calibrated", values_to ="Params")
+  dplyr::select(-Q_daily, -Q_monthly) 
 df_params$Calibration_start <- NA
 df_params$Calibration_end <- NA
 df_params$R_localflow <- NA
@@ -126,8 +123,7 @@ for(i in 1:nrow(df_params)) {
   df_params$deep_aquifer_loss[i] <- df_params$Params[[i]]$tetis_parameters$deep_aquifer_loss
 }
 df_params |>
-  dplyr::filter(Calibrated == "after") |>
-  dplyr::select(-Calibrated, -Params, -options, -ComputationTimes) |>
+  dplyr::select(-Params, -options, -ComputationTimes) |>
   kableExtra::kbl() |>
   kableExtra::kable_styling()
 ```
@@ -136,7 +132,8 @@ df_params |>
 ## Evaluation results
 
 ```{r, results='asis', warning = FALSE, message=FALSE, echo = FALSE}
-for(i in 1:nrow(df)) {
+# for(i in 1:nrow(df)) {
+i=2
    medfateland_version <- df$medfateland[i] 
    model <- df$model[i]
    watershed <- df$watershed[i]
@@ -148,7 +145,7 @@ for(i in 1:nrow(df)) {
   computation_times <- df$ComputationTimes[[i]]
   res <- knitr::knit_child('_WLEvaluation_child.Rmd', quiet = TRUE)
   cat(res, sep = '\n')
-}
+# }
 ```
 
 
