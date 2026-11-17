@@ -131,6 +131,9 @@ void tetisInterFlow(DataFrame outWB,
   for(int i=0;i<nX;i++){
     if(is_soil[i]) {
       interflowBalance[i] = interflowInput[i] - interflowOutput[i];
+      if(std::isnan(interflowBalance[i])) {
+        throw medfate::MedfateInternalError("Missing value for interflowBalance in tetis");
+      }
       balsum +=interflowBalance[i];
     }
   }
