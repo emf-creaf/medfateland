@@ -79,7 +79,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres / María González</h4>
             
-            <h4 data-toc-skip class="date">2026-11-08</h4>
+            <h4 data-toc-skip class="date">2026-11-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/evaluation/WatershedLevelEvaluation.Rmd" class="external-link"><code>vignettes/evaluation/WatershedLevelEvaluation.Rmd</code></a></small>
       <div class="d-none name"><code>WatershedLevelEvaluation.Rmd</code></div>
@@ -93,12 +93,15 @@ Cáceres / María González</h4>
 <div class="section level3">
 <h3 id="goal">Goal<a class="anchor" aria-label="anchor" href="#goal"></a>
 </h3>
-<p>The aim of this article is to provide an assessment of the
-performance of <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> for the prediction of watershed
-outflow. To this aim, we simulate hydrological processes in a set of
-benchmark watersheds and compare the model predictions of watershed
-outflow, after parameter calibration, against measurements obtained
-using river gauges at watershed outlets.</p>
+<p>The aim of this article is to provide an assessment of the predictive
+performance of <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> and <code><a href="../../reference/spwb_land.html">growth_land()</a></code>
+for the prediction of watershed outflow. To this aim, we simulate
+hydrological processes in a set of benchmark watersheds and compare the
+model predictions of watershed outflow against measurements obtained
+using river gauges at watershed outlets. Simulations are performed after
+calibrating watershed-level hydrological parameters with a subset of
+observations. The vignette also includes estimates of computation time
+for each watershed under different models and control parameters.</p>
 </div>
 <div class="section level3">
 <h3 id="calibration-and-simulation">Calibration and simulation<a class="anchor" aria-label="anchor" href="#calibration-and-simulation"></a>
@@ -106,22 +109,30 @@ using river gauges at watershed outlets.</p>
 <p>For each watershed, the following procedure has been conducted:</p>
 <ol style="list-style-type: decimal">
 <li>Initial warm-up simulation with default parameters for a specified
-number of years</li>
+number of years, aimed to fill the aquifer and equilibrate soils.</li>
 <li>Calibration of watershed parameters for a specific period (warm-up +
 analysis) using a genetic algorithm and Kling–Gupta efficiency (KGE) as
-optimization function.</li>
-<li>Simulation with calibrated watershed parameters.</li>
+optimization function. Calibration is conducted with the same function
+(either <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> or <code><a href="../../reference/spwb_land.html">growth_land()</a></code> to be
+used in evaluation).</li>
+<li>Simulation with calibrated watershed parameters for the whole
+period, that includes both the calibration period and a later period
+used for independent evaluation.</li>
 </ol>
+<p>Both in the calibration procedure and the final simulations with
+calibrated parameters, the vegetation input has been aggregated into
+size classes, for computational simplicity.</p>
 </div>
 <div class="section level3">
 <h3 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a>
 </h3>
 <p>For each watershed, simulation results are compared to observed
 watershed outflow, differentiating between the period used for
-calibration and a posterior period used for independent evaluation. Note
-that the performance can decrease for the evaluation period because of
-vegetation growth not included in simulations, which may have reduced
-observed watershed outflow.</p>
+calibration and a posterior period used for independent evaluation.</p>
+<p><strong>Time series</strong></p>
+<p>A comparison of observed vs. simulated (with <code><a href="../../reference/spwb_land.html">spwb_land()</a></code>
+or <code><a href="../../reference/spwb_land.html">growth_land()</a></code>) time series is shown, at the daily and
+monthly scales.</p>
 <p><strong>Goodness-of-fit statistics</strong></p>
 <p>The following goodness of fit statistics are calculated using package
 <code>hydroGOF</code>:</p>
@@ -150,13 +161,27 @@ model error (i.e. the square root of mean squared errors).</li>
 compared between observations and predictions, for both the calibration
 and evaluation periods.</p>
 </div>
+<div class="section level3">
+<h3 id="computation-times">Computation times<a class="anchor" aria-label="anchor" href="#computation-times"></a>
+</h3>
+<p>For each watershed, we provide a table of computation times in
+seconds corresponding to 30-day simulations of watershed processes, with
+either <code><a href="../../reference/spwb_land.html">spwb_land()</a></code> or <code><a href="../../reference/spwb_land.html">growth_land()</a></code>. Different
+combinations of control parameters are tested for
+<code>transpirationMode</code> (either Granier or Sureau),
+<code>rhizosphereOverlap</code> (either total or partial) or
+<code>soilDomains</code> (either single or dual). Different degrees of
+vegetation detail are also tested: (a) tree-level original inventory
+records; (b) aggregation of trees and shrubs into size classes; (c)
+simplification to the dominant tree/shrub species.</p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="watershed-tetis-parameters">Watershed (TETIS) parameters<a class="anchor" aria-label="anchor" href="#watershed-tetis-parameters"></a>
+<h2 id="calibrated-watershed-parameters">Calibrated watershed parameters<a class="anchor" aria-label="anchor" href="#calibrated-watershed-parameters"></a>
 </h2>
 <p>The following table contains the period of calibration and the set of
-TETIS parameters employed in simulations on all watersheds after
-calibration:</p>
+TETIS parameters resulting from calibration exercises with either
+<code><a href="../../reference/spwb_land.html">spwb_land()</a></code> or <code><a href="../../reference/spwb_land.html">growth_land()</a></code>:</p>
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">
@@ -170,6 +195,9 @@ model
 </th>
 <th style="text-align:left;">
 watershed
+</th>
+<th style="text-align:left;">
+local_model
 </th>
 <th style="text-align:left;">
 Calibration_start
@@ -211,7 +239,7 @@ deep_aquifer_loss
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 tetis
@@ -220,37 +248,40 @@ tetis
 aiguadora
 </td>
 <td style="text-align:left;">
-2000-08-22
+growth
 </td>
 <td style="text-align:left;">
-2010-08-22
+NA
+</td>
+<td style="text-align:left;">
+NA
 </td>
 <td style="text-align:right;">
-0.9424477
+NA
 </td>
 <td style="text-align:right;">
-2.828243
+NA
 </td>
 <td style="text-align:right;">
-2.948424
+NA
 </td>
 <td style="text-align:right;">
-0.1014878
+NA
 </td>
 <td style="text-align:right;">
-1.2576093
+NA
 </td>
 <td style="text-align:right;">
-0.0647127
+NA
 </td>
 <td style="text-align:right;">
-24
+NA
 </td>
 <td style="text-align:right;">
-10
+NA
 </td>
 <td style="text-align:right;">
-3.608671
+NA
 </td>
 </tr>
 <tr>
@@ -258,7 +289,57 @@ aiguadora
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
+</td>
+<td style="text-align:left;">
+tetis
+</td>
+<td style="text-align:left;">
+aiguadora
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+2000-08-22
+</td>
+<td style="text-align:left;">
+2010-08-22
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
 </td>
 <td style="text-align:left;">
 tetis
@@ -267,28 +348,31 @@ tetis
 siurana
 </td>
 <td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
 2000-01-01
 </td>
 <td style="text-align:left;">
 2009-12-31
 </td>
 <td style="text-align:right;">
-0.1938123
+0.5011519
 </td>
 <td style="text-align:right;">
-1.704728
+4.080921
 </td>
 <td style="text-align:right;">
-1.166648
+3.678624
 </td>
 <td style="text-align:right;">
-0.0350404
+0.0480280
 </td>
 <td style="text-align:right;">
-0.4877026
+1.443729
 </td>
 <td style="text-align:right;">
-0.0736420
+0.0709350
 </td>
 <td style="text-align:right;">
 24
@@ -297,7 +381,57 @@ siurana
 10
 </td>
 <td style="text-align:right;">
-3.472153
+1.4499759
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+tetis
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+2000-01-01
+</td>
+<td style="text-align:left;">
+2009-12-31
+</td>
+<td style="text-align:right;">
+0.5641670
+</td>
+<td style="text-align:right;">
+4.838113
+</td>
+<td style="text-align:right;">
+2.429330
+</td>
+<td style="text-align:right;">
+0.0212023
+</td>
+<td style="text-align:right;">
+1.734823
+</td>
+<td style="text-align:right;">
+0.0251805
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0.8616281
 </td>
 </tr>
 </tbody>
@@ -307,7 +441,7 @@ siurana
 <h2 id="evaluation-results">Evaluation results<a class="anchor" aria-label="anchor" href="#evaluation-results"></a>
 </h2>
 <div class="section level3">
-<h3 id="aiguadora-watershed-with-tetis-and-version-3-0-1">AIGUADORA watershed with TETIS and version 3.0.1<a class="anchor" aria-label="anchor" href="#aiguadora-watershed-with-tetis-and-version-3-0-1"></a>
+<h3 id="siurana-watershed-with-tetis-and-version-3-0-1">SIURANA watershed with TETIS and version 3.0.1<a class="anchor" aria-label="anchor" href="#siurana-watershed-with-tetis-and-version-3-0-1"></a>
 </h3>
 <div class="section level4">
 <h4 id="goodness-of-fit">Goodness-of-fit<a class="anchor" aria-label="anchor" href="#goodness-of-fit"></a>
@@ -319,6 +453,9 @@ Scale
 </th>
 <th style="text-align:left;">
 Period
+</th>
+<th style="text-align:left;">
+Local.model
 </th>
 <th style="text-align:right;">
 NSE
@@ -344,20 +481,49 @@ Daily
 <td style="text-align:left;">
 Calibration
 </td>
-<td style="text-align:right;">
-0.574
+<td style="text-align:left;">
+spwb
 </td>
 <td style="text-align:right;">
-0.766
+0.413
 </td>
 <td style="text-align:right;">
-0.727
+0.717
 </td>
 <td style="text-align:right;">
-0.502
+0.694
 </td>
 <td style="text-align:right;">
-0.537
+0.292
+</td>
+<td style="text-align:right;">
+0.429
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Daily
+</td>
+<td style="text-align:left;">
+Calibration
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:right;">
+0.442
+</td>
+<td style="text-align:right;">
+0.723
+</td>
+<td style="text-align:right;">
+0.697
+</td>
+<td style="text-align:right;">
+0.298
+</td>
+<td style="text-align:right;">
+0.418
 </td>
 </tr>
 <tr>
@@ -367,20 +533,49 @@ Daily
 <td style="text-align:left;">
 Evaluation
 </td>
-<td style="text-align:right;">
--0.574
+<td style="text-align:left;">
+spwb
 </td>
 <td style="text-align:right;">
-0.302
+0.533
 </td>
 <td style="text-align:right;">
-0.474
+0.739
 </td>
 <td style="text-align:right;">
-0.123
+0.535
 </td>
 <td style="text-align:right;">
-0.849
+-0.072
+</td>
+<td style="text-align:right;">
+0.678
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Daily
+</td>
+<td style="text-align:left;">
+Evaluation
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:right;">
+0.438
+</td>
+<td style="text-align:right;">
+0.700
+</td>
+<td style="text-align:right;">
+0.525
+</td>
+<td style="text-align:right;">
+-0.097
+</td>
+<td style="text-align:right;">
+0.744
 </td>
 </tr>
 <tr>
@@ -390,20 +585,49 @@ Monthly
 <td style="text-align:left;">
 Calibration
 </td>
-<td style="text-align:right;">
-0.707
+<td style="text-align:left;">
+spwb
 </td>
 <td style="text-align:right;">
-0.749
+0.830
 </td>
 <td style="text-align:right;">
-0.763
+0.856
 </td>
 <td style="text-align:right;">
-0.614
+0.798
 </td>
 <td style="text-align:right;">
-0.287
+0.588
+</td>
+<td style="text-align:right;">
+0.110
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Monthly
+</td>
+<td style="text-align:left;">
+Calibration
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:right;">
+0.797
+</td>
+<td style="text-align:right;">
+0.833
+</td>
+<td style="text-align:right;">
+0.801
+</td>
+<td style="text-align:right;">
+0.595
+</td>
+<td style="text-align:right;">
+0.120
 </td>
 </tr>
 <tr>
@@ -413,20 +637,49 @@ Monthly
 <td style="text-align:left;">
 Evaluation
 </td>
-<td style="text-align:right;">
-0.059
+<td style="text-align:left;">
+spwb
 </td>
 <td style="text-align:right;">
-0.429
+0.232
 </td>
 <td style="text-align:right;">
-0.525
+0.376
 </td>
 <td style="text-align:right;">
-0.323
+0.540
 </td>
 <td style="text-align:right;">
-0.455
+0.112
+</td>
+<td style="text-align:right;">
+0.279
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Monthly
+</td>
+<td style="text-align:left;">
+Evaluation
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:right;">
+0.265
+</td>
+<td style="text-align:right;">
+0.431
+</td>
+<td style="text-align:right;">
+0.524
+</td>
+<td style="text-align:right;">
+0.080
+</td>
+<td style="text-align:right;">
+0.273
 </td>
 </tr>
 </tbody>
@@ -451,16 +704,22 @@ Evaluation
 <th style="text-align:left;">
 </th>
 <th style="text-align:right;">
-Observed.Calibration
+Observed.calibration
 </th>
 <th style="text-align:right;">
-Simulated.Calibration
+spwb.calibration
+</th>
+<th style="text-align:right;">
+growth.calibration
 </th>
 <th style="text-align:right;">
 Observed.Evaluation
 </th>
 <th style="text-align:right;">
-Simulated.Evaluation
+spwb.Evaluation
+</th>
+<th style="text-align:right;">
+growth.Evaluation
 </th>
 </tr></thead>
 <tbody>
@@ -469,16 +728,22 @@ Simulated.Evaluation
 1%
 </td>
 <td style="text-align:right;">
-0.0300
+0.00000
 </td>
 <td style="text-align:right;">
-0.021
+0.00000
 </td>
 <td style="text-align:right;">
-0.0600
+0.00000
 </td>
 <td style="text-align:right;">
-0.056
+0.00000
+</td>
+<td style="text-align:right;">
+0.00000
+</td>
+<td style="text-align:right;">
+0.00461
 </td>
 </tr>
 <tr>
@@ -486,16 +751,22 @@ Simulated.Evaluation
 5%
 </td>
 <td style="text-align:right;">
-0.0500
+0.00000
 </td>
 <td style="text-align:right;">
-0.041
+0.00000
 </td>
 <td style="text-align:right;">
-0.0700
+0.00184
 </td>
 <td style="text-align:right;">
-0.084
+0.00000
+</td>
+<td style="text-align:right;">
+0.00166
+</td>
+<td style="text-align:right;">
+0.02027
 </td>
 </tr>
 <tr>
@@ -503,16 +774,22 @@ Simulated.Evaluation
 10%
 </td>
 <td style="text-align:right;">
-0.0600
+0.00137
 </td>
 <td style="text-align:right;">
-0.063
+0.00000
 </td>
 <td style="text-align:right;">
-0.0900
+0.00708
 </td>
 <td style="text-align:right;">
-0.111
+0.00731
+</td>
+<td style="text-align:right;">
+0.00437
+</td>
+<td style="text-align:right;">
+0.02404
 </td>
 </tr>
 <tr>
@@ -520,16 +797,22 @@ Simulated.Evaluation
 15%
 </td>
 <td style="text-align:right;">
-0.0800
+0.01160
 </td>
 <td style="text-align:right;">
-0.086
+0.00000
 </td>
 <td style="text-align:right;">
-0.1000
+0.01197
 </td>
 <td style="text-align:right;">
-0.137
+0.01500
+</td>
+<td style="text-align:right;">
+0.00643
+</td>
+<td style="text-align:right;">
+0.02708
 </td>
 </tr>
 <tr>
@@ -537,16 +820,22 @@ Simulated.Evaluation
 25%
 </td>
 <td style="text-align:right;">
-0.1000
+0.02310
 </td>
 <td style="text-align:right;">
-0.150
+0.00172
 </td>
 <td style="text-align:right;">
-0.1300
+0.01935
 </td>
 <td style="text-align:right;">
-0.221
+0.02500
+</td>
+<td style="text-align:right;">
+0.01208
+</td>
+<td style="text-align:right;">
+0.03522
 </td>
 </tr>
 <tr>
@@ -554,16 +843,22 @@ Simulated.Evaluation
 50%
 </td>
 <td style="text-align:right;">
-0.2600
+0.05120
 </td>
 <td style="text-align:right;">
-0.297
+0.01286
 </td>
 <td style="text-align:right;">
-0.2700
+0.03991
 </td>
 <td style="text-align:right;">
-0.349
+0.05050
+</td>
+<td style="text-align:right;">
+0.08641
+</td>
+<td style="text-align:right;">
+0.08877
 </td>
 </tr>
 <tr>
@@ -571,16 +866,22 @@ Simulated.Evaluation
 75%
 </td>
 <td style="text-align:right;">
-0.5700
+0.12500
 </td>
 <td style="text-align:right;">
-0.527
+0.11884
 </td>
 <td style="text-align:right;">
-0.5400
+0.12142
 </td>
 <td style="text-align:right;">
-0.618
+0.12000
+</td>
+<td style="text-align:right;">
+0.20379
+</td>
+<td style="text-align:right;">
+0.20415
 </td>
 </tr>
 <tr>
@@ -588,16 +889,22 @@ Simulated.Evaluation
 85%
 </td>
 <td style="text-align:right;">
-0.9300
+0.21990
 </td>
 <td style="text-align:right;">
-0.826
+0.21843
 </td>
 <td style="text-align:right;">
-0.8500
+0.21527
 </td>
 <td style="text-align:right;">
-0.946
+0.19241
+</td>
+<td style="text-align:right;">
+0.35346
+</td>
+<td style="text-align:right;">
+0.36086
 </td>
 </tr>
 <tr>
@@ -605,16 +912,22 @@ Simulated.Evaluation
 90%
 </td>
 <td style="text-align:right;">
-1.2400
+0.32996
 </td>
 <td style="text-align:right;">
-1.123
+0.32890
 </td>
 <td style="text-align:right;">
-1.1700
+0.34216
 </td>
 <td style="text-align:right;">
-1.280
+0.27199
+</td>
+<td style="text-align:right;">
+0.52346
+</td>
+<td style="text-align:right;">
+0.58793
 </td>
 </tr>
 <tr>
@@ -622,16 +935,22 @@ Simulated.Evaluation
 95%
 </td>
 <td style="text-align:right;">
-1.8500
+0.67227
 </td>
 <td style="text-align:right;">
-1.741
+0.59707
 </td>
 <td style="text-align:right;">
-1.7660
+0.71914
 </td>
 <td style="text-align:right;">
-2.010
+0.50707
+</td>
+<td style="text-align:right;">
+1.08479
+</td>
+<td style="text-align:right;">
+1.13670
 </td>
 </tr>
 <tr>
@@ -639,789 +958,22 @@ Simulated.Evaluation
 99%
 </td>
 <td style="text-align:right;">
-3.7998
+2.06434
 </td>
 <td style="text-align:right;">
-3.705
+2.81922
 </td>
 <td style="text-align:right;">
-3.3616
+2.70664
 </td>
 <td style="text-align:right;">
-4.338
+1.94395
 </td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level4">
-<h4 id="computation-times">Computation times<a class="anchor" aria-label="anchor" href="#computation-times"></a>
-</h4>
-<table class="table table" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;">
-medfateland_ver
-</th>
-<th style="text-align:left;">
-medfate_ver
-</th>
-<th style="text-align:left;">
-watershed
-</th>
-<th style="text-align:left;">
-model
-</th>
-<th style="text-align:left;">
-transpirationMode
-</th>
-<th style="text-align:left;">
-soilDomains
-</th>
-<th style="text-align:left;">
-rhizosphereOverlap
-</th>
-<th style="text-align:left;">
-input
-</th>
-<th style="text-align:right;">
-days
-</th>
-<th style="text-align:right;">
-Elapsed_time_sec
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-7.339
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-single
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-7.902
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-dual
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-8.229
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-8.632
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-single
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-9.176
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-dual
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-9.609
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-7.610
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-single
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-9.273
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-dual
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-9.099
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-11.124
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-single
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-12.349
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-aiguadora
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-dual
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-12.561
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section level3">
-<h3 id="siurana-watershed-with-tetis-and-version-3-0-1">SIURANA watershed with TETIS and version 3.0.1<a class="anchor" aria-label="anchor" href="#siurana-watershed-with-tetis-and-version-3-0-1"></a>
-</h3>
-<div class="section level4">
-<h4 id="goodness-of-fit-1">Goodness-of-fit<a class="anchor" aria-label="anchor" href="#goodness-of-fit-1"></a>
-</h4>
-<table class="table table" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;">
-Scale
-</th>
-<th style="text-align:left;">
-Period
-</th>
-<th style="text-align:right;">
-NSE
-</th>
-<th style="text-align:right;">
-KGE
-</th>
-<th style="text-align:right;">
-d
-</th>
-<th style="text-align:right;">
-VE
-</th>
-<th style="text-align:right;">
-RMSE
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Daily
-</td>
-<td style="text-align:left;">
-Calibration
-</td>
-<td style="text-align:right;">
-0.164
-</td>
-<td style="text-align:right;">
-0.612
-</td>
-<td style="text-align:right;">
-0.613
-</td>
-<td style="text-align:right;">
-0.105
-</td>
-<td style="text-align:right;">
-0.511
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Daily
-</td>
-<td style="text-align:left;">
-Evaluation
-</td>
-<td style="text-align:right;">
--0.124
-</td>
-<td style="text-align:right;">
-0.496
-</td>
-<td style="text-align:right;">
-0.475
-</td>
-<td style="text-align:right;">
--0.210
-</td>
-<td style="text-align:right;">
-1.052
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Monthly
-</td>
-<td style="text-align:left;">
-Calibration
-</td>
-<td style="text-align:right;">
-0.792
-</td>
-<td style="text-align:right;">
-0.835
-</td>
-<td style="text-align:right;">
-0.766
-</td>
-<td style="text-align:right;">
-0.524
-</td>
-<td style="text-align:right;">
-0.122
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Monthly
-</td>
-<td style="text-align:left;">
-Evaluation
-</td>
-<td style="text-align:right;">
-0.237
-</td>
-<td style="text-align:right;">
-0.436
-</td>
-<td style="text-align:right;">
-0.565
-</td>
-<td style="text-align:right;">
-0.160
-</td>
-<td style="text-align:right;">
-0.278
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level4">
-<h4 id="time-series-1">Time series<a class="anchor" aria-label="anchor" href="#time-series-1"></a>
-</h4>
-<p><em>Daily</em></p>
-<p><img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-28-1.png" class="r-plt" alt="" width="768"></p>
-<p><em>Monthly</em></p>
-<p><img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-29-1.png" class="r-plt" alt="" width="768"></p>
-</div>
-<div class="section level4">
-<h4 id="hydrological-analysis-daily-scale-1">Hydrological analysis (daily scale)<a class="anchor" aria-label="anchor" href="#hydrological-analysis-daily-scale-1"></a>
-</h4>
-<p><em>Density distribution</em></p>
-<p><img src="WatershedLevelEvaluation_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" alt="" width="768"></p>
-<p><em>Percentiles</em></p>
-<table class="table table" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Observed.Calibration
-</th>
-<th style="text-align:right;">
-Simulated.Calibration
-</th>
-<th style="text-align:right;">
-Observed.Evaluation
-</th>
-<th style="text-align:right;">
-Simulated.Evaluation
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-1%
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-5%
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10%
-</td>
-<td style="text-align:right;">
-0.0013747
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0073056
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-15%
-</td>
-<td style="text-align:right;">
-0.0116000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0150000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-25%
-</td>
-<td style="text-align:right;">
-0.0231000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0250000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-50%
-</td>
-<td style="text-align:right;">
-0.0512000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.0505000
-</td>
-<td style="text-align:right;">
-0.004
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-75%
-</td>
-<td style="text-align:right;">
-0.1249990
-</td>
-<td style="text-align:right;">
-0.024
-</td>
-<td style="text-align:right;">
-0.1200006
-</td>
-<td style="text-align:right;">
-0.074
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-85%
-</td>
-<td style="text-align:right;">
-0.2199000
-</td>
-<td style="text-align:right;">
-0.106
-</td>
-<td style="text-align:right;">
-0.1924064
-</td>
-<td style="text-align:right;">
-0.238
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-90%
-</td>
-<td style="text-align:right;">
-0.3299600
-</td>
-<td style="text-align:right;">
-0.240
-</td>
-<td style="text-align:right;">
-0.2719856
-</td>
-<td style="text-align:right;">
-0.482
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-95%
-</td>
-<td style="text-align:right;">
-0.6722750
-</td>
-<td style="text-align:right;">
-0.703
-</td>
-<td style="text-align:right;">
-0.5070718
-</td>
-<td style="text-align:right;">
-1.167
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-99%
-</td>
-<td style="text-align:right;">
-2.0643371
-</td>
-<td style="text-align:right;">
-2.958
-</td>
 <td style="text-align:right;">
-1.9439456
+4.02188
 </td>
 <td style="text-align:right;">
-4.858
+3.88606
 </td>
 </tr>
 </tbody>
@@ -1469,39 +1021,7 @@ Elapsed_time_sec
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-siurana
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-simplified
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-4.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1519,13 +1039,13 @@ single
 total
 </td>
 <td style="text-align:left;">
-simplified
+dominant species
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.235
+4.127
 </td>
 </tr>
 <tr>
@@ -1533,7 +1053,7 @@ simplified
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1551,13 +1071,13 @@ dual
 total
 </td>
 <td style="text-align:left;">
-simplified
+dominant species
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.298
+3.971
 </td>
 </tr>
 <tr>
@@ -1565,39 +1085,7 @@ simplified
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-siurana
-</td>
-<td style="text-align:left;">
-spwb
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-4.402
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1615,13 +1103,13 @@ single
 total
 </td>
 <td style="text-align:left;">
-detailed
+size classes
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.989
+4.407
 </td>
 </tr>
 <tr>
@@ -1629,7 +1117,7 @@ detailed
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1647,13 +1135,13 @@ dual
 total
 </td>
 <td style="text-align:left;">
-detailed
+size classes
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-5.116
+4.526
 </td>
 </tr>
 <tr>
@@ -1661,31 +1149,31 @@ detailed
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
 </td>
 <td style="text-align:left;">
-growth
+spwb
 </td>
 <td style="text-align:left;">
 Granier
 </td>
 <td style="text-align:left;">
-buckets
+single
 </td>
 <td style="text-align:left;">
 total
 </td>
 <td style="text-align:left;">
-simplified
+original inventory
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.152
+4.718
 </td>
 </tr>
 <tr>
@@ -1693,7 +1181,615 @@ simplified
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.825
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.446
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.675
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+13.869
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+15.710
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+20.953
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+23.457
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+18.773
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+18.985
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+98.253
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+98.448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+152.710
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+152.636
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+19.123
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+19.406
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+156.816
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+159.049
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+305.405
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+310.397
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1711,13 +1807,13 @@ single
 total
 </td>
 <td style="text-align:left;">
-simplified
+dominant species
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.824
+4.575
 </td>
 </tr>
 <tr>
@@ -1725,7 +1821,7 @@ simplified
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1743,13 +1839,13 @@ dual
 total
 </td>
 <td style="text-align:left;">
-simplified
+dominant species
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-4.968
+4.557
 </td>
 </tr>
 <tr>
@@ -1757,39 +1853,7 @@ simplified
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
-</td>
-<td style="text-align:left;">
-siurana
-</td>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
-<td style="text-align:left;">
-buckets
-</td>
-<td style="text-align:left;">
-total
-</td>
-<td style="text-align:left;">
-detailed
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-5.944
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3.0.1
-</td>
-<td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1807,13 +1871,13 @@ single
 total
 </td>
 <td style="text-align:left;">
-detailed
+size classes
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-6.528
+5.753
 </td>
 </tr>
 <tr>
@@ -1821,7 +1885,7 @@ detailed
 3.0.1
 </td>
 <td style="text-align:left;">
-5.2.0
+5.2.1
 </td>
 <td style="text-align:left;">
 siurana
@@ -1839,13 +1903,653 @@ dual
 total
 </td>
 <td style="text-align:left;">
-detailed
+size classes
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-6.615
+5.882
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+6.723
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+6.524
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+5.168
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+5.725
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+15.585
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+17.356
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+23.124
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+25.805
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+54.677
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+54.864
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+421.179
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+422.184
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+657.263
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+657.151
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+55.108
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+55.465
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+479.278
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+480.236
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+824.497
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.0.1
+</td>
+<td style="text-align:left;">
+5.2.1
+</td>
+<td style="text-align:left;">
+siurana
+</td>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+875.495
 </td>
 </tr>
 </tbody>

@@ -129,9 +129,8 @@ data("defaultPrescriptionsBySpecies")
 ```
 
 The columns of this data frame are the same as the parameter names
-required by function
-[`defaultManagementFunction()`](https://emf-creaf.github.io/medfate/reference/defaultManagementFunction.html)
-of package **medfate**:
+required by function `defaultManagementFunction()` of package
+**medfate**:
 
 ``` r
 
@@ -340,7 +339,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [5ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
@@ -392,7 +391,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
@@ -402,21 +401,27 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## 
 
+    ## ℹ Creating 10 input objects for model 'fordyn'
+
+    ## ✔ Creating 10 input objects for model 'fordyn' [426ms]
+
+    ## 
+
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [16ms]
+    ## ✔ Preparing data for parallelization [14ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [5s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [5.8s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [19ms]
+    ## ✔ Retrieval of results [10ms]
 
     ## 
 
@@ -442,46 +447,31 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [9ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [14ms]
+    ## ℹ All input objects are already available for 'fordyn'
 
+    ## ℹ Checking meteo object input✔ Checking meteo object input [11ms]
     ## 
-
     ## ℹ Preparing data for parallelization
-
-    ## ✔ Preparing data for parallelization [16ms]
-
+    ## ✔ Preparing data for parallelization [10ms]
     ## 
-
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
-
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [18.7s]
-
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.8s]
     ## 
-
     ## ℹ Retrieval of results
-
-    ## ✔ Retrieval of results [18ms]
-
+    ## ✔ Retrieval of results [15ms]
     ## 
-
     ## ✔ No simulation errors detected
-
     ## • Final volume: 61583 m3
-
     ## 
-
     ## ── Arranging output ──
-
     ## 
-
     ## • Tree/shrub tables
-
     ## • Wood volume table
 
 Given that it is a long process, the function produces a lot of output
@@ -510,9 +500,7 @@ subsequent simulations (see next section).
 
 Stand-level results are available in element `result_sf`. The column
 names of this `sf` object should be easy to interpret if you have
-experience with functions
-[`fordyn()`](https://emf-creaf.github.io/medfate/reference/fordyn.html)
-or
+experience with functions `fordyn()` or
 [`fordyn_spatial()`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md):
 
 ``` r
@@ -723,46 +711,31 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [9ms]
+    ## ℹ All input objects are already available for 'fordyn'
 
+    ## ℹ Checking meteo object input✔ Checking meteo object input [13ms]
     ## 
-
     ## ℹ Preparing data for parallelization
-
     ## ✔ Preparing data for parallelization [16ms]
-
     ## 
-
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
-
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [18.1s]
-
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.7s]
     ## 
-
     ## ℹ Retrieval of results
-
-    ## ✔ Retrieval of results [18ms]
-
+    ## ✔ Retrieval of results [12ms]
     ## 
-
     ## ✔ No simulation errors detected
-
     ## • Final volume: 61962 m3
-
     ## 
-
     ## ── Arranging output ──
-
     ## 
-
     ## • Tree/shrub tables
-
     ## • Wood volume table
 
 Note that in this case, the initial output makes explicit that a

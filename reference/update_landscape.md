@@ -6,7 +6,12 @@ in simulation outcome 'y'
 ## Usage
 
 ``` r
-update_landscape(x, y)
+update_landscape(
+  x,
+  y,
+  columns = c("state", "soil", "forest", "management_arguments", "aquifer", "snowpack",
+    "outlet_backlog")
+)
 ```
 
 ## Arguments
@@ -24,6 +29,10 @@ update_landscape(x, y)
   [`growth_spatial`](https://emf-creaf.github.io/medfateland/reference/spwb_spatial.md),
   [`spwb_land`](https://emf-creaf.github.io/medfateland/reference/spwb_land.md),
   etc.
+
+- columns:
+
+  String vector with the names of columns to be modified
 
 ## Value
 

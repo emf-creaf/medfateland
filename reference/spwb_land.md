@@ -505,13 +505,13 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INPUT CHECKING ──
 #> 
 #> ℹ Checking raster topology
-#> ✔ Checking raster topology [13ms]
+#> ✔ Checking raster topology [11ms]
 #> 
 #> ℹ Checking 'sf' data columns
-#> ✔ Checking 'sf' data columns [48ms]
+#> ✔ Checking 'sf' data columns [35ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [25ms]
+#> ✔ Determining neighbors and overland routing for TETIS [19ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -527,7 +527,7 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> ── INITIALISATION ──
 #> 
 #> ℹ Creating 66 state objects for model 'spwb'.
-#> ✔ Creating 66 state objects for model 'spwb'. [7ms]
+#> ✔ Creating 66 state objects for model 'spwb'. [5ms]
 #> 
 #> • Transpiration mode [Granier: 65, Sperry: 0, Sureau: 0]
 #> • Soil domains [buckets: 0, single: 65, dual: 0]
@@ -535,41 +535,43 @@ res <- spwb_land(r, example_watershed, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
+#> Daily simulations ■■■■■■■■■■■■■■■■                  49% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -14.51 fluxes (mm): -14.51
-#> • Aquifer balance content (mm): 6.31 fluxes (mm): 6.31
-#> • Aquifer fluxes (mm) Drainage input: 6.31 Exfiltration: 0 Capillary rise: 0
+#> • Soil balance content (mm): -0.89 fluxes (mm): -0.89
+#> • Aquifer balance content (mm): 5.85 fluxes (mm): 5.85
+#> • Aquifer fluxes (mm) Drainage input: 5.85 Exfiltration: 0 Capillary rise: 0
 #> Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): -7.98 fluxes (mm): -7.98
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 86.57
-#> Evapotransp.: 76.16 Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): 4.98 fluxes (mm): 4.98
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 66.26
+#> Evapotransp.: 83.5 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 57166
-#> • Final watershed export sum (m3): 57166
+#> • Final outlet sum (m3): 43759
+#> • Final watershed export sum (m3): 43759
                  
 # Print a summary of water balance components
 summary(res)
 #>   Snowpack water balance components:
 #>     Snow fall (mm) 19.19  Snow melt (mm) 19.19
 #>   Soil water balance components:
-#>     Infiltration (mm) 152.07  Saturation excess (mm) 105.33
-#>     Deep drainage (mm) 4.54  Capillarity rise (mm) 0
-#>     Soil evaporation (mm) 4.78  Plant transpiration (mm) 51.94
+#>     Infiltration (mm) 134.64  Saturation excess (mm) 67.28
+#>     Deep drainage (mm) 4.07  Capillarity rise (mm) 0
+#>     Soil evaporation (mm) 4.83  Plant transpiration (mm) 59.34
 #>     Interflow balance (mm) 0
 #>   Aquifer water balance components:
-#>     Deep drainage (mm) 6.31  Capillarity rise (mm) 0
+#>     Deep drainage (mm) 5.85  Capillarity rise (mm) 0
 #>     Exfiltration (mm) 0  Deep aquifer loss (mm) 0
 #>     Negative aquifer correction (mm) 0
 #>   Watershed water balance components:
 #>     Precipitation (mm) 154.74
-#>     Interception (mm) 20.3  Soil evaporation (mm) 4.71
-#>     Plant transpiration (mm) 51.15
+#>     Interception (mm) 20.3  Soil evaporation (mm) 4.76
+#>     Plant transpiration (mm) 58.44
 #>     Subsurface flow balance (mm) 0
 #>     Groundwater flow balance (mm) 0
-#>     Export runoff (mm) 86.57
+#>     Export runoff (mm) 66.26
 
 # Option 'reduce_to_dominant = TRUE' in initialization, may be useful to speed up calculations
 example_simplified <- initialize_landscape(example_watershed, SpParams = SpParamsMED,
@@ -598,7 +600,7 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> ✔ Checking 'sf' data columns [24ms]
 #> 
 #> ℹ Determining neighbors and overland routing for TETIS
-#> ✔ Determining neighbors and overland routing for TETIS [15ms]
+#> ✔ Determining neighbors and overland routing for TETIS [12ms]
 #> 
 #> • Hydrological model: TETIS
 #> • Number of grid cells: 120 Number of target cells: 66
@@ -620,19 +622,23 @@ res_simplified <- spwb_land(r, example_simplified, SpParamsMED, examplemeteo,
 #> 
 #> ── WHOLE-WATERSHED SIMULATION ──
 #> 
+#> Daily simulations ■■■■■■■■■■■■■■■                   47% | ETA:  1s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% | ETA:  0s
+#> Daily simulations ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> • Snowpack balance content (mm): 0 fluxes (mm): 0
-#> • Soil balance content (mm): -1.59 fluxes (mm): -1.59
-#> • Aquifer balance content (mm): 5.95 fluxes (mm): 5.95
-#> • Aquifer fluxes (mm) Drainage input: 5.95 Exfiltration: 0 Capillary rise: 0
+#> • Soil balance content (mm): -0.26 fluxes (mm): -0.26
+#> • Aquifer balance content (mm): 5.86 fluxes (mm): 5.86
+#> • Aquifer fluxes (mm) Drainage input: 5.86 Exfiltration: 0 Capillary rise: 0
 #> Negative aquifer correction: 0 Deep loss: 0
-#> • Watershed balance content (mm): 4.39 fluxes (mm): 4.39
-#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 79.22
-#> Evapotransp.: 71.14 Negative aquifer correction: 0 Deep loss: 0
+#> • Watershed balance content (mm): 5.6 fluxes (mm): 5.6
+#> • Watershed fluxes (mm) Precipitation: 154.74 Surface export: 68.16
+#> Evapotransp.: 80.99 Negative aquifer correction: 0 Deep loss: 0
 #> 
 #> ── FINAL BALANCE CHECK ──
 #> 
 #> • Final channel sum (m3): 0
-#> • Final outlet sum (m3): 52313
-#> • Final watershed export sum (m3): 52313
+#> • Final outlet sum (m3): 45011
+#> • Final watershed export sum (m3): 45011
 # }
 ```

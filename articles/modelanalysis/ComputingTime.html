@@ -79,7 +79,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres (EMF-CREAF)</h4>
             
-            <h4 data-toc-skip class="date">2026-11-08</h4>
+            <h4 data-toc-skip class="date">2026-11-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/medfateland/blob/HEAD/vignettes/modelanalysis/ComputingTime.Rmd" class="external-link"><code>vignettes/modelanalysis/ComputingTime.Rmd</code></a></small>
       <div class="d-none name"><code>ComputingTime.Rmd</code></div>
@@ -93,14 +93,19 @@ Cáceres (EMF-CREAF)</h4>
 <p>The aim of this vignette is to provide users with a rough estimation
 of computing times for simulation models included in package
 <strong>medfateland</strong>.</p>
-<p>The results presented here were obtained using <strong>1 year of
+<p>The results presented here were obtained using <strong>30 days of
 simulation</strong> with the <strong>example watershed</strong> (66 grid
 cells) on a laptop (32 GiB memory and Intel® Core™ Ultra 9 185H × 22)
 with Ubuntu Linux OS 26.04.1 LTS.</p>
-<p>Several submodel choices are tested for the bulk soil water movement
-(<code>buckets</code>, <code>single</code> or <code>dual</code>),
-whereas transpiration model is kept to <code>Granier</code> and
-rhizosphereOverlap is set to <code>total</code>.</p>
+<p>Both <code>spwb()</code> and <code>growth()</code> simulation
+functions are tested. Combinations of submodel choices are tested for
+the bulk soil water movement (<code>single</code> or <code>dual</code>),
+the transpiration model (<code>Granier</code> or <code>Sureau</code>)
+and rhizosphereOverlap (<code>total</code> or <code>partial</code>).
+Different inputs are tested, depending on forest complexity: original
+forest inventory (most detailed); trees and shrubs aggregated to size
+classes; or simplifying the tree and shrub layers to their dominant
+species.</p>
 </div>
 <div class="section level2">
 <h2 id="table-of-computational-times">Table of computational times<a class="anchor" aria-label="anchor" href="#table-of-computational-times"></a>
@@ -117,16 +122,19 @@ function
 transpirationMode
 </th>
 <th style="text-align:left;">
+soilDomains
+</th>
+<th style="text-align:left;">
 rhizosphereOverlap
 </th>
 <th style="text-align:left;">
-soilDomains
+nput
 </th>
 <th style="text-align:right;">
-5.2.0
+days
 </th>
 <th style="text-align:right;">
-5.2.1
+X5.2.1
 </th>
 </tr></thead>
 <tbody>
@@ -138,16 +146,19 @@ spwb
 Granier
 </td>
 <td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
 total
 </td>
 <td style="text-align:left;">
-buckets
+dominant species
 </td>
 <td style="text-align:right;">
-7.981
+30
 </td>
 <td style="text-align:right;">
-3.998
+0.395
 </td>
 </tr>
 <tr>
@@ -158,16 +169,19 @@ spwb
 Granier
 </td>
 <td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
 total
 </td>
 <td style="text-align:left;">
-single
+dominant species
 </td>
 <td style="text-align:right;">
-18.584
+30
 </td>
 <td style="text-align:right;">
-5.609
+0.446
 </td>
 </tr>
 <tr>
@@ -178,56 +192,502 @@ spwb
 Granier
 </td>
 <td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
 total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.460
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
 </td>
 <td style="text-align:left;">
 dual
 </td>
-<td style="text-align:right;">
-87.985
-</td>
-<td style="text-align:right;">
-6.036
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-growth
-</td>
-<td style="text-align:left;">
-Granier
-</td>
 <td style="text-align:left;">
 total
 </td>
 <td style="text-align:left;">
-buckets
+size classes
 </td>
 <td style="text-align:right;">
-15.938
+30
 </td>
 <td style="text-align:right;">
-7.108
+0.520
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-growth
+spwb
 </td>
 <td style="text-align:left;">
 Granier
-</td>
-<td style="text-align:left;">
-total
 </td>
 <td style="text-align:left;">
 single
 </td>
-<td style="text-align:right;">
-29.837
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
 </td>
 <td style="text-align:right;">
-8.433
+30
+</td>
+<td style="text-align:right;">
+0.556
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.522
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.495
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.574
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+2.940
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.699
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.105
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.886
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1.769
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1.822
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+13.942
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+13.932
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+13.982
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+13.934
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1.865
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1.959
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+25.191
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+26.110
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+25.285
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spwb
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+26.133
 </td>
 </tr>
 <tr>
@@ -238,16 +698,548 @@ growth
 Granier
 </td>
 <td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
 total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.485
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
 </td>
 <td style="text-align:left;">
 dual
 </td>
-<td style="text-align:right;">
-106.864
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
 </td>
 <td style="text-align:right;">
-9.493
+30
+</td>
+<td style="text-align:right;">
+0.551
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.631
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.779
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.717
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.760
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.611
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0.666
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.421
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.370
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.654
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Granier
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.236
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.903
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.946
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+48.862
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+49.353
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+49.595
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+52.648
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+5.537
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+dominant species
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+5.175
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+56.697
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+size classes
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+56.765
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+54.613
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+growth
+</td>
+<td style="text-align:left;">
+Sureau
+</td>
+<td style="text-align:left;">
+dual
+</td>
+<td style="text-align:left;">
+partial
+</td>
+<td style="text-align:left;">
+original inventory
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+58.200
 </td>
 </tr>
 </tbody>

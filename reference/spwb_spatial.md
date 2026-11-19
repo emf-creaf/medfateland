@@ -312,10 +312,10 @@ res <- spwb_spatial(example_subset, SpParamsMED, examplemeteo, dates = dates)
 #> ✔ Checking sf input [9ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [15ms]
+#> ✔ Checking meteo object input [14ms]
 #> 
 #> ℹ Creating 2 input objects for model 'spwb'
-#> ✔ Creating 2 input objects for model 'spwb' [71ms]
+#> ✔ Creating 2 input objects for model 'spwb' [68ms]
 #> 
 #> ℹ Performing 'spwb' simulations on 2 locations
 #> ✔ Performing 'spwb' simulations on 2 locations [6ms]
@@ -327,13 +327,16 @@ res_noman <- fordyn_spatial(example_subset, SpParamsMED, examplemeteo)
 #> 
 #> ── Simulation of model 'fordyn' ────────────────────────────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [9ms]
+#> ✔ Checking sf input [6ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [14ms]
+#> ✔ Checking meteo object input [9ms]
+#> 
+#> ℹ Creating 2 input objects for model 'fordyn'
+#> ✔ Creating 2 input objects for model 'fordyn' [104ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 2 locations
-#> ✔ Performing 'fordyn' simulations on 2 locations [13ms]
+#> ✔ Performing 'fordyn' simulations on 2 locations [7ms]
 #> 
 #> ✔ No simulation errors detected
 

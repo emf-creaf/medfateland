@@ -247,7 +247,7 @@ example_simplified <- initialize_landscape(example_watershed, SpParams = SpParam
 
     ## ℹ Creating 66 state objects for model 'spwb'.
 
-    ## ✔ Creating 66 state objects for model 'spwb'. [5ms]
+    ## ✔ Creating 66 state objects for model 'spwb'. [4ms]
 
     ## 
 
@@ -342,16 +342,16 @@ res_ws1$sf
     ## # A tibble: 66 × 11
     ##            geometry state            aquifer snowpack summary  result outlet
     ##  *      <POINT [m]> <list>             <dbl>    <dbl> <list>   <list> <lgl> 
-    ##  1 (402630 4672570) <spwbInpt [20]>   3.56          0 <dbl[…]> <NULL> FALSE 
-    ##  2 (402330 4672470) <aspwbInp [4]>    0.0227        0 <dbl[…]> <NULL> FALSE 
-    ##  3 (402430 4672470) <spwbInpt [20]>   0.144         0 <dbl[…]> <NULL> FALSE 
-    ##  4 (402530 4672470) <spwbInpt [20]>   0.742         0 <dbl[…]> <NULL> FALSE 
-    ##  5 (402630 4672470) <spwbInpt [20]>   9.45          0 <dbl[…]> <NULL> FALSE 
-    ##  6 (402730 4672470) <aspwbInp [4]>  333.            0 <dbl[…]> <NULL> TRUE  
-    ##  7 (402830 4672470) <aspwbInp [4]>    5.99          0 <dbl[…]> <NULL> FALSE 
-    ##  8 (402230 4672370) <spwbInpt [20]>   0.0134        0 <dbl[…]> <NULL> FALSE 
-    ##  9 (402330 4672370) <spwbInpt [20]>   0.0691        0 <dbl[…]> <NULL> FALSE 
-    ## 10 (402430 4672370) <aspwbInp [4]>    0.432         0 <dbl[…]> <NULL> FALSE 
+    ##  1 (402630 4672570) <spwbInpt [20]>   1.70          0 <dbl[…]> <NULL> FALSE 
+    ##  2 (402330 4672470) <aspwbInp [4]>    0.0259        0 <dbl[…]> <NULL> FALSE 
+    ##  3 (402430 4672470) <spwbInpt [20]>   0.123         0 <dbl[…]> <NULL> FALSE 
+    ##  4 (402530 4672470) <spwbInpt [20]>   0.406         0 <dbl[…]> <NULL> FALSE 
+    ##  5 (402630 4672470) <spwbInpt [20]>   3.79          0 <dbl[…]> <NULL> FALSE 
+    ##  6 (402730 4672470) <aspwbInp [4]>  321.            0 <dbl[…]> <NULL> TRUE  
+    ##  7 (402830 4672470) <aspwbInp [4]>    5.02          0 <dbl[…]> <NULL> FALSE 
+    ##  8 (402230 4672370) <spwbInpt [20]>   0.0180        0 <dbl[…]> <NULL> FALSE 
+    ##  9 (402330 4672370) <spwbInpt [20]>   0.0771        0 <dbl[…]> <NULL> FALSE 
+    ## 10 (402430 4672370) <aspwbInp [4]>    0.323         0 <dbl[…]> <NULL> FALSE 
     ## # ℹ 56 more rows
     ## # ℹ 4 more variables: channel <lgl>, target_outlet <int>, outlet_backlog <dbl>,
     ## #   subwatershed <int>
@@ -386,19 +386,19 @@ head(res_ws1$watershed_balance)
     ## 5  1.279810     1.279810         0.00000000                0 0.00000000
     ## 6 12.306888    12.306888         0.05090607                0 0.05090607
     ##   CellRunoff DeepDrainage CapillarityRise DeepAquiferLoss SoilEvaporation
-    ## 1 0.00000000  0.077321209               0               0       0.3716236
-    ## 2 0.00000000  0.041409515               0               0       0.1661156
-    ## 3 0.00000000  0.003607416               0               0       0.1492879
-    ## 4 0.00000000  0.091649030               0               0       0.1291173
-    ## 5 0.00000000  0.032875445               0               0       0.1094957
-    ## 6 0.05090607  0.156502450               0               0       0.1312182
+    ## 1 0.00000000  0.077321208               0               0       0.3716236
+    ## 2 0.00000000  0.041376550               0               0       0.1661269
+    ## 3 0.00000000  0.003516837               0               0       0.1683365
+    ## 4 0.00000000  0.091534281               0               0       0.1377314
+    ## 5 0.00000000  0.032695039               0               0       0.1065384
+    ## 6 0.05090607  0.156011586               0               0       0.1543575
     ##   Transpiration HerbTranspiration InterflowBalance BaseflowBalance
-    ## 1     0.2981167                 0     0.000000e+00   -5.044826e-18
-    ## 2     0.5306169                 0    -1.345725e-17   -5.269880e-18
-    ## 3     0.4460396                 0    -4.163336e-17   -3.068621e-18
-    ## 4     0.2019315                 0    -6.308085e-17    4.543793e-18
-    ## 5     0.5447727                 0     4.373606e-17    3.515443e-18
-    ## 6     0.4006930                 0    -1.227448e-16   -8.864174e-18
+    ## 1     0.2983141                 0     0.000000e+00   -5.041540e-18
+    ## 2     0.5309631                 0     6.055762e-17    2.799213e-18
+    ## 3     0.4463376                 0     8.410780e-18   -6.472358e-19
+    ## 4     0.2020651                 0    -1.009294e-17    5.444009e-18
+    ## 5     0.5451579                 0    -8.747212e-17    1.101287e-17
+    ## 6     0.4009720                 0     3.868959e-17    5.913830e-19
     ##   AquiferExfiltration ChannelExport WatershedExport NegativeAquiferCorrection
     ## 1                   0             0               0                         0
     ## 2                   0             0               0                         0
@@ -443,21 +443,21 @@ summary(res_ws1)
     ##   Snowpack water balance components:
     ##     Snow fall (mm) 19.19  Snow melt (mm) 19.19
     ##   Soil water balance components:
-    ##     Infiltration (mm) 151.37  Saturation excess (mm) 112.8
-    ##     Deep drainage (mm) 4.82  Capillarity rise (mm) 0
-    ##     Soil evaporation (mm) 5.03  Plant transpiration (mm) 56.99
+    ##     Infiltration (mm) 134.91  Saturation excess (mm) 69.11
+    ##     Deep drainage (mm) 4.08  Capillarity rise (mm) 0
+    ##     Soil evaporation (mm) 4.93  Plant transpiration (mm) 57.07
     ##     Interflow balance (mm) 0
     ##   Aquifer water balance components:
-    ##     Deep drainage (mm) 6.59  Capillarity rise (mm) 0
+    ##     Deep drainage (mm) 5.86  Capillarity rise (mm) 0
     ##     Exfiltration (mm) 0  Deep aquifer loss (mm) 0
     ##     Negative aquifer correction (mm) 0
     ##   Watershed water balance components:
     ##     Precipitation (mm) 154.74
-    ##     Interception (mm) 20.04  Soil evaporation (mm) 4.95
-    ##     Plant transpiration (mm) 56.12
+    ##     Interception (mm) 20.04  Soil evaporation (mm) 4.85
+    ##     Plant transpiration (mm) 56.21
     ##     Subsurface flow balance (mm) 0
     ##     Groundwater flow balance (mm) 0
-    ##     Export runoff (mm) 94.87
+    ##     Export runoff (mm) 68.06
 
 Analogously to plots available with package **medfate**, one can display
 time series of watershed-level water balance components using function
@@ -500,9 +500,9 @@ res_ws1$sf$summary[[1]]
     ## 2001-02-01     -3.0044133       4.505250 64.62632  2.457859  2.541571
     ## 2001-03-01      0.5604289       7.930072 74.76898 74.994378  0.000000
     ##                   SWE      RWC  SoilVol      WTD      DTA
-    ## 2001-01-01 1.69715898 106.2467 571.7729 3456.120 15.48952
-    ## 2001-02-01 0.29002670  99.7188 536.6429       NA 15.48232
-    ## 2001-03-01 0.01762496 106.8202 574.8593 3210.373 15.47625
+    ## 2001-01-01 1.69715898 106.0293 570.6031 3511.727 15.48965
+    ## 2001-02-01 0.29002670 100.4056 540.3390       NA 15.48221
+    ## 2001-03-01 0.01762496 103.7372 558.2683 3532.462 15.48184
 
 Additional variables (water balance components, carbon balance
 components, etc.) can be added to summaries via parameter
@@ -677,97 +677,97 @@ data.frame("before" = res_ws1$watershed_balance$WatershedExport,
            "after" = res_ws3$watershed_balance$WatershedExport)
 ```
 
-    ##         before      after
-    ## 1  0.000000000 0.06200554
-    ## 2  0.000000000 0.06181254
-    ## 3  0.000000000 0.06162154
-    ## 4  0.000000000 0.06143405
-    ## 5  0.000000000 0.06125360
-    ## 6  0.000000000 0.06108055
-    ## 7  0.000000000 0.26825666
-    ## 8  0.686182429 0.45395387
-    ## 9  1.116570463 0.42126732
-    ## 10 1.372897716 0.55464808
-    ## 11 1.638870486 0.87695571
-    ## 12 1.638856950 0.86408835
-    ## 13 2.043882725 0.88324499
-    ## 14 2.386217032 0.96455993
-    ## 15 2.081942293 1.21982353
-    ## 16 2.423904868 1.18614462
-    ## 17 2.018558414 1.11939806
-    ## 18 1.575918396 0.97400268
-    ## 19 2.824374860 0.87508257
-    ## 20 1.625284283 0.92652181
-    ## 21 1.896032547 0.82006305
-    ## 22 1.117053322 0.79644975
-    ## 23 1.500744417 0.88301085
-    ## 24 1.272310511 1.00751120
-    ## 25 1.372066776 1.00710011
-    ## 26 1.341221727 1.02335820
-    ## 27 1.340907479 1.07146882
-    ## 28 1.244410691 0.95214300
-    ## 29 1.110059149 0.79365012
-    ## 30 1.055988051 0.79865332
-    ## 31 0.899671982 0.60301505
-    ## 32 0.815310999 0.43450096
-    ## 33 1.044223642 0.50194762
-    ## 34 0.795492084 0.68494227
-    ## 35 0.872004092 0.59454995
-    ## 36 0.461620800 0.44639014
-    ## 37 0.555658433 0.33964055
-    ## 38 0.368890806 0.36396353
-    ## 39 0.484434665 0.24154144
-    ## 40 0.213659457 0.29878807
-    ## 41 0.296902225 0.13938872
-    ## 42 0.105890816 0.21908215
-    ## 43 0.124781454 0.08904495
-    ## 44 0.157492975 0.10137043
-    ## 45 0.075074628 0.21068185
-    ## 46 0.193671219 0.15375488
-    ## 47 0.068647908 0.10315036
-    ## 48 0.061037528 0.18205415
-    ## 49 0.129094084 0.11295503
-    ## 50 0.017152227 0.08822134
-    ## 51 0.003310283 0.11075515
-    ## 52 0.052977505 0.06490688
-    ## 53 0.000000000 0.06472250
-    ## 54 0.000000000 0.06454627
-    ## 55 0.000000000 0.06438537
-    ## 56 0.000000000 0.06422679
-    ## 57 0.000000000 0.06408348
-    ## 58 0.000000000 0.06395142
-    ## 59 0.000000000 0.06382296
-    ## 60 0.000000000 0.06369096
-    ## 61 0.030343484 0.09598715
-    ## 62 0.407401314 0.44912966
-    ## 63 0.595955452 0.67691125
-    ## 64 0.591471358 0.71636515
-    ## 65 0.633334273 0.73565424
-    ## 66 0.884878995 0.99568999
-    ## 67 1.025705825 1.16347377
-    ## 68 0.820777017 0.87479223
-    ## 69 0.776415408 0.91349330
-    ## 70 0.542533974 0.64234416
-    ## 71 0.513337655 0.61490416
-    ## 72 0.804381014 0.96142865
-    ## 73 1.173779697 1.19528703
-    ## 74 1.987069985 1.39253928
-    ## 75 1.711975333 1.31260362
-    ## 76 1.550131553 1.53697267
-    ## 77 1.731020848 2.05898738
-    ## 78 1.459303199 1.61661914
-    ## 79 1.496307332 1.61882945
-    ## 80 0.954731912 1.30516136
-    ## 81 1.449038183 1.11421266
-    ## 82 0.854376213 1.17567305
-    ## 83 1.488564362 1.04061117
-    ## 84 6.174090368 1.32737874
-    ## 85 7.645622991 1.46751047
-    ## 86 5.121949314 0.82492222
-    ## 87 2.637126046 0.44956332
-    ## 88 2.990965417 0.79316912
-    ## 89 1.247613426 0.36746542
-    ## 90 1.091895871 0.47936962
+    ##        before      after
+    ## 1  0.00000000 0.06217907
+    ## 2  0.00000000 0.06198256
+    ## 3  0.00000000 0.06178942
+    ## 4  0.00000000 0.06160067
+    ## 5  0.00000000 0.06141913
+    ## 6  0.00000000 0.11355150
+    ## 7  0.00000000 0.38237380
+    ## 8  0.00000000 0.41569032
+    ## 9  0.71191553 0.40975336
+    ## 10 1.02954907 0.61061372
+    ## 11 1.17613356 0.78408931
+    ## 12 1.33252426 0.96033799
+    ## 13 1.41308349 0.99937600
+    ## 14 1.50755986 1.02831092
+    ## 15 1.55701314 1.04422327
+    ## 16 1.54808788 1.02852200
+    ## 17 1.50768259 0.98841413
+    ## 18 1.44956669 0.92564885
+    ## 19 1.37928866 0.85292145
+    ## 20 1.30116821 0.77392123
+    ## 21 1.37654204 0.85576097
+    ## 22 1.43820370 0.91851263
+    ## 23 1.45938936 0.93389454
+    ## 24 1.52632952 0.97174048
+    ## 25 1.57241435 0.99670117
+    ## 26 1.56256972 1.00277709
+    ## 27 1.51947003 0.99437526
+    ## 28 1.48736441 0.97476030
+    ## 29 1.39695877 0.91150345
+    ## 30 1.29043696 0.82413423
+    ## 31 1.20522463 0.75161493
+    ## 32 1.10641198 0.70283557
+    ## 33 1.03396007 0.60591380
+    ## 34 1.03310022 0.63060244
+    ## 35 0.95135271 0.58646299
+    ## 36 0.88817429 0.56440809
+    ## 37 0.83251037 0.51245407
+    ## 38 0.78805441 0.50741717
+    ## 39 0.71975213 0.51525987
+    ## 40 0.64887117 0.43068106
+    ## 41 0.47991429 0.37643142
+    ## 42 0.43177292 0.30847114
+    ## 43 0.36682532 0.27709233
+    ## 44 0.32247518 0.28169063
+    ## 45 0.28095717 0.23072133
+    ## 46 0.28124985 0.27176025
+    ## 47 0.24695918 0.23042353
+    ## 48 0.21762553 0.21397251
+    ## 49 0.17545936 0.19068210
+    ## 50 0.12491774 0.16422852
+    ## 51 0.10017756 0.14668979
+    ## 52 0.08703592 0.15139595
+    ## 53 0.06907473 0.11883550
+    ## 54 0.03893393 0.09104610
+    ## 55 0.03340831 0.08208977
+    ## 56 0.02510192 0.09446239
+    ## 57 0.00000000 0.06432624
+    ## 58 0.00000000 0.06418780
+    ## 59 0.00000000 0.06405275
+    ## 60 0.00000000 0.06391436
+    ## 61 0.18156244 0.25828434
+    ## 62 0.36771145 0.41400111
+    ## 63 0.51052417 0.57062757
+    ## 64 0.53080766 0.62036808
+    ## 65 0.53734641 0.65586121
+    ## 66 0.60927992 0.75233643
+    ## 67 0.72640108 0.86740285
+    ## 68 0.78699311 0.91539342
+    ## 69 0.78896224 0.92193478
+    ## 70 0.73910219 0.87568428
+    ## 71 0.68106667 0.82201901
+    ## 72 1.03122708 1.16307168
+    ## 73 1.07824190 1.21073444
+    ## 74 1.16351160 1.30310438
+    ## 75 1.23219497 1.32247759
+    ## 76 1.25049529 1.35090755
+    ## 77 1.31415415 1.40232099
+    ## 78 1.31503084 1.40207415
+    ## 79 1.26685221 1.35066949
+    ## 80 1.19708872 1.27774948
+    ## 81 1.09943443 1.17870183
+    ## 82 1.01492262 1.08583211
+    ## 83 0.94356875 1.00749824
+    ## 84 0.89026120 0.93504356
+    ## 85 0.81432213 0.87354330
+    ## 86 0.77174399 0.77883406
+    ## 87 0.66786301 0.72962373
+    ## 88 0.54609519 0.54849439
+    ## 89 0.55891959 0.55593545
+    ## 90 0.41401492 0.46121162
 
 ### Simulations of watershed forest dynamics
 
@@ -945,14 +945,12 @@ plot(or[, "subwatershed"])
 ![](WatershedSimulations_files/figure-html/unnamed-chunk-39-1.png)
 
 Let’s now illustrate how to perform watershed simulations with
-parallelization and subwatersheds. We begin by initializing the input
-(here we used a `"buckets"` soil hydrology to speed up calculations, but
-`"single"` would be more appropriate).
+parallelization and subwatersheds. We begin by initializing the input:
 
 ``` r
 
-sf_init <- initialize_landscape(sf, SpParams = traits4models::SpParamsES,
-                                local_control = defaultControl(soilDomains = "buckets"),
+sf_init <- initialize_landscape(sf, SpParams = traits4models::SpParamsES, model = "spwb",
+                                local_control = defaultControl(soilDomains = "single", rhizosphereOverlap = "total"),
                                 progress = FALSE)
 ```
 
@@ -997,7 +995,7 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking raster topology
 
-    ## ✔ Checking raster topology [16ms]
+    ## ✔ Checking raster topology [19ms]
 
     ## 
 
@@ -1007,10 +1005,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [4s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.1s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [2s]
+    ## ✔ Determining neighbors and overland routing for TETIS [1.6s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573
@@ -1030,8 +1028,8 @@ res_ws7 <- spwb_land(r, sf_init,
     ## 
     ## ℹ All state objects are already available for 'spwb'.
     ## • Transpiration mode [Granier: 2492, Sperry: 0, Sureau: 0]
-    ## • Soil domains [buckets: 2492, single: 0, dual: 0]
-    ## • Rhizosphere overlap [total: 0, partial: 2492, none: 0]
+    ## • Soil domains [buckets: 0, single: 2492, dual: 0]
+    ## • Rhizosphere overlap [total: 2492, partial: 0, none: 0]
     ## 
     ## ── PARALLEL SIMULATION of 3 SUB-WATERSHEDS in 3 NODES ──
     ## 
@@ -1049,13 +1047,15 @@ res_ws7 <- spwb_land(r, sf_init,
     ## • Final outlet sum (m3): 0
     ## • Final watershed export sum (m3): 0
 
-As an example of the output, we show a map of woody plant transpiration
-(note that we asked for water balance components using
-`summary_blocks = "WaterBalance"`:
+As an example of the output, we show maps of potential
+evapotranspiration and woody plant transpiration (note that we asked for
+water balance components using `summary_blocks = "WaterBalance"`):
 
 ``` r
 
-plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
+g1<-plot_summary(res_ws7, variable = "PET", date = "2022-04-01", r = r)
+g2<-plot_summary(res_ws7, variable = "Transpiration", date = "2022-04-01", r = r)
+cowplot::plot_grid(g1, g2, nrow = 2)
 ```
 
 ![](WatershedSimulations_files/figure-html/unnamed-chunk-43-1.png)

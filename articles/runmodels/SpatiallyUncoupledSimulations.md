@@ -234,13 +234,13 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [13ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [9ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
@@ -252,19 +252,19 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [22ms]
+    ## ✔ Preparing data for parallelization [14ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.5s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.3s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [43ms]
+    ## ✔ Retrieval of results [12ms]
 
     ## 
 
@@ -477,13 +477,13 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [5ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [8ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
@@ -495,19 +495,19 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [23ms]
+    ## ✔ Preparing data for parallelization [15ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.4s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.7s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [27ms]
+    ## ✔ Retrieval of results [22ms]
 
     ## 
 
@@ -633,13 +633,13 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [7ms]
+    ## ✔ Checking sf input [6ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [10ms]
+    ## ✔ Checking meteo object input [14ms]
 
     ## 
 
@@ -651,19 +651,19 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [24ms]
+    ## ✔ Preparing data for parallelization [17ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [10s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [22ms]
+    ## ✔ Retrieval of results [11ms]
 
     ## 
 
@@ -749,16 +749,16 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [11ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [10ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [31ms]
+    ## ✔ Preparing data for parallelization [24ms]
     ## 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.4s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.6s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [32ms]
+    ## ✔ Retrieval of results [13ms]
     ## 
     ## ✔ No simulation errors detected
 
@@ -814,7 +814,7 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
@@ -827,9 +827,8 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
     ## ℹ Performing 'spwb' simulations on 100 locations
     ## ✔ Performing 'spwb' simulations on 100 locations [8ms]
     ## 
-    ## Stands ■■■                                7% | ETA: 14s
-    ## Stands ■■■■■■■■■■■■                      38% | ETA:  7s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■              62% | ETA:  4s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% | ETA:  0s
+    ## Stands ■■■■■■■■■■                        30% | ETA:  6s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  3s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% | ETA:  0s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
     ## ✔ No simulation errors detected
