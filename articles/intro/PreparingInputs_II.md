@@ -122,8 +122,8 @@ gc()
 ```
 
     ##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-    ## Ncells 2628209 140.4    4400721 235.1  4400721 235.1
-    ## Vcells 4336550  33.1   10146329  77.5  8387193  64.0
+    ## Ncells 2628209 140.4    4400967 235.1  4400967 235.1
+    ## Vcells 4336550  33.1   10146329  77.5  8387181  64.0
 
 ## Topography and land cover type
 
@@ -163,31 +163,31 @@ y_0 <- add_topography(x, dem = dem)
 
     ## ℹ Checking inputs
 
-    ## ✔ Checking inputs [12ms]
+    ## ✔ Checking inputs [19ms]
 
     ## 
 
     ## ℹ Defining column 'id'
 
-    ## ✔ Defining column 'id' [9ms]
+    ## ✔ Defining column 'id' [16ms]
 
     ## 
 
     ## ℹ Defining column 'elevation'
 
-    ## ✔ Defining column 'elevation' [12ms]
+    ## ✔ Defining column 'elevation' [20ms]
 
     ## 
 
     ## ℹ Defining column 'slope'
 
-    ## ✔ Defining column 'slope' [8ms]
+    ## ✔ Defining column 'slope' [13ms]
 
     ## 
 
     ## ℹ Defining column 'aspect'
 
-    ## ✔ Defining column 'aspect' [8ms]
+    ## ✔ Defining column 'aspect' [13ms]
 
     ## 
 

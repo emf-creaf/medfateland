@@ -296,10 +296,10 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> 
 #> ── Simulation of a management/fire scenario with fordyn ────────────────────────
 #> ℹ Checking sf input
-#> ✔ Checking sf input [5ms]
+#> ✔ Checking sf input [8ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [9ms]
+#> ✔ Checking meteo object input [16ms]
 #> 
 #> 
 #> ── Scenario parameters ──
@@ -323,16 +323,16 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = examplemeteo,
 #> • Seed bank dynamics and seed dispersal...
 #> • Calling fordyn_spatial...
 #> ℹ Checking sf input
-#> ✔ Checking sf input [36ms]
+#> ✔ Checking sf input [11ms]
 #> 
 #> ℹ Checking meteo object input
-#> ✔ Checking meteo object input [13ms]
+#> ✔ Checking meteo object input [18ms]
 #> 
 #> ℹ Creating 3 input objects for model 'fordyn'
-#> ✔ Creating 3 input objects for model 'fordyn' [122ms]
+#> ✔ Creating 3 input objects for model 'fordyn' [193ms]
 #> 
 #> ℹ Performing 'fordyn' simulations on 3 locations
-#> ✔ Performing 'fordyn' simulations on 3 locations [6ms]
+#> ✔ Performing 'fordyn' simulations on 3 locations [25ms]
 #> 
 #> ✔ No simulation errors detected
 #> • Final volume: 12185 m3

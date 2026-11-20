@@ -345,7 +345,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [9ms]
+    ## ✔ Checking meteo object input [10ms]
 
     ## 
 
@@ -391,7 +391,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
@@ -403,25 +403,25 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Creating 10 input objects for model 'fordyn'
 
-    ## ✔ Creating 10 input objects for model 'fordyn' [426ms]
+    ## ✔ Creating 10 input objects for model 'fordyn' [384ms]
 
     ## 
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [14ms]
+    ## ✔ Preparing data for parallelization [19ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
 
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [5.8s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [6.2s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [10ms]
+    ## ✔ Retrieval of results [20ms]
 
     ## 
 
@@ -447,7 +447,7 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [7ms]
 
     ## 
 
@@ -455,16 +455,16 @@ fs_12 <- fordyn_scenario(example_subset, SpParamsMED, meteo = meteo_01_02,
 
     ## ℹ All input objects are already available for 'fordyn'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [11ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [13ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [10ms]
+    ## ✔ Preparing data for parallelization [12ms]
     ## 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.8s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [18.6s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [15ms]
+    ## ✔ Retrieval of results [19ms]
     ## 
     ## ✔ No simulation errors detected
     ## • Final volume: 61583 m3
@@ -655,19 +655,19 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Recovering previous run
 
-    ## ✔ Recovering previous run [4ms]
+    ## ✔ Recovering previous run [6ms]
 
     ## 
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [8ms]
+    ## ✔ Checking sf input [11ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [8ms]
+    ## ✔ Checking meteo object input [11ms]
 
     ## 
 
@@ -711,7 +711,7 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [5ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
@@ -719,16 +719,16 @@ fs_3 <- fordyn_scenario(fs_12, SpParamsMED, meteo = meteo_03,
 
     ## ℹ All input objects are already available for 'fordyn'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [13ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [22ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [16ms]
+    ## ✔ Preparing data for parallelization [23ms]
     ## 
     ## ℹ Launching parallel computation (cores = 10; chunk size = 2)
-    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [13.7s]
+    ## ✔ Launching parallel computation (cores = 10; chunk size = 2) [18.8s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [12ms]
+    ## ✔ Retrieval of results [17ms]
     ## 
     ## ✔ No simulation errors detected
     ## • Final volume: 61962 m3

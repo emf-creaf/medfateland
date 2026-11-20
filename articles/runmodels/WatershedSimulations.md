@@ -995,7 +995,7 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking raster topology
 
-    ## ✔ Checking raster topology [19ms]
+    ## ✔ Checking raster topology [15ms]
 
     ## 
 
@@ -1005,10 +1005,10 @@ res_ws7 <- spwb_land(r, sf_init,
 
     ## ℹ Checking 'sf' data columnsℹ Minimum bedrock porosity set to 0.1%.
     ## ℹ Checking 'sf' data columnsℹ Column 'aquifer' was missing in 'sf'. Initializing empty aquifer.
-    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3.1s]
+    ## ℹ Checking 'sf' data columns✔ Checking 'sf' data columns [3s]
     ## 
     ## ℹ Determining neighbors and overland routing for TETIS
-    ## ✔ Determining neighbors and overland routing for TETIS [1.6s]
+    ## ✔ Determining neighbors and overland routing for TETIS [1.9s]
     ## 
     ## • Hydrological model: TETIS
     ## • Number of grid cells: 3825 Number of target cells: 2573

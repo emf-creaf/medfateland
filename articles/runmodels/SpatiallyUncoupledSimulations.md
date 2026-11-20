@@ -240,7 +240,7 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [8ms]
+    ## ✔ Checking meteo object input [9ms]
 
     ## 
 
@@ -252,19 +252,19 @@ res <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [14ms]
+    ## ✔ Preparing data for parallelization [27ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.3s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.5s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [12ms]
+    ## ✔ Retrieval of results [30ms]
 
     ## 
 
@@ -477,13 +477,13 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
     ## ℹ Checking meteo object input
 
-    ## ✔ Checking meteo object input [9ms]
+    ## ✔ Checking meteo object input [8ms]
 
     ## 
 
@@ -495,19 +495,19 @@ res_2 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [15ms]
+    ## ✔ Preparing data for parallelization [26ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.7s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.6s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [22ms]
+    ## ✔ Retrieval of results [19ms]
 
     ## 
 
@@ -633,7 +633,7 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [6ms]
+    ## ✔ Checking sf input [5ms]
 
     ## 
 
@@ -651,19 +651,19 @@ res_3 <- spwb_spatial(example_ifn, SpParamsMED, examplemeteo,
 
     ## ℹ Preparing data for parallelization
 
-    ## ✔ Preparing data for parallelization [17ms]
+    ## ✔ Preparing data for parallelization [13ms]
 
     ## 
 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
 
-    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [10s]
+    ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.2s]
 
     ## 
 
     ## ℹ Retrieval of results
 
-    ## ✔ Retrieval of results [11ms]
+    ## ✔ Retrieval of results [22ms]
 
     ## 
 
@@ -749,16 +749,16 @@ res_3 <- spwb_spatial(example_ifn_mod, SpParamsMED, examplemeteo,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [10ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [11ms]
     ## 
     ## ℹ Preparing data for parallelization
-    ## ✔ Preparing data for parallelization [24ms]
+    ## ✔ Preparing data for parallelization [30ms]
     ## 
     ## ℹ Launching parallel computation (cores = 21; chunk size = 4)
     ## ✔ Launching parallel computation (cores = 21; chunk size = 4) [9.6s]
     ## 
     ## ℹ Retrieval of results
-    ## ✔ Retrieval of results [13ms]
+    ## ✔ Retrieval of results [26ms]
     ## 
     ## ✔ No simulation errors detected
 
@@ -814,7 +814,7 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ Checking sf input
 
-    ## ✔ Checking sf input [5ms]
+    ## ✔ Checking sf input [8ms]
 
     ## 
 
@@ -822,13 +822,14 @@ res_4 <- spwb_spatial(example_ifn_mod, SpParamsMED, meteo = interpolator,
 
     ## ℹ All input objects are already available for 'spwb'
 
-    ## ℹ Checking meteo object input✔ Checking meteo object input [10ms]
+    ## ℹ Checking meteo object input✔ Checking meteo object input [14ms]
     ## 
     ## ℹ Performing 'spwb' simulations on 100 locations
-    ## ✔ Performing 'spwb' simulations on 100 locations [8ms]
+    ## ✔ Performing 'spwb' simulations on 100 locations [10ms]
     ## 
-    ## Stands ■■■■■■■■■■                        30% | ETA:  6s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■              63% | ETA:  3s
-    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% | ETA:  0s
+    ## Stands ■■■                                6% | ETA: 18s
+    ## Stands ■■■■■■■■■■■                       35% | ETA:  8s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■■             65% | ETA:  4s
+    ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% | ETA:  1s
     ## Stands ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
     ## ✔ No simulation errors detected
